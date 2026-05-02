@@ -2,13 +2,14 @@ import { supabase } from '@/lib/supabase'
 import GameBoard from '@/components/GameBoard'
 
 export default async function PlayPage({ params }: { params: { slug: string } }) {
-  const { data: pack } = await supabase
+  const { data: pack, error } = await supabase
     .from('packs')
     .select('*, pairs(*)')
     .eq('slug', params.slug)
     .single()
 
-  if (!pack) return <div className="text-white p-8">Pack not found</div>
+  if (error) return <div className="text-white p-8">Error: {error.message}</div>
+  if (!pack) return <div className="text-white p-8">Pack not found: {params.slug}</div>
 
   return <GameBoard pack={pack} />
 }
