@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { calculateRank } from '@/lib/rankUtils'
 import { usePlayer } from '@/lib/usePlayer'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -28,23 +29,22 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
     if (saved.current) return
     if (!profile?.name) return
     saved.current = true
+
     const saveAndRank = async () => {
-      // 1. Save score first
+      // 1. Save score
       await supabase.from('scores').insert({
         pack_id: pack.id,
         player_name: profile.name,
         time_ms: ms,
         moves: 0,
       })
-      // 2. Then calculate rank including our new score
-      const { count } = await supabase
-        .from('scores')
-        .select('*', { count: 'exact', head: true })
-        .eq('pack_id', pack.id)
-        .lt('time_ms', ms)
-      setRank((count ?? 0) + 1)
-      recordGame(pack.slug, pack.pairs?.length || 6, (count ?? 0) + 1, ms)
+
+      // 2. Calculate rank using unified function
+      const r = await calculateRank(profile.name, pack.id, ms)
+      setRank(r)
+      recordGame(pack.slug, pack.pairs?.length || 6, r, ms)
     }
+
     saveAndRank()
   }, [profile?.name])
 
@@ -88,7 +88,6 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
           boxShadow: `0 24px 60px ${BROWN}40`,
           border: `1px solid ${GOLD}30`,
         }}>
-
           <div style={{
             fontSize: 10, fontWeight: 900, letterSpacing: 3,
             color: `${BROWN}60`, textTransform: 'uppercase', marginBottom: 8,
@@ -113,7 +112,6 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             {pack.title}
           </div>
 
-          {/* World rank */}
           <div style={{
             background: `linear-gradient(135deg, ${GOLD}18, ${BROWN}10)`,
             border: `1px solid ${GOLD}40`,
@@ -123,7 +121,7 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
               fontSize: 11, fontWeight: 800, color: `${BROWN}50`,
               letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4,
             }}>
-              World Ranking
+              {diffLabel} Ranking
             </div>
             <div style={{ fontSize: 32, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>
               {rank ? `#${rank}` : '...'}
