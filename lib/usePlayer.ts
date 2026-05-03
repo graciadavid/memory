@@ -8,6 +8,7 @@ export interface PlayerProfile {
   totalPairs: number
   gamesPlayed: number
   bestRanks: Record<string, number>
+  bestTimes: Record<string, number>
   joinedDate: string
   achievements: string[]
 }
@@ -20,6 +21,7 @@ const DEFAULT_PROFILE: PlayerProfile = {
   totalPairs: 0,
   gamesPlayed: 0,
   bestRanks: {},
+  bestTimes: {},
   joinedDate: new Date().toISOString().split('T')[0],
   achievements: [],
 }
@@ -30,9 +32,7 @@ export function usePlayer() {
 
   useEffect(() => {
     const stored = localStorage.getItem('memgenius_profile')
-    if (stored) {
-      setProfile(JSON.parse(stored))
-    }
+    if (stored) setProfile(JSON.parse(stored))
     setLoaded(true)
   }, [])
 
@@ -63,7 +63,14 @@ export function usePlayer() {
       : 1
 
     const bestRanks = { ...profile.bestRanks }
-    if (!bestRanks[packSlug] || worldRank < bestRanks[packSlug]) bestRanks[packSlug] = worldRank
+    if (!bestRanks[packSlug] || worldRank < bestRanks[packSlug]) {
+      bestRanks[packSlug] = worldRank
+    }
+
+    const bestTimes = { ...profile.bestTimes }
+    if (!bestTimes[packSlug] || timeMs < bestTimes[packSlug]) {
+      bestTimes[packSlug] = timeMs
+    }
 
     const achievements = [...(profile.achievements || [])]
     if (timeMs < 30000 && !achievements.includes('speed_genius')) achievements.push('speed_genius')
@@ -79,6 +86,7 @@ export function usePlayer() {
       totalPairs: profile.totalPairs + pairsCount,
       gamesPlayed: profile.gamesPlayed + 1,
       bestRanks,
+      bestTimes,
       achievements,
     }
     save(updated)

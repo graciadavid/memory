@@ -21,14 +21,16 @@ const DIFF_PACKS: Record<string, { label: string, color: string, packs: string[]
   hard: { label: 'Hard', color: '#B71C1C', packs: ['inventions-inventors', 'phenomena-locations'] },
 }
 
+function fmt(ms: number) {
+  const m = Math.floor(ms / 60000)
+  const s = Math.floor((ms % 60000) / 1000)
+  const c = Math.floor((ms % 1000) / 10)
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
+}
+
 function Avatar({ name, photo, size = 72 }: { name: string, photo?: string, size?: number }) {
   if (photo) {
-    return (
-      <img src={photo} alt="avatar" style={{
-        width: size, height: size, borderRadius: '50%',
-        objectFit: 'cover', border: `3px solid ${GOLD}`,
-      }} />
-    )
+    return <img src={photo} alt="avatar" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', border: `3px solid ${GOLD}` }} />
   }
   return (
     <div style={{
@@ -36,8 +38,7 @@ function Avatar({ name, photo, size = 72 }: { name: string, photo?: string, size
       background: `linear-gradient(135deg, ${GOLD}, ${BROWN})`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontSize: size * 0.4, fontWeight: 900, color: 'white',
-      border: `3px solid rgba(255,255,255,0.3)`,
-      flexShrink: 0,
+      border: '3px solid rgba(255,255,255,0.3)', flexShrink: 0,
     }}>
       {name.charAt(0).toUpperCase()}
     </div>
@@ -52,20 +53,12 @@ export default function ProfilePage() {
 
   if (!profile?.name) {
     return (
-      <main style={{
-        height: '100dvh', background: CREAM,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'var(--font-nunito), sans-serif',
-      }}>
+      <main style={{ height: '100dvh', background: CREAM, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-nunito), sans-serif' }}>
         <div style={{ textAlign: 'center', color: `${BROWN}60`, fontSize: 14, fontWeight: 700 }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>👤</div>
           No profile yet.<br />Play a game first!
           <div style={{ marginTop: 20 }}>
-            <Link href="/" style={{
-              textDecoration: 'none', background: BROWN,
-              color: 'white', padding: '12px 24px', borderRadius: 12,
-              fontWeight: 800, fontSize: 14,
-            }}>Play now</Link>
+            <Link href="/" style={{ textDecoration: 'none', background: BROWN, color: 'white', padding: '12px 24px', borderRadius: 12, fontWeight: 800, fontSize: 14 }}>Play now</Link>
           </div>
         </div>
       </main>
@@ -83,13 +76,18 @@ export default function ProfilePage() {
   const today = new Date().toISOString().split('T')[0]
   const playedToday = profile.lastPlayedDate === today
 
-  // Best rank per difficulty
   const bestByDiff = Object.entries(DIFF_PACKS).map(([key, val]) => {
-    const ranks = val.packs
-      .map(slug => profile.bestRanks?.[slug])
-      .filter(Boolean) as number[]
-    const best = ranks.length > 0 ? Math.min(...ranks) : null
-    return { key, ...val, best }
+    const entries = val.packs
+      .map(slug => ({
+        rank: profile.bestRanks?.[slug],
+        time: profile.bestTimes?.[slug],
+      }))
+      .filter(e => e.rank && e.time)
+
+    if (entries.length === 0) return { key, ...val, rank: null, time: null }
+
+    const best = entries.reduce((a, b) => (a.rank! < b.rank! ? a : b))
+    return { key, ...val, rank: best.rank!, time: best.time! }
   })
 
   return (
@@ -100,7 +98,6 @@ export default function ProfilePage() {
       maxWidth: 430, margin: '0 auto',
       paddingBottom: 100, overflowY: 'auto',
     }}>
-
       {/* Header */}
       <div style={{
         background: `linear-gradient(135deg, ${GOLD}, ${BROWN})`,
@@ -110,21 +107,15 @@ export default function ProfilePage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
           <Avatar name={profile.name} photo={profile.avatar} size={72} />
           <div>
-            <div style={{ fontSize: 26, fontWeight: 900, color: 'white', letterSpacing: -0.5 }}>
-              {profile.name}
-            </div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 700, marginTop: 2 }}>
-              Since {profile.joinedDate}
-            </div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: 'white', letterSpacing: -0.5 }}>{profile.name}</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 700, marginTop: 2 }}>Since {profile.joinedDate}</div>
           </div>
         </div>
         <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhoto} />
         <button onClick={() => fileRef.current?.click()} style={{
-          background: 'rgba(255,255,255,0.15)',
-          border: '1px solid rgba(255,255,255,0.3)',
+          background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)',
           color: 'white', fontSize: 12, fontWeight: 800,
-          padding: '7px 16px', borderRadius: 20,
-          fontFamily: 'inherit', cursor: 'pointer',
+          padding: '7px 16px', borderRadius: 20, fontFamily: 'inherit', cursor: 'pointer',
         }}>Edit photo</button>
       </div>
 
@@ -137,9 +128,7 @@ export default function ProfilePage() {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>
-              Current Streak
-            </div>
+            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Current Streak</div>
             <div style={{ fontSize: 40, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>
               {profile.streak} <span style={{ fontSize: 18, opacity: 0.5 }}>days</span>
             </div>
@@ -174,11 +163,11 @@ export default function ProfilePage() {
                 <div style={{ fontSize: 10, fontWeight: 900, color: d.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>
                   {d.label}
                 </div>
-                <div style={{ fontSize: 28, fontWeight: 900, color: d.best ? BROWN : `${BROWN}20` }}>
-                  {d.best ? `#${d.best}` : '—'}
+                <div style={{ fontSize: 26, fontWeight: 900, color: d.rank ? BROWN : `${BROWN}20`, letterSpacing: -1 }}>
+                  {d.rank ? `#${d.rank}` : '—'}
                 </div>
-                <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
-                  {d.best ? 'Best rank' : 'Not played'}
+                <div style={{ fontSize: 11, fontFamily: 'monospace', fontWeight: 700, color: d.time ? GOLD : `${BROWN}20`, marginTop: 4 }}>
+                  {d.time ? fmt(d.time) : '—'}
                 </div>
               </div>
             ))}
@@ -204,20 +193,13 @@ export default function ProfilePage() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     boxShadow: unlocked ? `0 4px 10px ${GOLD}40` : 'none',
                   }}>
-                    <div style={{
-                      width: 18, height: 18, borderRadius: 4,
-                      background: unlocked ? 'rgba(255,255,255,0.4)' : `${BROWN}20`,
-                    }} />
+                    <div style={{ width: 18, height: 18, borderRadius: 4, background: unlocked ? 'rgba(255,255,255,0.4)' : `${BROWN}20` }} />
                   </div>
                   <div style={{ flex: 1, opacity: unlocked ? 1 : 0.4 }}>
                     <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{a.label}</div>
                     <div style={{ fontSize: 11, color: `${BROWN}60`, marginTop: 1 }}>{a.desc}</div>
                   </div>
-                  {unlocked && (
-                    <div style={{ fontSize: 10, fontWeight: 900, color: GOLD, letterSpacing: 1, textTransform: 'uppercase' }}>
-                      Done
-                    </div>
-                  )}
+                  {unlocked && <div style={{ fontSize: 10, fontWeight: 900, color: GOLD, letterSpacing: 1, textTransform: 'uppercase' }}>Done</div>}
                 </div>
               )
             })}
