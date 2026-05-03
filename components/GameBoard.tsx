@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import ResultOverlay from './ResultOverlay'
+import Tutorial from './Tutorial'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const BUCKET = 'storage'
@@ -85,6 +86,7 @@ export default function GameBoard({ pack }: { pack: any }) {
   const [done, setDone] = useState(false)
   const [lastFact, setLastFact] = useState('')
   const [worldRank, setWorldRank] = useState<number | null>(null)
+  const [showTutorial, setShowTutorial] = useState(false)
   const startRef = useRef<number>(0)
   const rafRef = useRef<number>(0)
   const msRef = useRef<number>(0)
@@ -100,12 +102,20 @@ export default function GameBoard({ pack }: { pack: any }) {
 
   useEffect(() => {
     setCards(buildCards())
-    // Preload all images
-    pack.pairs.forEach((p: any) => {
+    // Preload images
+    pack.pairs.forEach((p: Pair) => {
       const a = new Image(); a.src = imgUrl(p.card_a_img)
       const b = new Image(); b.src = imgUrl(p.card_b_img)
     })
+    // Show tutorial first time
+    const seen = localStorage.getItem('memgenius_tutorial')
+    if (!seen) setShowTutorial(true)
   }, [])
+
+  const dismissTutorial = () => {
+    localStorage.setItem('memgenius_tutorial', '1')
+    setShowTutorial(false)
+  }
 
   useEffect(() => {
     if (running && !done) {
@@ -181,6 +191,7 @@ export default function GameBoard({ pack }: { pack: any }) {
   }
 
   const flip = (uid: string) => {
+    if (showTutorial) return
     if (flipped.length === 2) return
     if (flipped.includes(uid)) return
     const card = cards.find(c => c.uid === uid)!
@@ -215,7 +226,10 @@ export default function GameBoard({ pack }: { pack: any }) {
       touchAction: 'none',
     }}>
 
-      {/* Header — centered logo only */}
+      {/* Tutorial */}
+      {showTutorial && <Tutorial onDone={dismissTutorial} />}
+
+      {/* Header */}
       <div style={{ textAlign: 'center', padding: '14px 16px 4px' }}>
         <div style={{ fontSize: 18, fontWeight: 900 }}>
           <span style={{ color: GOLD }}>Mem</span>
@@ -223,7 +237,7 @@ export default function GameBoard({ pack }: { pack: any }) {
         </div>
       </div>
 
-      {/* Timer — centered */}
+      {/* Timer */}
       <div style={{ textAlign: 'center', padding: '4px 0 6px' }}>
         <div style={{
           fontSize: 28, fontWeight: 700, fontFamily: 'monospace',
@@ -274,28 +288,17 @@ export default function GameBoard({ pack }: { pack: any }) {
                 transition: 'transform 0.45s cubic-bezier(0.4,0,0.2,1)',
                 borderRadius: 14,
               }}>
-
-                {/* Back — gold bg, natural eagle */}
+                {/* Back */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 14,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
-                  background: '#E8C96A',
+                  background: 'linear-gradient(145deg, #E8C96A, #D4A820)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: `0 4px 12px ${GOLD}50`,
+                  boxShadow: `0 4px 12px ${GOLD}30`,
                   overflow: 'hidden',
                 }}>
-                  <div style={{
-                    position: 'absolute', inset: 2, borderRadius: 12,
-                    border: '1px solid rgba(255,255,255,0.25)',
-                  }} />
-                  <img
-                    src={EAGLE}
-                    alt=""
-                    style={{
-                      width: '60%', height: '60%',
-                      objectFit: 'contain',
-                    }}
-                  />
+                  <div style={{ position: 'absolute', inset: 2, borderRadius: 12, border: '1px solid rgba(255,255,255,0.3)' }} />
+                  <img src={EAGLE} alt="" style={{ width: '60%', height: '60%', objectFit: 'contain' }} />
                 </div>
 
                 {/* Front */}
@@ -304,18 +307,12 @@ export default function GameBoard({ pack }: { pack: any }) {
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)', overflow: 'hidden',
                   background: '#fff',
-                  boxShadow: isMatched
-                    ? `0 4px 12px ${GOLD}60, inset 0 0 0 2.5px ${GOLD}`
-                    : `0 3px 10px ${BROWN}15`,
+                  boxShadow: isMatched ? `0 4px 12px ${GOLD}60, inset 0 0 0 2.5px ${GOLD}` : `0 3px 10px ${BROWN}15`,
                   filter: isWrong ? 'brightness(0.8)' : 'none',
                   transition: 'box-shadow 0.3s, filter 0.2s',
                 }}>
-                  <img
-                    src={card.img} alt={card.label}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                  />
+                  <img src={card.img} alt={card.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 </div>
-
               </div>
             </div>
           )
