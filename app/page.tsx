@@ -55,8 +55,8 @@ export default async function Home() {
       medium={medium}
       hard={hard}
       dailySlug={daily?.pack_slug || null}
-      dailyTitle={daily?.packs?.title || null}
-      dailyDifficulty={daily?.packs?.difficulty || 1}
+      dailyTitle={(Array.isArray(daily?.packs) ? daily?.packs[0]?.title : daily?.packs?.title) || null}
+      dailyDifficulty={(Array.isArray(daily?.packs) ? daily?.packs[0]?.difficulty : daily?.packs?.difficulty) || 1}
     />
   )
 }
