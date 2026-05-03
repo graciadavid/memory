@@ -1,7 +1,7 @@
 'use client'
 import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import { supabase } from '@/lib/supabase'
+import { fetchLiveRanks } from './RanksFetcher'
 import Link from 'next/link'
 
 const GOLD = '#C8960C'
@@ -16,11 +16,12 @@ const ACHIEVEMENTS = [
   { key: '10_games', label: 'Dedicated', desc: 'Complete 10 games' },
 ]
 
-const DIFF_PACKS: Record<string, { label: string, color: string, packs: string[] }> = {
-  easy: { label: 'Easy', color: '#2E7D32', packs: ['monuments-countries', 'animals-habitats', 'cities-skylines'] },
-  medium: { label: 'Medium', color: '#E65100', packs: ['foods-monuments', 'artworks-museums', 'civilizations-landmarks'] },
-  hard: { label: 'Hard', color: '#B71C1C', packs: ['inventions-inventors', 'phenomena-locations'] },
-}
+const DIFF_CONFIG = [
+  { key: 'all', label: 'All', color: BROWN },
+  { key: 'easy', label: 'Easy', color: '#2E7D32' },
+  { key: 'medium', label: 'Medium', color: '#E65100' },
+  { key: 'hard', label: 'Hard', color: '#B71C1C' },
+]
 
 function fmt(ms: number) {
   const m = Math.floor(ms / 60000)
@@ -44,21 +45,17 @@ function Avatar({ name, photo, size = 72 }: { name: string, photo?: string, size
   )
 }
 
-interface BestEntry { rank: number | null, time: number | null }
-
 export default function ProfilePage() {
   const { profile, loaded, save } = usePlayer()
   const fileRef = useRef<HTMLInputElement>(null)
-  const [liveRanks, setLiveRanks] = useState<Record<string, BestEntry>>({})
+  const [liveRanks, setLiveRanks] = useState<Record<string, { rank: number | null, time: number | null }>>({})
   const [loadingRanks, setLoadingRanks] = useState(true)
 
   useEffect(() => {
     if (!profile?.name) return
-    import('@/app/profile/RanksFetcher').then(({ fetchLiveRanks }) => {
-      fetchLiveRanks(profile.name).then(ranks => {
-        setLiveRanks(ranks)
-        setLoadingRanks(false)
-      })
+    fetchLiveRanks(profile.name).then(ranks => {
+      setLiveRanks(ranks)
+      setLoadingRanks(false)
     })
   }, [profile?.name])
 
@@ -88,6 +85,14 @@ export default function ProfilePage() {
 
   const today = new Date().toISOString().split('T')[0]
   const playedToday = profile.lastPlayedDate === today
+
+  const shareCategory = async (key: string, label: string, color: string) => {
+    const entry = liveRanks[key]
+    if (!entry?.rank) return
+    const text = `🦅 I'm #${entry.rank} in ${label} on MemGenius!\nTime: ${fmt(entry.time!)}\nCan you beat me? 👉 https://memgenius.com`
+    if (navigator.share) await navigator.share({ text })
+    else { await navigator.clipboard.writeText(text); alert('Copied!') }
+  }
 
   return (
     <main style={{
@@ -143,7 +148,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Best positions — live from Supabase */}
+        {/* Best Positions — 4 columns with share */}
         <div style={{
           background: '#fff', borderRadius: 20, padding: '20px 22px',
           boxShadow: `0 2px 12px ${BROWN}10`,
@@ -151,25 +156,40 @@ export default function ProfilePage() {
           <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
             Best Positions
           </div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            {Object.entries(DIFF_PACKS).map(([key, val]) => {
-              const entry = liveRanks[key]
+          <div style={{ display: 'flex', gap: 8 }}>
+            {DIFF_CONFIG.map(d => {
+              const entry = liveRanks[d.key]
+              const hasResult = entry?.rank != null
               return (
-                <div key={key} style={{
+                <div key={d.key} style={{
                   flex: 1, textAlign: 'center',
-                  background: `${val.color}08`,
-                  border: `1px solid ${val.color}20`,
-                  borderRadius: 14, padding: '14px 8px',
+                  background: `${d.color}08`,
+                  border: `1px solid ${d.color}20`,
+                  borderRadius: 14, padding: '12px 4px',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
                 }}>
-                  <div style={{ fontSize: 10, fontWeight: 900, color: val.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>
-                    {val.label}
+                  <div style={{ fontSize: 9, fontWeight: 900, color: d.color, letterSpacing: 1, textTransform: 'uppercase' }}>
+                    {d.label}
                   </div>
-                  <div style={{ fontSize: 26, fontWeight: 900, color: entry?.rank ? BROWN : `${BROWN}20`, letterSpacing: -1 }}>
-                    {loadingRanks ? '...' : entry?.rank ? `#${entry.rank}` : '—'}
+                  <div style={{ fontSize: 22, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20`, letterSpacing: -1 }}>
+                    {loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}
                   </div>
-                  <div style={{ fontSize: 11, fontFamily: 'monospace', fontWeight: 700, color: entry?.time ? GOLD : `${BROWN}20`, marginTop: 4 }}>
-                    {loadingRanks ? '' : entry?.time ? fmt(entry.time) : '—'}
+                  <div style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20` }}>
+                    {loadingRanks ? '' : hasResult ? fmt(entry.time!) : '—'}
                   </div>
+                  {hasResult && (
+                    <button
+                      onClick={() => shareCategory(d.key, d.label, d.color)}
+                      style={{
+                        marginTop: 4,
+                        width: 28, height: 28, borderRadius: 8, border: 'none',
+                        background: d.color, color: '#fff',
+                        fontSize: 12, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >↑</button>
+                  )}
                 </div>
               )
             })}
