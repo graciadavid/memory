@@ -110,9 +110,11 @@ export default function ProfilePage() {
     }}>
       {/* Header */}
       <div style={{
-        background: `linear-gradient(135deg, ${GOLD}, ${BROWN})`,
-        padding: '44px 24px 28px',
-        borderRadius: '0 0 28px 28px',
+        background: `linear-gradient(rgba(74,44,10,0.7), rgba(74,44,10,0.85)), url(https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/amazon-rainforest.png)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        padding: '28px 24px 20px',
+        borderRadius: '0 0 24px 24px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
           <Avatar name={profile.name} photo={profile.avatar} size={72} />
