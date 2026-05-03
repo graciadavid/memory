@@ -14,11 +14,18 @@ interface Props {
 
 export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }: Props) {
   const { profile, recordGame } = usePlayer()
-  const [submitted, setSubmitted] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [savedRank, setSavedRank] = useState(worldRank)
+  const [shared, setShared] = useState(false)
 
-  useEffect(() => { setSavedRank(worldRank) }, [worldRank])
+  useEffect(() => {
+    if (!profile?.name) return
+    supabase.from('scores').insert({
+      pack_id: pack.id,
+      player_name: profile.name,
+      time_ms: ms,
+      moves: 0,
+    })
+    recordGame(pack.slug, pack.pairs?.length || 6, worldRank || 999, ms)
+  }, [])
 
   const fmt = (ms: number) => {
     const m = Math.floor(ms / 60000)
@@ -30,20 +37,6 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
   const diffColor = pack.difficulty === 1 ? '#00c853' : pack.difficulty === 2 ? '#ff8c00' : '#FF4D6D'
   const diffLabel = pack.difficulty === 1 ? '🟢 Easy' : pack.difficulty === 2 ? '🟡 Medium' : '🔴 Hard'
 
-  const submitScore = async () => {
-    if (!profile?.name) return
-    setSubmitting(true)
-    await supabase.from('scores').insert({
-      pack_id: pack.id,
-      player_name: profile.name,
-      time_ms: ms,
-      moves: 0,
-    })
-    recordGame(pack.slug, pack.pairs?.length || 6, worldRank || 999, ms)
-    setSubmitted(true)
-    setSubmitting(false)
-  }
-
   const share = async () => {
     const text = `🧠 PairIQ — I solved "${pack.title}" in ${fmt(ms)}! ${diffLabel}\nCan you beat me? 👉 https://memory-one-iota.vercel.app`
     if (navigator.share) {
@@ -52,6 +45,7 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
       await navigator.clipboard.writeText(text)
       alert('Copied!')
     }
+    setShared(true)
   }
 
   return (
@@ -85,16 +79,23 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             borderRadius: 14, padding: '10px 14px', marginBottom: 10,
           }}>
             <div style={{ fontSize: 22, fontWeight: 900, color: diffColor }}>
-              🏆 {savedRank ? `#${savedRank} World` : '...'}
+              🏆 {worldRank ? `#${worldRank} World` : '...'}
             </div>
             <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>{pack.title}</div>
+          </div>
+
+          {/* Saved confirmation */}
+          <div style={{
+            fontSize: 12, color: '#00c853', fontWeight: 700, marginBottom: 12,
+          }}>
+            ✅ Saved as {profile?.name}
           </div>
 
           {/* Fun fact */}
           {lastFact && (
             <div style={{
               background: '#f8f8f8', border: '1px solid #eee',
-              borderRadius: 14, padding: '10px 14px', marginBottom: 12, textAlign: 'left',
+              borderRadius: 14, padding: '10px 14px', marginBottom: 14, textAlign: 'left',
             }}>
               <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: 2, color: '#aaa', textTransform: 'uppercase', marginBottom: 4 }}>
                 💡 Did you know?
@@ -103,32 +104,16 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             </div>
           )}
 
-          {/* Submit o Share */}
-          {!submitted ? (
-            <div style={{ marginBottom: 10 }}>
-              {profile?.name && (
-                <div style={{ fontSize: 13, color: '#aaa', fontWeight: 700, marginBottom: 8 }}>
-                  Saving as <span style={{ color: '#111', fontWeight: 900 }}>{profile.name}</span>
-                </div>
-              )}
-              <button onClick={submitScore} disabled={submitting} style={{
-                width: '100%', padding: '12px', borderRadius: 12, border: 'none',
-                background: diffColor, color: 'white',
-                fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
-              }}>
-                {submitting ? 'Saving...' : '🏆 Save to Ranking'}
-              </button>
-            </div>
-          ) : (
-            <button onClick={share} style={{
-              width: '100%', padding: '12px', borderRadius: 12, border: 'none',
-              background: '#111', color: 'white',
-              fontSize: 13, fontWeight: 800, fontFamily: 'inherit',
-              cursor: 'pointer', marginBottom: 10,
-            }}>
-              🔗 Share my result
-            </button>
-          )}
+          {/* Share */}
+          <button onClick={share} style={{
+            width: '100%', padding: '12px', borderRadius: 12, border: 'none',
+            background: shared ? '#eee' : '#111',
+            color: shared ? '#aaa' : 'white',
+            fontSize: 13, fontWeight: 800, fontFamily: 'inherit',
+            cursor: 'pointer', marginBottom: 10,
+          }}>
+            {shared ? '✅ Shared!' : '🔗 Share my result'}
+          </button>
 
           <button onClick={onReset} style={{
             width: '100%', padding: '11px', borderRadius: 12, border: 'none',
@@ -138,7 +123,7 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
         </div>
       </div>
 
-      {/* Bottom nav sobre el overlay */}
+      {/* Bottom nav */}
       <nav style={{
         position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
         width: '100%', maxWidth: 430,
