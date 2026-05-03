@@ -34,68 +34,39 @@ interface Card {
   side: 'a' | 'b'
 }
 
-interface Particle {
-  id: number
-  x: number
-  y: number
-  vx: number
-  vy: number
-  color: string
-  size: number
-  rotation: number
-  vr: number
-}
-
 function Confetti() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-
   useEffect(() => {
     const canvas = canvasRef.current!
     const ctx = canvas.getContext('2d')!
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
-
-    const colors = ['#FF4D6D', '#ff8c00', '#FFD700', '#00e676', '#2979ff', '#e040fb']
-    const particles: Particle[] = Array.from({ length: 120 }, (_, i) => ({
-      id: i,
-      x: Math.random() * canvas.width,
-      y: -20,
-      vx: (Math.random() - 0.5) * 4,
-      vy: Math.random() * 4 + 2,
+    const colors = ['#FF4D6D','#ff8c00','#FFD700','#00e676','#2979ff','#e040fb']
+    const particles = Array.from({ length: 150 }, (_, i) => ({
+      id: i, x: Math.random() * canvas.width, y: -20,
+      vx: (Math.random() - 0.5) * 5, vy: Math.random() * 4 + 2,
       color: colors[Math.floor(Math.random() * colors.length)],
-      size: Math.random() * 8 + 4,
-      rotation: Math.random() * 360,
-      vr: (Math.random() - 0.5) * 8,
+      size: Math.random() * 9 + 4, rotation: Math.random() * 360,
+      vr: (Math.random() - 0.5) * 10,
     }))
-
     let frame: number
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       particles.forEach(p => {
-        p.x += p.vx
-        p.y += p.vy
-        p.vy += 0.1
-        p.rotation += p.vr
+        p.x += p.vx; p.y += p.vy; p.vy += 0.08; p.rotation += p.vr
         ctx.save()
         ctx.translate(p.x, p.y)
         ctx.rotate((p.rotation * Math.PI) / 180)
         ctx.fillStyle = p.color
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size)
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.5)
         ctx.restore()
       })
-      if (particles.some(p => p.y < canvas.height)) {
-        frame = requestAnimationFrame(animate)
-      }
+      if (particles.some(p => p.y < canvas.height + 20)) frame = requestAnimationFrame(animate)
     }
     animate()
     return () => cancelAnimationFrame(frame)
   }, [])
-
-  return (
-    <canvas ref={canvasRef} style={{
-      position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 200,
-    }} />
-  )
+  return <canvas ref={canvasRef} style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 200 }} />
 }
 
 export default function GameBoard({ pack }: { pack: any }) {
@@ -108,7 +79,6 @@ export default function GameBoard({ pack }: { pack: any }) {
   const [running, setRunning] = useState(false)
   const [done, setDone] = useState(false)
   const [lastFact, setLastFact] = useState('')
-  const audioRef = useRef<AudioContext | null>(null)
 
   const buildCards = () => {
     const built: Card[] = []
@@ -131,7 +101,7 @@ export default function GameBoard({ pack }: { pack: any }) {
     if (matched.length > 0 && matched.length === pack.pairs.length) {
       setDone(true)
       setRunning(false)
-      playApplause()
+      playChimes()
     }
   }, [matched])
 
@@ -142,35 +112,52 @@ export default function GameBoard({ pack }: { pack: any }) {
     if (a.pairId === b.pairId && a.side !== b.side) {
       const fact = pack.pairs.find((p: Pair) => p.id === a.pairId)?.fun_fact || ''
       setLastFact(fact)
+      playMatch()
       setTimeout(() => { setMatched(m => [...m, a.pairId]); setFlipped([]) }, 500)
     } else {
       setWrong(flipped)
+      playWrong()
       setTimeout(() => { setFlipped([]); setWrong([]) }, 800)
     }
   }, [flipped])
 
-  const playApplause = () => {
+  const playTone = (freq: number, start: number, duration: number, gain: number, ctx: AudioContext) => {
+    const osc = ctx.createOscillator()
+    const gainNode = ctx.createGain()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + start)
+    gainNode.gain.setValueAtTime(0, ctx.currentTime + start)
+    gainNode.gain.linearRampToValueAtTime(gain, ctx.currentTime + start + 0.01)
+    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + duration)
+    osc.connect(gainNode)
+    gainNode.connect(ctx.destination)
+    osc.start(ctx.currentTime + start)
+    osc.stop(ctx.currentTime + start + duration)
+  }
+
+  const playMatch = () => {
     try {
       const ctx = new AudioContext()
-      audioRef.current = ctx
-      const duration = 3
-      const bufferSize = ctx.sampleRate * duration
-      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
-      const data = buffer.getChannelData(0)
-      for (let i = 0; i < bufferSize; i++) {
-        const envelope = Math.sin((i / bufferSize) * Math.PI)
-        const burst = Math.random() < 0.3 ? Math.random() * 2 - 1 : 0
-        data[i] = burst * envelope * 0.4
-      }
-      const source = ctx.createBufferSource()
-      source.buffer = buffer
-      const gainNode = ctx.createGain()
-      gainNode.gain.setValueAtTime(0.6, ctx.currentTime)
-      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
-      source.connect(gainNode)
-      gainNode.connect(ctx.destination)
-      source.start()
-    } catch (e) {}
+      playTone(880, 0, 0.3, 0.3, ctx)
+      playTone(1100, 0.1, 0.3, 0.2, ctx)
+    } catch(e) {}
+  }
+
+  const playWrong = () => {
+    try {
+      const ctx = new AudioContext()
+      playTone(220, 0, 0.3, 0.2, ctx)
+    } catch(e) {}
+  }
+
+  const playChimes = () => {
+    try {
+      const ctx = new AudioContext()
+      const notes = [523, 659, 784, 1047, 1319, 1047, 784, 1319, 1047]
+      notes.forEach((freq, i) => {
+        playTone(freq, i * 0.15, 0.6, 0.25, ctx)
+      })
+    } catch(e) {}
   }
 
   const flip = (uid: string) => {
@@ -192,19 +179,15 @@ export default function GameBoard({ pack }: { pack: any }) {
     const m = Math.floor(ms / 60000)
     const s = Math.floor((ms % 60000) / 1000)
     const centis = Math.floor((ms % 1000) / 10)
-    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}:${String(centis).padStart(2, '0')}`
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(centis).padStart(2,'0')}`
   }
 
   return (
     <main style={{
-      height: '100dvh',
-      background: '#0c0c14',
-      display: 'flex',
-      flexDirection: 'column',
-      maxWidth: 430,
-      margin: '0 auto',
-      overflow: 'hidden',
-      fontFamily: 'var(--font-nunito), sans-serif',
+      height: '100dvh', background: '#0c0c14',
+      display: 'flex', flexDirection: 'column',
+      maxWidth: 430, margin: '0 auto',
+      overflow: 'hidden', fontFamily: 'var(--font-nunito), sans-serif',
     }}>
 
       {/* Header */}
@@ -226,7 +209,7 @@ export default function GameBoard({ pack }: { pack: any }) {
         </div>
         <div style={{ textAlign: 'right' }}>
           <div style={{ fontSize: 9, fontWeight: 800, color: '#444', letterSpacing: 2, textTransform: 'uppercase' }}>moves</div>
-          <div style={{ fontSize: 18, fontWeight: 900, color: 'white', fontFamily: 'monospace' }}>{String(moves).padStart(2, '0')}</div>
+          <div style={{ fontSize: 18, fontWeight: 900, color: 'white', fontFamily: 'monospace' }}>{String(moves).padStart(2,'0')}</div>
         </div>
       </div>
 
@@ -263,12 +246,8 @@ export default function GameBoard({ pack }: { pack: any }) {
 
       {/* Grid */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 6,
-        padding: '0 10px',
-        flex: 1,
-        minHeight: 0,
+        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: 6, padding: '0 10px', flex: 1, minHeight: 0,
       }}>
         {cards.map(card => {
           const isFlipped = flipped.includes(card.uid) || matched.includes(card.pairId)
@@ -279,14 +258,12 @@ export default function GameBoard({ pack }: { pack: any }) {
             <div key={card.uid} onClick={() => flip(card.uid)}
               style={{ perspective: 600, cursor: 'pointer' }}>
               <div style={{
-                width: '100%', height: '100%',
-                position: 'relative',
+                width: '100%', height: '100%', position: 'relative',
                 transformStyle: 'preserve-3d',
                 transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                 transition: isWrong ? 'transform 0.15s' : 'transform 0.45s cubic-bezier(0.4,0,0.2,1)',
                 borderRadius: 12,
               }}>
-
                 {/* Back */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 12,
@@ -294,28 +271,23 @@ export default function GameBoard({ pack }: { pack: any }) {
                   background: 'linear-gradient(145deg,#FF4D6D,#ff8c00)',
                 }} />
 
-                {/* Front */}
+                {/* Front — fondo blanco para eliminar bordes negros */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 12,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)',
                   overflow: 'hidden',
+                  background: '#ffffff',
                   filter: isWrong ? 'brightness(0.3) saturate(0)' : 'none',
-                  boxShadow: isMatched ? '0 0 0 2.5px #1aaa55' : 'none',
+                  boxShadow: isMatched ? 'inset 0 0 0 3px #1aaa55' : 'none',
                   transition: 'box-shadow 0.3s',
                 }}>
                   <img
                     src={card.img}
                     alt={card.label}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      display: 'block',
-                    }}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', padding: 4 }}
                   />
                 </div>
-
               </div>
             </div>
           )
@@ -324,24 +296,19 @@ export default function GameBoard({ pack }: { pack: any }) {
 
       <div style={{ height: 8 }} />
 
-      {/* Confetti */}
       {done && <Confetti />}
 
       {/* Done overlay */}
       {done && (
         <div style={{
-          position: 'fixed', inset: 0,
-          background: 'rgba(0,0,0,0.88)',
-          backdropFilter: 'blur(12px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 100, padding: 20,
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)',
+          backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center',
+          justifyContent: 'center', zIndex: 100, padding: 20,
         }}>
           <div style={{
-            background: '#0f0f1c',
-            border: '2px solid #FF4D6D',
+            background: '#0f0f1c', border: '2px solid #FF4D6D',
             borderRadius: 28, padding: '28px 22px',
-            width: '100%', maxWidth: 340,
-            textAlign: 'center',
+            width: '100%', maxWidth: 340, textAlign: 'center',
             boxShadow: '0 20px 60px rgba(255,77,109,0.25)',
           }}>
             <div style={{ fontSize: 44, marginBottom: 6 }}>🎉</div>
@@ -350,8 +317,7 @@ export default function GameBoard({ pack }: { pack: any }) {
             <div style={{ fontSize: 13, color: '#555', marginBottom: 16 }}>{moves} moves · {pack.pairs.length} pairs</div>
 
             <div style={{
-              background: 'rgba(255,77,109,0.08)',
-              border: '1px solid rgba(255,77,109,0.2)',
+              background: 'rgba(255,77,109,0.08)', border: '1px solid rgba(255,77,109,0.2)',
               borderRadius: 14, padding: '12px 14px', marginBottom: 12,
             }}>
               <div style={{ fontSize: 18, fontWeight: 900, color: '#FF4D6D' }}>🏆 #234 World</div>
