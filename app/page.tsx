@@ -14,25 +14,24 @@ async function getRandomPack(difficulty: number) {
 async function getDailyPack() {
   const today = new Date().toISOString().split('T')[0]
   
-  // Check if we have a daily for today
   const { data } = await supabase
     .from('daily_challenges')
-    .select('pack_id, pack_slug, packs(title, difficulty)')
+    .select('pack_slug, packs(title, difficulty)')
     .eq('date', today)
     .single()
 
   if (data) return data
 
-  // If not, create one
-  const { data: packs } = await supabase
+  // Create one if missing
+  const { data: allPacks } = await supabase
     .from('packs')
     .select('id, slug, title, difficulty')
 
-  if (!packs) return null
-  const idx = getDailyPackIndex(packs.length)
-  const pack = packs[idx]
+  if (!allPacks) return null
+  const idx = getDailyPackIndex(allPacks.length)
+  const pack = allPacks[idx]
 
-  await supabase.from('daily_challenges').insert({
+  await supabase.from('daily_challenges').upsert({
     date: today,
     pack_id: pack.id,
     pack_slug: pack.slug,
