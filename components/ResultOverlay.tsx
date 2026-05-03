@@ -32,11 +32,14 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
 
     const saveAndRank = async () => {
       // 1. Save score
+      const today = new Date().toISOString().split('T')[0]
       await supabase.from('scores').insert({
         pack_id: pack.id,
         player_name: profile.name,
         time_ms: ms,
         moves: 0,
+        is_daily: pack.isDaily || false,
+        play_date: today,
       })
 
       // 2. Calculate rank using unified function

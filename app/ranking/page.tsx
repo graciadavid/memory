@@ -4,9 +4,28 @@ import RankingClient from './RankingClient'
 export const revalidate = 0
 
 export default async function RankingPage() {
+  const today = new Date().toISOString().split('T')[0]
+
+  // Get daily pack for today
+  const { data: daily } = await supabase
+    .from('daily_challenges')
+    .select('pack_id')
+    .eq('date', today)
+    .single()
+
+  // All scores
   const { data: scores } = await supabase
     .from('scores')
     .select('*, packs(title, slug, difficulty)')
+    .order('time_ms', { ascending: true })
+    .limit(500)
+
+  // Today's daily scores
+  const { data: dailyScores } = await supabase
+    .from('scores')
+    .select('*, packs(title, slug, difficulty)')
+    .eq('is_daily', true)
+    .eq('play_date', today)
     .order('time_ms', { ascending: true })
     .limit(500)
 
@@ -27,7 +46,7 @@ export default async function RankingPage() {
           World Ranking
         </div>
       </div>
-      <RankingClient scores={scores || []} />
+      <RankingClient scores={scores || []} dailyScores={dailyScores || []} />
     </main>
   )
 }

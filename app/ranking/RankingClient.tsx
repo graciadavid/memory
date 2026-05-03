@@ -4,10 +4,9 @@ import { useState, useEffect, useRef } from 'react'
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
 
-export default function RankingClient({ scores }: { scores: any[] }) {
-  const [filter, setFilter] = useState<'all' | 1 | 2 | 3>('all')
+export default function RankingClient({ scores, dailyScores }: { scores: any[], dailyScores: any[] }) {
+  const [filter, setFilter] = useState<'today' | 1 | 2 | 3>('today')
   const [myName, setMyName] = useState<string>('')
-  const listRef = useRef<HTMLDivElement>(null)
   const myRowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -25,17 +24,25 @@ export default function RankingClient({ scores }: { scores: any[] }) {
   const diffColor = (d: number) => d === 1 ? '#2E7D32' : d === 2 ? '#E65100' : '#B71C1C'
   const diffLabel = (d: number) => d === 1 ? 'Easy' : d === 2 ? 'Med' : 'Hard'
 
-  const getBest = (diff?: number) => {
-    const fil = diff ? scores.filter(s => s.packs?.difficulty === diff) : scores
+  const getBest = (diff: number) => {
+    const fil = scores.filter(s => s.packs?.difficulty === diff)
     const map: Record<string, any> = {}
     fil.forEach(s => {
-      const key = `${s.player_name}_${s.packs?.difficulty}`
+      const key = s.player_name
       if (!map[key] || s.time_ms < map[key].time_ms) map[key] = s
     })
     return Object.values(map).sort((a, b) => a.time_ms - b.time_ms)
   }
 
-  const filtered = getBest(filter === 'all' ? undefined : filter)
+  const getDailyBest = () => {
+    const map: Record<string, any> = {}
+    dailyScores.forEach(s => {
+      if (!map[s.player_name] || s.time_ms < map[s.player_name].time_ms) map[s.player_name] = s
+    })
+    return Object.values(map).sort((a, b) => a.time_ms - b.time_ms)
+  }
+
+  const filtered = filter === 'today' ? getDailyBest() : getBest(filter)
   const myIndex = filtered.findIndex(s => s.player_name === myName)
   const myScore = myIndex >= 0 ? filtered[myIndex] : null
   const myPosition = myIndex + 1
@@ -46,26 +53,26 @@ export default function RankingClient({ scores }: { scores: any[] }) {
   }
 
   const share = async (position: number, score: any) => {
-    const diff = score.packs?.difficulty === 1 ? 'Easy' : score.packs?.difficulty === 2 ? 'Medium' : 'Hard'
-    const text = `I'm #${position} in ${diff} on MemGenius with ${fmt(score.time_ms)}!\nCan you beat me? 👉 https://memgenius.com`
+    const cat = filter === 'today' ? 'Daily Challenge' : filter === 1 ? 'Easy' : filter === 2 ? 'Medium' : 'Hard'
+    const text = `🦅 I'm #${position} in ${cat} on MemGenius!\nTime: ${fmt(score.time_ms)}\nCan you beat me?\nhttps://memgenius.com`
     if (navigator.share) await navigator.share({ text })
     else { await navigator.clipboard.writeText(text); alert('Copied!') }
   }
 
   const tabs = [
-    { key: 'all' as const, label: 'All', color: BROWN },
+    { key: 'today' as const, label: 'Today', color: BROWN },
     { key: 1 as const, label: 'Easy', color: '#2E7D32' },
     { key: 2 as const, label: 'Medium', color: '#E65100' },
     { key: 3 as const, label: 'Hard', color: '#B71C1C' },
   ]
 
-  const ScoreRow = ({ score, position, isRef }: { score: any, position: number, isRef?: boolean }) => {
+  const ScoreRow = ({ score, position }: { score: any, position: number }) => {
     const isMe = score.player_name === myName
     return (
       <div
-        id={isRef ? 'my-row' : undefined}
+        id={isMe ? 'my-row' : undefined}
         style={{
-          display: 'grid', gridTemplateColumns: '36px 1fr 44px 80px 32px',
+          display: 'grid', gridTemplateColumns: '36px 1fr 48px 80px 32px',
           alignItems: 'center', gap: 6,
           background: isMe ? `${GOLD}22` : position === 1 ? `${GOLD}08` : '#fff',
           border: `1px solid ${isMe ? GOLD + '60' : position === 1 ? GOLD + '20' : BROWN + '08'}`,
@@ -115,7 +122,7 @@ export default function RankingClient({ scores }: { scores: any[] }) {
             flex: 1, padding: '9px 4px', borderRadius: 12, border: 'none',
             background: filter === tab.key ? tab.color : '#fff',
             color: filter === tab.key ? '#fff' : `${BROWN}60`,
-            fontSize: 12, fontWeight: 800,
+            fontSize: 11, fontWeight: 800,
             fontFamily: 'inherit', cursor: 'pointer',
             boxShadow: filter === tab.key ? `0 5px 0 ${tab.color}50` : `0 2px 6px ${BROWN}08`,
             transition: 'all 0.2s',
@@ -125,7 +132,7 @@ export default function RankingClient({ scores }: { scores: any[] }) {
 
       {/* Headers */}
       <div style={{
-        display: 'grid', gridTemplateColumns: '36px 1fr 44px 80px 32px',
+        display: 'grid', gridTemplateColumns: '36px 1fr 48px 80px 32px',
         padding: '0 16px 6px', gap: 6, flexShrink: 0,
       }}>
         {['#', 'Player', 'Lvl', 'Time', ''].map((h, i) => (
@@ -133,77 +140,36 @@ export default function RankingClient({ scores }: { scores: any[] }) {
         ))}
       </div>
 
-      {/* Scrollable list */}
-      <div
-        ref={listRef}
-        style={{
-          flex: 1, overflowY: 'auto',
-          padding: '0 10px',
-          paddingBottom: myScore ? 140 : 80,
-        }}
-      >
+      {/* List */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 10px', paddingBottom: myScore ? 140 : 80 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          {filtered.map((score, i) => (
-            <ScoreRow
-              key={score.id}
-              score={score}
-              position={i + 1}
-              isRef={score.player_name === myName}
-            />
-          ))}
           {filtered.length === 0 && (
             <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, marginTop: 60 }}>
-              No scores yet
+              {filter === 'today' ? 'No one has played today yet. Be first!' : 'No scores yet'}
             </div>
           )}
+          {filtered.map((score, i) => (
+            <ScoreRow key={score.id} score={score} position={i + 1} />
+          ))}
         </div>
       </div>
 
-      {/* Sticky — click to scroll to my position */}
+      {/* Sticky my position */}
       {myScore && (
-        <div
-          onClick={scrollToMe}
-          style={{
-            position: 'fixed',
-            bottom: 60,
-            left: '50%', transform: 'translateX(-50%)',
-            width: '100%', maxWidth: 430,
-            padding: '8px 10px',
-            background: 'rgba(250,247,242,0.97)',
-            backdropFilter: 'blur(16px)',
-            borderTop: `2px solid ${GOLD}40`,
-            zIndex: 40,
-            boxSizing: 'border-box',
-            cursor: 'pointer',
-          }}
-        >
+        <div onClick={scrollToMe} style={{
+          position: 'fixed', bottom: 60,
+          left: '50%', transform: 'translateX(-50%)',
+          width: '100%', maxWidth: 430,
+          padding: '8px 10px',
+          background: 'rgba(250,247,242,0.97)',
+          backdropFilter: 'blur(16px)',
+          borderTop: `2px solid ${GOLD}40`,
+          zIndex: 40, boxSizing: 'border-box', cursor: 'pointer',
+        }}>
           <div style={{ fontSize: 9, fontWeight: 900, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 5, paddingLeft: 4 }}>
             Your position · tap to find
           </div>
-          <div style={{
-            display: 'grid', gridTemplateColumns: '36px 1fr 44px 80px 32px',
-            alignItems: 'center', gap: 6,
-            background: `${GOLD}22`,
-            border: `1px solid ${GOLD}60`,
-            borderRadius: 12, padding: '10px 10px',
-            boxShadow: `0 4px 16px ${GOLD}25`,
-          }}>
-            <div style={{ fontSize: 13, fontWeight: 900, textAlign: 'center', color: GOLD }}>{myPosition}</div>
-            <div style={{ fontSize: 13, fontWeight: 800, color: BROWN, display: 'flex', alignItems: 'center', gap: 6 }}>
-              {myScore.player_name}
-              <span style={{ fontSize: 8, color: GOLD, fontWeight: 900, letterSpacing: 1, background: `${GOLD}20`, padding: '1px 5px', borderRadius: 4 }}>YOU</span>
-            </div>
-            <div style={{
-              fontSize: 9, fontWeight: 900,
-              color: diffColor(myScore.packs?.difficulty),
-              background: `${diffColor(myScore.packs?.difficulty)}15`,
-              borderRadius: 5, padding: '2px 4px', textAlign: 'center',
-            }}>{diffLabel(myScore.packs?.difficulty)}</div>
-            <div style={{ fontSize: 11, fontWeight: 900, color: BROWN, fontFamily: 'monospace', textAlign: 'center' }}>
-              {fmt(myScore.time_ms)}
-            </div>
-            <div style={{ fontSize: 14, color: GOLD, textAlign: 'center' }}>↓</div>
-          </div>
+          <ScoreRow score={myScore} position={myPosition} />
         </div>
       )}
     </>
