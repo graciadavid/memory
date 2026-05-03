@@ -33,13 +33,20 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
     const saveAndRank = async () => {
       // 1. Save score
       const today = new Date().toISOString().split('T')[0]
-      console.log('isDaily:', pack.isDaily, 'slug:', pack.slug)
+      // Check if this pack is today's daily directly from Supabase
+      const { data: dailyCheck } = await supabase
+        .from('daily_challenges')
+        .select('pack_slug')
+        .eq('date', today)
+        .single()
+      const isDaily = dailyCheck?.pack_slug === pack.slug
+      console.log('isDaily check:', isDaily, 'pack:', pack.slug, 'daily:', dailyCheck?.pack_slug)
       await supabase.from('scores').insert({
         pack_id: pack.id,
         player_name: profile.name,
         time_ms: ms,
         moves: 0,
-        is_daily: pack.isDaily === true,
+        is_daily: isDaily,
         play_date: today,
       })
 
