@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import ResultOverlay from './ResultOverlay'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const BUCKET = 'storage'
@@ -79,12 +80,10 @@ export default function GameBoard({ pack }: { pack: any }) {
   const [running, setRunning] = useState(false)
   const [done, setDone] = useState(false)
   const [lastFact, setLastFact] = useState('')
-  const [playerName, setPlayerName] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const startRef = useRef<number>(0)
   const rafRef = useRef<number>(0)
+  const msRef = useRef<number>(0)
 
   const buildCards = () => {
     const built: Card[] = []
@@ -97,12 +96,13 @@ export default function GameBoard({ pack }: { pack: any }) {
 
   useEffect(() => { setCards(buildCards()) }, [])
 
-  // Timer exacto con requestAnimationFrame
   useEffect(() => {
     if (running && !done) {
-      startRef.current = Date.now() - ms
+      startRef.current = Date.now() - msRef.current
       const tick = () => {
-        setMs(Date.now() - startRef.current)
+        const now = Date.now() - startRef.current
+        msRef.current = now
+        setMs(now)
         rafRef.current = requestAnimationFrame(tick)
       }
       rafRef.current = requestAnimationFrame(tick)
@@ -142,21 +142,8 @@ export default function GameBoard({ pack }: { pack: any }) {
       .from('scores')
       .select('*', { count: 'exact', head: true })
       .eq('pack_id', pack.id)
-      .lt('time_ms', ms)
+      .lt('time_ms', msRef.current)
     setWorldRank((count ?? 0) + 1)
-  }
-
-  const submitScore = async () => {
-    if (!playerName.trim()) return
-    setSubmitting(true)
-    await supabase.from('scores').insert({
-      pack_id: pack.id,
-      player_name: playerName.trim(),
-      time_ms: ms,
-      moves: 0,
-    })
-    setSubmitted(true)
-    setSubmitting(false)
   }
 
   const playTone = (freq: number, start: number, duration: number, gain: number, ctx: AudioContext) => {
@@ -191,16 +178,17 @@ export default function GameBoard({ pack }: { pack: any }) {
     if (flipped.includes(uid)) return
     const card = cards.find(c => c.uid === uid)!
     if (matched.includes(card.pairId)) return
-    if (!running) { setRunning(true) }
+    if (!running) setRunning(true)
     setFlipped(f => [...f, uid])
   }
 
   const reset = () => {
     cancelAnimationFrame(rafRef.current)
+    msRef.current = 0
     setCards(buildCards())
     setFlipped([]); setMatched([]); setWrong([])
     setMs(0); setRunning(false); setDone(false)
-    setSubmitted(false); setPlayerName(''); setWorldRank(null)
+    setWorldRank(null); setLastFact('')
   }
 
   const fmt = (ms: number) => {
@@ -218,7 +206,6 @@ export default function GameBoard({ pack }: { pack: any }) {
       display: 'flex', flexDirection: 'column',
       maxWidth: 430, margin: '0 auto',
       overflow: 'hidden', fontFamily: 'var(--font-nunito), sans-serif',
-      paddingBottom: 60,
     }}>
 
       {/* Header */}
@@ -291,7 +278,6 @@ export default function GameBoard({ pack }: { pack: any }) {
                 transition: 'transform 0.45s cubic-bezier(0.4,0,0.2,1)',
                 borderRadius: 12,
               }}>
-                {/* Back */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 12,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
@@ -300,8 +286,6 @@ export default function GameBoard({ pack }: { pack: any }) {
                 }}>
                   <span style={{ fontSize: 36, opacity: 0.5 }}>🧠</span>
                 </div>
-
-                {/* Front */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 12,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
@@ -323,94 +307,14 @@ export default function GameBoard({ pack }: { pack: any }) {
       <div style={{ height: 4 }} />
 
       {done && <Confetti />}
-
-      {/* Done overlay */}
       {done && (
-        <div style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)',
-          backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center',
-          justifyContent: 'center', zIndex: 100, padding: 20,
-        }}>
-          <div style={{
-            background: '#0f0f1c', border: '2px solid #FF4D6D',
-            borderRadius: 28, padding: '28px 22px',
-            width: '100%', maxWidth: 340, textAlign: 'center',
-            boxShadow: '0 20px 60px rgba(255,77,109,0.25)',
-          }}>
-            <div style={{ fontSize: 44, marginBottom: 6 }}>🎉</div>
-            <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: '#FF4D6D', textTransform: 'uppercase', marginBottom: 4 }}>Completed!</div>
-            <div style={{ fontSize: 40, fontWeight: 700, color: 'white', fontFamily: 'monospace', letterSpacing: 1, marginBottom: 4 }}>{fmt(ms)}</div>
-            <div style={{ fontSize: 12, color: '#555', marginBottom: 16 }}>#{pack.slug}</div>
-
-            <div style={{
-              background: 'rgba(255,77,109,0.08)', border: '1px solid rgba(255,77,109,0.2)',
-              borderRadius: 14, padding: '12px 14px', marginBottom: 12,
-            }}>
-              <div style={{ fontSize: 20, fontWeight: 900, color: '#FF4D6D' }}>
-                🏆 {worldRank ? `#${worldRank} World` : '...'}
-              </div>
-              <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>{difficultyLabel} · {pack.title}</div>
-            </div>
-
-            {lastFact && (
-              <div style={{
-                background: '#111120', border: '1px solid #1e1e35',
-                borderRadius: 14, padding: '12px 14px', marginBottom: 14, textAlign: 'left',
-              }}>
-                <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: 2, color: '#6060ff', textTransform: 'uppercase', marginBottom: 6 }}>💡 Did you know?</div>
-                <div style={{ fontSize: 12, color: '#aaa', lineHeight: 1.6 }}>{lastFact}</div>
-              </div>
-            )}
-
-            {!submitted ? (
-              <div style={{ marginBottom: 14 }}>
-                <input
-                  type="text"
-                  placeholder="Your name"
-                  value={playerName}
-                  onChange={e => setPlayerName(e.target.value)}
-                  maxLength={20}
-                  style={{
-                    width: '100%', padding: '11px 14px',
-                    borderRadius: 12, border: '1px solid #2a2a40',
-                    background: '#111120', color: 'white',
-                    fontSize: 14, fontWeight: 700,
-                    fontFamily: 'inherit', marginBottom: 8,
-                    boxSizing: 'border-box', outline: 'none',
-                  }}
-                />
-                <button onClick={submitScore} disabled={submitting || !playerName.trim()} style={{
-                  width: '100%', padding: '12px', borderRadius: 12, border: 'none',
-                  background: playerName.trim() ? 'linear-gradient(135deg,#FF4D6D,#ff8c00)' : '#1a1a2e',
-                  color: playerName.trim() ? 'white' : '#444',
-                  fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: playerName.trim() ? 'pointer' : 'default',
-                }}>
-                  {submitting ? 'Uploading...' : '🏆 Upload to Ranking'}
-                </button>
-              </div>
-            ) : (
-              <div style={{
-                background: 'rgba(0,230,118,0.08)', border: '1px solid rgba(0,230,118,0.2)',
-                borderRadius: 12, padding: '12px', marginBottom: 14,
-                fontSize: 13, fontWeight: 800, color: '#00e676',
-              }}>✅ Score submitted!</div>
-            )}
-
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={reset} style={{
-                flex: 1, padding: '12px 8px', borderRadius: 14, border: 'none',
-                background: '#1a1a2e', color: '#666', fontSize: 13, fontWeight: 800,
-                fontFamily: 'inherit', cursor: 'pointer',
-              }}>↩️ Again</button>
-              <button style={{
-                flex: 1, padding: '12px 8px', borderRadius: 14, border: 'none',
-                background: 'linear-gradient(135deg,#FF4D6D,#ff8c00)',
-                color: 'white', fontSize: 13, fontWeight: 800,
-                fontFamily: 'inherit', cursor: 'pointer',
-              }}>🔗 Challenge</button>
-            </div>
-          </div>
-        </div>
+        <ResultOverlay
+          ms={ms}
+          pack={pack}
+          worldRank={worldRank}
+          lastFact={lastFact}
+          onReset={reset}
+        />
       )}
     </main>
   )
