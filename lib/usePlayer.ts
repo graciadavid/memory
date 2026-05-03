@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 
 export interface PlayerProfile {
   name: string
+  avatar?: string
   streak: number
   lastPlayedDate: string
   totalPairs: number
@@ -13,6 +14,7 @@ export interface PlayerProfile {
 
 const DEFAULT_PROFILE: PlayerProfile = {
   name: '',
+  avatar: undefined,
   streak: 0,
   lastPlayedDate: '',
   totalPairs: 0,
@@ -27,17 +29,15 @@ export function usePlayer() {
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem('pairiq_profile')
+    const stored = localStorage.getItem('memgenius_profile')
     if (stored) {
       setProfile(JSON.parse(stored))
-    } else {
-      setProfile(null)
     }
     setLoaded(true)
   }, [])
 
   const save = (p: PlayerProfile) => {
-    localStorage.setItem('pairiq_profile', JSON.stringify(p))
+    localStorage.setItem('memgenius_profile', JSON.stringify(p))
     setProfile(p)
   }
 
@@ -63,16 +63,14 @@ export function usePlayer() {
       : 1
 
     const bestRanks = { ...profile.bestRanks }
-    if (!bestRanks[packSlug] || worldRank < bestRanks[packSlug]) {
-      bestRanks[packSlug] = worldRank
-    }
+    if (!bestRanks[packSlug] || worldRank < bestRanks[packSlug]) bestRanks[packSlug] = worldRank
 
-    const achievements = [...profile.achievements]
+    const achievements = [...(profile.achievements || [])]
     if (timeMs < 30000 && !achievements.includes('speed_genius')) achievements.push('speed_genius')
     if (newStreak >= 7 && !achievements.includes('week_streak')) achievements.push('week_streak')
     if (newStreak >= 30 && !achievements.includes('month_streak')) achievements.push('month_streak')
     if (worldRank === 1 && !achievements.includes('world_1')) achievements.push('world_1')
-    if (profile.gamesPlayed + 1 >= 10 && !achievements.includes('10_games')) achievements.push('10_games')
+    if ((profile.gamesPlayed + 1) >= 10 && !achievements.includes('10_games')) achievements.push('10_games')
 
     const updated: PlayerProfile = {
       ...profile,
