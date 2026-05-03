@@ -15,6 +15,12 @@ const ACHIEVEMENTS = [
   { key: '10_games', label: 'Dedicated', desc: 'Complete 10 games' },
 ]
 
+const DIFF_PACKS: Record<string, { label: string, color: string, packs: string[] }> = {
+  easy: { label: 'Easy', color: '#2E7D32', packs: ['monuments-countries', 'animals-habitats', 'cities-skylines'] },
+  medium: { label: 'Medium', color: '#E65100', packs: ['foods-monuments', 'artworks-museums', 'civilizations-landmarks'] },
+  hard: { label: 'Hard', color: '#B71C1C', packs: ['inventions-inventors', 'phenomena-locations'] },
+}
+
 function Avatar({ name, photo, size = 72 }: { name: string, photo?: string, size?: number }) {
   if (photo) {
     return (
@@ -30,7 +36,7 @@ function Avatar({ name, photo, size = 72 }: { name: string, photo?: string, size
       background: `linear-gradient(135deg, ${GOLD}, ${BROWN})`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontSize: size * 0.4, fontWeight: 900, color: 'white',
-      border: `3px solid ${GOLD}`,
+      border: `3px solid rgba(255,255,255,0.3)`,
       flexShrink: 0,
     }}>
       {name.charAt(0).toUpperCase()}
@@ -51,7 +57,7 @@ export default function ProfilePage() {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontFamily: 'var(--font-nunito), sans-serif',
       }}>
-        <div style={{ textAlign: 'center', color: '#aaa', fontSize: 14, fontWeight: 700 }}>
+        <div style={{ textAlign: 'center', color: `${BROWN}60`, fontSize: 14, fontWeight: 700 }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>👤</div>
           No profile yet.<br />Play a game first!
           <div style={{ marginTop: 20 }}>
@@ -70,14 +76,21 @@ export default function ProfilePage() {
     const file = e.target.files?.[0]
     if (!file) return
     const reader = new FileReader()
-    reader.onload = () => {
-      save({ ...profile, avatar: reader.result as string })
-    }
+    reader.onload = () => { save({ ...profile, avatar: reader.result as string }) }
     reader.readAsDataURL(file)
   }
 
   const today = new Date().toISOString().split('T')[0]
   const playedToday = profile.lastPlayedDate === today
+
+  // Best rank per difficulty
+  const bestByDiff = Object.entries(DIFF_PACKS).map(([key, val]) => {
+    const ranks = val.packs
+      .map(slug => profile.bestRanks?.[slug])
+      .filter(Boolean) as number[]
+    const best = ranks.length > 0 ? Math.min(...ranks) : null
+    return { key, ...val, best }
+  })
 
   return (
     <main style={{
@@ -85,7 +98,7 @@ export default function ProfilePage() {
       background: `linear-gradient(180deg, ${CREAM} 0%, #F0EBE1 100%)`,
       fontFamily: 'var(--font-nunito), sans-serif',
       maxWidth: 430, margin: '0 auto',
-      paddingBottom: 100,
+      paddingBottom: 100, overflowY: 'auto',
     }}>
 
       {/* Header */}
@@ -112,9 +125,7 @@ export default function ProfilePage() {
           color: 'white', fontSize: 12, fontWeight: 800,
           padding: '7px 16px', borderRadius: 20,
           fontFamily: 'inherit', cursor: 'pointer',
-        }}>
-          Edit photo
-        </button>
+        }}>Edit photo</button>
       </div>
 
       <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -144,6 +155,36 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        {/* Best positions */}
+        <div style={{
+          background: '#fff', borderRadius: 20, padding: '20px 22px',
+          boxShadow: `0 2px 12px ${BROWN}10`,
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
+            Best Positions
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            {bestByDiff.map(d => (
+              <div key={d.key} style={{
+                flex: 1, textAlign: 'center',
+                background: `${d.color}08`,
+                border: `1px solid ${d.color}20`,
+                borderRadius: 14, padding: '14px 8px',
+              }}>
+                <div style={{ fontSize: 10, fontWeight: 900, color: d.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>
+                  {d.label}
+                </div>
+                <div style={{ fontSize: 28, fontWeight: 900, color: d.best ? BROWN : `${BROWN}20` }}>
+                  {d.best ? `#${d.best}` : '—'}
+                </div>
+                <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
+                  {d.best ? 'Best rank' : 'Not played'}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Achievements */}
         <div style={{
           background: '#fff', borderRadius: 20, padding: '20px 22px',
@@ -156,9 +197,7 @@ export default function ProfilePage() {
             {ACHIEVEMENTS.map(a => {
               const unlocked = profile.achievements?.includes(a.key)
               return (
-                <div key={a.key} style={{
-                  display: 'flex', alignItems: 'center', gap: 14,
-                }}>
+                <div key={a.key} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                   <div style={{
                     width: 44, height: 44, borderRadius: 13, flexShrink: 0,
                     background: unlocked ? `linear-gradient(135deg, ${GOLD}, ${BROWN})` : '#f0ebe1',
@@ -175,17 +214,15 @@ export default function ProfilePage() {
                     <div style={{ fontSize: 11, color: `${BROWN}60`, marginTop: 1 }}>{a.desc}</div>
                   </div>
                   {unlocked && (
-                    <div style={{
-                      fontSize: 10, fontWeight: 900, color: GOLD,
-                      letterSpacing: 1, textTransform: 'uppercase',
-                    }}>Done</div>
+                    <div style={{ fontSize: 10, fontWeight: 900, color: GOLD, letterSpacing: 1, textTransform: 'uppercase' }}>
+                      Done
+                    </div>
                   )}
                 </div>
               )
             })}
           </div>
         </div>
-
       </div>
     </main>
   )

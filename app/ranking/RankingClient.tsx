@@ -1,6 +1,10 @@
 'use client'
 import { useState } from 'react'
 
+const GOLD = '#C8960C'
+const BROWN = '#4A2C0A'
+const CREAM = '#FAF7F2'
+
 export default function RankingClient({ scores }: { scores: any[] }) {
   const [filter, setFilter] = useState<'all' | 1 | 2 | 3>('all')
 
@@ -11,7 +15,7 @@ export default function RankingClient({ scores }: { scores: any[] }) {
     return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
   }
 
-  const diffColor = (d: number) => d === 1 ? '#00c853' : d === 2 ? '#ff8c00' : '#FF4D6D'
+  const diffColor = (d: number) => d === 1 ? '#2E7D32' : d === 2 ? '#E65100' : '#B71C1C'
   const diffLabel = (d: number) => d === 1 ? 'Easy' : d === 2 ? 'Med' : 'Hard'
 
   const filtered = filter === 'all'
@@ -19,24 +23,26 @@ export default function RankingClient({ scores }: { scores: any[] }) {
     : scores.filter(s => s.packs?.difficulty === filter)
 
   const tabs = [
-    { key: 'all' as const, label: 'All', color: '#111' },
-    { key: 1 as const, label: 'Easy', color: '#00c853' },
-    { key: 2 as const, label: 'Medium', color: '#ff8c00' },
-    { key: 3 as const, label: 'Hard', color: '#FF4D6D' },
+    { key: 'all' as const, label: 'All', color: BROWN },
+    { key: 1 as const, label: 'Easy', color: '#2E7D32' },
+    { key: 2 as const, label: 'Medium', color: '#E65100' },
+    { key: 3 as const, label: 'Hard', color: '#B71C1C' },
   ]
 
   return (
     <>
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, padding: '0 12px 16px' }}>
+      <div style={{ display: 'flex', gap: 8, padding: '0 16px 16px', overflowX: 'auto' }}>
         {tabs.map(tab => (
           <button key={tab.key} onClick={() => setFilter(tab.key)} style={{
-            padding: '8px 14px', borderRadius: 20, border: 'none',
-            background: filter === tab.key ? tab.color : '#e0e0e0',
-            color: filter === tab.key ? '#fff' : '#888',
+            padding: '8px 16px', borderRadius: 20, border: 'none',
+            background: filter === tab.key ? tab.color : '#fff',
+            color: filter === tab.key ? '#fff' : `${BROWN}60`,
             fontSize: 12, fontWeight: 800,
             fontFamily: 'inherit', cursor: 'pointer',
-            boxShadow: filter === tab.key ? `0 4px 0 ${tab.color}50` : 'none',
+            boxShadow: filter === tab.key ? `0 4px 0 ${tab.color}50` : `0 2px 8px ${BROWN}10`,
+            whiteSpace: 'nowrap', flexShrink: 0,
+            transition: 'all 0.2s',
           }}>
             {tab.label}
           </button>
@@ -44,9 +50,16 @@ export default function RankingClient({ scores }: { scores: any[] }) {
       </div>
 
       {/* Headers */}
-      <div style={{ display: 'grid', gridTemplateColumns: '40px 1fr 56px 90px', padding: '0 16px 8px', gap: 8 }}>
+      <div style={{
+        display: 'grid', gridTemplateColumns: '44px 1fr 60px 100px',
+        padding: '0 16px 8px', gap: 8,
+      }}>
         {['#', 'Player', 'Level', 'Time'].map(h => (
-          <div key={h} style={{ fontSize: 10, fontWeight: 900, color: '#bbb', letterSpacing: 2, textTransform: 'uppercase' }}>{h}</div>
+          <div key={h} style={{
+            fontSize: 10, fontWeight: 900, color: `${BROWN}40`,
+            letterSpacing: 2, textTransform: 'uppercase',
+            textAlign: h === 'Time' ? 'center' : 'left',
+          }}>{h}</div>
         ))}
       </div>
 
@@ -54,36 +67,45 @@ export default function RankingClient({ scores }: { scores: any[] }) {
       <div style={{ padding: '0 10px', display: 'flex', flexDirection: 'column', gap: 6 }}>
         {filtered.map((score, i) => (
           <div key={score.id} style={{
-            display: 'grid', gridTemplateColumns: '40px 1fr 56px 90px',
+            display: 'grid', gridTemplateColumns: '44px 1fr 60px 100px',
             alignItems: 'center', gap: 8,
-            background: '#fff', border: '1px solid #eee',
+            background: '#fff',
+            border: `1px solid ${BROWN}08`,
             borderRadius: 14, padding: '12px 10px',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+            boxShadow: `0 2px 8px ${BROWN}06`,
           }}>
             <div style={{
-              fontSize: 14, fontWeight: 900, textAlign: 'center',
-              color: i === 0 ? '#FFD700' : i === 1 ? '#aaa' : i === 2 ? '#cd7f32' : '#ccc',
-            }}>{i + 1}</div>
+              fontSize: 15, fontWeight: 900, textAlign: 'center',
+              color: i === 0 ? GOLD : i === 1 ? '#888' : i === 2 ? '#A0522D' : `${BROWN}30`,
+            }}>
+              {i + 1}
+            </div>
             <div style={{
-              fontSize: 14, fontWeight: 800, color: '#111',
+              fontSize: 14, fontWeight: 800, color: BROWN,
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            }}>{score.player_name}</div>
+            }}>
+              {score.player_name}
+            </div>
             <div style={{
               fontSize: 10, fontWeight: 900,
               color: diffColor(score.packs?.difficulty),
               background: `${diffColor(score.packs?.difficulty)}15`,
               borderRadius: 6, padding: '3px 6px', textAlign: 'center',
-            }}>{diffLabel(score.packs?.difficulty)}</div>
+            }}>
+              {diffLabel(score.packs?.difficulty)}
+            </div>
             <div style={{
-              fontSize: 13, fontWeight: 900, color: '#111',
-              fontFamily: 'monospace', textAlign: 'right',
-            }}>{fmt(score.time_ms)}</div>
+              fontSize: 13, fontWeight: 900, color: BROWN,
+              fontFamily: 'monospace', textAlign: 'center',
+            }}>
+              {fmt(score.time_ms)}
+            </div>
           </div>
         ))}
 
         {filtered.length === 0 && (
-          <div style={{ textAlign: 'center', color: '#bbb', fontSize: 14, fontWeight: 700, marginTop: 60 }}>
-            No scores yet 🏆
+          <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, marginTop: 60 }}>
+            No scores yet
           </div>
         )}
       </div>

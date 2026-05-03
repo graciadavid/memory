@@ -20,6 +20,7 @@ interface Props {
 export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }: Props) {
   const { profile, recordGame } = usePlayer()
   const [shared, setShared] = useState(false)
+  const [rank, setRank] = useState<number | null>(null)
   const saved = useRef(false)
   const router = useRouter()
 
@@ -27,24 +28,31 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
     if (saved.current) return
     if (!profile?.name) return
     saved.current = true
-    const save = async () => {
-      const { error } = await supabase.from('scores').insert({
+    const saveAndRank = async () => {
+      // 1. Save score first
+      await supabase.from('scores').insert({
         pack_id: pack.id,
         player_name: profile.name,
         time_ms: ms,
         moves: 0,
       })
-      if (error) console.error('Score save error:', error)
-      recordGame(pack.slug, pack.pairs?.length || 6, worldRank || 999, ms)
+      // 2. Then calculate rank including our new score
+      const { count } = await supabase
+        .from('scores')
+        .select('*', { count: 'exact', head: true })
+        .eq('pack_id', pack.id)
+        .lt('time_ms', ms)
+      setRank((count ?? 0) + 1)
+      recordGame(pack.slug, pack.pairs?.length || 6, (count ?? 0) + 1, ms)
     }
-    save()
+    saveAndRank()
   }, [profile?.name])
 
   const fmt = (ms: number) => {
     const m = Math.floor(ms / 60000)
     const s = Math.floor((ms % 60000) / 1000)
     const c = Math.floor((ms % 1000) / 10)
-    return `${String(m).padStart(2,'00')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
   }
 
   const diffLabel = pack.difficulty === 1 ? 'Easy' : pack.difficulty === 2 ? 'Medium' : 'Hard'
@@ -81,7 +89,6 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
           border: `1px solid ${GOLD}30`,
         }}>
 
-          {/* Label */}
           <div style={{
             fontSize: 10, fontWeight: 900, letterSpacing: 3,
             color: `${BROWN}60`, textTransform: 'uppercase', marginBottom: 8,
@@ -89,7 +96,6 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             Your Time
           </div>
 
-          {/* Time — hero */}
           <div style={{
             fontSize: 48, fontWeight: 900, color: BROWN,
             fontFamily: 'monospace', letterSpacing: 1, lineHeight: 1,
@@ -98,16 +104,11 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             {fmt(ms)}
           </div>
 
-          {/* Difficulty + pack */}
-          <div style={{
-            fontSize: 12, fontWeight: 700,
-            color: `${BROWN}50`, marginBottom: 20,
-          }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: `${BROWN}50`, marginBottom: 20 }}>
             <span style={{
               color: diffColor, fontWeight: 900,
               background: `${diffColor}15`,
-              padding: '2px 8px', borderRadius: 6,
-              marginRight: 6,
+              padding: '2px 8px', borderRadius: 6, marginRight: 6,
             }}>{diffLabel}</span>
             {pack.title}
           </div>
@@ -124,40 +125,28 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             }}>
               World Ranking
             </div>
-            <div style={{
-              fontSize: 32, fontWeight: 900, color: BROWN,
-              letterSpacing: -1,
-            }}>
-              {worldRank ? `#${worldRank}` : '—'}
+            <div style={{ fontSize: 32, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>
+              {rank ? `#${rank}` : '...'}
             </div>
           </div>
 
-          {/* Fun fact */}
           {lastFact && (
             <div style={{
-              background: '#fff',
-              border: `1px solid ${BROWN}10`,
+              background: '#fff', border: `1px solid ${BROWN}10`,
               borderRadius: 16, padding: '14px 16px',
               marginBottom: 20, textAlign: 'left',
             }}>
               <div style={{
                 fontSize: 9, fontWeight: 900, letterSpacing: 2,
                 color: GOLD, textTransform: 'uppercase', marginBottom: 6,
-              }}>
-                Did you know?
-              </div>
-              <div style={{ fontSize: 12, color: `${BROWN}80`, lineHeight: 1.6 }}>
-                {lastFact}
-              </div>
+              }}>Did you know?</div>
+              <div style={{ fontSize: 12, color: `${BROWN}80`, lineHeight: 1.6 }}>{lastFact}</div>
             </div>
           )}
 
-          {/* Share */}
           <button onClick={share} style={{
             width: '100%', padding: '14px', borderRadius: 14, border: 'none',
-            background: shared
-              ? `${BROWN}15`
-              : 'linear-gradient(135deg, #1877F2, #0a5dc2)',
+            background: shared ? `${BROWN}15` : 'linear-gradient(135deg, #1877F2, #0a5dc2)',
             color: shared ? `${BROWN}60` : 'white',
             fontSize: 14, fontWeight: 800, fontFamily: 'inherit',
             cursor: 'pointer', marginBottom: 10,
@@ -167,31 +156,23 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             {shared ? 'Shared!' : 'Share my result'}
           </button>
 
-          {/* Play again / New game */}
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={onReset} style={{
               flex: 1, padding: '13px', borderRadius: 14,
-              background: '#fff',
-              border: `1px solid ${BROWN}15`,
+              background: '#fff', border: `1px solid ${BROWN}15`,
               color: `${BROWN}70`, fontSize: 13, fontWeight: 800,
               fontFamily: 'inherit', cursor: 'pointer',
-            }}>
-              Play again
-            </button>
+            }}>Play again</button>
             <button onClick={() => router.push('/')} style={{
               flex: 1, padding: '13px', borderRadius: 14, border: 'none',
-              background: BROWN,
-              color: 'white', fontSize: 13, fontWeight: 800,
-              fontFamily: 'inherit', cursor: 'pointer',
+              background: BROWN, color: 'white',
+              fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
               boxShadow: `0 6px 0 ${BROWN}50`,
-            }}>
-              New game
-            </button>
+            }}>New game</button>
           </div>
         </div>
       </div>
 
-      {/* Bottom nav */}
       <nav style={{
         position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
         width: '100%', maxWidth: 430,
