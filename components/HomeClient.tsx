@@ -4,7 +4,6 @@ import { usePlayer } from '@/lib/usePlayer'
 import Onboarding from './Onboarding'
 
 const EAGLE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/eagle.png'
-
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
@@ -27,7 +26,6 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
 
   const today = new Date().toISOString().split('T')[0]
   const playedToday = profile?.lastPlayedDate === today
-
   const diffColor = dailyDifficulty === 1 ? '#2E7D32' : dailyDifficulty === 2 ? '#E65100' : '#B71C1C'
 
   const levels = [
@@ -46,32 +44,27 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
       overflow: 'hidden', paddingBottom: 80,
     }}>
 
-      {/* Top section — eagle + logo */}
-      <div style={{ textAlign: 'center', paddingTop: 32, paddingBottom: 8 }}>
-
-        {/* Eagle — large, centered */}
+      {/* Top — same proportions as onboarding */}
+      <div style={{ textAlign: 'center', paddingTop: 32 }}>
         <img
           src={EAGLE}
           alt="MemGenius"
           style={{
-            width: 160, height: 160,
+            width: 150, height: 150,
             objectFit: 'contain',
             filter: 'drop-shadow(0 12px 28px rgba(74,44,10,0.2))',
+            marginBottom: 12,
           }}
         />
-
-        {/* Logo below eagle */}
-        <div style={{ fontSize: 38, fontWeight: 900, letterSpacing: -1, lineHeight: 1, marginTop: 4 }}>
+        <div style={{ fontSize: 36, fontWeight: 900, letterSpacing: -1, lineHeight: 1 }}>
           <span style={{ color: GOLD }}>Mem</span>
           <span style={{ color: BROWN }}>Genius</span>
         </div>
 
-        {/* Greeting */}
-        {profile?.name && (
-          <div style={{ fontSize: 18, fontWeight: 800, color: BROWN, opacity: 0.5, marginTop: 6 }}>
-            Hey, {profile.name}
-          </div>
-        )}
+        {/* Hey name — big */}
+        <div style={{ fontSize: 28, fontWeight: 900, color: BROWN, marginTop: 10, letterSpacing: -0.5 }}>
+          Hey, {profile.name}!
+        </div>
 
         {/* Streak */}
         {(profile?.streak ?? 0) > 0 && (
@@ -90,14 +83,14 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
       </div>
 
       {/* Buttons */}
-      <div style={{ padding: '16px 20px 0', display: 'flex', flexDirection: 'column', gap: 12, flex: 1, justifyContent: 'center' }}>
+      <div style={{ padding: '24px 20px 0', display: 'flex', flexDirection: 'column', gap: 12, flex: 1, justifyContent: 'center' }}>
 
-        {/* Daily Challenge */}
+        {/* Daily Challenge — sin nombre del pack */}
         <Link href={`/play/${dailySlug}`} style={{ textDecoration: 'none' }}>
           <div style={{
-            width: '100%', padding: '20px 24px', borderRadius: 22,
+            width: '100%', padding: '22px 24px', borderRadius: 22,
             background: BROWN,
-            boxShadow: `0 8px 0 ${BROWN}50, 0 16px 32px ${BROWN}30`,
+            boxShadow: `0 8px 0 ${BROWN}50, 0 16px 32px ${BROWN}20`,
             textAlign: 'center', cursor: 'pointer',
             boxSizing: 'border-box',
             border: `1px solid ${GOLD}33`,
@@ -105,34 +98,25 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
             <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: GOLD, textTransform: 'uppercase', marginBottom: 4 }}>
               Daily Challenge
             </div>
-            <div style={{ fontSize: 20, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>
-              {dailyTitle}
+            <div style={{ fontSize: 22, fontWeight: 900, color: '#fff' }}>
+              Play Today's Game
             </div>
             {playedToday && (
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 4 }}>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>
                 Completed today
               </div>
             )}
           </div>
         </Link>
 
-        {/* Divider */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ flex: 1, height: 1, background: `${BROWN}18` }} />
-          <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase' }}>
-            Free Play
-          </div>
-          <div style={{ flex: 1, height: 1, background: `${BROWN}18` }} />
-        </div>
-
-        {/* Level buttons */}
+        {/* Level buttons — sin divider ni free play */}
         <div style={{ display: 'flex', gap: 10 }}>
           {levels.map(level => (
             <Link key={level.label} href={`/play/${level.slug}`} style={{ textDecoration: 'none', flex: 1 }}>
               <div style={{
                 padding: '18px 8px', borderRadius: 18,
                 background: level.bg,
-                boxShadow: `0 6px 0 ${level.shadow}, 0 10px 24px ${level.shadow}`,
+                boxShadow: `0 6px 0 ${level.shadow}`,
                 textAlign: 'center', cursor: 'pointer',
               }}>
                 <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{level.label}</div>
