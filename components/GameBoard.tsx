@@ -274,7 +274,7 @@ export default function GameBoard({ pack }: { pack: any }) {
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)',
                   overflow: 'hidden',
-                  filter: isWrong ? 'brightness(0.3) saturate(0)' : 'none',
+                  // no dim on wrong
                   outline: isMatched ? '3px solid #1aaa55' : 'none',
                   outlineOffset: '-1px',
                 }}>
