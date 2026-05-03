@@ -121,7 +121,6 @@ export default function GameBoard({ pack }: { pack: any }) {
       setDone(true)
       setRunning(false)
       playChimes()
-      // fetch rank in background — don't block result screen
       supabase
         .from('scores')
         .select('*', { count: 'exact', head: true })
@@ -209,22 +208,16 @@ export default function GameBoard({ pack }: { pack: any }) {
       touchAction: 'none',
     }}>
 
-      {/* Header */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '14px 16px 6px',
-      }}>
-        <div style={{ fontSize: 16, fontWeight: 900 }}>
+      {/* Header — centered logo only */}
+      <div style={{ textAlign: 'center', padding: '14px 16px 4px' }}>
+        <div style={{ fontSize: 18, fontWeight: 900 }}>
           <span style={{ color: GOLD }}>Mem</span>
           <span style={{ color: BROWN }}>Genius</span>
         </div>
-        <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 1 }}>
-          {pack.title}
-        </div>
       </div>
 
-      {/* Timer */}
-      <div style={{ textAlign: 'center', padding: '2px 0 6px' }}>
+      {/* Timer — centered */}
+      <div style={{ textAlign: 'center', padding: '4px 0 6px' }}>
         <div style={{
           fontSize: 28, fontWeight: 700, fontFamily: 'monospace',
           color: running ? BROWN : `${BROWN}20`,
@@ -275,27 +268,25 @@ export default function GameBoard({ pack }: { pack: any }) {
                 borderRadius: 14,
               }}>
 
-                {/* Back — gold background, dark eagle */}
+                {/* Back — gold bg, natural eagle */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 14,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   background: `linear-gradient(145deg, ${GOLD}, #A07008)`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: `0 4px 12px ${GOLD}40`,
+                  boxShadow: `0 4px 12px ${GOLD}50`,
                   overflow: 'hidden',
                 }}>
                   <div style={{
                     position: 'absolute', inset: 2, borderRadius: 12,
-                    border: '1px solid rgba(255,255,255,0.2)',
+                    border: '1px solid rgba(255,255,255,0.25)',
                   }} />
                   <img
                     src={EAGLE}
                     alt=""
                     style={{
-                      width: '90%', height: '90%',
+                      width: '88%', height: '88%',
                       objectFit: 'contain',
-                      filter: 'brightness(0.3) sepia(1) saturate(0)',
-                      mixBlendMode: 'multiply',
                     }}
                   />
                 </div>
