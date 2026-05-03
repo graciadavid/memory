@@ -279,7 +279,7 @@ export default function GameBoard({ pack }: { pack: any }) {
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 14,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
-                  background: `linear-gradient(145deg, ${GOLD}, #A07008)`,
+                  background: `linear-gradient(145deg, #D4A820, #B8860B)`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: `0 4px 12px ${GOLD}50`,
                   overflow: 'hidden',
