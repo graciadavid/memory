@@ -8,12 +8,13 @@ const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
 
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const ACHIEVEMENTS = [
-  { key: 'speed_genius', label: 'Speed Genius', desc: 'Finish in under 30 seconds' },
-  { key: 'week_streak', label: '7-Day Streak', desc: 'Play 7 days in a row' },
-  { key: 'month_streak', label: '30-Day Streak', desc: 'Play 30 days in a row' },
-  { key: 'world_1', label: 'World #1', desc: 'Reach the top of any ranking' },
-  { key: '10_games', label: 'Dedicated', desc: 'Complete 10 games' },
+  { key: 'speed_genius', label: 'Speed Genius', desc: 'Finish in under 30 seconds', img: `${BASE}/bald-eagle.png` },
+  { key: 'week_streak', label: '7-Day Streak', desc: 'Play 7 days in a row', img: `${BASE}/northern-lights.png` },
+  { key: 'month_streak', label: '30-Day Streak', desc: 'Play 30 days in a row', img: `${BASE}/volcano.png` },
+  { key: 'world_1', label: 'World #1', desc: 'Reach the top of any ranking', img: `${BASE}/pyramids-sphinx.png` },
+  { key: '10_games', label: 'Dedicated', desc: 'Complete 10 games', img: `${BASE}/great-wall.png` },
 ]
 
 const DIFF_CONFIG = [
