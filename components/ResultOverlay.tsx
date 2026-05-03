@@ -59,7 +59,7 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
   const diffColor = pack.difficulty === 1 ? '#2E7D32' : pack.difficulty === 2 ? '#E65100' : '#B71C1C'
 
   const share = async () => {
-    const text = `I solved "${pack.title}" in ${fmt(ms)} on MemGenius!\nCan you beat me? 👉 https://memgenius.com`
+    const text = `🦅 I solved "${pack.title}" in ${fmt(ms)} on MemGenius!\nCan you beat me?\nhttps://memgenius.com`
     if (navigator.share) {
       await navigator.share({ text })
     } else {
