@@ -98,7 +98,14 @@ export default function GameBoard({ pack }: { pack: any }) {
     return shuffle(built)
   }
 
-  useEffect(() => { setCards(buildCards()) }, [])
+  useEffect(() => {
+    setCards(buildCards())
+    // Preload all images
+    pack.pairs.forEach((p: any) => {
+      const a = new Image(); a.src = imgUrl(p.card_a_img)
+      const b = new Image(); b.src = imgUrl(p.card_b_img)
+    })
+  }, [])
 
   useEffect(() => {
     if (running && !done) {
