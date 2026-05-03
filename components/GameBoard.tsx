@@ -105,45 +105,82 @@ export default function GameBoard({ pack }: { pack: any }) {
   }
 
   return (
-    <main className="min-h-screen bg-[#0c0c14] flex flex-col items-center font-nunito max-w-[430px] mx-auto overflow-hidden">
+    <main style={{
+      height: '100dvh',
+      background: '#0c0c14',
+      display: 'flex',
+      flexDirection: 'column',
+      maxWidth: 430,
+      margin: '0 auto',
+      overflow: 'hidden',
+      fontFamily: 'var(--font-nunito), sans-serif',
+    }}>
 
-      {/* Header */}
-      <div className="w-full flex items-center justify-between px-4 pt-3 pb-1">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#FF4D6D] to-[#ff8c00] flex items-center justify-center text-base">🧠</div>
+      {/* Header — ultra compacto */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px 4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{
+            width: 30, height: 30, borderRadius: 10,
+            background: 'linear-gradient(135deg,#FF4D6D,#ff8c00)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14,
+          }}>🧠</div>
           <div>
-            <div className="text-base font-black text-white leading-none">Pair<span className="text-[#FF4D6D]">IQ</span></div>
-            <div className="text-[9px] font-bold text-gray-600 tracking-widest uppercase">{pack.title}</div>
+            <div style={{ fontSize: 15, fontWeight: 900, color: 'white', lineHeight: 1 }}>
+              Pair<span style={{ color: '#FF4D6D' }}>IQ</span>
+            </div>
+            <div style={{ fontSize: 9, fontWeight: 700, color: '#444', letterSpacing: 2, textTransform: 'uppercase' }}>
+              {pack.title}
+            </div>
           </div>
         </div>
-        <div className="text-right">
-          <div className="text-[9px] font-black text-gray-600 tracking-widest uppercase">moves</div>
-          <div className="text-xl font-black text-white font-mono">{String(moves).padStart(2, '0')}</div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontSize: 9, fontWeight: 800, color: '#444', letterSpacing: 2, textTransform: 'uppercase' }}>moves</div>
+          <div style={{ fontSize: 18, fontWeight: 900, color: 'white', fontFamily: 'monospace' }}>{String(moves).padStart(2, '0')}</div>
         </div>
       </div>
 
       {/* Timer */}
-      <div className="w-full px-4 pb-1">
-        <div className={`text-3xl font-bold font-mono tracking-tight transition-colors duration-300 ${running ? 'text-[#FF4D6D]' : 'text-gray-800'}`}>
-          {fmt(ms)}
-        </div>
+      <div style={{ padding: '0 14px 4px' }}>
+        <div style={{
+          fontSize: 28, fontWeight: 700, fontFamily: 'monospace',
+          color: running ? '#FF4D6D' : '#222',
+          transition: 'color 0.3s',
+          letterSpacing: -1,
+        }}>{fmt(ms)}</div>
       </div>
 
       {/* Progress */}
-      <div className="w-full px-4 pb-2">
-        <div className="h-1 bg-[#161622] rounded-full overflow-hidden mb-1.5">
-          <div className="h-full bg-gradient-to-r from-[#FF4D6D] to-[#ff8c00] rounded-full transition-all duration-500"
-            style={{ width: `${(matched.length / pack.pairs.length) * 100}%` }} />
+      <div style={{ padding: '0 14px 6px' }}>
+        <div style={{ height: 3, background: '#161622', borderRadius: 3, overflow: 'hidden', marginBottom: 4 }}>
+          <div style={{
+            height: '100%',
+            width: `${(matched.length / pack.pairs.length) * 100}%`,
+            background: 'linear-gradient(90deg,#FF4D6D,#ff8c00)',
+            borderRadius: 3,
+            transition: 'width 0.5s',
+          }} />
         </div>
-        <div className="flex justify-between">
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           {pack.pairs.map((_: any, i: number) => (
-            <div key={i} className={`w-2 h-2 rounded-full transition-all duration-300 ${matched.length > i ? 'bg-[#FF4D6D]' : 'bg-[#1a1a28] border border-[#222]'}`} />
+            <div key={i} style={{
+              width: 8, height: 8, borderRadius: '50%',
+              background: matched.length > i ? '#FF4D6D' : '#1a1a28',
+              border: matched.length > i ? 'none' : '1px solid #222',
+              transition: 'all 0.3s',
+            }} />
           ))}
         </div>
       </div>
 
-      {/* Grid 3x4 — 12 cards */}
-      <div className="grid grid-cols-3 gap-1.5 px-3 w-full">
+      {/* Grid — ocupa el espacio restante */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: 6,
+        padding: '0 10px',
+        flex: 1,
+        minHeight: 0,
+      }}>
         {cards.map(card => {
           const isFlipped = flipped.includes(card.uid) || matched.includes(card.pairId)
           const isWrong = wrong.includes(card.uid)
@@ -151,49 +188,48 @@ export default function GameBoard({ pack }: { pack: any }) {
 
           return (
             <div key={card.uid} onClick={() => flip(card.uid)}
-              className="cursor-pointer"
-              style={{ perspective: '600px', aspectRatio: '3/4' }}>
+              style={{ perspective: 600, cursor: 'pointer' }}>
               <div style={{
-                width: '100%', height: '100%', position: 'relative',
+                width: '100%', height: '100%',
+                position: 'relative',
                 transformStyle: 'preserve-3d',
                 transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                 transition: isWrong ? 'transform 0.15s' : 'transform 0.45s cubic-bezier(0.4,0,0.2,1)',
-                borderRadius: '12px',
+                borderRadius: 12,
               }}>
 
-                {/* Back — color sólido */}
+                {/* Back */}
                 <div style={{
-                  position: 'absolute', inset: 0, borderRadius: '12px',
+                  position: 'absolute', inset: 0, borderRadius: 12,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
-                  background: 'linear-gradient(145deg, #FF4D6D, #ff8c00)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <div style={{ fontSize: 22, opacity: 0.3 }}>🧠</div>
-                </div>
+                  background: 'linear-gradient(145deg,#FF4D6D,#ff8c00)',
+                }} />
 
                 {/* Front */}
                 <div style={{
-                  position: 'absolute', inset: 0, borderRadius: '12px',
+                  position: 'absolute', inset: 0, borderRadius: 12,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)',
-                  background: isMatched
-                    ? 'linear-gradient(145deg,#0d5c2e,#0f7a3a)'
-                    : card.side === 'a'
-                    ? 'linear-gradient(145deg,#1a1a35,#22224a)'
-                    : 'linear-gradient(145deg,#1f1520,#2a1a2e)',
-                  filter: isWrong ? 'brightness(0.5)' : 'none',
-                  display: 'flex', flexDirection: 'column',
-                  alignItems: 'center', justifyContent: 'center',
-                  padding: '6px 4px', gap: '4px',
+                  overflow: 'hidden',
+                  filter: isWrong ? 'brightness(0.4)' : 'none',
+                  outline: isMatched ? '2px solid #1aaa55' : 'none',
+                  transition: 'outline 0.3s',
                 }}>
-                  {/* imagen sin borde */}
                   <img
                     src={card.img}
                     alt={card.label}
-                    style={{ width: '85%', objectFit: 'contain', maxHeight: '65%' }}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
                   />
+                  {/* label overlay bottom */}
                   <div style={{
-                    fontSize: card.label.length > 12 ? 10 : 11,
+                    position: 'absolute', bottom: 0, left: 0, right: 0,
+                    background: 'linear-gradient(transparent, rgba(0,0,0,0.75))',
+                    padding: '12px 4px 4px',
+                    fontSize: card.label.length > 12 ? 9 : 10,
                     fontWeight: 900,
                     color: isMatched ? '#7dffb3' : 'white',
                     textAlign: 'center',
@@ -201,45 +237,69 @@ export default function GameBoard({ pack }: { pack: any }) {
                   }}>
                     {card.label}
                   </div>
-                  {isMatched && <div style={{ fontSize: 12 }}>✅</div>}
                 </div>
+
               </div>
             </div>
           )
         })}
       </div>
 
+      <div style={{ height: 6 }} />
+
       {/* Done overlay */}
       {done && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center z-50 p-5">
-          <div className="bg-[#0f0f1c] border-2 border-[#FF4D6D] rounded-3xl p-7 w-full max-w-sm text-center"
-            style={{ boxShadow: '0 20px 60px rgba(255,77,109,0.25)' }}>
-            <div className="text-5xl mb-2">🎉</div>
-            <div className="text-xs font-black tracking-widest text-[#FF4D6D] uppercase mb-1">Completed!</div>
-            <div className="text-5xl font-bold text-white font-mono tracking-tight mb-1">{fmt(ms)}</div>
-            <div className="text-sm text-gray-600 mb-4">{moves} moves · {pack.pairs.length} pairs</div>
+        <div style={{
+          position: 'fixed', inset: 0,
+          background: 'rgba(0,0,0,0.88)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 100, padding: 20,
+        }}>
+          <div style={{
+            background: '#0f0f1c',
+            border: '2px solid #FF4D6D',
+            borderRadius: 28, padding: '28px 22px',
+            width: '100%', maxWidth: 340,
+            textAlign: 'center',
+            boxShadow: '0 20px 60px rgba(255,77,109,0.25)',
+          }}>
+            <div style={{ fontSize: 44, marginBottom: 6 }}>🎉</div>
+            <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: '#FF4D6D', textTransform: 'uppercase', marginBottom: 4 }}>Completed!</div>
+            <div style={{ fontSize: 42, fontWeight: 700, color: 'white', fontFamily: 'monospace', letterSpacing: -2, marginBottom: 4 }}>{fmt(ms)}</div>
+            <div style={{ fontSize: 13, color: '#555', marginBottom: 16 }}>{moves} moves · {pack.pairs.length} pairs</div>
 
-            <div className="bg-[#FF4D6D]/10 border border-[#FF4D6D]/20 rounded-2xl p-3 mb-3">
-              <div className="text-xl font-black text-[#FF4D6D]">🏆 #234 World</div>
-              <div className="text-xs text-gray-600 mt-1">Top 8% globally · {pack.title}</div>
+            <div style={{
+              background: 'rgba(255,77,109,0.08)',
+              border: '1px solid rgba(255,77,109,0.2)',
+              borderRadius: 14, padding: '12px 14px', marginBottom: 12,
+            }}>
+              <div style={{ fontSize: 18, fontWeight: 900, color: '#FF4D6D' }}>🏆 #234 World</div>
+              <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>Top 8% globally · {pack.title}</div>
             </div>
 
             {lastFact && (
-              <div className="bg-[#111120] border border-[#1e1e35] rounded-2xl p-3 mb-4 text-left">
-                <div className="text-[9px] font-black tracking-widest text-[#6060ff] uppercase mb-1">💡 Did you know?</div>
-                <div className="text-xs text-gray-400 leading-relaxed">{lastFact}</div>
+              <div style={{
+                background: '#111120', border: '1px solid #1e1e35',
+                borderRadius: 14, padding: '12px 14px', marginBottom: 16, textAlign: 'left',
+              }}>
+                <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: 2, color: '#6060ff', textTransform: 'uppercase', marginBottom: 6 }}>💡 Did you know?</div>
+                <div style={{ fontSize: 12, color: '#aaa', lineHeight: 1.6 }}>{lastFact}</div>
               </div>
             )}
 
-            <div className="flex gap-2">
-              <button onClick={reset}
-                className="flex-1 py-3 rounded-2xl bg-[#1a1a2e] text-gray-500 font-black text-sm">
-                ↩️ Again
-              </button>
-              <button className="flex-1 py-3 rounded-2xl font-black text-sm text-white"
-                style={{ background: 'linear-gradient(135deg,#FF4D6D,#ff8c00)' }}>
-                🔗 Challenge
-              </button>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={reset} style={{
+                flex: 1, padding: '12px 8px', borderRadius: 14, border: 'none',
+                background: '#1a1a2e', color: '#666', fontSize: 13, fontWeight: 800,
+                fontFamily: 'inherit', cursor: 'pointer',
+              }}>↩️ Again</button>
+              <button style={{
+                flex: 1, padding: '12px 8px', borderRadius: 14, border: 'none',
+                background: 'linear-gradient(135deg,#FF4D6D,#ff8c00)',
+                color: 'white', fontSize: 13, fontWeight: 800,
+                fontFamily: 'inherit', cursor: 'pointer',
+              }}>🔗 Challenge</button>
             </div>
           </div>
         </div>
