@@ -14,21 +14,24 @@ async function getRandomPack(difficulty: number) {
 async function getDailyPack() {
   const today = new Date().toISOString().split('T')[0]
 
-  // Get daily slug
-  const { data: daily } = await supabase
+  // Get all packs first
+  const { data: allPacks } = await supabase
+    .from('packs')
+    .select('id, slug, title, difficulty')
+
+  if (!allPacks) return null
+
+  // Check if daily exists for today
+  const { data: existing } = await supabase
     .from('daily_challenges')
     .select('pack_slug')
     .eq('date', today)
     .single()
 
-  let slug = daily?.pack_slug
+  let dailySlug = existing?.pack_slug
 
-  // Create one if missing
-  if (!slug) {
-    const { data: allPacks } = await supabase
-      .from('packs')
-      .select('id, slug, title, difficulty')
-    if (!allPacks) return null
+  // If no daily for today, create one
+  if (!dailySlug) {
     const idx = getDailyPackIndex(allPacks.length)
     const pack = allPacks[idx]
     await supabase.from('daily_challenges').upsert({
@@ -36,18 +39,18 @@ async function getDailyPack() {
       pack_id: pack.id,
       pack_slug: pack.slug,
     })
-    slug = pack.slug
+    dailySlug = pack.slug
   }
 
-  // Get pack details separately
-  const { data: pack } = await supabase
-    .from('packs')
-    .select('slug, title, difficulty')
-    .eq('slug', slug)
-    .single()
-
+  // Find pack details
+  const pack = allPacks.find(p => p.slug === dailySlug)
   if (!pack) return null
-  return { pack_slug: pack.slug, packs: { title: pack.title, difficulty: pack.difficulty } }
+
+  return {
+    pack_slug: pack.slug,
+    title: pack.title,
+    difficulty: pack.difficulty,
+  }
 }
 
 export default async function Home() {
@@ -64,8 +67,8 @@ export default async function Home() {
       medium={medium}
       hard={hard}
       dailySlug={daily?.pack_slug || null}
-      dailyTitle={(Array.isArray(daily?.packs) ? daily?.packs[0]?.title : daily?.packs?.title) || null}
-      dailyDifficulty={(Array.isArray(daily?.packs) ? daily?.packs[0]?.difficulty : daily?.packs?.difficulty) || 1}
+      dailyTitle={daily?.title || null}
+      dailyDifficulty={daily?.difficulty || 1}
     />
   )
 }
