@@ -33,12 +33,13 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
     const saveAndRank = async () => {
       // 1. Save score
       const today = new Date().toISOString().split('T')[0]
+      console.log('isDaily:', pack.isDaily, 'slug:', pack.slug)
       await supabase.from('scores').insert({
         pack_id: pack.id,
         player_name: profile.name,
         time_ms: ms,
         moves: 0,
-        is_daily: pack.isDaily || false,
+        is_daily: pack.isDaily === true,
         play_date: today,
       })
 
