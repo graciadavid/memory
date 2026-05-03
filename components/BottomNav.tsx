@@ -23,6 +23,9 @@ export default function BottomNav() {
       <Link href="/ranking" style={{ textDecoration: 'none', opacity: path === '/ranking' ? 1 : 0.4 }}>
         <div style={{ fontSize: 20 }}>🏆</div>
       </Link>
+      <Link href="/profile" style={{ textDecoration: 'none', opacity: path === '/profile' ? 1 : 0.4 }}>
+        <div style={{ fontSize: 20 }}>👤</div>
+      </Link>
     </nav>
   )
 }
