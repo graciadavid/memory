@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
 
+const EAGLE_URL = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/bald-eagle.png'
+
 export default function Onboarding({ onCreate }: { onCreate: (name: string) => void }) {
   const [name, setName] = useState('')
 
@@ -11,17 +13,39 @@ export default function Onboarding({ onCreate }: { onCreate: (name: string) => v
       alignItems: 'center', justifyContent: 'center',
       fontFamily: 'var(--font-nunito), sans-serif',
       padding: '0 28px', maxWidth: 430, margin: '0 auto',
+      textAlign: 'center',
     }}>
-      <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/bald-eagle.png" alt="MemGenius" style={{ width: 80, height: 80, objectFit: "contain", marginBottom: 16 }} />
-      <div style={{ fontSize: 32, fontWeight: 900, color: '#111', letterSpacing: -1, marginBottom: 6, textAlign: 'center' }}>
+      {/* Eagle */}
+      <img
+        src={EAGLE_URL}
+        alt="MemGenius"
+        style={{
+          width: 140, height: 140,
+          objectFit: 'contain',
+          mixBlendMode: 'multiply',
+          marginBottom: 16,
+        }}
+      />
+
+      {/* Title */}
+      <div style={{ fontSize: 32, fontWeight: 900, color: '#111', letterSpacing: -1, marginBottom: 8 }}>
         Welcome to<br />Mem<span style={{ color: '#FF4D6D' }}>Genius</span>
       </div>
-      <div style={{ fontSize: 14, color: '#aaa', fontWeight: 700, marginBottom: 48, textAlign: 'center' }}>
-        The association memory game.<br />Match pairs. Beat the world.
+
+      {/* Claim */}
+      <div style={{
+        fontSize: 11, fontWeight: 800, color: '#aaa',
+        letterSpacing: 3, textTransform: 'uppercase', marginBottom: 48,
+      }}>
+        An Association Memory Game
       </div>
 
+      {/* Input */}
       <div style={{ width: '100%' }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: '#aaa', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>
+        <div style={{
+          fontSize: 12, fontWeight: 800, color: '#aaa',
+          letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8,
+        }}>
           What's your name?
         </div>
         <input
@@ -38,6 +62,7 @@ export default function Onboarding({ onCreate }: { onCreate: (name: string) => v
             fontSize: 18, fontWeight: 800,
             fontFamily: 'inherit', marginBottom: 14,
             boxSizing: 'border-box', outline: 'none',
+            textAlign: 'center',
           }}
         />
         <button
