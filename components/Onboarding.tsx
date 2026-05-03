@@ -12,7 +12,7 @@ export default function Onboarding({ onCreate }: { onCreate: (name: string) => v
       fontFamily: 'var(--font-nunito), sans-serif',
       padding: '0 28px', maxWidth: 430, margin: '0 auto',
     }}>
-      <div style={{ fontSize: 64, marginBottom: 16 }}>🧠</div>
+      <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/bald-eagle.png" alt="MemGenius" style={{ width: 80, height: 80, objectFit: "contain", marginBottom: 16 }} />
       <div style={{ fontSize: 32, fontWeight: 900, color: '#111', letterSpacing: -1, marginBottom: 6, textAlign: 'center' }}>
         Welcome to<br />Mem<span style={{ color: '#FF4D6D' }}>Genius</span>
       </div>
