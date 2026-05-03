@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
@@ -7,6 +7,8 @@ const BROWN = '#4A2C0A'
 export default function RankingClient({ scores }: { scores: any[] }) {
   const [filter, setFilter] = useState<'all' | 1 | 2 | 3>('all')
   const [myName, setMyName] = useState<string>('')
+  const listRef = useRef<HTMLDivElement>(null)
+  const myRowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const stored = localStorage.getItem('memgenius_profile')
@@ -37,7 +39,10 @@ export default function RankingClient({ scores }: { scores: any[] }) {
   const myIndex = filtered.findIndex(s => s.player_name === myName)
   const myScore = myIndex >= 0 ? filtered[myIndex] : null
   const myPosition = myIndex + 1
-  const isInTop = myIndex >= 0
+
+  const scrollToMe = () => {
+    myRowRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
 
   const share = async (position: number, score: any) => {
     const diff = score.packs?.difficulty === 1 ? 'Easy' : score.packs?.difficulty === 2 ? 'Medium' : 'Hard'
@@ -53,22 +58,20 @@ export default function RankingClient({ scores }: { scores: any[] }) {
     { key: 3 as const, label: 'Hard', color: '#B71C1C' },
   ]
 
-  const ROW_HEIGHT = 56
-
-  const ScoreRow = ({ score, position, compact = false }: { score: any, position: number, compact?: boolean }) => {
+  const ScoreRow = ({ score, position, isRef }: { score: any, position: number, isRef?: boolean }) => {
     const isMe = score.player_name === myName
     return (
-      <div style={{
-        display: 'grid', gridTemplateColumns: '36px 1fr 44px 80px 32px',
-        alignItems: 'center', gap: 6,
-        background: isMe ? `${GOLD}22` : position === 1 ? `${GOLD}08` : '#fff',
-        border: `1px solid ${isMe ? GOLD + '60' : position === 1 ? GOLD + '20' : BROWN + '08'}`,
-        borderRadius: 12,
-        padding: compact ? '10px 10px' : '10px 10px',
-        boxShadow: isMe ? `0 4px 16px ${GOLD}25` : `0 1px 4px ${BROWN}06`,
-        height: ROW_HEIGHT - 8,
-        boxSizing: 'border-box',
-      }}>
+      <div
+        ref={isRef ? myRowRef : undefined}
+        style={{
+          display: 'grid', gridTemplateColumns: '36px 1fr 44px 80px 32px',
+          alignItems: 'center', gap: 6,
+          background: isMe ? `${GOLD}22` : position === 1 ? `${GOLD}08` : '#fff',
+          border: `1px solid ${isMe ? GOLD + '60' : position === 1 ? GOLD + '20' : BROWN + '08'}`,
+          borderRadius: 12, padding: '10px 10px',
+          boxShadow: isMe ? `0 4px 16px ${GOLD}25` : `0 1px 4px ${BROWN}06`,
+          boxSizing: 'border-box',
+        }}>
         <div style={{
           fontSize: 13, fontWeight: 900, textAlign: 'center',
           color: position === 1 ? GOLD : position === 2 ? '#999' : position === 3 ? '#A0522D' : `${BROWN}30`,
@@ -129,15 +132,23 @@ export default function RankingClient({ scores }: { scores: any[] }) {
         ))}
       </div>
 
-      {/* Scrollable list — leaves space for sticky + bottom nav */}
-      <div style={{
-        flex: 1, overflowY: 'auto',
-        padding: '0 10px',
-        paddingBottom: myScore ? 140 : 80,
-      }}>
+      {/* Scrollable list */}
+      <div
+        ref={listRef}
+        style={{
+          flex: 1, overflowY: 'auto',
+          padding: '0 10px',
+          paddingBottom: myScore ? 140 : 80,
+        }}
+      >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           {filtered.map((score, i) => (
-            <ScoreRow key={score.id} score={score} position={i + 1} />
+            <ScoreRow
+              key={score.id}
+              score={score}
+              position={i + 1}
+              isRef={score.player_name === myName}
+            />
           ))}
           {filtered.length === 0 && (
             <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, marginTop: 60 }}>
@@ -147,24 +158,51 @@ export default function RankingClient({ scores }: { scores: any[] }) {
         </div>
       </div>
 
-      {/* Sticky my position — between list and bottom nav */}
+      {/* Sticky — click to scroll to my position */}
       {myScore && (
-        <div style={{
-          position: 'fixed',
-          bottom: 60, // height of bottom nav
-          left: '50%', transform: 'translateX(-50%)',
-          width: '100%', maxWidth: 430,
-          padding: '8px 10px',
-          background: 'rgba(250,247,242,0.97)',
-          backdropFilter: 'blur(16px)',
-          borderTop: `2px solid ${GOLD}40`,
-          zIndex: 40,
-          boxSizing: 'border-box',
-        }}>
-          <div style={{ fontSize: 9, fontWeight: 900, color: `${GOLD}80`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 5, paddingLeft: 4 }}>
-            Your position
+        <div
+          onClick={scrollToMe}
+          style={{
+            position: 'fixed',
+            bottom: 60,
+            left: '50%', transform: 'translateX(-50%)',
+            width: '100%', maxWidth: 430,
+            padding: '8px 10px',
+            background: 'rgba(250,247,242,0.97)',
+            backdropFilter: 'blur(16px)',
+            borderTop: `2px solid ${GOLD}40`,
+            zIndex: 40,
+            boxSizing: 'border-box',
+            cursor: 'pointer',
+          }}
+        >
+          <div style={{ fontSize: 9, fontWeight: 900, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 5, paddingLeft: 4 }}>
+            Your position · tap to find
           </div>
-          <ScoreRow score={myScore} position={myPosition} compact />
+          <div style={{
+            display: 'grid', gridTemplateColumns: '36px 1fr 44px 80px 32px',
+            alignItems: 'center', gap: 6,
+            background: `${GOLD}22`,
+            border: `1px solid ${GOLD}60`,
+            borderRadius: 12, padding: '10px 10px',
+            boxShadow: `0 4px 16px ${GOLD}25`,
+          }}>
+            <div style={{ fontSize: 13, fontWeight: 900, textAlign: 'center', color: GOLD }}>{myPosition}</div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: BROWN, display: 'flex', alignItems: 'center', gap: 6 }}>
+              {myScore.player_name}
+              <span style={{ fontSize: 8, color: GOLD, fontWeight: 900, letterSpacing: 1, background: `${GOLD}20`, padding: '1px 5px', borderRadius: 4 }}>YOU</span>
+            </div>
+            <div style={{
+              fontSize: 9, fontWeight: 900,
+              color: diffColor(myScore.packs?.difficulty),
+              background: `${diffColor(myScore.packs?.difficulty)}15`,
+              borderRadius: 5, padding: '2px 4px', textAlign: 'center',
+            }}>{diffLabel(myScore.packs?.difficulty)}</div>
+            <div style={{ fontSize: 11, fontWeight: 900, color: BROWN, fontFamily: 'monospace', textAlign: 'center' }}>
+              {fmt(myScore.time_ms)}
+            </div>
+            <div style={{ fontSize: 14, color: GOLD, textAlign: 'center' }}>↓</div>
+          </div>
         </div>
       )}
     </>
