@@ -10,10 +10,7 @@ export default function RankingClient({ scores }: { scores: any[] }) {
 
   useEffect(() => {
     const stored = localStorage.getItem('memgenius_profile')
-    if (stored) {
-      const profile = JSON.parse(stored)
-      setMyName(profile.name || '')
-    }
+    if (stored) setMyName(JSON.parse(stored).name || '')
   }, [])
 
   const fmt = (ms: number) => {
@@ -42,15 +39,17 @@ export default function RankingClient({ scores }: { scores: any[] }) {
     ? getBestPerPlayerPerDiff()
     : getBestPerPlayerPerDiff(filter)
 
-  const share = async (score: any, position: number) => {
-    const diff = diffLabel(score.packs?.difficulty)
+  // Find my position
+  const myIndex = filtered.findIndex(s => s.player_name === myName)
+  const myScore = myIndex >= 0 ? filtered[myIndex] : null
+  const myPosition = myIndex + 1
+  const isInTop = myIndex >= 0 && myIndex < 20
+
+  const share = async (position: number, score: any) => {
+    const diff = score.packs?.difficulty === 1 ? 'Easy' : score.packs?.difficulty === 2 ? 'Medium' : 'Hard'
     const text = `I'm #${position} in ${diff} on MemGenius with ${fmt(score.time_ms)}!\nCan you beat me? 👉 https://memgenius.com`
-    if (navigator.share) {
-      await navigator.share({ text })
-    } else {
-      await navigator.clipboard.writeText(text)
-      alert('Copied!')
-    }
+    if (navigator.share) await navigator.share({ text })
+    else { await navigator.clipboard.writeText(text); alert('Copied!') }
   }
 
   const tabs = [
@@ -60,9 +59,55 @@ export default function RankingClient({ scores }: { scores: any[] }) {
     { key: 3 as const, label: 'Hard', color: '#B71C1C' },
   ]
 
+  const ScoreRow = ({ score, position }: { score: any, position: number }) => {
+    const isMe = score.player_name === myName
+    return (
+      <div style={{
+        display: 'grid', gridTemplateColumns: '44px 1fr 48px 72px 32px',
+        alignItems: 'center', gap: 6,
+        background: isMe ? `${GOLD}20` : position === 1 ? `${GOLD}08` : '#fff',
+        border: `1px solid ${isMe ? GOLD + '60' : position === 1 ? GOLD + '20' : BROWN + '08'}`,
+        borderRadius: 14, padding: '12px 10px',
+        boxShadow: isMe ? `0 4px 16px ${GOLD}30` : `0 2px 8px ${BROWN}06`,
+      }}>
+        <div style={{
+          fontSize: 14, fontWeight: 900, textAlign: 'center',
+          color: position === 1 ? GOLD : position === 2 ? '#888' : position === 3 ? '#A0522D' : `${BROWN}30`,
+        }}>{position}</div>
+        <div style={{
+          fontSize: 13, fontWeight: 800, color: BROWN,
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        }}>
+          {score.player_name}
+          {isMe && <span style={{ fontSize: 9, color: GOLD, fontWeight: 900, marginLeft: 5, letterSpacing: 1 }}>YOU</span>}
+        </div>
+        <div style={{
+          fontSize: 9, fontWeight: 900,
+          color: diffColor(score.packs?.difficulty),
+          background: `${diffColor(score.packs?.difficulty)}15`,
+          borderRadius: 6, padding: '2px 4px', textAlign: 'center',
+        }}>{diffLabel(score.packs?.difficulty)}</div>
+        <div style={{
+          fontSize: 11, fontWeight: 900, color: BROWN,
+          fontFamily: 'monospace', textAlign: 'center',
+        }}>{fmt(score.time_ms)}</div>
+        {isMe ? (
+          <button onClick={() => share(position, score)} style={{
+            width: 26, height: 26, borderRadius: 8, border: 'none',
+            background: GOLD, color: '#fff', fontSize: 11,
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+          }}>↑</button>
+        ) : <div />}
+      </div>
+    )
+  }
+
   return (
-    <>
-      <div style={{ display: 'flex', gap: 8, padding: '0 16px 16px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 8, padding: '0 16px 12px', flexShrink: 0 }}>
         {tabs.map(tab => (
           <button key={String(tab.key)} onClick={() => setFilter(tab.key)} style={{
             flex: 1, padding: '10px 4px', borderRadius: 14, border: 'none',
@@ -72,81 +117,52 @@ export default function RankingClient({ scores }: { scores: any[] }) {
             fontFamily: 'inherit', cursor: 'pointer',
             boxShadow: filter === tab.key ? `0 6px 0 ${tab.color}50` : `0 2px 8px ${BROWN}08`,
             transition: 'all 0.2s',
-          }}>
-            {tab.label}
-          </button>
+          }}>{tab.label}</button>
         ))}
       </div>
 
+      {/* Headers */}
       <div style={{
-        display: 'grid', gridTemplateColumns: '44px 1fr 48px 80px 36px',
-        padding: '0 16px 8px', gap: 6,
+        display: 'grid', gridTemplateColumns: '44px 1fr 48px 72px 32px',
+        padding: '0 16px 8px', gap: 6, flexShrink: 0,
       }}>
-        {['#', 'Player', 'Level', 'Time', ''].map((h, i) => (
+        {['#', 'Player', 'Lvl', 'Time', ''].map((h, i) => (
           <div key={i} style={{
-            fontSize: 10, fontWeight: 900, color: `${BROWN}40`,
+            fontSize: 9, fontWeight: 900, color: `${BROWN}40`,
             letterSpacing: 2, textTransform: 'uppercase',
-            textAlign: i === 3 ? 'center' : 'left',
           }}>{h}</div>
         ))}
       </div>
 
-      <div style={{ padding: '0 10px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-        {filtered.map((score, i) => {
-          const isMe = score.player_name === myName
-          return (
-            <div key={score.id} style={{
-              display: 'grid', gridTemplateColumns: '44px 1fr 48px 80px 36px',
-              alignItems: 'center', gap: 6,
-              background: isMe ? `${GOLD}20` : i === 0 ? `${GOLD}08` : '#fff',
-              border: `1px solid ${isMe ? GOLD + '60' : i === 0 ? GOLD + '20' : BROWN + '08'}`,
-              borderRadius: 14, padding: '12px 10px',
-              boxShadow: isMe ? `0 4px 16px ${GOLD}30` : `0 2px 8px ${BROWN}06`,
-            }}>
-              <div style={{
-                fontSize: 15, fontWeight: 900, textAlign: 'center',
-                color: i === 0 ? GOLD : i === 1 ? '#888' : i === 2 ? '#A0522D' : `${BROWN}25`,
-              }}>{i + 1}</div>
-              <div style={{
-                fontSize: 14, fontWeight: 800,
-                color: isMe ? BROWN : BROWN,
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
-                {score.player_name}
-                {isMe && <span style={{ fontSize: 10, color: GOLD, fontWeight: 900, marginLeft: 6 }}>YOU</span>}
-              </div>
-              <div style={{
-                fontSize: 10, fontWeight: 900,
-                color: diffColor(score.packs?.difficulty),
-                background: `${diffColor(score.packs?.difficulty)}15`,
-                borderRadius: 6, padding: '3px 4px', textAlign: 'center',
-              }}>{diffLabel(score.packs?.difficulty)}</div>
-              <div style={{
-                fontSize: 12, fontWeight: 900, color: BROWN,
-                fontFamily: 'monospace', textAlign: 'center',
-              }}>{fmt(score.time_ms)}</div>
-              {isMe ? (
-                <button
-                  onClick={() => share(score, i + 1)}
-                  style={{
-                    width: 28, height: 28, borderRadius: 8, border: 'none',
-                    background: GOLD, color: '#fff',
-                    fontSize: 12, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >↑</button>
-              ) : <div />}
+      {/* Scrollable list */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, paddingBottom: myScore && !isInTop ? 80 : 16 }}>
+          {filtered.map((score, i) => (
+            <ScoreRow key={score.id} score={score} position={i + 1} />
+          ))}
+          {filtered.length === 0 && (
+            <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, marginTop: 60 }}>
+              No scores yet
             </div>
-          )
-        })}
-
-        {filtered.length === 0 && (
-          <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, marginTop: 60 }}>
-            No scores yet
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </>
+
+      {/* My position — sticky above bottom nav */}
+      {myScore && !isInTop && (
+        <div style={{
+          position: 'fixed', bottom: 64, left: '50%', transform: 'translateX(-50%)',
+          width: '100%', maxWidth: 430,
+          padding: '8px 10px',
+          background: 'rgba(250,247,242,0.95)',
+          backdropFilter: 'blur(10px)',
+          borderTop: `1px solid ${GOLD}30`,
+          zIndex: 40,
+          boxSizing: 'border-box',
+        }}>
+          <ScoreRow score={myScore} position={myPosition} />
+        </div>
+      )}
+    </div>
   )
 }
