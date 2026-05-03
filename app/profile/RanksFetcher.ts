@@ -48,12 +48,15 @@ export async function fetchLiveRanks(playerName: string) {
 
 export async function fetchDailyRank(playerName: string): Promise<{ rank: number | null, time: number | null }> {
   const today = new Date().toISOString().split('T')[0]
+  console.log('fetchDailyRank for:', playerName, 'date:', today)
 
-  const { data: allScores } = await supabase
+  const { data: allScores, error } = await supabase
     .from('scores')
     .select('player_name, time_ms')
     .eq('is_daily', true)
     .eq('play_date', today)
+  
+  console.log('daily scores:', allScores?.length, 'error:', error)
 
   if (!allScores) return { rank: null, time: null }
 
