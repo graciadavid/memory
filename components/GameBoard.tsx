@@ -9,7 +9,6 @@ const EAGLE = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/eagle.png`
 
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
-const CREAM = '#FAF7F2'
 
 function imgUrl(filename: string) {
   return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${filename}`
@@ -122,7 +121,13 @@ export default function GameBoard({ pack }: { pack: any }) {
       setDone(true)
       setRunning(false)
       playChimes()
-      fetchRank()
+      // fetch rank in background — don't block result screen
+      supabase
+        .from('scores')
+        .select('*', { count: 'exact', head: true })
+        .eq('pack_id', pack.id)
+        .lt('time_ms', msRef.current)
+        .then(({ count }) => setWorldRank((count ?? 0) + 1))
     }
   }, [matched])
 
@@ -141,15 +146,6 @@ export default function GameBoard({ pack }: { pack: any }) {
       setTimeout(() => { setFlipped([]); setWrong([]) }, 800)
     }
   }, [flipped])
-
-  const fetchRank = async () => {
-    const { count } = await supabase
-      .from('scores')
-      .select('*', { count: 'exact', head: true })
-      .eq('pack_id', pack.id)
-      .lt('time_ms', msRef.current)
-    setWorldRank((count ?? 0) + 1)
-  }
 
   const playTone = (freq: number, start: number, duration: number, gain: number, ctx: AudioContext) => {
     const osc = ctx.createOscillator()
@@ -206,14 +202,14 @@ export default function GameBoard({ pack }: { pack: any }) {
   return (
     <main style={{
       height: '100dvh',
-      background: `linear-gradient(180deg, #FAF7F2 0%, #F0EBE1 100%)`,
+      background: 'linear-gradient(180deg, #FAF7F2 0%, #F0EBE1 100%)',
       display: 'flex', flexDirection: 'column',
       maxWidth: 430, margin: '0 auto',
       overflow: 'hidden', fontFamily: 'var(--font-nunito), sans-serif',
       touchAction: 'none',
     }}>
 
-      {/* Header — minimal */}
+      {/* Header */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '14px 16px 6px',
@@ -227,11 +223,11 @@ export default function GameBoard({ pack }: { pack: any }) {
         </div>
       </div>
 
-      {/* Timer — centered */}
+      {/* Timer */}
       <div style={{ textAlign: 'center', padding: '2px 0 6px' }}>
         <div style={{
           fontSize: 28, fontWeight: 700, fontFamily: 'monospace',
-          color: running ? BROWN : `${BROWN}25`,
+          color: running ? BROWN : `${BROWN}20`,
           transition: 'color 0.3s', letterSpacing: 2,
         }}>{fmt(ms)}</div>
       </div>
@@ -279,27 +275,27 @@ export default function GameBoard({ pack }: { pack: any }) {
                 borderRadius: 14,
               }}>
 
-                {/* Back — eagle colors, eagle image */}
+                {/* Back — gold background, dark eagle */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 14,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
-                  background: `linear-gradient(145deg, ${BROWN}, #2C1A05)`,
+                  background: `linear-gradient(145deg, ${GOLD}, #A07008)`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: `0 3px 10px ${BROWN}30`,
+                  boxShadow: `0 4px 12px ${GOLD}40`,
                   overflow: 'hidden',
                 }}>
-                  {/* Gold border accent */}
                   <div style={{
                     position: 'absolute', inset: 2, borderRadius: 12,
-                    border: `1px solid ${GOLD}30`,
+                    border: '1px solid rgba(255,255,255,0.2)',
                   }} />
                   <img
                     src={EAGLE}
                     alt=""
                     style={{
-                      width: '88%', height: '88%',
+                      width: '90%', height: '90%',
                       objectFit: 'contain',
-                      filter: 'brightness(0.85) drop-shadow(0 2px 6px rgba(0,0,0,0.3))',
+                      filter: 'brightness(0.3) sepia(1) saturate(0)',
+                      mixBlendMode: 'multiply',
                     }}
                   />
                 </div>
@@ -311,10 +307,10 @@ export default function GameBoard({ pack }: { pack: any }) {
                   transform: 'rotateY(180deg)', overflow: 'hidden',
                   background: '#fff',
                   boxShadow: isMatched
-                    ? `0 3px 10px ${GOLD}50, inset 0 0 0 2.5px ${GOLD}`
+                    ? `0 4px 12px ${GOLD}60, inset 0 0 0 2.5px ${GOLD}`
                     : `0 3px 10px ${BROWN}15`,
-                  filter: isWrong ? 'brightness(0.85)' : 'none',
-                  transition: 'box-shadow 0.3s',
+                  filter: isWrong ? 'brightness(0.8)' : 'none',
+                  transition: 'box-shadow 0.3s, filter 0.2s',
                 }}>
                   <img
                     src={card.img} alt={card.label}
