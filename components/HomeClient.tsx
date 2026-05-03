@@ -26,7 +26,6 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
 
   const today = new Date().toISOString().split('T')[0]
   const playedToday = profile?.lastPlayedDate === today
-  const diffColor = dailyDifficulty === 1 ? '#2E7D32' : dailyDifficulty === 2 ? '#E65100' : '#B71C1C'
 
   const levels = [
     { slug: easy, label: 'Easy', bg: '#2E7D32', shadow: '#1B5E2040' },
@@ -39,53 +38,40 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
       height: '100dvh',
       background: `linear-gradient(180deg, ${CREAM} 0%, ${CREAM2} 100%)`,
       display: 'flex', flexDirection: 'column',
+      alignItems: 'center',
       fontFamily: 'var(--font-nunito), sans-serif',
       maxWidth: 430, margin: '0 auto',
       overflow: 'hidden', paddingBottom: 80,
     }}>
 
-      {/* Top — same proportions as onboarding */}
-      <div style={{ textAlign: 'center', paddingTop: 32 }}>
-        <img
-          src={EAGLE}
-          alt="MemGenius"
-          style={{
-            width: 150, height: 150,
-            objectFit: 'contain',
-            filter: 'drop-shadow(0 12px 28px rgba(74,44,10,0.2))',
-            marginBottom: 12,
-          }}
-        />
-        <div style={{ fontSize: 36, fontWeight: 900, letterSpacing: -1, lineHeight: 1 }}>
-          <span style={{ color: GOLD }}>Mem</span>
-          <span style={{ color: BROWN }}>Genius</span>
-        </div>
+      {/* Eagle — perfectly centered */}
+      <img
+        src={EAGLE}
+        alt="MemGenius"
+        style={{
+          width: 150, height: 150,
+          objectFit: 'contain',
+          filter: 'drop-shadow(0 12px 28px rgba(74,44,10,0.2))',
+          marginTop: 32,
+          display: 'block',
+        }}
+      />
 
-        {/* Hey name — big */}
-        <div style={{ fontSize: 28, fontWeight: 900, color: BROWN, marginTop: 10, letterSpacing: -0.5 }}>
-          Hey, {profile.name}!
-        </div>
+      {/* Logo */}
+      <div style={{ fontSize: 36, fontWeight: 900, letterSpacing: -1, lineHeight: 1, marginTop: 10, textAlign: 'center' }}>
+        <span style={{ color: GOLD }}>Mem</span>
+        <span style={{ color: BROWN }}>Genius</span>
+      </div>
 
-        {/* Streak */}
-        {(profile?.streak ?? 0) > 0 && (
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            background: `${GOLD}18`,
-            border: `1px solid ${GOLD}44`,
-            borderRadius: 20, padding: '5px 14px', marginTop: 8,
-          }}>
-            <span style={{ fontSize: 13 }}>🔥</span>
-            <span style={{ fontSize: 12, fontWeight: 800, color: BROWN, opacity: 0.7 }}>
-              {profile.streak} day streak {playedToday ? '· Done today' : ''}
-            </span>
-          </div>
-        )}
+      {/* Greeting */}
+      <div style={{ fontSize: 26, fontWeight: 900, color: BROWN, marginTop: 8, textAlign: 'center' }}>
+        Hey, {profile.name}!
       </div>
 
       {/* Buttons */}
-      <div style={{ padding: '24px 20px 0', display: 'flex', flexDirection: 'column', gap: 12, flex: 1, justifyContent: 'center' }}>
+      <div style={{ width: '100%', padding: '24px 20px 0', display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-        {/* Daily Challenge — sin nombre del pack */}
+        {/* Daily Challenge */}
         <Link href={`/play/${dailySlug}`} style={{ textDecoration: 'none' }}>
           <div style={{
             width: '100%', padding: '22px 24px', borderRadius: 22,
@@ -93,7 +79,6 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
             boxShadow: `0 8px 0 ${BROWN}50, 0 16px 32px ${BROWN}20`,
             textAlign: 'center', cursor: 'pointer',
             boxSizing: 'border-box',
-            border: `1px solid ${GOLD}33`,
           }}>
             <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: GOLD, textTransform: 'uppercase', marginBottom: 4 }}>
               Daily Challenge
@@ -109,7 +94,7 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           </div>
         </Link>
 
-        {/* Level buttons — sin divider ni free play */}
+        {/* Level buttons */}
         <div style={{ display: 'flex', gap: 10 }}>
           {levels.map(level => (
             <Link key={level.label} href={`/play/${level.slug}`} style={{ textDecoration: 'none', flex: 1 }}>
@@ -124,6 +109,30 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
             </Link>
           ))}
         </div>
+
+        {/* Streak — below buttons */}
+        {(profile?.streak ?? 0) > 0 && (
+          <div style={{
+            textAlign: 'center',
+            padding: '10px 0',
+          }}>
+            <div style={{
+              display: 'inline-block',
+              background: `${GOLD}15`,
+              border: `1px solid ${GOLD}33`,
+              borderRadius: 12, padding: '8px 20px',
+            }}>
+              <span style={{ fontSize: 13, fontWeight: 900, color: GOLD }}>
+                {profile.streak} day streak
+              </span>
+              {playedToday && (
+                <span style={{ fontSize: 12, fontWeight: 700, color: `${BROWN}60`, marginLeft: 6 }}>
+                  · Done today
+                </span>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </main>
   )
