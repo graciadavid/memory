@@ -279,7 +279,7 @@ export default function GameBoard({ pack }: { pack: any }) {
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 14,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
-                  background: `linear-gradient(145deg, #D4A820, #B8860B)`,
+                  background: '#E8C96A',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: `0 4px 12px ${GOLD}50`,
                   overflow: 'hidden',
@@ -292,7 +292,7 @@ export default function GameBoard({ pack }: { pack: any }) {
                     src={EAGLE}
                     alt=""
                     style={{
-                      width: '88%', height: '88%',
+                      width: '60%', height: '60%',
                       objectFit: 'contain',
                     }}
                   />
