@@ -170,12 +170,12 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
           {/* Play again / New game */}
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={onReset} style={{
-              flex: 1, padding: '13px', borderRadius: 14, border: 'none',
+              flex: 1, padding: '13px', borderRadius: 14,
               background: '#fff',
               border: `1px solid ${BROWN}15`,
               color: `${BROWN}70`, fontSize: 13, fontWeight: 800,
               fontFamily: 'inherit', cursor: 'pointer',
-            } as any}>
+            }}>
               Play again
             </button>
             <button onClick={() => router.push('/')} style={{
