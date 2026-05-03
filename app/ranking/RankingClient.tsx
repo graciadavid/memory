@@ -17,23 +17,25 @@ export default function RankingClient({ scores }: { scores: any[] }) {
   const diffColor = (d: number) => d === 1 ? '#2E7D32' : d === 2 ? '#E65100' : '#B71C1C'
   const diffLabel = (d: number) => d === 1 ? 'Easy' : d === 2 ? 'Med' : 'Hard'
 
-  // Filter by difficulty
-  const diffFiltered = filter === 'all'
-    ? scores
-    : scores.filter(s => s.packs?.difficulty === filter)
-
-  // Best score per player
-  const filtered = diffFiltered
-    .reduce((acc: any[], score) => {
-      const existing = acc.find(s => s.player_name === score.player_name)
-      if (!existing) {
-        acc.push(score)
-      } else if (score.time_ms < existing.time_ms) {
-        acc[acc.indexOf(existing)] = score
+  // Best score per player per difficulty
+  const getBestPerPlayerPerDiff = (diff?: number) => {
+    const filtered = diff ? scores.filter(s => s.packs?.difficulty === diff) : scores
+    
+    // Key: player_name + difficulty
+    const bestMap: Record<string, any> = {}
+    filtered.forEach(score => {
+      const key = `${score.player_name}_${score.packs?.difficulty}`
+      if (!bestMap[key] || score.time_ms < bestMap[key].time_ms) {
+        bestMap[key] = score
       }
-      return acc
-    }, [])
-    .sort((a, b) => a.time_ms - b.time_ms)
+    })
+
+    return Object.values(bestMap).sort((a, b) => a.time_ms - b.time_ms)
+  }
+
+  const filtered = filter === 'all'
+    ? getBestPerPlayerPerDiff()
+    : getBestPerPlayerPerDiff(filter)
 
   const tabs = [
     { key: 'all' as const, label: 'All', color: BROWN },
