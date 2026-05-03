@@ -1,7 +1,6 @@
 import { supabase } from '@/lib/supabase'
 
 const DIFF_PACKS: Record<string, { slugs: string[] }> = {
-  all: { slugs: ['monuments-countries', 'animals-habitats', 'cities-skylines', 'foods-monuments', 'artworks-museums', 'civilizations-landmarks', 'inventions-inventors', 'phenomena-locations'] },
   easy: { slugs: ['monuments-countries', 'animals-habitats', 'cities-skylines'] },
   medium: { slugs: ['foods-monuments', 'artworks-museums', 'civilizations-landmarks'] },
   hard: { slugs: ['inventions-inventors', 'phenomena-locations'] },
@@ -45,4 +44,29 @@ export async function fetchLiveRanks(playerName: string) {
   }
 
   return result
+}
+
+export async function fetchDailyRank(playerName: string): Promise<{ rank: number | null, time: number | null }> {
+  const today = new Date().toISOString().split('T')[0]
+
+  const { data: allScores } = await supabase
+    .from('scores')
+    .select('player_name, time_ms')
+    .eq('is_daily', true)
+    .eq('play_date', today)
+
+  if (!allScores) return { rank: null, time: null }
+
+  const bestPerPlayer: Record<string, number> = {}
+  allScores.forEach(s => {
+    if (!bestPerPlayer[s.player_name] || s.time_ms < bestPerPlayer[s.player_name]) {
+      bestPerPlayer[s.player_name] = s.time_ms
+    }
+  })
+
+  const myBest = bestPerPlayer[playerName]
+  if (!myBest) return { rank: null, time: null }
+
+  const rank = Object.values(bestPerPlayer).filter(t => t < myBest).length + 1
+  return { rank, time: myBest }
 }

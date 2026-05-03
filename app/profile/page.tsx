@@ -1,7 +1,7 @@
 'use client'
 import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import { fetchLiveRanks } from './RanksFetcher'
+import { fetchLiveRanks, fetchDailyRank } from './RanksFetcher'
 import Link from 'next/link'
 
 const GOLD = '#C8960C'
@@ -18,7 +18,7 @@ const ACHIEVEMENTS = [
 ]
 
 const DIFF_CONFIG = [
-  { key: 'all', label: 'All', color: BROWN },
+  { key: 'daily', label: 'Daily', color: BROWN },
   { key: 'easy', label: 'Easy', color: '#2E7D32' },
   { key: 'medium', label: 'Medium', color: '#E65100' },
   { key: 'hard', label: 'Hard', color: '#B71C1C' },
@@ -50,12 +50,17 @@ export default function ProfilePage() {
   const { profile, loaded, save } = usePlayer()
   const fileRef = useRef<HTMLInputElement>(null)
   const [liveRanks, setLiveRanks] = useState<Record<string, { rank: number | null, time: number | null }>>({})
+  const [dailyRank, setDailyRank] = useState<{ rank: number | null, time: number | null }>({ rank: null, time: null })
   const [loadingRanks, setLoadingRanks] = useState(true)
 
   useEffect(() => {
     if (!profile?.name) return
-    fetchLiveRanks(profile.name).then(ranks => {
+    Promise.all([
+      fetchLiveRanks(profile.name),
+      fetchDailyRank(profile.name),
+    ]).then(([ranks, daily]) => {
       setLiveRanks(ranks)
+      setDailyRank(daily)
       setLoadingRanks(false)
     })
   }, [profile?.name])
@@ -194,7 +199,7 @@ export default function ProfilePage() {
           {/* Easy Medium Hard — 3 columns */}
           <div style={{ display: 'flex', gap: 8 }}>
             {DIFF_CONFIG.slice(1).map(d => {
-              const entry = liveRanks[d.key]
+              const entry = d.key === 'daily' ? dailyRank : liveRanks[d.key]
               const hasResult = entry?.rank != null
               return (
                 <div key={d.key} style={{
