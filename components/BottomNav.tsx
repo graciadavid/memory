@@ -4,47 +4,28 @@ import { usePathname } from 'next/navigation'
 
 export default function BottomNav() {
   const path = usePathname()
-
-  const items = [
-    { href: '/', icon: '🏠', label: 'Home' },
-    { href: '/play', icon: '🧠', label: 'Play' },
-    { href: '/ranking', icon: '🏆', label: 'Ranking' },
-  ]
+  const isPlay = path.startsWith('/play')
 
   return (
     <nav style={{
       position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
       width: '100%', maxWidth: 430,
-      background: 'rgba(12,12,20,0.95)',
+      background: 'rgba(12,12,20,0.7)',
       backdropFilter: 'blur(20px)',
-      borderTop: '1px solid #1a1a2e',
+      borderTop: '1px solid #ffffff08',
       display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-      padding: '10px 0 24px',
+      padding: '8px 0 20px',
       zIndex: 50,
     }}>
-      {items.map(item => {
-        const active = path === item.href
-        return (
-          <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
-            <div style={{
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', gap: 3,
-              padding: '6px 24px',
-            }}>
-              <div style={{ fontSize: 22, filter: active ? 'none' : 'grayscale(1) opacity(0.4)' }}>
-                {item.icon}
-              </div>
-              <div style={{
-                fontSize: 10, fontWeight: 800,
-                letterSpacing: 1, textTransform: 'uppercase',
-                color: active ? '#FF4D6D' : '#333',
-              }}>
-                {item.label}
-              </div>
-            </div>
-          </Link>
-        )
-      })}
+      <Link href="/" style={{ textDecoration: 'none', opacity: path === '/' ? 1 : 0.35 }}>
+        <div style={{ fontSize: 24, textAlign: 'center' }}>🏠</div>
+      </Link>
+      <Link href="/" style={{ textDecoration: 'none', opacity: isPlay ? 1 : 0.35 }}>
+        <div style={{ fontSize: 24, textAlign: 'center' }}>🧠</div>
+      </Link>
+      <Link href="/ranking" style={{ textDecoration: 'none', opacity: path === '/ranking' ? 1 : 0.35 }}>
+        <div style={{ fontSize: 24, textAlign: 'center' }}>🏆</div>
+      </Link>
     </nav>
   )
 }

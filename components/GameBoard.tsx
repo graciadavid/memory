@@ -83,6 +83,8 @@ export default function GameBoard({ pack }: { pack: any }) {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [worldRank, setWorldRank] = useState<number | null>(null)
+  const startRef = useRef<number>(0)
+  const rafRef = useRef<number>(0)
 
   const buildCards = () => {
     const built: Card[] = []
@@ -95,10 +97,19 @@ export default function GameBoard({ pack }: { pack: any }) {
 
   useEffect(() => { setCards(buildCards()) }, [])
 
+  // Timer exacto con requestAnimationFrame
   useEffect(() => {
-    let t: NodeJS.Timeout
-    if (running && !done) t = setInterval(() => setMs(m => m + 10), 10)
-    return () => clearInterval(t)
+    if (running && !done) {
+      startRef.current = Date.now() - ms
+      const tick = () => {
+        setMs(Date.now() - startRef.current)
+        rafRef.current = requestAnimationFrame(tick)
+      }
+      rafRef.current = requestAnimationFrame(tick)
+    } else {
+      cancelAnimationFrame(rafRef.current)
+    }
+    return () => cancelAnimationFrame(rafRef.current)
   }, [running, done])
 
   useEffect(() => {
@@ -180,11 +191,12 @@ export default function GameBoard({ pack }: { pack: any }) {
     if (flipped.includes(uid)) return
     const card = cards.find(c => c.uid === uid)!
     if (matched.includes(card.pairId)) return
-    if (!running) setRunning(true)
+    if (!running) { setRunning(true) }
     setFlipped(f => [...f, uid])
   }
 
   const reset = () => {
+    cancelAnimationFrame(rafRef.current)
     setCards(buildCards())
     setFlipped([]); setMatched([]); setWrong([])
     setMs(0); setRunning(false); setDone(false)
@@ -206,6 +218,7 @@ export default function GameBoard({ pack }: { pack: any }) {
       display: 'flex', flexDirection: 'column',
       maxWidth: 430, margin: '0 auto',
       overflow: 'hidden', fontFamily: 'var(--font-nunito), sans-serif',
+      paddingBottom: 60,
     }}>
 
       {/* Header */}
@@ -267,7 +280,6 @@ export default function GameBoard({ pack }: { pack: any }) {
         {cards.map(card => {
           const isFlipped = flipped.includes(card.uid) || matched.includes(card.pairId)
           const isMatched = matched.includes(card.pairId)
-          const RADIUS = 12
 
           return (
             <div key={card.uid} onClick={() => flip(card.uid)}
@@ -277,11 +289,11 @@ export default function GameBoard({ pack }: { pack: any }) {
                 transformStyle: 'preserve-3d',
                 transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                 transition: 'transform 0.45s cubic-bezier(0.4,0,0.2,1)',
-                borderRadius: RADIUS,
+                borderRadius: 12,
               }}>
                 {/* Back */}
                 <div style={{
-                  position: 'absolute', inset: 0, borderRadius: RADIUS,
+                  position: 'absolute', inset: 0, borderRadius: 12,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   background: 'linear-gradient(145deg, #ffecd2, #fcb69f)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -291,16 +303,14 @@ export default function GameBoard({ pack }: { pack: any }) {
 
                 {/* Front */}
                 <div style={{
-                  position: 'absolute', inset: 0, borderRadius: RADIUS,
+                  position: 'absolute', inset: 0, borderRadius: 12,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
-                  transform: 'rotateY(180deg)',
-                  overflow: 'hidden',
+                  transform: 'rotateY(180deg)', overflow: 'hidden',
                   outline: isMatched ? '3px solid #00e676' : 'none',
                   outlineOffset: '-2px',
                 }}>
                   <img
-                    src={card.img}
-                    alt={card.label}
+                    src={card.img} alt={card.label}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                 </div>
@@ -310,7 +320,7 @@ export default function GameBoard({ pack }: { pack: any }) {
         })}
       </div>
 
-      <div style={{ height: 8 }} />
+      <div style={{ height: 4 }} />
 
       {done && <Confetti />}
 
@@ -332,7 +342,6 @@ export default function GameBoard({ pack }: { pack: any }) {
             <div style={{ fontSize: 40, fontWeight: 700, color: 'white', fontFamily: 'monospace', letterSpacing: 1, marginBottom: 4 }}>{fmt(ms)}</div>
             <div style={{ fontSize: 12, color: '#555', marginBottom: 16 }}>#{pack.slug}</div>
 
-            {/* Rank */}
             <div style={{
               background: 'rgba(255,77,109,0.08)', border: '1px solid rgba(255,77,109,0.2)',
               borderRadius: 14, padding: '12px 14px', marginBottom: 12,
@@ -343,7 +352,6 @@ export default function GameBoard({ pack }: { pack: any }) {
               <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>{difficultyLabel} · {pack.title}</div>
             </div>
 
-            {/* Fun fact */}
             {lastFact && (
               <div style={{
                 background: '#111120', border: '1px solid #1e1e35',
@@ -354,7 +362,6 @@ export default function GameBoard({ pack }: { pack: any }) {
               </div>
             )}
 
-            {/* Submit score */}
             {!submitted ? (
               <div style={{ marginBottom: 14 }}>
                 <input
@@ -372,18 +379,12 @@ export default function GameBoard({ pack }: { pack: any }) {
                     boxSizing: 'border-box', outline: 'none',
                   }}
                 />
-                <button
-                  onClick={submitScore}
-                  disabled={submitting || !playerName.trim()}
-                  style={{
-                    width: '100%', padding: '12px',
-                    borderRadius: 12, border: 'none',
-                    background: playerName.trim() ? 'linear-gradient(135deg,#FF4D6D,#ff8c00)' : '#1a1a2e',
-                    color: playerName.trim() ? 'white' : '#444',
-                    fontSize: 13, fontWeight: 800,
-                    fontFamily: 'inherit', cursor: playerName.trim() ? 'pointer' : 'default',
-                  }}
-                >
+                <button onClick={submitScore} disabled={submitting || !playerName.trim()} style={{
+                  width: '100%', padding: '12px', borderRadius: 12, border: 'none',
+                  background: playerName.trim() ? 'linear-gradient(135deg,#FF4D6D,#ff8c00)' : '#1a1a2e',
+                  color: playerName.trim() ? 'white' : '#444',
+                  fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: playerName.trim() ? 'pointer' : 'default',
+                }}>
                   {submitting ? 'Uploading...' : '🏆 Upload to Ranking'}
                 </button>
               </div>
@@ -392,9 +393,7 @@ export default function GameBoard({ pack }: { pack: any }) {
                 background: 'rgba(0,230,118,0.08)', border: '1px solid rgba(0,230,118,0.2)',
                 borderRadius: 12, padding: '12px', marginBottom: 14,
                 fontSize: 13, fontWeight: 800, color: '#00e676',
-              }}>
-                ✅ Score submitted!
-              </div>
+              }}>✅ Score submitted!</div>
             )}
 
             <div style={{ display: 'flex', gap: 10 }}>
