@@ -70,6 +70,7 @@ export async function fetchDailyRank(playerName: string): Promise<{ rank: number
   })
 
   const myBest = bestPerPlayer[playerName]
+  console.log('myBest:', myBest, 'bestPerPlayer keys:', Object.keys(bestPerPlayer).length)
   if (!myBest) return { rank: null, time: null }
 
   const rank = Object.values(bestPerPlayer).filter(t => t < myBest).length + 1
