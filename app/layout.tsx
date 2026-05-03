@@ -10,14 +10,15 @@ const nunito = Nunito({
 })
 
 export const metadata: Metadata = {
-  title: 'PairIQ — Association Memory Game',
+  title: 'MemGenius — Association Memory Game',
   description: 'Match pairs and test your knowledge. World rankings, daily challenges.',
+  metadataBase: new URL('https://memgenius.com'),
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${nunito.variable} font-nunito`} style={{ background: '#0c0c14', margin: 0 }}>
+      <body className={`${nunito.variable} font-nunito`} style={{ background: '#f2f2f2', margin: 0 }}>
         {children}
         <BottomNav />
       </body>

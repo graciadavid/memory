@@ -13,8 +13,8 @@ export default function Onboarding({ onCreate }: { onCreate: (name: string) => v
       padding: '0 28px', maxWidth: 430, margin: '0 auto',
     }}>
       <div style={{ fontSize: 64, marginBottom: 16 }}>🧠</div>
-      <div style={{ fontSize: 32, fontWeight: 900, color: '#111', letterSpacing: -1, marginBottom: 6 }}>
-        Welcome to<br />Pair<span style={{ color: '#FF4D6D' }}>IQ</span>
+      <div style={{ fontSize: 32, fontWeight: 900, color: '#111', letterSpacing: -1, marginBottom: 6, textAlign: 'center' }}>
+        Welcome to<br />Mem<span style={{ color: '#FF4D6D' }}>Genius</span>
       </div>
       <div style={{ fontSize: 14, color: '#aaa', fontWeight: 700, marginBottom: 48, textAlign: 'center' }}>
         The association memory game.<br />Match pairs. Beat the world.
@@ -53,7 +53,7 @@ export default function Onboarding({ onCreate }: { onCreate: (name: string) => v
             boxShadow: name.trim() ? '0 8px 0 #ff4d6d40' : 'none',
           }}
         >
-          Let's Play →
+          Let's Play
         </button>
       </div>
     </div>

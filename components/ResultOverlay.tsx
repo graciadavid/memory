@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 import Link from 'next/link'
@@ -16,18 +16,22 @@ interface Props {
 export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }: Props) {
   const { profile, recordGame } = usePlayer()
   const [shared, setShared] = useState(false)
+  const saved = useRef(false)
   const router = useRouter()
 
   useEffect(() => {
+    if (saved.current) return
     if (!profile?.name) return
+    saved.current = true
     supabase.from('scores').insert({
       pack_id: pack.id,
       player_name: profile.name,
       time_ms: ms,
       moves: 0,
+    }).then(() => {
+      recordGame(pack.slug, pack.pairs?.length || 6, worldRank || 999, ms)
     })
-    recordGame(pack.slug, pack.pairs?.length || 6, worldRank || 999, ms)
-  }, [])
+  }, [profile])
 
   const fmt = (ms: number) => {
     const m = Math.floor(ms / 60000)
@@ -37,10 +41,10 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
   }
 
   const diffColor = pack.difficulty === 1 ? '#00c853' : pack.difficulty === 2 ? '#ff8c00' : '#FF4D6D'
-  const diffLabel = pack.difficulty === 1 ? '🟢 Easy' : pack.difficulty === 2 ? '🟡 Medium' : '🔴 Hard'
+  const diffLabel = pack.difficulty === 1 ? 'Easy' : pack.difficulty === 2 ? 'Medium' : 'Hard'
 
   const share = async () => {
-    const text = `🧠 PairIQ — I solved "${pack.title}" in ${fmt(ms)}! ${diffLabel}\nCan you beat me? 👉 https://memory-one-iota.vercel.app`
+    const text = `🧠 MemGenius — I solved "${pack.title}" in ${fmt(ms)}!\nCan you beat me? 👉 https://memgenius.com`
     if (navigator.share) {
       await navigator.share({ text })
     } else {
@@ -48,10 +52,6 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
       alert('Copied!')
     }
     setShared(true)
-  }
-
-  const newGame = () => {
-    router.push('/')
   }
 
   return (
@@ -68,10 +68,9 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
           textAlign: 'center',
           boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
         }}>
-          {/* Result */}
           <div style={{ fontSize: 44, marginBottom: 6 }}>🎉</div>
           <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: diffColor, textTransform: 'uppercase', marginBottom: 6 }}>
-            Completed!
+            Completed · {diffLabel}
           </div>
           <div style={{ fontSize: 42, fontWeight: 700, color: '#111', fontFamily: 'monospace', letterSpacing: 1, marginBottom: 16 }}>
             {fmt(ms)}
@@ -83,10 +82,10 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             borderRadius: 16, padding: '14px', marginBottom: 20,
           }}>
             <div style={{ fontSize: 26, fontWeight: 900, color: diffColor }}>
-              🏆 {worldRank ? `#${worldRank} World` : '...'}
+              {worldRank ? `#${worldRank} World` : '...'}
             </div>
             <div style={{ fontSize: 11, color: '#aaa', marginTop: 4 }}>
-              {diffLabel} · {pack.title}
+              {pack.title}
             </div>
           </div>
 
@@ -97,9 +96,8 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             color: shared ? '#aaa' : 'white',
             fontSize: 14, fontWeight: 800, fontFamily: 'inherit',
             cursor: 'pointer', marginBottom: 12,
-            transition: 'all 0.2s',
           }}>
-            {shared ? '✅ Shared!' : '🔗 Share my result'}
+            {shared ? 'Shared!' : 'Share my result'}
           </button>
 
           {/* Fun fact */}
@@ -109,7 +107,7 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
               borderRadius: 14, padding: '12px 14px', marginBottom: 16, textAlign: 'left',
             }}>
               <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: 2, color: '#aaa', textTransform: 'uppercase', marginBottom: 4 }}>
-                💡 Did you know?
+                Did you know?
               </div>
               <div style={{ fontSize: 12, color: '#555', lineHeight: 1.5 }}>{lastFact}</div>
             </div>
@@ -122,14 +120,14 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
               background: '#f0f0f0', color: '#555',
               fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
             }}>
-              ↩️ Again
+              Play again
             </button>
-            <button onClick={newGame} style={{
+            <button onClick={() => router.push('/')} style={{
               flex: 1, padding: '13px', borderRadius: 14, border: 'none',
               background: diffColor, color: 'white',
               fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
             }}>
-              🎲 New game
+              New game
             </button>
           </div>
         </div>
