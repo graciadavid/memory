@@ -57,6 +57,8 @@ export async function fetchDailyRank(playerName: string): Promise<{ rank: number
     .eq('play_date', today)
   
   console.log('daily scores:', allScores?.length, 'error:', error)
+  const myScores = allScores?.filter(s => s.player_name === playerName)
+  console.log('my daily scores:', myScores?.length, myScores)
 
   if (!allScores) return { rank: null, time: null }
 
