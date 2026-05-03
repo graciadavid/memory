@@ -240,7 +240,7 @@ export default function ProfilePage() {
               return (
                 <div key={a.key} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                   <div style={{
-                    width: 52, height: 52, borderRadius: 13, flexShrink: 0, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    width: 52, height: 52, borderRadius: 13, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
                     background: unlocked ? `linear-gradient(135deg, ${GOLD}, ${BROWN})` : '#f0ebe1',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     boxShadow: unlocked ? `0 4px 10px ${GOLD}40` : 'none',
