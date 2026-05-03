@@ -41,7 +41,8 @@ export default function RankingClient({ scores }: { scores: any[] }) {
   const myPosition = myIndex + 1
 
   const scrollToMe = () => {
-    myRowRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    const el = document.getElementById('my-row')
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
   const share = async (position: number, score: any) => {
@@ -62,7 +63,7 @@ export default function RankingClient({ scores }: { scores: any[] }) {
     const isMe = score.player_name === myName
     return (
       <div
-        ref={isRef ? myRowRef : undefined}
+        id={isRef ? 'my-row' : undefined}
         style={{
           display: 'grid', gridTemplateColumns: '36px 1fr 44px 80px 32px',
           alignItems: 'center', gap: 6,
