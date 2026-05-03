@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const BUCKET = 'storage'
@@ -34,6 +34,70 @@ interface Card {
   side: 'a' | 'b'
 }
 
+interface Particle {
+  id: number
+  x: number
+  y: number
+  vx: number
+  vy: number
+  color: string
+  size: number
+  rotation: number
+  vr: number
+}
+
+function Confetti() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current!
+    const ctx = canvas.getContext('2d')!
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+
+    const colors = ['#FF4D6D', '#ff8c00', '#FFD700', '#00e676', '#2979ff', '#e040fb']
+    const particles: Particle[] = Array.from({ length: 120 }, (_, i) => ({
+      id: i,
+      x: Math.random() * canvas.width,
+      y: -20,
+      vx: (Math.random() - 0.5) * 4,
+      vy: Math.random() * 4 + 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 8 + 4,
+      rotation: Math.random() * 360,
+      vr: (Math.random() - 0.5) * 8,
+    }))
+
+    let frame: number
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      particles.forEach(p => {
+        p.x += p.vx
+        p.y += p.vy
+        p.vy += 0.1
+        p.rotation += p.vr
+        ctx.save()
+        ctx.translate(p.x, p.y)
+        ctx.rotate((p.rotation * Math.PI) / 180)
+        ctx.fillStyle = p.color
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size)
+        ctx.restore()
+      })
+      if (particles.some(p => p.y < canvas.height)) {
+        frame = requestAnimationFrame(animate)
+      }
+    }
+    animate()
+    return () => cancelAnimationFrame(frame)
+  }, [])
+
+  return (
+    <canvas ref={canvasRef} style={{
+      position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 200,
+    }} />
+  )
+}
+
 export default function GameBoard({ pack }: { pack: any }) {
   const [cards, setCards] = useState<Card[]>([])
   const [flipped, setFlipped] = useState<string[]>([])
@@ -44,6 +108,7 @@ export default function GameBoard({ pack }: { pack: any }) {
   const [running, setRunning] = useState(false)
   const [done, setDone] = useState(false)
   const [lastFact, setLastFact] = useState('')
+  const audioRef = useRef<AudioContext | null>(null)
 
   const buildCards = () => {
     const built: Card[] = []
@@ -66,6 +131,7 @@ export default function GameBoard({ pack }: { pack: any }) {
     if (matched.length > 0 && matched.length === pack.pairs.length) {
       setDone(true)
       setRunning(false)
+      playApplause()
     }
   }, [matched])
 
@@ -83,6 +149,30 @@ export default function GameBoard({ pack }: { pack: any }) {
     }
   }, [flipped])
 
+  const playApplause = () => {
+    try {
+      const ctx = new AudioContext()
+      audioRef.current = ctx
+      const duration = 3
+      const bufferSize = ctx.sampleRate * duration
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
+      const data = buffer.getChannelData(0)
+      for (let i = 0; i < bufferSize; i++) {
+        const envelope = Math.sin((i / bufferSize) * Math.PI)
+        const burst = Math.random() < 0.3 ? Math.random() * 2 - 1 : 0
+        data[i] = burst * envelope * 0.4
+      }
+      const source = ctx.createBufferSource()
+      source.buffer = buffer
+      const gainNode = ctx.createGain()
+      gainNode.gain.setValueAtTime(0.6, ctx.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
+      source.connect(gainNode)
+      gainNode.connect(ctx.destination)
+      source.start()
+    } catch (e) {}
+  }
+
   const flip = (uid: string) => {
     if (flipped.length === 2) return
     if (flipped.includes(uid)) return
@@ -99,9 +189,10 @@ export default function GameBoard({ pack }: { pack: any }) {
   }
 
   const fmt = (ms: number) => {
-    const s = Math.floor(ms / 1000)
-    const m = ms % 1000
-    return `${String(s).padStart(2, '0')}:${String(m).padStart(3, '0')}`
+    const m = Math.floor(ms / 60000)
+    const s = Math.floor((ms % 60000) / 1000)
+    const centis = Math.floor((ms % 1000) / 10)
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}:${String(centis).padStart(2, '0')}`
   }
 
   return (
@@ -116,7 +207,7 @@ export default function GameBoard({ pack }: { pack: any }) {
       fontFamily: 'var(--font-nunito), sans-serif',
     }}>
 
-      {/* Header — ultra compacto */}
+      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px 4px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{
@@ -142,10 +233,9 @@ export default function GameBoard({ pack }: { pack: any }) {
       {/* Timer */}
       <div style={{ padding: '0 14px 4px' }}>
         <div style={{
-          fontSize: 28, fontWeight: 700, fontFamily: 'monospace',
+          fontSize: 26, fontWeight: 700, fontFamily: 'monospace',
           color: running ? '#FF4D6D' : '#222',
-          transition: 'color 0.3s',
-          letterSpacing: -1,
+          transition: 'color 0.3s', letterSpacing: 1,
         }}>{fmt(ms)}</div>
       </div>
 
@@ -156,8 +246,7 @@ export default function GameBoard({ pack }: { pack: any }) {
             height: '100%',
             width: `${(matched.length / pack.pairs.length) * 100}%`,
             background: 'linear-gradient(90deg,#FF4D6D,#ff8c00)',
-            borderRadius: 3,
-            transition: 'width 0.5s',
+            borderRadius: 3, transition: 'width 0.5s',
           }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -172,7 +261,7 @@ export default function GameBoard({ pack }: { pack: any }) {
         </div>
       </div>
 
-      {/* Grid — ocupa el espacio restante */}
+      {/* Grid */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
@@ -211,9 +300,9 @@ export default function GameBoard({ pack }: { pack: any }) {
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)',
                   overflow: 'hidden',
-                  filter: isWrong ? 'brightness(0.4)' : 'none',
-                  outline: isMatched ? '2px solid #1aaa55' : 'none',
-                  transition: 'outline 0.3s',
+                  filter: isWrong ? 'brightness(0.3) saturate(0)' : 'none',
+                  boxShadow: isMatched ? '0 0 0 2.5px #1aaa55' : 'none',
+                  transition: 'box-shadow 0.3s',
                 }}>
                   <img
                     src={card.img}
@@ -222,21 +311,9 @@ export default function GameBoard({ pack }: { pack: any }) {
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
+                      display: 'block',
                     }}
                   />
-                  {/* label overlay bottom */}
-                  <div style={{
-                    position: 'absolute', bottom: 0, left: 0, right: 0,
-                    background: 'linear-gradient(transparent, rgba(0,0,0,0.75))',
-                    padding: '12px 4px 4px',
-                    fontSize: card.label.length > 12 ? 9 : 10,
-                    fontWeight: 900,
-                    color: isMatched ? '#7dffb3' : 'white',
-                    textAlign: 'center',
-                    lineHeight: 1.2,
-                  }}>
-                    {card.label}
-                  </div>
                 </div>
 
               </div>
@@ -245,7 +322,10 @@ export default function GameBoard({ pack }: { pack: any }) {
         })}
       </div>
 
-      <div style={{ height: 6 }} />
+      <div style={{ height: 8 }} />
+
+      {/* Confetti */}
+      {done && <Confetti />}
 
       {/* Done overlay */}
       {done && (
@@ -266,7 +346,7 @@ export default function GameBoard({ pack }: { pack: any }) {
           }}>
             <div style={{ fontSize: 44, marginBottom: 6 }}>🎉</div>
             <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: '#FF4D6D', textTransform: 'uppercase', marginBottom: 4 }}>Completed!</div>
-            <div style={{ fontSize: 42, fontWeight: 700, color: 'white', fontFamily: 'monospace', letterSpacing: -2, marginBottom: 4 }}>{fmt(ms)}</div>
+            <div style={{ fontSize: 40, fontWeight: 700, color: 'white', fontFamily: 'monospace', letterSpacing: 1, marginBottom: 4 }}>{fmt(ms)}</div>
             <div style={{ fontSize: 13, color: '#555', marginBottom: 16 }}>{moves} moves · {pack.pairs.length} pairs</div>
 
             <div style={{
