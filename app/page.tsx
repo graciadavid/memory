@@ -18,51 +18,46 @@ export default async function Home() {
   ])
 
   const levels = [
-    { slug: easy, label: 'Easy', emoji: '🟢', description: 'Monuments, Animals, Cities', color: '#00c853' },
-    { slug: medium, label: 'Medium', emoji: '🟡', description: 'Foods, Art, Civilizations', color: '#ff8c00' },
-    { slug: hard, label: 'Hard', emoji: '🔴', description: 'Inventors, Phenomena, Locations', color: '#FF4D6D' },
+    { slug: easy, label: 'Easy', description: 'Monuments · Animals · Cities', bg: '#00c853', shadow: '#00c85340' },
+    { slug: medium, label: 'Medium', description: 'Foods · Art · Civilizations', bg: '#ff8c00', shadow: '#ff8c0040' },
+    { slug: hard, label: 'Hard', description: 'Inventors · Phenomena · Locations', bg: '#FF4D6D', shadow: '#FF4D6D40' },
   ]
 
   return (
     <main style={{
-      height: '100dvh', background: '#f0f0f0',
+      height: '100dvh', background: '#f2f2f2',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       fontFamily: 'var(--font-nunito), sans-serif',
       padding: '0 24px', maxWidth: 430, margin: '0 auto',
     }}>
-      {/* Logo */}
       <div style={{ textAlign: 'center', marginBottom: 48 }}>
-        <div style={{ fontSize: 56, marginBottom: 8 }}>🧠</div>
-        <div style={{ fontSize: 36, fontWeight: 900, color: '#111', letterSpacing: -1 }}>
+        <div style={{ fontSize: 52, marginBottom: 8 }}>🧠</div>
+        <div style={{ fontSize: 34, fontWeight: 900, color: '#111', letterSpacing: -1 }}>
           Pair<span style={{ color: '#FF4D6D' }}>IQ</span>
         </div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: '#999', letterSpacing: 3, textTransform: 'uppercase', marginTop: 4 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: '#aaa', letterSpacing: 3, textTransform: 'uppercase', marginTop: 4 }}>
           Association Memory Game
         </div>
       </div>
 
-      {/* Levels */}
-      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 14 }}>
         {levels.map(level => (
           <Link key={level.label} href={`/play/${level.slug}`} style={{ textDecoration: 'none' }}>
             <div style={{
-              width: '100%', padding: '18px 24px', borderRadius: 20,
-              background: '#fff',
-              border: `2px solid ${level.color}22`,
-              boxShadow: `0 4px 16px ${level.color}18`,
-              display: 'flex', alignItems: 'center',
-              justifyContent: 'space-between', cursor: 'pointer',
+              width: '100%', padding: '22px 24px', borderRadius: 20,
+              background: level.bg,
+              boxShadow: `0 8px 0 ${level.shadow}, 0 12px 20px ${level.shadow}`,
+              textAlign: 'center', cursor: 'pointer',
+              transform: 'translateY(0)',
+              transition: 'transform 0.1s, box-shadow 0.1s',
             }}>
-              <div>
-                <div style={{ fontSize: 20, fontWeight: 900, color: '#111' }}>
-                  {level.emoji} {level.label}
-                </div>
-                <div style={{ fontSize: 12, color: '#999', fontWeight: 700, marginTop: 2 }}>
-                  {level.description}
-                </div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>
+                {level.label}
               </div>
-              <div style={{ fontSize: 20, color: level.color }}>→</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 700, marginTop: 3 }}>
+                {level.description}
+              </div>
             </div>
           </Link>
         ))}
