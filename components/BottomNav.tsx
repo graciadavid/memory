@@ -10,18 +10,18 @@ export default function BottomNav() {
     <nav style={{
       position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
       width: '100%', maxWidth: 430,
-      background: 'rgba(245,245,245,0.9)',
+      background: 'rgba(30,30,30,0.95)',
       backdropFilter: 'blur(20px)',
-      borderTop: '1px solid #e0e0e0',
+      borderTop: '1px solid #333',
       display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-      padding: '8px 0 20px',
+      padding: '6px 0 16px',
       zIndex: 50,
     }}>
-      <Link href="/" style={{ textDecoration: 'none', opacity: path === '/' ? 1 : 0.3 }}>
-        <div style={{ fontSize: 22 }}>🏠</div>
+      <Link href="/" style={{ textDecoration: 'none', opacity: path === '/' ? 1 : 0.4 }}>
+        <div style={{ fontSize: 20 }}>🏠</div>
       </Link>
-      <Link href="/ranking" style={{ textDecoration: 'none', opacity: path === '/ranking' ? 1 : 0.3 }}>
-        <div style={{ fontSize: 22 }}>🏆</div>
+      <Link href="/ranking" style={{ textDecoration: 'none', opacity: path === '/ranking' ? 1 : 0.4 }}>
+        <div style={{ fontSize: 20 }}>🏆</div>
       </Link>
     </nav>
   )

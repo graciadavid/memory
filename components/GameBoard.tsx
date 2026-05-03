@@ -281,7 +281,7 @@ export default function GameBoard({ pack }: { pack: any }) {
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 12,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
-                  background: '#e8e8e8',
+                  background: pack.difficulty === 1 ? '#00c853' : pack.difficulty === 2 ? '#ff8c00' : '#FF4D6D',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 }}>
