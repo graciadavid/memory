@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import { supabase } from '@/lib/supabase'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const BUCKET = 'storage'
@@ -78,6 +79,10 @@ export default function GameBoard({ pack }: { pack: any }) {
   const [running, setRunning] = useState(false)
   const [done, setDone] = useState(false)
   const [lastFact, setLastFact] = useState('')
+  const [playerName, setPlayerName] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [worldRank, setWorldRank] = useState<number | null>(null)
 
   const buildCards = () => {
     const built: Card[] = []
@@ -101,6 +106,7 @@ export default function GameBoard({ pack }: { pack: any }) {
       setDone(true)
       setRunning(false)
       playChimes()
+      fetchRank()
     }
   }, [matched])
 
@@ -120,6 +126,28 @@ export default function GameBoard({ pack }: { pack: any }) {
     }
   }, [flipped])
 
+  const fetchRank = async () => {
+    const { count } = await supabase
+      .from('scores')
+      .select('*', { count: 'exact', head: true })
+      .eq('pack_id', pack.id)
+      .lt('time_ms', ms)
+    setWorldRank((count ?? 0) + 1)
+  }
+
+  const submitScore = async () => {
+    if (!playerName.trim()) return
+    setSubmitting(true)
+    await supabase.from('scores').insert({
+      pack_id: pack.id,
+      player_name: playerName.trim(),
+      time_ms: ms,
+      moves: 0,
+    })
+    setSubmitted(true)
+    setSubmitting(false)
+  }
+
   const playTone = (freq: number, start: number, duration: number, gain: number, ctx: AudioContext) => {
     const osc = ctx.createOscillator()
     const g = ctx.createGain()
@@ -134,20 +162,11 @@ export default function GameBoard({ pack }: { pack: any }) {
   }
 
   const playMatch = () => {
-    try {
-      const ctx = new AudioContext()
-      playTone(880, 0, 0.3, 0.3, ctx)
-      playTone(1100, 0.1, 0.3, 0.2, ctx)
-    } catch(e) {}
+    try { const ctx = new AudioContext(); playTone(880, 0, 0.3, 0.3, ctx); playTone(1100, 0.1, 0.3, 0.2, ctx) } catch(e) {}
   }
-
   const playWrong = () => {
-    try {
-      const ctx = new AudioContext()
-      playTone(220, 0, 0.3, 0.2, ctx)
-    } catch(e) {}
+    try { const ctx = new AudioContext(); playTone(220, 0, 0.3, 0.2, ctx) } catch(e) {}
   }
-
   const playChimes = () => {
     try {
       const ctx = new AudioContext()
@@ -169,6 +188,7 @@ export default function GameBoard({ pack }: { pack: any }) {
     setCards(buildCards())
     setFlipped([]); setMatched([]); setWrong([])
     setMs(0); setRunning(false); setDone(false)
+    setSubmitted(false); setPlayerName(''); setWorldRank(null)
   }
 
   const fmt = (ms: number) => {
@@ -177,6 +197,8 @@ export default function GameBoard({ pack }: { pack: any }) {
     const c = Math.floor((ms % 1000) / 10)
     return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
   }
+
+  const difficultyLabel = pack.difficulty === 1 ? '🟢 Easy' : pack.difficulty === 2 ? '🟡 Medium' : '🔴 Hard'
 
   return (
     <main style={{
@@ -203,6 +225,7 @@ export default function GameBoard({ pack }: { pack: any }) {
             </div>
           </div>
         </div>
+        <div style={{ fontSize: 11, fontWeight: 800, color: '#444' }}>{difficultyLabel}</div>
       </div>
 
       {/* Timer */}
@@ -243,7 +266,6 @@ export default function GameBoard({ pack }: { pack: any }) {
       }}>
         {cards.map(card => {
           const isFlipped = flipped.includes(card.uid) || matched.includes(card.pairId)
-          const isWrong = wrong.includes(card.uid)
           const isMatched = matched.includes(card.pairId)
           const RADIUS = 12
 
@@ -254,42 +276,34 @@ export default function GameBoard({ pack }: { pack: any }) {
                 width: '100%', height: '100%', position: 'relative',
                 transformStyle: 'preserve-3d',
                 transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                transition: isWrong ? 'transform 0.15s' : 'transform 0.45s cubic-bezier(0.4,0,0.2,1)',
+                transition: 'transform 0.45s cubic-bezier(0.4,0,0.2,1)',
                 borderRadius: RADIUS,
               }}>
-
-                {/* Back — pastel suave con cerebro */}
+                {/* Back */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: RADIUS,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   background: 'linear-gradient(145deg, #ffecd2, #fcb69f)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <span style={{ fontSize: 36, opacity: 0.6 }}>🧠</span>
+                  <span style={{ fontSize: 36, opacity: 0.5 }}>🧠</span>
                 </div>
 
-                {/* Front — imagen que llena toda la carta sin padding */}
+                {/* Front */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: RADIUS,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)',
                   overflow: 'hidden',
-                  // no dim on wrong
-                  outline: isMatched ? '3px solid #1aaa55' : 'none',
-                  outlineOffset: '-1px',
+                  outline: isMatched ? '3px solid #00e676' : 'none',
+                  outlineOffset: '-2px',
                 }}>
                   <img
                     src={card.img}
                     alt={card.label}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      display: 'block',
-                    }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                 </div>
-
               </div>
             </div>
           )
@@ -303,7 +317,7 @@ export default function GameBoard({ pack }: { pack: any }) {
       {/* Done overlay */}
       {done && (
         <div style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)',
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)',
           backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center',
           justifyContent: 'center', zIndex: 100, padding: 20,
         }}>
@@ -316,25 +330,70 @@ export default function GameBoard({ pack }: { pack: any }) {
             <div style={{ fontSize: 44, marginBottom: 6 }}>🎉</div>
             <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: '#FF4D6D', textTransform: 'uppercase', marginBottom: 4 }}>Completed!</div>
             <div style={{ fontSize: 40, fontWeight: 700, color: 'white', fontFamily: 'monospace', letterSpacing: 1, marginBottom: 4 }}>{fmt(ms)}</div>
-            <div style={{ fontSize: 13, color: '#555', marginBottom: 16 }}>
-              {pack.pairs.length} pairs matched
-            </div>
+            <div style={{ fontSize: 12, color: '#555', marginBottom: 16 }}>#{pack.slug}</div>
 
+            {/* Rank */}
             <div style={{
               background: 'rgba(255,77,109,0.08)', border: '1px solid rgba(255,77,109,0.2)',
               borderRadius: 14, padding: '12px 14px', marginBottom: 12,
             }}>
-              <div style={{ fontSize: 18, fontWeight: 900, color: '#FF4D6D' }}>🏆 #234 World</div>
-              <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>Top 8% globally · {pack.title}</div>
+              <div style={{ fontSize: 20, fontWeight: 900, color: '#FF4D6D' }}>
+                🏆 {worldRank ? `#${worldRank} World` : '...'}
+              </div>
+              <div style={{ fontSize: 11, color: '#555', marginTop: 2 }}>{difficultyLabel} · {pack.title}</div>
             </div>
 
+            {/* Fun fact */}
             {lastFact && (
               <div style={{
                 background: '#111120', border: '1px solid #1e1e35',
-                borderRadius: 14, padding: '12px 14px', marginBottom: 16, textAlign: 'left',
+                borderRadius: 14, padding: '12px 14px', marginBottom: 14, textAlign: 'left',
               }}>
                 <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: 2, color: '#6060ff', textTransform: 'uppercase', marginBottom: 6 }}>💡 Did you know?</div>
                 <div style={{ fontSize: 12, color: '#aaa', lineHeight: 1.6 }}>{lastFact}</div>
+              </div>
+            )}
+
+            {/* Submit score */}
+            {!submitted ? (
+              <div style={{ marginBottom: 14 }}>
+                <input
+                  type="text"
+                  placeholder="Your name"
+                  value={playerName}
+                  onChange={e => setPlayerName(e.target.value)}
+                  maxLength={20}
+                  style={{
+                    width: '100%', padding: '11px 14px',
+                    borderRadius: 12, border: '1px solid #2a2a40',
+                    background: '#111120', color: 'white',
+                    fontSize: 14, fontWeight: 700,
+                    fontFamily: 'inherit', marginBottom: 8,
+                    boxSizing: 'border-box', outline: 'none',
+                  }}
+                />
+                <button
+                  onClick={submitScore}
+                  disabled={submitting || !playerName.trim()}
+                  style={{
+                    width: '100%', padding: '12px',
+                    borderRadius: 12, border: 'none',
+                    background: playerName.trim() ? 'linear-gradient(135deg,#FF4D6D,#ff8c00)' : '#1a1a2e',
+                    color: playerName.trim() ? 'white' : '#444',
+                    fontSize: 13, fontWeight: 800,
+                    fontFamily: 'inherit', cursor: playerName.trim() ? 'pointer' : 'default',
+                  }}
+                >
+                  {submitting ? 'Uploading...' : '🏆 Upload to Ranking'}
+                </button>
+              </div>
+            ) : (
+              <div style={{
+                background: 'rgba(0,230,118,0.08)', border: '1px solid rgba(0,230,118,0.2)',
+                borderRadius: 12, padding: '12px', marginBottom: 14,
+                fontSize: 13, fontWeight: 800, color: '#00e676',
+              }}>
+                ✅ Score submitted!
               </div>
             )}
 
