@@ -175,7 +175,7 @@ export default function ProfilePage() {
           {/* All — full width on top */}
           {(() => {
             const d = DIFF_CONFIG[0]
-            const entry = liveRanks[d.key]
+            const entry = dailyRank
             const hasResult = entry?.rank != null
             return (
               <div style={{
