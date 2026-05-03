@@ -10,22 +10,28 @@ export default function BottomNav() {
     <nav style={{
       position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
       width: '100%', maxWidth: 430,
-      background: 'rgba(30,30,30,0.95)',
+      background: 'rgba(15,15,25,0.95)',
       backdropFilter: 'blur(20px)',
-      borderTop: '1px solid #333',
+      borderTop: '1px solid rgba(255,255,255,0.06)',
       display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-      padding: '6px 0 16px',
+      padding: '8px 0 22px',
       zIndex: 50,
     }}>
-      <Link href="/" style={{ textDecoration: 'none' }}>
-        <div style={{ fontSize: 22 }}>🏠</div>
-      </Link>
-      <Link href="/ranking" style={{ textDecoration: 'none' }}>
-        <div style={{ fontSize: 22 }}>🏆</div>
-      </Link>
-      <Link href="/profile" style={{ textDecoration: 'none' }}>
-        <div style={{ fontSize: 22 }}>👤</div>
-      </Link>
+      {[
+        { href: '/', icon: '🏠' },
+        { href: '/ranking', icon: '🏆' },
+        { href: '/profile', icon: '👤' },
+      ].map(item => (
+        <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
+          <div style={{
+            fontSize: 22,
+            filter: path === item.href ? 'none' : 'grayscale(0.3) brightness(0.7)',
+            transition: 'filter 0.2s',
+          }}>
+            {item.icon}
+          </div>
+        </Link>
+      ))}
     </nav>
   )
 }
