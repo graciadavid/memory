@@ -3,10 +3,9 @@ import { useState } from 'react'
 
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
-const CREAM = '#FAF7F2'
 
 export default function RankingClient({ scores }: { scores: any[] }) {
-  const [filter, setFilter] = useState<'all' | 1 | 2 | 3>('all')
+  const [filter, setFilter] = useState<1 | 2 | 3>(1)
 
   const fmt = (ms: number) => {
     const m = Math.floor(ms / 60000)
@@ -16,14 +15,24 @@ export default function RankingClient({ scores }: { scores: any[] }) {
   }
 
   const diffColor = (d: number) => d === 1 ? '#2E7D32' : d === 2 ? '#E65100' : '#B71C1C'
-  const diffLabel = (d: number) => d === 1 ? 'Easy' : d === 2 ? 'Med' : 'Hard'
+  const diffLabel = (d: number) => d === 1 ? 'Easy' : d === 2 ? 'Medium' : 'Hard'
 
-  const filtered = filter === 'all'
-    ? scores
-    : scores.filter(s => s.packs?.difficulty === filter)
+  // Filter by difficulty and keep only best score per player
+  const filtered = scores
+    .filter(s => s.packs?.difficulty === filter)
+    .reduce((acc: any[], score) => {
+      const existing = acc.find(s => s.player_name === score.player_name)
+      if (!existing) {
+        acc.push(score)
+      } else if (score.time_ms < existing.time_ms) {
+        const idx = acc.indexOf(existing)
+        acc[idx] = score
+      }
+      return acc
+    }, [])
+    .sort((a, b) => a.time_ms - b.time_ms)
 
   const tabs = [
-    { key: 'all' as const, label: 'All', color: BROWN },
     { key: 1 as const, label: 'Easy', color: '#2E7D32' },
     { key: 2 as const, label: 'Medium', color: '#E65100' },
     { key: 3 as const, label: 'Hard', color: '#B71C1C' },
@@ -32,16 +41,15 @@ export default function RankingClient({ scores }: { scores: any[] }) {
   return (
     <>
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, padding: '0 16px 16px', overflowX: 'auto' }}>
+      <div style={{ display: 'flex', gap: 10, padding: '0 16px 16px' }}>
         {tabs.map(tab => (
           <button key={tab.key} onClick={() => setFilter(tab.key)} style={{
-            padding: '8px 16px', borderRadius: 20, border: 'none',
+            flex: 1, padding: '10px 8px', borderRadius: 14, border: 'none',
             background: filter === tab.key ? tab.color : '#fff',
             color: filter === tab.key ? '#fff' : `${BROWN}60`,
-            fontSize: 12, fontWeight: 800,
+            fontSize: 13, fontWeight: 800,
             fontFamily: 'inherit', cursor: 'pointer',
-            boxShadow: filter === tab.key ? `0 4px 0 ${tab.color}50` : `0 2px 8px ${BROWN}10`,
-            whiteSpace: 'nowrap', flexShrink: 0,
+            boxShadow: filter === tab.key ? `0 6px 0 ${tab.color}50` : `0 2px 8px ${BROWN}08`,
             transition: 'all 0.2s',
           }}>
             {tab.label}
@@ -51,14 +59,14 @@ export default function RankingClient({ scores }: { scores: any[] }) {
 
       {/* Headers */}
       <div style={{
-        display: 'grid', gridTemplateColumns: '44px 1fr 60px 100px',
+        display: 'grid', gridTemplateColumns: '44px 1fr 100px',
         padding: '0 16px 8px', gap: 8,
       }}>
-        {['#', 'Player', 'Level', 'Time'].map(h => (
+        {['#', 'Player', 'Time'].map((h, i) => (
           <div key={h} style={{
             fontSize: 10, fontWeight: 900, color: `${BROWN}40`,
             letterSpacing: 2, textTransform: 'uppercase',
-            textAlign: h === 'Time' ? 'center' : 'left',
+            textAlign: i === 2 ? 'center' : 'left',
           }}>{h}</div>
         ))}
       </div>
@@ -67,16 +75,16 @@ export default function RankingClient({ scores }: { scores: any[] }) {
       <div style={{ padding: '0 10px', display: 'flex', flexDirection: 'column', gap: 6 }}>
         {filtered.map((score, i) => (
           <div key={score.id} style={{
-            display: 'grid', gridTemplateColumns: '44px 1fr 60px 100px',
+            display: 'grid', gridTemplateColumns: '44px 1fr 100px',
             alignItems: 'center', gap: 8,
-            background: '#fff',
-            border: `1px solid ${BROWN}08`,
-            borderRadius: 14, padding: '12px 10px',
+            background: i === 0 ? `${GOLD}10` : '#fff',
+            border: `1px solid ${i === 0 ? GOLD + '30' : BROWN + '08'}`,
+            borderRadius: 14, padding: '14px 10px',
             boxShadow: `0 2px 8px ${BROWN}06`,
           }}>
             <div style={{
               fontSize: 15, fontWeight: 900, textAlign: 'center',
-              color: i === 0 ? GOLD : i === 1 ? '#888' : i === 2 ? '#A0522D' : `${BROWN}30`,
+              color: i === 0 ? GOLD : i === 1 ? '#888' : i === 2 ? '#A0522D' : `${BROWN}25`,
             }}>
               {i + 1}
             </div>
@@ -85,14 +93,6 @@ export default function RankingClient({ scores }: { scores: any[] }) {
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
               {score.player_name}
-            </div>
-            <div style={{
-              fontSize: 10, fontWeight: 900,
-              color: diffColor(score.packs?.difficulty),
-              background: `${diffColor(score.packs?.difficulty)}15`,
-              borderRadius: 6, padding: '3px 6px', textAlign: 'center',
-            }}>
-              {diffLabel(score.packs?.difficulty)}
             </div>
             <div style={{
               fontSize: 13, fontWeight: 900, color: BROWN,
