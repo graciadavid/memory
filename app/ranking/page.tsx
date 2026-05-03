@@ -27,9 +27,7 @@ export default async function RankingPage() {
           World Ranking
         </div>
       </div>
-      <div style={{ flex: 1, overflowY: 'auto', paddingBottom: 80 }}>
-        <RankingClient scores={scores || []} />
-      </div>
+      <RankingClient scores={scores || []} />
     </main>
   )
 }
