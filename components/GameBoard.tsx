@@ -5,6 +5,11 @@ import ResultOverlay from './ResultOverlay'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const BUCKET = 'storage'
+const EAGLE = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/eagle.png`
+
+const GOLD = '#C8960C'
+const BROWN = '#4A2C0A'
+const CREAM = '#FAF7F2'
 
 function imgUrl(filename: string) {
   return `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${filename}`
@@ -43,7 +48,7 @@ function Confetti() {
     const ctx = canvas.getContext('2d')!
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
-    const colors = ['#FF4D6D','#ff8c00','#FFD700','#00e676','#2979ff','#e040fb']
+    const colors = [GOLD, BROWN, '#FF4D6D', '#ff8c00', '#FFD700', '#00e676']
     const particles = Array.from({ length: 150 }, (_, i) => ({
       id: i, x: Math.random() * canvas.width, y: -20,
       vx: (Math.random() - 0.5) * 5, vy: Math.random() * 4 + 2,
@@ -84,8 +89,6 @@ export default function GameBoard({ pack }: { pack: any }) {
   const startRef = useRef<number>(0)
   const rafRef = useRef<number>(0)
   const msRef = useRef<number>(0)
-
-  const backColor = pack.difficulty === 1 ? '#00c853' : pack.difficulty === 2 ? '#ff8c00' : '#FF4D6D'
 
   const buildCards = () => {
     const built: Card[] = []
@@ -202,32 +205,44 @@ export default function GameBoard({ pack }: { pack: any }) {
 
   return (
     <main style={{
-      height: '100dvh', background: '#f2f2f2',
+      height: '100dvh',
+      background: `linear-gradient(180deg, #FAF7F2 0%, #F0EBE1 100%)`,
       display: 'flex', flexDirection: 'column',
       maxWidth: 430, margin: '0 auto',
       overflow: 'hidden', fontFamily: 'var(--font-nunito), sans-serif',
       touchAction: 'none',
     }}>
 
-      {/* Timer centrado — sin logo ni label */}
+      {/* Header — minimal */}
       <div style={{
-        padding: '14px 14px 6px',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '14px 16px 6px',
       }}>
+        <div style={{ fontSize: 16, fontWeight: 900 }}>
+          <span style={{ color: GOLD }}>Mem</span>
+          <span style={{ color: BROWN }}>Genius</span>
+        </div>
+        <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 1 }}>
+          {pack.title}
+        </div>
+      </div>
+
+      {/* Timer — centered */}
+      <div style={{ textAlign: 'center', padding: '2px 0 6px' }}>
         <div style={{
-          fontSize: 32, fontWeight: 700, fontFamily: 'monospace',
-          color: running ? '#FF4D6D' : '#ccc',
+          fontSize: 28, fontWeight: 700, fontFamily: 'monospace',
+          color: running ? BROWN : `${BROWN}25`,
           transition: 'color 0.3s', letterSpacing: 2,
         }}>{fmt(ms)}</div>
       </div>
 
       {/* Progress */}
       <div style={{ padding: '0 14px 8px' }}>
-        <div style={{ height: 3, background: '#ddd', borderRadius: 3, overflow: 'hidden', marginBottom: 4 }}>
+        <div style={{ height: 3, background: `${BROWN}12`, borderRadius: 3, overflow: 'hidden', marginBottom: 5 }}>
           <div style={{
             height: '100%',
             width: `${(matched.length / pack.pairs.length) * 100}%`,
-            background: `linear-gradient(90deg, ${backColor}, ${backColor}99)`,
+            background: `linear-gradient(90deg, ${GOLD}, ${BROWN})`,
             borderRadius: 3, transition: 'width 0.5s',
           }} />
         </div>
@@ -235,8 +250,9 @@ export default function GameBoard({ pack }: { pack: any }) {
           {pack.pairs.map((_: any, i: number) => (
             <div key={i} style={{
               width: 8, height: 8, borderRadius: '50%',
-              background: matched.length > i ? backColor : '#ddd',
+              background: matched.length > i ? GOLD : `${BROWN}15`,
               transition: 'all 0.3s',
+              boxShadow: matched.length > i ? `0 0 6px ${GOLD}` : 'none',
             }} />
           ))}
         </div>
@@ -245,11 +261,12 @@ export default function GameBoard({ pack }: { pack: any }) {
       {/* Grid */}
       <div style={{
         display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 6, padding: '0 10px', flex: 1, minHeight: 0,
+        gap: 7, padding: '0 10px', flex: 1, minHeight: 0,
       }}>
         {cards.map(card => {
           const isFlipped = flipped.includes(card.uid) || matched.includes(card.pairId)
           const isMatched = matched.includes(card.pairId)
+          const isWrong = wrong.includes(card.uid)
 
           return (
             <div key={card.uid} onClick={() => flip(card.uid)}
@@ -259,40 +276,59 @@ export default function GameBoard({ pack }: { pack: any }) {
                 transformStyle: 'preserve-3d',
                 transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                 transition: 'transform 0.45s cubic-bezier(0.4,0,0.2,1)',
-                borderRadius: 12,
+                borderRadius: 14,
               }}>
-                {/* Back */}
+
+                {/* Back — eagle colors, eagle image */}
                 <div style={{
-                  position: 'absolute', inset: 0, borderRadius: 12,
+                  position: 'absolute', inset: 0, borderRadius: 14,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
-                  background: backColor,
+                  background: `linear-gradient(145deg, ${BROWN}, #2C1A05)`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  boxShadow: `0 3px 10px ${BROWN}30`,
+                  overflow: 'hidden',
                 }}>
-                  <span style={{ fontSize: 32, opacity: 0.4 }}>🧠</span>
+                  {/* Gold border accent */}
+                  <div style={{
+                    position: 'absolute', inset: 2, borderRadius: 12,
+                    border: `1px solid ${GOLD}30`,
+                  }} />
+                  <img
+                    src={EAGLE}
+                    alt=""
+                    style={{
+                      width: '88%', height: '88%',
+                      objectFit: 'contain',
+                      filter: 'brightness(0.85) drop-shadow(0 2px 6px rgba(0,0,0,0.3))',
+                    }}
+                  />
                 </div>
 
                 {/* Front */}
                 <div style={{
-                  position: 'absolute', inset: 0, borderRadius: 12,
+                  position: 'absolute', inset: 0, borderRadius: 14,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)', overflow: 'hidden',
-                  outline: isMatched ? `3px solid ${backColor}` : 'none',
-                  outlineOffset: '-2px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  background: '#fff',
+                  boxShadow: isMatched
+                    ? `0 3px 10px ${GOLD}50, inset 0 0 0 2.5px ${GOLD}`
+                    : `0 3px 10px ${BROWN}15`,
+                  filter: isWrong ? 'brightness(0.85)' : 'none',
+                  transition: 'box-shadow 0.3s',
                 }}>
                   <img
                     src={card.img} alt={card.label}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                 </div>
+
               </div>
             </div>
           )
         })}
       </div>
 
-      <div style={{ height: 4 }} />
+      <div style={{ height: 6 }} />
 
       {done && <Confetti />}
       {done && (
