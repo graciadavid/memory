@@ -1,6 +1,7 @@
 'use client'
-import { useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
+import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
 const GOLD = '#C8960C'
@@ -29,9 +30,7 @@ function fmt(ms: number) {
 }
 
 function Avatar({ name, photo, size = 72 }: { name: string, photo?: string, size?: number }) {
-  if (photo) {
-    return <img src={photo} alt="avatar" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', border: `3px solid ${GOLD}` }} />
-  }
+  if (photo) return <img src={photo} alt="avatar" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', border: `3px solid ${GOLD}` }} />
   return (
     <div style={{
       width: size, height: size, borderRadius: '50%',
@@ -45,9 +44,71 @@ function Avatar({ name, photo, size = 72 }: { name: string, photo?: string, size
   )
 }
 
+interface BestEntry { rank: number | null, time: number | null }
+
 export default function ProfilePage() {
   const { profile, loaded, save } = usePlayer()
   const fileRef = useRef<HTMLInputElement>(null)
+  const [liveRanks, setLiveRanks] = useState<Record<string, BestEntry>>({})
+  const [loadingRanks, setLoadingRanks] = useState(true)
+
+  useEffect(() => {
+    if (!profile?.name) return
+
+    const fetchLiveRanks = async () => {
+      setLoadingRanks(true)
+      const result: Record<string, BestEntry> = {}
+
+      for (const [diff, val] of Object.entries(DIFF_PACKS)) {
+        let bestRank: number | null = null
+        let bestTime: number | null = null
+
+        for (const slug of val.packs) {
+          // Get this player's best time for this pack
+          const { data: myScores } = await supabase
+            .from('scores')
+            .select('time_ms, packs!inner(slug)')
+            .eq('player_name', profile.name)
+            .eq('packs.slug', slug)
+            .order('time_ms', { ascending: true })
+            .limit(1)
+
+          if (!myScores || myScores.length === 0) continue
+
+          const myBestTime = myScores[0].time_ms
+
+          // Count how many players beat that time
+          const { data: packData } = await supabase
+            .from('packs')
+            .select('id')
+            .eq('slug', slug)
+            .single()
+
+          if (!packData) continue
+
+          const { count } = await supabase
+            .from('scores')
+            .select('*', { count: 'exact', head: true })
+            .eq('pack_id', packData.id)
+            .lt('time_ms', myBestTime)
+
+          const rank = (count ?? 0) + 1
+
+          if (bestRank === null || rank < bestRank) {
+            bestRank = rank
+            bestTime = myBestTime
+          }
+        }
+
+        result[diff] = { rank: bestRank, time: bestTime }
+      }
+
+      setLiveRanks(result)
+      setLoadingRanks(false)
+    }
+
+    fetchLiveRanks()
+  }, [profile?.name])
 
   if (!loaded) return null
 
@@ -75,20 +136,6 @@ export default function ProfilePage() {
 
   const today = new Date().toISOString().split('T')[0]
   const playedToday = profile.lastPlayedDate === today
-
-  const bestByDiff = Object.entries(DIFF_PACKS).map(([key, val]) => {
-    const entries = val.packs
-      .map(slug => ({
-        rank: profile.bestRanks?.[slug],
-        time: profile.bestTimes?.[slug],
-      }))
-      .filter(e => e.rank && e.time)
-
-    if (entries.length === 0) return { key, ...val, rank: null, time: null }
-
-    const best = entries.reduce((a, b) => (a.rank! < b.rank! ? a : b))
-    return { key, ...val, rank: best.rank!, time: best.time! }
-  })
 
   return (
     <main style={{
@@ -144,7 +191,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Best positions */}
+        {/* Best positions — live from Supabase */}
         <div style={{
           background: '#fff', borderRadius: 20, padding: '20px 22px',
           boxShadow: `0 2px 12px ${BROWN}10`,
@@ -153,24 +200,27 @@ export default function ProfilePage() {
             Best Positions
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            {bestByDiff.map(d => (
-              <div key={d.key} style={{
-                flex: 1, textAlign: 'center',
-                background: `${d.color}08`,
-                border: `1px solid ${d.color}20`,
-                borderRadius: 14, padding: '14px 8px',
-              }}>
-                <div style={{ fontSize: 10, fontWeight: 900, color: d.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>
-                  {d.label}
+            {Object.entries(DIFF_PACKS).map(([key, val]) => {
+              const entry = liveRanks[key]
+              return (
+                <div key={key} style={{
+                  flex: 1, textAlign: 'center',
+                  background: `${val.color}08`,
+                  border: `1px solid ${val.color}20`,
+                  borderRadius: 14, padding: '14px 8px',
+                }}>
+                  <div style={{ fontSize: 10, fontWeight: 900, color: val.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>
+                    {val.label}
+                  </div>
+                  <div style={{ fontSize: 26, fontWeight: 900, color: entry?.rank ? BROWN : `${BROWN}20`, letterSpacing: -1 }}>
+                    {loadingRanks ? '...' : entry?.rank ? `#${entry.rank}` : '—'}
+                  </div>
+                  <div style={{ fontSize: 11, fontFamily: 'monospace', fontWeight: 700, color: entry?.time ? GOLD : `${BROWN}20`, marginTop: 4 }}>
+                    {loadingRanks ? '' : entry?.time ? fmt(entry.time) : '—'}
+                  </div>
                 </div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: d.rank ? BROWN : `${BROWN}20`, letterSpacing: -1 }}>
-                  {d.rank ? `#${d.rank}` : '—'}
-                </div>
-                <div style={{ fontSize: 11, fontFamily: 'monospace', fontWeight: 700, color: d.time ? GOLD : `${BROWN}20`, marginTop: 4 }}>
-                  {d.time ? fmt(d.time) : '—'}
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
 
