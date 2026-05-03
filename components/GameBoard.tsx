@@ -202,7 +202,7 @@ export default function GameBoard({ pack }: { pack: any }) {
 
   return (
     <main style={{
-      height: '100dvh', background: '#0c0c14',
+      height: '100dvh', background: '#f0f0f0',
       display: 'flex', flexDirection: 'column',
       maxWidth: 430, margin: '0 auto',
       overflow: 'hidden', fontFamily: 'var(--font-nunito), sans-serif',
@@ -217,29 +217,29 @@ export default function GameBoard({ pack }: { pack: any }) {
             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14,
           }}>🧠</div>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 900, color: 'white', lineHeight: 1 }}>
+            <div style={{ fontSize: 15, fontWeight: 900, color: '#111', lineHeight: 1 }}>
               Pair<span style={{ color: '#FF4D6D' }}>IQ</span>
             </div>
-            <div style={{ fontSize: 9, fontWeight: 700, color: '#444', letterSpacing: 2, textTransform: 'uppercase' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: '#999', letterSpacing: 2, textTransform: 'uppercase' }}>
               {pack.title}
             </div>
           </div>
         </div>
-        <div style={{ fontSize: 11, fontWeight: 800, color: '#444' }}>{difficultyLabel}</div>
+        <div style={{ fontSize: 11, fontWeight: 800, color: '#999' }}>{difficultyLabel}</div>
       </div>
 
       {/* Timer */}
       <div style={{ padding: '2px 14px 4px' }}>
         <div style={{
           fontSize: 26, fontWeight: 700, fontFamily: 'monospace',
-          color: running ? '#FF4D6D' : '#222',
+          color: running ? '#FF4D6D' : '#ccc',
           transition: 'color 0.3s', letterSpacing: 1,
         }}>{fmt(ms)}</div>
       </div>
 
       {/* Progress */}
       <div style={{ padding: '0 14px 6px' }}>
-        <div style={{ height: 3, background: '#161622', borderRadius: 3, overflow: 'hidden', marginBottom: 4 }}>
+        <div style={{ height: 3, background: '#ddd', borderRadius: 3, overflow: 'hidden', marginBottom: 4 }}>
           <div style={{
             height: '100%',
             width: `${(matched.length / pack.pairs.length) * 100}%`,
@@ -251,8 +251,7 @@ export default function GameBoard({ pack }: { pack: any }) {
           {pack.pairs.map((_: any, i: number) => (
             <div key={i} style={{
               width: 8, height: 8, borderRadius: '50%',
-              background: matched.length > i ? '#FF4D6D' : '#1a1a28',
-              border: matched.length > i ? 'none' : '1px solid #222',
+              background: matched.length > i ? '#FF4D6D' : '#ddd',
               transition: 'all 0.3s',
             }} />
           ))}
@@ -278,20 +277,25 @@ export default function GameBoard({ pack }: { pack: any }) {
                 transition: 'transform 0.45s cubic-bezier(0.4,0,0.2,1)',
                 borderRadius: 12,
               }}>
+                {/* Back — pastel cálido */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 12,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   background: 'linear-gradient(145deg, #ffecd2, #fcb69f)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 }}>
-                  <span style={{ fontSize: 36, opacity: 0.5 }}>🧠</span>
+                  <span style={{ fontSize: 36, opacity: 0.6 }}>🧠</span>
                 </div>
+
+                {/* Front */}
                 <div style={{
                   position: 'absolute', inset: 0, borderRadius: 12,
                   backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)', overflow: 'hidden',
-                  outline: isMatched ? '3px solid #00e676' : 'none',
+                  outline: isMatched ? '3px solid #00c853' : 'none',
                   outlineOffset: '-2px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 }}>
                   <img
                     src={card.img} alt={card.label}
