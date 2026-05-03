@@ -240,10 +240,11 @@ export default function ProfilePage() {
               return (
                 <div key={a.key} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                   <div style={{
-                    width: 52, height: 52, borderRadius: 13, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: unlocked ? `linear-gradient(135deg, ${GOLD}, ${BROWN})` : '#f0ebe1',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    width: 52, height: 52, borderRadius: 13, flexShrink: 0,
+                    background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     boxShadow: unlocked ? `0 4px 10px ${GOLD}40` : 'none',
+                    filter: unlocked ? 'none' : 'grayscale(1) opacity(0.25)',
+                    border: unlocked ? `2px solid ${GOLD}` : `2px solid ${BROWN}10`,
                   }}>
                     <img src={a.img} alt={a.label} style={{ width: '90%', height: '90%', objectFit: 'contain' }} />
                   </div>
