@@ -22,6 +22,7 @@ export default async function PlayPage({ params }: { params: Promise<{ slug: str
     .single()
 
   const isDaily = daily?.pack_slug === slug
+  console.log('SERVER: slug:', slug, 'daily slug:', daily?.pack_slug, 'isDaily:', isDaily)
 
   return <GameBoard pack={{ ...pack, isDaily }} />
 }
