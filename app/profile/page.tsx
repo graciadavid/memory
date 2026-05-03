@@ -156,8 +156,43 @@ export default function ProfilePage() {
           <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
             Best Positions
           </div>
+          {/* All — full width on top */}
+          {(() => {
+            const d = DIFF_CONFIG[0]
+            const entry = liveRanks[d.key]
+            const hasResult = entry?.rank != null
+            return (
+              <div style={{
+                background: `${d.color}08`,
+                border: `1px solid ${d.color}20`,
+                borderRadius: 14, padding: '14px 16px',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                marginBottom: 8,
+              }}>
+                <div>
+                  <div style={{ fontSize: 9, fontWeight: 900, color: `${d.color}80`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>{d.label}</div>
+                  <div style={{ fontSize: 28, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20`, letterSpacing: -1 }}>
+                    {loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}
+                  </div>
+                  <div style={{ fontSize: 11, fontFamily: 'monospace', fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20`, marginTop: 2 }}>
+                    {loadingRanks ? '' : hasResult ? fmt(entry.time!) : '—'}
+                  </div>
+                </div>
+                {hasResult && (
+                  <button onClick={() => shareCategory(d.key, d.label, d.color)} style={{
+                    padding: '10px 16px', borderRadius: 12, border: 'none',
+                    background: BROWN, color: '#fff',
+                    fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+                    boxShadow: `0 4px 0 ${BROWN}50`,
+                  }}>Share</button>
+                )}
+              </div>
+            )
+          })()}
+
+          {/* Easy Medium Hard — 3 columns */}
           <div style={{ display: 'flex', gap: 8 }}>
-            {DIFF_CONFIG.map(d => {
+            {DIFF_CONFIG.slice(1).map(d => {
               const entry = liveRanks[d.key]
               const hasResult = entry?.rank != null
               return (
@@ -165,30 +200,25 @@ export default function ProfilePage() {
                   flex: 1, textAlign: 'center',
                   background: `${d.color}08`,
                   border: `1px solid ${d.color}20`,
-                  borderRadius: 14, padding: '12px 4px',
+                  borderRadius: 14, padding: '14px 8px',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
                 }}>
                   <div style={{ fontSize: 9, fontWeight: 900, color: d.color, letterSpacing: 1, textTransform: 'uppercase' }}>
                     {d.label}
                   </div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20`, letterSpacing: -1 }}>
+                  <div style={{ fontSize: 24, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20`, letterSpacing: -1 }}>
                     {loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}
                   </div>
                   <div style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20` }}>
                     {loadingRanks ? '' : hasResult ? fmt(entry.time!) : '—'}
                   </div>
                   {hasResult && (
-                    <button
-                      onClick={() => shareCategory(d.key, d.label, d.color)}
-                      style={{
-                        marginTop: 4,
-                        width: 28, height: 28, borderRadius: 8, border: 'none',
-                        background: d.color, color: '#fff',
-                        fontSize: 12, cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        flexShrink: 0,
-                      }}
-                    >↑</button>
+                    <button onClick={() => shareCategory(d.key, d.label, d.color)} style={{
+                      marginTop: 4, padding: '6px 10px', borderRadius: 8, border: 'none',
+                      background: d.color, color: '#fff',
+                      fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+                      boxShadow: `0 3px 0 ${d.color}50`,
+                    }}>Share</button>
                   )}
                 </div>
               )
