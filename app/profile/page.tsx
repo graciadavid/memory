@@ -110,12 +110,19 @@ export default function ProfilePage() {
     }}>
       {/* Header */}
       <div style={{
-        background: `linear-gradient(rgba(74,44,10,0.7), rgba(74,44,10,0.85)), url(https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/amazon-rainforest.png)`,
+        background: `url(https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/northern-lights.png)`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        padding: '28px 24px 20px',
+        backgroundPosition: 'center top',
+        padding: '44px 24px 28px',
         borderRadius: '0 0 24px 24px',
+        position: 'relative',
+        overflow: 'hidden',
       }}>
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.45) 100%)',
+      }} />
+      <div style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
           <Avatar name={profile.name} photo={profile.avatar} size={72} />
           <div>
@@ -129,6 +136,7 @@ export default function ProfilePage() {
           color: 'white', fontSize: 12, fontWeight: 800,
           padding: '7px 16px', borderRadius: 20, fontFamily: 'inherit', cursor: 'pointer',
         }}>Edit photo</button>
+      </div>
       </div>
 
       <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
