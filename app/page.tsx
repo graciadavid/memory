@@ -13,30 +13,40 @@ async function getRandomPack(difficulty: number) {
 
 async function getDailyPack() {
   const today = new Date().toISOString().split('T')[0]
-  
-  const { data } = await supabase
+
+  // Get daily slug
+  const { data: daily } = await supabase
     .from('daily_challenges')
-    .select('pack_slug, packs(title, difficulty)')
+    .select('pack_slug')
     .eq('date', today)
     .single()
 
-  if (data) return data
+  let slug = daily?.pack_slug
 
   // Create one if missing
-  const { data: allPacks } = await supabase
+  if (!slug) {
+    const { data: allPacks } = await supabase
+      .from('packs')
+      .select('id, slug, title, difficulty')
+    if (!allPacks) return null
+    const idx = getDailyPackIndex(allPacks.length)
+    const pack = allPacks[idx]
+    await supabase.from('daily_challenges').upsert({
+      date: today,
+      pack_id: pack.id,
+      pack_slug: pack.slug,
+    })
+    slug = pack.slug
+  }
+
+  // Get pack details separately
+  const { data: pack } = await supabase
     .from('packs')
-    .select('id, slug, title, difficulty')
+    .select('slug, title, difficulty')
+    .eq('slug', slug)
+    .single()
 
-  if (!allPacks) return null
-  const idx = getDailyPackIndex(allPacks.length)
-  const pack = allPacks[idx]
-
-  await supabase.from('daily_challenges').upsert({
-    date: today,
-    pack_id: pack.id,
-    pack_slug: pack.slug,
-  })
-
+  if (!pack) return null
   return { pack_slug: pack.slug, packs: { title: pack.title, difficulty: pack.difficulty } }
 }
 
