@@ -17,14 +17,14 @@ export default function BottomNav() {
       padding: '6px 0 16px',
       zIndex: 50,
     }}>
-      <Link href="/" style={{ textDecoration: 'none', opacity: path === '/' ? 1 : 0.4 }}>
-        <div style={{ fontSize: 20 }}>🏠</div>
+      <Link href="/" style={{ textDecoration: 'none' }}>
+        <div style={{ fontSize: 22 }}>🏠</div>
       </Link>
-      <Link href="/ranking" style={{ textDecoration: 'none', opacity: path === '/ranking' ? 1 : 0.4 }}>
-        <div style={{ fontSize: 20 }}>🏆</div>
+      <Link href="/ranking" style={{ textDecoration: 'none' }}>
+        <div style={{ fontSize: 22 }}>🏆</div>
       </Link>
-      <Link href="/profile" style={{ textDecoration: 'none', opacity: path === '/profile' ? 1 : 0.4 }}>
-        <div style={{ fontSize: 20 }}>👤</div>
+      <Link href="/profile" style={{ textDecoration: 'none' }}>
+        <div style={{ fontSize: 22 }}>👤</div>
       </Link>
     </nav>
   )

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   ms: number
@@ -15,6 +16,7 @@ interface Props {
 export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }: Props) {
   const { profile, recordGame } = usePlayer()
   const [shared, setShared] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     if (!profile?.name) return
@@ -48,6 +50,10 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
     setShared(true)
   }
 
+  const newGame = () => {
+    router.push('/')
+  }
+
   return (
     <>
       <div style={{
@@ -58,44 +64,49 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
       }}>
         <div style={{
           background: '#fff', borderRadius: 28,
-          padding: '24px 20px', width: '100%', maxWidth: 340,
+          padding: '28px 22px', width: '100%', maxWidth: 340,
           textAlign: 'center',
           boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
         }}>
-          <div style={{ fontSize: 40, marginBottom: 4 }}>🎉</div>
-          <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: diffColor, textTransform: 'uppercase', marginBottom: 4 }}>
+          {/* Result */}
+          <div style={{ fontSize: 44, marginBottom: 6 }}>🎉</div>
+          <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: diffColor, textTransform: 'uppercase', marginBottom: 6 }}>
             Completed!
           </div>
-          <div style={{ fontSize: 38, fontWeight: 700, color: '#111', fontFamily: 'monospace', letterSpacing: 1, marginBottom: 2 }}>
+          <div style={{ fontSize: 42, fontWeight: 700, color: '#111', fontFamily: 'monospace', letterSpacing: 1, marginBottom: 16 }}>
             {fmt(ms)}
-          </div>
-          <div style={{ fontSize: 11, color: '#aaa', marginBottom: 14 }}>
-            {diffLabel} · #{pack.slug}
           </div>
 
           {/* Rank */}
           <div style={{
             background: `${diffColor}10`, border: `1px solid ${diffColor}30`,
-            borderRadius: 14, padding: '10px 14px', marginBottom: 10,
+            borderRadius: 16, padding: '14px', marginBottom: 20,
           }}>
-            <div style={{ fontSize: 22, fontWeight: 900, color: diffColor }}>
+            <div style={{ fontSize: 26, fontWeight: 900, color: diffColor }}>
               🏆 {worldRank ? `#${worldRank} World` : '...'}
             </div>
-            <div style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>{pack.title}</div>
+            <div style={{ fontSize: 11, color: '#aaa', marginTop: 4 }}>
+              {diffLabel} · {pack.title}
+            </div>
           </div>
 
-          {/* Saved confirmation */}
-          <div style={{
-            fontSize: 12, color: '#00c853', fontWeight: 700, marginBottom: 12,
+          {/* Share */}
+          <button onClick={share} style={{
+            width: '100%', padding: '14px', borderRadius: 14, border: 'none',
+            background: shared ? '#f0f0f0' : '#111',
+            color: shared ? '#aaa' : 'white',
+            fontSize: 14, fontWeight: 800, fontFamily: 'inherit',
+            cursor: 'pointer', marginBottom: 12,
+            transition: 'all 0.2s',
           }}>
-            ✅ Saved as {profile?.name}
-          </div>
+            {shared ? '✅ Shared!' : '🔗 Share my result'}
+          </button>
 
           {/* Fun fact */}
           {lastFact && (
             <div style={{
               background: '#f8f8f8', border: '1px solid #eee',
-              borderRadius: 14, padding: '10px 14px', marginBottom: 14, textAlign: 'left',
+              borderRadius: 14, padding: '12px 14px', marginBottom: 16, textAlign: 'left',
             }}>
               <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: 2, color: '#aaa', textTransform: 'uppercase', marginBottom: 4 }}>
                 💡 Did you know?
@@ -104,22 +115,23 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             </div>
           )}
 
-          {/* Share */}
-          <button onClick={share} style={{
-            width: '100%', padding: '12px', borderRadius: 12, border: 'none',
-            background: shared ? '#eee' : '#111',
-            color: shared ? '#aaa' : 'white',
-            fontSize: 13, fontWeight: 800, fontFamily: 'inherit',
-            cursor: 'pointer', marginBottom: 10,
-          }}>
-            {shared ? '✅ Shared!' : '🔗 Share my result'}
-          </button>
-
-          <button onClick={onReset} style={{
-            width: '100%', padding: '11px', borderRadius: 12, border: 'none',
-            background: '#f0f0f0', color: '#888', fontSize: 13, fontWeight: 800,
-            fontFamily: 'inherit', cursor: 'pointer',
-          }}>↩️ Play again</button>
+          {/* Actions */}
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button onClick={onReset} style={{
+              flex: 1, padding: '13px', borderRadius: 14, border: 'none',
+              background: '#f0f0f0', color: '#555',
+              fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+            }}>
+              ↩️ Again
+            </button>
+            <button onClick={newGame} style={{
+              flex: 1, padding: '13px', borderRadius: 14, border: 'none',
+              background: diffColor, color: 'white',
+              fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+            }}>
+              🎲 New game
+            </button>
+          </div>
         </div>
       </div>
 
@@ -135,13 +147,13 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
         zIndex: 300,
       }}>
         <Link href="/" style={{ textDecoration: 'none' }}>
-          <div style={{ fontSize: 20 }}>🏠</div>
+          <div style={{ fontSize: 22 }}>🏠</div>
         </Link>
         <Link href="/ranking" style={{ textDecoration: 'none' }}>
-          <div style={{ fontSize: 20 }}>🏆</div>
+          <div style={{ fontSize: 22 }}>🏆</div>
         </Link>
         <Link href="/profile" style={{ textDecoration: 'none' }}>
-          <div style={{ fontSize: 20 }}>👤</div>
+          <div style={{ fontSize: 22 }}>👤</div>
         </Link>
       </nav>
     </>
