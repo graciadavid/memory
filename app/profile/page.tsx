@@ -54,60 +54,12 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!profile?.name) return
-
-    const fetchLiveRanks = async () => {
-      setLoadingRanks(true)
-      const result: Record<string, BestEntry> = {}
-
-      for (const [diff, val] of Object.entries(DIFF_PACKS)) {
-        let bestRank: number | null = null
-        let bestTime: number | null = null
-
-        for (const slug of val.packs) {
-          // Get this player's best time for this pack
-          const { data: myScores } = await supabase
-            .from('scores')
-            .select('time_ms, packs!inner(slug)')
-            .eq('player_name', profile.name)
-            .eq('packs.slug', slug)
-            .order('time_ms', { ascending: true })
-            .limit(1)
-
-          if (!myScores || myScores.length === 0) continue
-
-          const myBestTime = myScores[0].time_ms
-
-          // Count how many players beat that time
-          const { data: packData } = await supabase
-            .from('packs')
-            .select('id')
-            .eq('slug', slug)
-            .single()
-
-          if (!packData) continue
-
-          const { count } = await supabase
-            .from('scores')
-            .select('*', { count: 'exact', head: true })
-            .eq('pack_id', packData.id)
-            .lt('time_ms', myBestTime)
-
-          const rank = (count ?? 0) + 1
-
-          if (bestRank === null || rank < bestRank) {
-            bestRank = rank
-            bestTime = myBestTime
-          }
-        }
-
-        result[diff] = { rank: bestRank, time: bestTime }
-      }
-
-      setLiveRanks(result)
-      setLoadingRanks(false)
-    }
-
-    fetchLiveRanks()
+    import('@/app/profile/RanksFetcher').then(({ fetchLiveRanks }) => {
+      fetchLiveRanks(profile.name).then(ranks => {
+        setLiveRanks(ranks)
+        setLoadingRanks(false)
+      })
+    })
   }, [profile?.name])
 
   if (!loaded) return null
