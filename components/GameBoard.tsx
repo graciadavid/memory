@@ -227,7 +227,7 @@ export default function GameBoard({ pack }: { pack: any }) {
     }}>
 
       {/* Tutorial */}
-      {showTutorial && <Tutorial onDone={dismissTutorial} />}
+      {showTutorial && <Tutorial pairs={pack.pairs} onDone={dismissTutorial} />}
 
       {/* Header */}
       <div style={{ textAlign: 'center', padding: '14px 16px 4px' }}>
