@@ -1,4 +1,6 @@
 import HomeClient from '@/components/HomeClient'
+
+export const revalidate = 0
 import { supabase } from '@/lib/supabase'
 import { getDailyPackIndex } from '@/lib/dailyChallenge'
 
