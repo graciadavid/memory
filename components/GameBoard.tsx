@@ -177,7 +177,14 @@ export default function GameBoard({ pack }: { pack: any }) {
   }
 
   const playMatch = () => {
-    try { const ctx = new AudioContext(); playTone(880, 0, 0.3, 0.3, ctx); playTone(1100, 0.1, 0.3, 0.2, ctx) } catch(e) {}
+    try {
+      const ctx = new AudioContext()
+      // Rich chord — root + major third + fifth
+      playTone(523, 0, 0.4, 0.2, ctx)    // C5
+      playTone(659, 0.05, 0.4, 0.2, ctx) // E5
+      playTone(784, 0.1, 0.5, 0.25, ctx) // G5
+      playTone(1047, 0.15, 0.4, 0.15, ctx) // C6
+    } catch(e) {}
   }
   const playWrong = () => {
     try { const ctx = new AudioContext(); playTone(220, 0, 0.3, 0.2, ctx) } catch(e) {}
