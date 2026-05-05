@@ -64,27 +64,16 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
         overflow: 'hidden', paddingBottom: 80,
       }}>
 
-        {/* Brain mascot */}
-        <img
-          src={BRAIN}
-          alt=""
-          style={{
-            width: 110, height: 110,
-            objectFit: 'contain',
-            marginTop: 28,
-            animation: 'floatBrain 3s ease-in-out infinite',
-            filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.1))',
-          }}
-        />
-
-        {/* Logo image */}
+        {/* Logo — brain + name */}
         <img
           src={LOGO}
           alt="MemGenius"
           style={{
-            height: 70,
+            height: 180,
             objectFit: 'contain',
-            marginTop: 8,
+            marginTop: 20,
+            animation: 'floatBrain 3s ease-in-out infinite',
+            filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.1))',
           }}
         />
 
