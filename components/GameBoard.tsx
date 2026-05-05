@@ -254,11 +254,11 @@ export default function GameBoard({ pack }: { pack: any }) {
         {/* Restart button — green, right */}
         <button onClick={reset} style={{
           width: 44, height: 44, borderRadius: '50%',
-          background: '#2E7D32',
+          background: '#4CAF50',
           border: 'none',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', fontSize: 22,
-          boxShadow: '0 4px 0 #1B5E20',
+          cursor: 'pointer', fontSize: 22, color: '#fff',
+          boxShadow: 'none',
           flexShrink: 0,
         }}>↺</button>
       </div>
