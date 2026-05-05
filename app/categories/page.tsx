@@ -104,6 +104,7 @@ export default async function CategoriesPage() {
                   width: 52, height: 52, borderRadius: '50%',
                   overflow: 'hidden', flexShrink: 0,
                   boxShadow: `0 4px 12px ${cat.color}30`,
+                  border: '3px solid #4A2C0A',
                 }}>
                   <img src={cat.img} alt={cat.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 </div>
@@ -126,7 +127,7 @@ export default async function CategoriesPage() {
                       border: `1px solid ${BROWN}08`,
                     }}>
                       <div style={{ width: 68, height: 68, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 8 }}>
-                        <div style={{ width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                        <div style={{ width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, border: '3px solid #4A2C0A' }}>
                           <img
                             src={PACK_IMGS[pack.slug] || cat.img}
                             alt={pack.title}
