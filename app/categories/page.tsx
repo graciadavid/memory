@@ -45,7 +45,7 @@ const CATEGORIES = [
   {
     key: 'everyday',
     label: 'Everyday',
-    img: `${BASE}/key.png`,
+    img: `${BASE}/umbrella.png`,
     color: '#558B2F',
     slugs: ['objects-uses'],
   },
@@ -53,15 +53,15 @@ const CATEGORIES = [
 
 const PACK_IMGS: Record<string, string> = {
   'monuments-countries': `${BASE}/eiffel-tower.png`,
-  'cities-skylines': `${BASE}/new-york-skyline.png`,
-  'skyscrapers-cities': `${BASE}/burj-khalifa.png`,
+  'cities-skylines': `${BASE}/tokyo-skyline.png`,
+  'skyscrapers-cities': `${BASE}/empire-state.png`,
   'phenomena-locations': `${BASE}/northern-lights.png`,
   'civilizations-landmarks': `${BASE}/great-wall.png`,
   'inventions-inventors': `${BASE}/light-bulb.png`,
   'instruments-genres': `${BASE}/grand-piano.png`,
-  'foods-monuments': `${BASE}/pizza.png`,
-  'animals-habitats': `${BASE}/jaguar.png`,
-  'objects-uses': `${BASE}/key.png`,
+  'foods-monuments': `${BASE}/croissant.png`,
+  'animals-habitats': `${BASE}/eagle.png`,
+  'objects-uses': `${BASE}/door.png`,
 }
 
 const DIFF_LABEL: Record<number, string> = { 1: 'Easy', 2: 'Medium', 3: 'Hard' }
@@ -82,7 +82,6 @@ export default async function CategoriesPage() {
       maxWidth: 430, margin: '0 auto',
       paddingBottom: 100,
     }}>
-      {/* Header */}
       <div style={{ padding: '32px 20px 20px' }}>
         <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>
           Explore
@@ -92,7 +91,6 @@ export default async function CategoriesPage() {
         </div>
       </div>
 
-      {/* Categories */}
       <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 24 }}>
         {CATEGORIES.map(cat => {
           const catPacks = packs.filter(p => cat.slugs.includes(p.slug))
@@ -103,13 +101,11 @@ export default async function CategoriesPage() {
               {/* Category header */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                 <div style={{
-                  width: 48, height: 48, borderRadius: 14,
-                  overflow: 'hidden',
-                  border: `2px solid ${cat.color}30`,
-                  flexShrink: 0,
-                  boxShadow: `0 4px 12px ${cat.color}20`,
+                  width: 52, height: 52, borderRadius: 16,
+                  overflow: 'hidden', flexShrink: 0,
+                  boxShadow: `0 4px 12px ${cat.color}30`,
                 }}>
-                  <img src={cat.img} alt={cat.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={cat.img} alt={cat.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 </div>
                 <div>
                   <div style={{ fontSize: 18, fontWeight: 900, color: BROWN }}>{cat.label}</div>
@@ -129,26 +125,19 @@ export default async function CategoriesPage() {
                       boxShadow: `0 2px 8px ${BROWN}08`,
                       border: `1px solid ${BROWN}08`,
                     }}>
-                      {/* Pack image */}
-                      <div style={{ width: 64, height: 64, flexShrink: 0, overflow: 'hidden' }}>
+                      <div style={{ width: 68, height: 68, flexShrink: 0, overflow: 'hidden' }}>
                         <img
                           src={PACK_IMGS[pack.slug] || cat.img}
                           alt={pack.title}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                         />
                       </div>
-                      {/* Pack info */}
                       <div style={{ flex: 1, padding: '0 14px' }}>
                         <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{pack.title}</div>
-                        <div style={{
-                          fontSize: 10, fontWeight: 800,
-                          color: DIFF_COLOR[pack.difficulty],
-                          marginTop: 3,
-                        }}>
+                        <div style={{ fontSize: 10, fontWeight: 800, color: DIFF_COLOR[pack.difficulty], marginTop: 3 }}>
                           {DIFF_LABEL[pack.difficulty]}
                         </div>
                       </div>
-                      {/* Play button */}
                       <div style={{
                         fontSize: 12, fontWeight: 900, color: '#fff',
                         background: BROWN, borderRadius: 10,
