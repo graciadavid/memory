@@ -110,6 +110,21 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           ))}
         </div>
 
+        {/* Categories button */}
+        <Link href="/categories" style={{ textDecoration: 'none' }}>
+          <div style={{
+            width: '100%', padding: '14px', borderRadius: 16,
+            background: '#fff',
+            border: `1px solid ${BROWN}15`,
+            textAlign: 'center', cursor: 'pointer',
+            boxSizing: 'border-box',
+          }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: `${BROWN}80` }}>
+              Browse Categories
+            </div>
+          </div>
+        </Link>
+
         {/* Streak — below buttons */}
         {(profile?.streak ?? 0) > 0 && (
           <div style={{
