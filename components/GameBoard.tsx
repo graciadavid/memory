@@ -320,7 +320,7 @@ export default function GameBoard({ pack }: { pack: any }) {
                   overflow: 'hidden',
                 }}>
                   <div style={{ position: 'absolute', inset: 2, borderRadius: 12, border: '1px solid rgba(255,255,255,0.3)' }} />
-                  <img src={EAGLE} alt="" style={{ width: '60%', height: '60%', objectFit: 'contain' }} />
+                  <img src={EAGLE} alt="" style={{ width: '90%', height: '90%', objectFit: 'contain' }} />
                 </div>
 
                 {/* Front */}
