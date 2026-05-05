@@ -112,8 +112,9 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
         }}>
           <img
             src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/naming-app.png"
-            alt="MemGenius"
-            style={{ height: 56, objectFit: 'contain', display: 'block', margin: '0 auto' }}
+            alt=""
+            style={{ height: 80, objectFit: 'contain', display: 'block', margin: '0 auto' }}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
           />
           <div style={{
             fontSize: 13, color: `${BROWN}55`,
