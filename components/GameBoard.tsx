@@ -317,8 +317,20 @@ export default function GameBoard({ pack }: { pack: any }) {
                   boxShadow: isMatched ? `0 4px 12px ${GOLD}60, inset 0 0 0 2.5px ${GOLD}` : `0 3px 10px ${BROWN}15`,
                   filter: isWrong ? 'brightness(0.8)' : 'none',
                   transition: 'box-shadow 0.3s, filter 0.2s',
+                  display: 'flex', flexDirection: 'column',
                 }}>
-                  <img src={card.img} alt={card.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  <img src={card.img} alt={card.label} style={{ width: '100%', flex: 1, objectFit: 'cover', display: 'block', minHeight: 0 }} />
+                  <div style={{
+                    padding: '3px 4px', textAlign: 'center',
+                    background: isMatched ? '#FFF8E7' : '#f8f8f8',
+                    fontSize: 9, fontWeight: 800,
+                    color: isMatched ? '#C8960C' : '#4A2C0A99',
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                    fontFamily: 'var(--font-nunito), sans-serif',
+                    letterSpacing: 0.2, flexShrink: 0,
+                  }}>
+                    {card.label}
+                  </div>
                 </div>
               </div>
             </div>
