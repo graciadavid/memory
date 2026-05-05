@@ -101,7 +101,7 @@ export default async function CategoriesPage() {
               {/* Category header */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                 <div style={{
-                  width: 52, height: 52, borderRadius: 16,
+                  width: 52, height: 52, borderRadius: '50%',
                   overflow: 'hidden', flexShrink: 0,
                   boxShadow: `0 4px 12px ${cat.color}30`,
                 }}>
@@ -125,12 +125,14 @@ export default async function CategoriesPage() {
                       boxShadow: `0 2px 8px ${BROWN}08`,
                       border: `1px solid ${BROWN}08`,
                     }}>
-                      <div style={{ width: 68, height: 68, flexShrink: 0, overflow: 'hidden' }}>
-                        <img
-                          src={PACK_IMGS[pack.slug] || cat.img}
-                          alt={pack.title}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                        />
+                      <div style={{ width: 68, height: 68, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 8 }}>
+                        <div style={{ width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                          <img
+                            src={PACK_IMGS[pack.slug] || cat.img}
+                            alt={pack.title}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                          />
+                        </div>
                       </div>
                       <div style={{ flex: 1, padding: '0 14px' }}>
                         <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{pack.title}</div>
