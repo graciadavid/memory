@@ -111,10 +111,9 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           animation: mounted ? 'fadeUp 0.6s ease 0.1s both' : 'none',
         }}>
           <img
-            src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/naming-app.png"
-            alt=""
-            style={{ height: 80, objectFit: 'contain', display: 'block', margin: '0 auto' }}
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+            src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/logo-memgenius.png"
+            alt="MemGenius"
+            style={{ height: 120, objectFit: 'contain', display: 'block', margin: '0 auto' }}
           />
           <div style={{
             fontSize: 13, color: `${BROWN}55`,
