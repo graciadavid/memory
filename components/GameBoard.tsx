@@ -236,20 +236,13 @@ export default function GameBoard({ pack }: { pack: any }) {
       {/* Tutorial */}
       {showTutorial && <Tutorial pairs={pack.pairs} onDone={dismissTutorial} />}
 
-      {/* Header — timer + restart, no logo */}
+      {/* Header — timer + restart */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '14px 16px 6px',
       }}>
-        {/* Restart button */}
-        <button onClick={reset} style={{
-          width: 38, height: 38, borderRadius: '50%',
-          background: '#fff', border: `1.5px solid ${BROWN}20`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', fontSize: 16,
-          boxShadow: `0 2px 8px ${BROWN}10`,
-          flexShrink: 0,
-        }}>↺</button>
+        {/* Spacer */}
+        <div style={{ width: 44 }} />
 
         {/* Timer — centered */}
         <div style={{
@@ -258,16 +251,16 @@ export default function GameBoard({ pack }: { pack: any }) {
           transition: 'color 0.3s', letterSpacing: 2,
         }}>{fmt(ms)}</div>
 
-        {/* Home button */}
-        <a href="/" style={{ textDecoration: 'none' }}>
-          <div style={{
-            width: 38, height: 38, borderRadius: '50%',
-            background: '#fff', border: `1.5px solid ${BROWN}20`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', fontSize: 16,
-            boxShadow: `0 2px 8px ${BROWN}10`,
-          }}>🏠</div>
-        </a>
+        {/* Restart button — green, right */}
+        <button onClick={reset} style={{
+          width: 44, height: 44, borderRadius: '50%',
+          background: '#2E7D32',
+          border: 'none',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', fontSize: 22,
+          boxShadow: '0 4px 0 #1B5E20',
+          flexShrink: 0,
+        }}>↺</button>
       </div>
 
       {/* Progress */}
