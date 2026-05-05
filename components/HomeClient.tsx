@@ -133,19 +133,12 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           animation: mounted ? 'fadeUp 0.6s ease 0.2s both' : 'none',
         }}>
           <div style={{ fontSize: 24, fontWeight: 900, color: BROWN, letterSpacing: -0.5 }}>
-            Hey, {profile.name}! 👋
+            Hey, {profile.name}!
           </div>
           {(profile?.streak ?? 0) > 0 && (
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              marginTop: 6,
-              background: `linear-gradient(135deg, ${GOLD}20, ${GOLD}08)`,
-              border: `1px solid ${GOLD}40`,
-              borderRadius: 20, padding: '4px 14px',
-            }}>
-              <span style={{ fontSize: 14 }}>🔥</span>
-              <span style={{ fontSize: 12, fontWeight: 800, color: GOLD }}>
-                {profile.streak} day streak {playedToday ? '· Done today ✓' : '· Play now!'}
+            <div style={{ marginTop: 4 }}>
+              <span style={{ fontSize: 13, fontWeight: 800, color: `${GOLD}90`, fontFamily: 'var(--font-nunito), sans-serif' }}>
+                {profile.streak} day streak
               </span>
             </div>
           )}
@@ -214,17 +207,14 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           {/* Categories */}
           <Link href="/categories" style={{ textDecoration: 'none' }}>
             <div style={{
-              width: '100%', padding: '14px', borderRadius: 18,
-              background: '#fff',
-              border: `1.5px solid ${BROWN}15`,
+              width: '100%', padding: '16px', borderRadius: 18,
+              background: '#1565C0',
+              boxShadow: '0 6px 0 #0D47A160',
               textAlign: 'center', cursor: 'pointer',
               boxSizing: 'border-box',
-              boxShadow: `0 4px 12px ${BROWN}08`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}>
-              <span style={{ fontSize: 16 }}>🗂️</span>
-              <span style={{ fontSize: 14, fontWeight: 800, color: BROWN, letterSpacing: 0.3 }}>
-                Browse Categories
+              <span style={{ fontSize: 15, fontWeight: 900, color: '#fff', letterSpacing: 0.3 }}>
+                Categories
               </span>
             </div>
           </Link>

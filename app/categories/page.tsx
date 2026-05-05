@@ -104,7 +104,7 @@ export default async function CategoriesPage() {
                   width: 52, height: 52, borderRadius: '50%',
                   overflow: 'hidden', flexShrink: 0,
                   boxShadow: `0 4px 12px ${cat.color}30`,
-                  border: '3px solid #4A2C0A',
+                  
                 }}>
                   <img src={cat.img} alt={cat.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 </div>
