@@ -5,7 +5,7 @@ import { usePlayer } from '@/lib/usePlayer'
 import Onboarding from './Onboarding'
 
 const BRAIN = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain-logo.png'
-const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/logo-memgenius.png'
+const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/logomemgenius.png'
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
