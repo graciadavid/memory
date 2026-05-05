@@ -4,51 +4,65 @@ import Link from 'next/link'
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
 const CATEGORIES = [
   {
     key: 'geography',
     label: 'Geography',
-    emoji: '🌍',
+    img: `${BASE}/dubai-skyline.png`,
     color: '#2E7D32',
     slugs: ['monuments-countries', 'cities-skylines', 'skyscrapers-cities', 'phenomena-locations'],
   },
   {
     key: 'history',
     label: 'History',
-    emoji: '🏛️',
+    img: `${BASE}/pyramids-sphinx.png`,
     color: '#B71C1C',
     slugs: ['civilizations-landmarks', 'inventions-inventors'],
   },
   {
     key: 'music',
     label: 'Music',
-    emoji: '🎵',
+    img: `${BASE}/electric-guitar.png`,
     color: '#6A1B9A',
     slugs: ['instruments-genres'],
   },
   {
     key: 'food',
     label: 'Food',
-    emoji: '🍕',
+    img: `${BASE}/sushi.png`,
     color: '#E65100',
     slugs: ['foods-monuments'],
   },
   {
     key: 'science',
     label: 'Science',
-    emoji: '🔬',
+    img: `${BASE}/jaguar.png`,
     color: '#0277BD',
     slugs: ['animals-habitats'],
   },
   {
     key: 'everyday',
     label: 'Everyday',
-    emoji: '🔑',
+    img: `${BASE}/key.png`,
     color: '#558B2F',
     slugs: ['objects-uses'],
   },
 ]
+
+const PACK_IMGS: Record<string, string> = {
+  'monuments-countries': `${BASE}/eiffel-tower.png`,
+  'cities-skylines': `${BASE}/new-york-skyline.png`,
+  'skyscrapers-cities': `${BASE}/burj-khalifa.png`,
+  'phenomena-locations': `${BASE}/northern-lights.png`,
+  'civilizations-landmarks': `${BASE}/great-wall.png`,
+  'inventions-inventors': `${BASE}/light-bulb.png`,
+  'instruments-genres': `${BASE}/grand-piano.png`,
+  'foods-monuments': `${BASE}/pizza.png`,
+  'animals-habitats': `${BASE}/jaguar.png`,
+  'objects-uses': `${BASE}/key.png`,
+}
 
 const DIFF_LABEL: Record<number, string> = { 1: 'Easy', 2: 'Medium', 3: 'Hard' }
 const DIFF_COLOR: Record<number, string> = { 1: '#2E7D32', 2: '#E65100', 3: '#B71C1C' }
@@ -79,7 +93,7 @@ export default async function CategoriesPage() {
       </div>
 
       {/* Categories */}
-      <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ padding: '0 16px', display: 'flex', flexDirection: 'column', gap: 24 }}>
         {CATEGORIES.map(cat => {
           const catPacks = packs.filter(p => cat.slugs.includes(p.slug))
           if (catPacks.length === 0) return null
@@ -87,18 +101,19 @@ export default async function CategoriesPage() {
           return (
             <div key={cat.key}>
               {/* Category header */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                 <div style={{
-                  width: 32, height: 32, borderRadius: 10,
-                  background: `${cat.color}15`,
-                  border: `1px solid ${cat.color}30`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 16,
+                  width: 48, height: 48, borderRadius: 14,
+                  overflow: 'hidden',
+                  border: `2px solid ${cat.color}30`,
+                  flexShrink: 0,
+                  boxShadow: `0 4px 12px ${cat.color}20`,
                 }}>
-                  {cat.emoji}
+                  <img src={cat.img} alt={cat.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 900, color: BROWN }}>
-                  {cat.label}
+                <div>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: BROWN }}>{cat.label}</div>
+                  <div style={{ fontSize: 11, color: `${BROWN}50`, fontWeight: 700 }}>{catPacks.length} pack{catPacks.length > 1 ? 's' : ''}</div>
                 </div>
               </div>
 
@@ -108,28 +123,36 @@ export default async function CategoriesPage() {
                   <Link key={pack.slug} href={`/play/${pack.slug}`} style={{ textDecoration: 'none' }}>
                     <div style={{
                       background: '#fff',
-                      borderRadius: 16, padding: '14px 16px',
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      borderRadius: 16,
+                      display: 'flex', alignItems: 'center',
+                      overflow: 'hidden',
                       boxShadow: `0 2px 8px ${BROWN}08`,
                       border: `1px solid ${BROWN}08`,
                     }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <div style={{ fontSize: 24 }}>{pack.emoji}</div>
-                        <div>
-                          <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{pack.title}</div>
-                          <div style={{
-                            fontSize: 10, fontWeight: 800,
-                            color: DIFF_COLOR[pack.difficulty],
-                            marginTop: 2,
-                          }}>
-                            {DIFF_LABEL[pack.difficulty]}
-                          </div>
+                      {/* Pack image */}
+                      <div style={{ width: 64, height: 64, flexShrink: 0, overflow: 'hidden' }}>
+                        <img
+                          src={PACK_IMGS[pack.slug] || cat.img}
+                          alt={pack.title}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      </div>
+                      {/* Pack info */}
+                      <div style={{ flex: 1, padding: '0 14px' }}>
+                        <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{pack.title}</div>
+                        <div style={{
+                          fontSize: 10, fontWeight: 800,
+                          color: DIFF_COLOR[pack.difficulty],
+                          marginTop: 3,
+                        }}>
+                          {DIFF_LABEL[pack.difficulty]}
                         </div>
                       </div>
+                      {/* Play button */}
                       <div style={{
                         fontSize: 12, fontWeight: 900, color: '#fff',
                         background: BROWN, borderRadius: 10,
-                        padding: '6px 14px',
+                        padding: '8px 14px', marginRight: 12,
                         boxShadow: `0 4px 0 ${BROWN}50`,
                       }}>
                         Play
