@@ -26,7 +26,6 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
 
   const today = new Date().toISOString().split('T')[0]
   const playedToday = profile?.lastPlayedDate === today
-  const diffColor = dailyDifficulty === 1 ? '#2E7D32' : dailyDifficulty === 2 ? '#E65100' : '#B71C1C'
 
   const levels = [
     { slug: easy, label: 'Easy', bg: '#2E7D32', shadow: '#1B5E2040' },
@@ -45,61 +44,71 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
       overflow: 'hidden', paddingBottom: 80,
     }}>
 
-      {/* Eagle */}
-      <img
-        src={EAGLE}
-        alt="MemGenius"
-        style={{
-          width: 130, height: 130,
-          objectFit: 'contain',
-          filter: 'drop-shadow(0 12px 28px rgba(74,44,10,0.2))',
-          marginTop: 28,
-          display: 'block',
-        }}
-      />
+      {/* Header — logo + eagle inline */}
+      <div style={{ textAlign: 'center', paddingTop: 36 }}>
+        <img
+          src={EAGLE}
+          alt="MemGenius"
+          style={{
+            width: 90, height: 90,
+            objectFit: 'contain',
+            filter: 'drop-shadow(0 8px 16px rgba(74,44,10,0.15))',
+            display: 'block',
+            margin: '0 auto 10px',
+          }}
+        />
+        <div style={{ fontSize: 32, fontWeight: 900, letterSpacing: -1, lineHeight: 1 }}>
+          <span style={{ color: GOLD }}>Mem</span>
+          <span style={{ color: BROWN }}>Genius</span>
+        </div>
+        <div style={{
+          fontSize: 14, color: `${BROWN}60`,
+          fontStyle: 'italic',
+          fontFamily: 'Georgia, serif',
+          marginTop: 5,
+        }}>
+          Your daily brain workout
+        </div>
 
-      {/* Logo */}
-      <div style={{ fontSize: 36, fontWeight: 900, letterSpacing: -1, lineHeight: 1, marginTop: 8, textAlign: 'center' }}>
-        <span style={{ color: GOLD }}>Mem</span>
-        <span style={{ color: BROWN }}>Genius</span>
-      </div>
-
-      {/* Claim — handwritten style */}
-      <div style={{
-        fontSize: 15, color: `${BROWN}70`,
-        fontStyle: 'italic', marginTop: 6, marginBottom: 4,
-        fontFamily: 'Georgia, serif',
-        letterSpacing: 0.3,
-      }}>
-        Your daily brain workout
-      </div>
-
-      {/* Greeting */}
-      <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, marginTop: 6, textAlign: 'center' }}>
-        Hey, {profile.name}!
+        {/* Name + streak inline */}
+        <div style={{
+          marginTop: 14,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+        }}>
+          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN }}>
+            {profile.name}
+          </div>
+          {(profile?.streak ?? 0) > 0 && (
+            <div style={{
+              background: `${GOLD}15`,
+              border: `1px solid ${GOLD}33`,
+              borderRadius: 20, padding: '3px 10px',
+              fontSize: 12, fontWeight: 800, color: GOLD,
+            }}>
+              {profile.streak} day streak {playedToday ? '✓' : ''}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Buttons */}
-      <div style={{ width: '100%', padding: '16px 20px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ width: '100%', padding: '24px 20px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
 
         {/* Daily Challenge */}
         <Link href={`/play/${dailySlug}`} style={{ textDecoration: 'none' }}>
           <div style={{
-            width: '100%', padding: '18px 24px', borderRadius: 20,
+            width: '100%', padding: '20px 24px', borderRadius: 20,
             background: BROWN,
             boxShadow: `0 8px 0 ${BROWN}50`,
             textAlign: 'center', cursor: 'pointer',
             boxSizing: 'border-box',
           }}>
-            <div style={{ fontSize: 11, fontWeight: 900, letterSpacing: 3, color: GOLD, textTransform: 'uppercase', marginBottom: 4 }}>
-              ⚡ Daily Challenge
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 900, color: '#fff' }}>
-              Play Today's Game
+            <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: 2, color: GOLD, textTransform: 'uppercase' }}>
+              Daily Challenge
             </div>
             {playedToday && (
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>
-                ✓ Completed today
+                Completed today
               </div>
             )}
           </div>
@@ -121,41 +130,21 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           ))}
         </div>
 
-        {/* Categories button */}
+        {/* Categories — subtle */}
         <Link href="/categories" style={{ textDecoration: 'none' }}>
           <div style={{
-            width: '100%', padding: '16px', borderRadius: 18,
-            background: `linear-gradient(135deg, ${GOLD}, #A07008)`,
-            boxShadow: `0 6px 0 ${GOLD}50`,
+            width: '100%', padding: '14px', borderRadius: 18,
+            background: 'transparent',
+            border: `1.5px solid ${BROWN}20`,
             textAlign: 'center', cursor: 'pointer',
             boxSizing: 'border-box',
           }}>
-            <div style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>
-              🗂 Categories
+            <div style={{ fontSize: 14, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 0.5 }}>
+              Categories
             </div>
           </div>
         </Link>
 
-        {/* Streak */}
-        {(profile?.streak ?? 0) > 0 && (
-          <div style={{ textAlign: 'center', padding: '6px 0' }}>
-            <div style={{
-              display: 'inline-block',
-              background: `${GOLD}15`,
-              border: `1px solid ${GOLD}33`,
-              borderRadius: 12, padding: '6px 18px',
-            }}>
-              <span style={{ fontSize: 13, fontWeight: 900, color: GOLD }}>
-                {profile.streak} day streak
-              </span>
-              {playedToday && (
-                <span style={{ fontSize: 12, fontWeight: 700, color: `${BROWN}60`, marginLeft: 6 }}>
-                  · Done today
-                </span>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </main>
   )
