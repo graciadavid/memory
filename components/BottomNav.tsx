@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 
 export default function BottomNav() {
   const path = usePathname()
-  if (path.startsWith('/play/')) return null
+  // Show bottom nav always
 
   return (
     <nav style={{

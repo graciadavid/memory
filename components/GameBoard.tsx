@@ -230,27 +230,44 @@ export default function GameBoard({ pack }: { pack: any }) {
       display: 'flex', flexDirection: 'column',
       maxWidth: 430, margin: '0 auto',
       overflow: 'hidden', fontFamily: 'var(--font-nunito), sans-serif',
-      touchAction: 'none',
+      touchAction: 'none', paddingBottom: 70,
     }}>
 
       {/* Tutorial */}
       {showTutorial && <Tutorial pairs={pack.pairs} onDone={dismissTutorial} />}
 
-      {/* Header */}
-      <div style={{ textAlign: 'center', padding: '14px 16px 4px' }}>
-        <div style={{ fontSize: 18, fontWeight: 900 }}>
-          <span style={{ color: GOLD }}>Mem</span>
-          <span style={{ color: BROWN }}>Genius</span>
-        </div>
-      </div>
+      {/* Header — timer + restart, no logo */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '14px 16px 6px',
+      }}>
+        {/* Restart button */}
+        <button onClick={reset} style={{
+          width: 38, height: 38, borderRadius: '50%',
+          background: '#fff', border: `1.5px solid ${BROWN}20`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', fontSize: 16,
+          boxShadow: `0 2px 8px ${BROWN}10`,
+          flexShrink: 0,
+        }}>↺</button>
 
-      {/* Timer */}
-      <div style={{ textAlign: 'center', padding: '4px 0 6px' }}>
+        {/* Timer — centered */}
         <div style={{
           fontSize: 28, fontWeight: 700, fontFamily: 'monospace',
           color: running ? BROWN : `${BROWN}20`,
           transition: 'color 0.3s', letterSpacing: 2,
         }}>{fmt(ms)}</div>
+
+        {/* Home button */}
+        <a href="/" style={{ textDecoration: 'none' }}>
+          <div style={{
+            width: 38, height: 38, borderRadius: '50%',
+            background: '#fff', border: `1.5px solid ${BROWN}20`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', fontSize: 16,
+            boxShadow: `0 2px 8px ${BROWN}10`,
+          }}>🏠</div>
+        </a>
       </div>
 
       {/* Progress */}
