@@ -110,13 +110,11 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           opacity: mounted ? 1 : 0,
           animation: mounted ? 'fadeUp 0.6s ease 0.1s both' : 'none',
         }}>
-          <div style={{ fontSize: 38, fontWeight: 900, letterSpacing: -1.5, lineHeight: 1 }}>
-            <span style={{
-              background: `linear-gradient(135deg, ${GOLD}, #E8A800)`,
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-            }}>Mem</span>
-            <span style={{ color: BROWN }}>Genius</span>
-          </div>
+          <img
+            src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/naming-app.png"
+            alt="MemGenius"
+            style={{ height: 56, objectFit: 'contain', display: 'block', margin: '0 auto' }}
+          />
           <div style={{
             fontSize: 13, color: `${BROWN}55`,
             fontStyle: 'italic', fontFamily: 'Georgia, serif',
