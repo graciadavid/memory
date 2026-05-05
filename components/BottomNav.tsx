@@ -2,30 +2,49 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+
+const ITEMS = [
+  { href: '/', img: `${BASE}/nav-home.png`, label: 'Home' },
+  { href: '/ranking', img: `${BASE}/nav-trophy.png`, label: 'Ranking' },
+  { href: '/profile', img: `${BASE}/nav-profile.png`, label: 'Profile' },
+]
+
 export default function BottomNav() {
   const path = usePathname()
-  // Show bottom nav always
 
   return (
     <nav style={{
       position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
       width: '100%', maxWidth: 430,
-      background: 'rgba(250,247,242,0.95)',
+      background: 'rgba(250,247,242,0.97)',
       backdropFilter: 'blur(20px)',
       borderTop: '1px solid rgba(74,44,10,0.08)',
       display: 'flex', alignItems: 'center', justifyContent: 'space-around',
       padding: '6px 0 16px',
       zIndex: 50,
     }}>
-      {[
-        { href: '/', icon: '🏠' },
-        { href: '/ranking', icon: '🏆' },
-        { href: '/profile', icon: '👤' },
-      ].map(item => (
-        <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
-          <div style={{ fontSize: 22 }}>{item.icon}</div>
-        </Link>
-      ))}
+      {ITEMS.map(item => {
+        const isActive = path === item.href
+        return (
+          <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
+            <div style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+            }}>
+              <img
+                src={item.img}
+                alt={item.label}
+                style={{
+                  width: 32, height: 32,
+                  objectFit: 'contain',
+                  opacity: isActive ? 1 : 0.4,
+                  transition: 'opacity 0.2s',
+                }}
+              />
+            </div>
+          </Link>
+        )
+      })}
     </nav>
   )
 }
