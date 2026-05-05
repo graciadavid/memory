@@ -2,20 +2,21 @@ import { supabase } from '@/lib/supabase'
 
 const DIFF_PACKS: Record<string, { slugs: string[] }> = {
   easy: { slugs: ['monuments-countries', 'animals-habitats', 'cities-skylines'] },
-  medium: { slugs: ['foods-monuments', 'artworks-museums', 'civilizations-landmarks'] },
+  medium: { slugs: ['foods-monuments', 'artworks-museums', 'civilizations-landmarks', 'instruments-genres', 'skyscrapers-cities'] },
   hard: { slugs: ['inventions-inventors', 'phenomena-locations'] },
 }
 
 export async function fetchLiveRanks(playerName: string) {
   const result: Record<string, { rank: number | null, time: number | null }> = {}
 
-  const { data: packs } = await supabase
-    .from('packs')
-    .select('id, slug, difficulty')
+  // Single query for everything
+  const [packsRes, scoresRes] = await Promise.all([
+    supabase.from('packs').select('id, slug, difficulty'),
+    supabase.from('scores').select('pack_id, player_name, time_ms'),
+  ])
 
-  const { data: allScores } = await supabase
-    .from('scores')
-    .select('pack_id, player_name, time_ms')
+  const packs = packsRes.data
+  const allScores = scoresRes.data
 
   if (!packs || !allScores) return result
 
@@ -34,10 +35,7 @@ export async function fetchLiveRanks(playerName: string) {
     })
 
     const myBest = bestPerPlayer[playerName]
-    if (!myBest) {
-      result[diff] = { rank: null, time: null }
-      continue
-    }
+    if (!myBest) { result[diff] = { rank: null, time: null }; continue }
 
     const rank = Object.values(bestPerPlayer).filter(t => t < myBest).length + 1
     result[diff] = { rank, time: myBest }
@@ -48,17 +46,12 @@ export async function fetchLiveRanks(playerName: string) {
 
 export async function fetchDailyRank(playerName: string): Promise<{ rank: number | null, time: number | null }> {
   const today = new Date().toISOString().split('T')[0]
-  console.log('fetchDailyRank for:', playerName, 'date:', today)
 
-  const { data: allScores, error } = await supabase
+  const { data: allScores } = await supabase
     .from('scores')
     .select('player_name, time_ms')
     .eq('is_daily', true)
     .eq('play_date', today)
-  
-  console.log('daily scores:', allScores?.length, 'error:', error)
-  const myScores = allScores?.filter(s => s.player_name === playerName)
-  console.log('my daily scores:', myScores?.length, myScores)
 
   if (!allScores) return { rank: null, time: null }
 
@@ -70,7 +63,6 @@ export async function fetchDailyRank(playerName: string): Promise<{ rank: number
   })
 
   const myBest = bestPerPlayer[playerName]
-  console.log('myBest:', myBest, 'bestPerPlayer keys:', Object.keys(bestPerPlayer).length)
   if (!myBest) return { rank: null, time: null }
 
   const rank = Object.values(bestPerPlayer).filter(t => t < myBest).length + 1
