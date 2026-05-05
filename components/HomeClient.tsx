@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import Onboarding from './Onboarding'
 
-const EAGLE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/eagle.png'
+const EAGLE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain.png'
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
 
