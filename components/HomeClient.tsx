@@ -87,25 +87,25 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           <div style={{
             width: '100%', padding: '18px 24px', borderRadius: 20,
             background: BROWN,
-            boxShadow: `0 8px 0 ${BROWN}50, 0 16px 32px ${BROWN}20`,
+            boxShadow: `0 8px 0 ${BROWN}50`,
             textAlign: 'center', cursor: 'pointer',
             boxSizing: 'border-box',
           }}>
-            <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: GOLD, textTransform: 'uppercase', marginBottom: 4 }}>
-              Daily Challenge
+            <div style={{ fontSize: 11, fontWeight: 900, letterSpacing: 3, color: GOLD, textTransform: 'uppercase', marginBottom: 4 }}>
+              ⚡ Daily Challenge
             </div>
             <div style={{ fontSize: 20, fontWeight: 900, color: '#fff' }}>
               Play Today's Game
             </div>
             {playedToday && (
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>
-                Completed today
+                ✓ Completed today
               </div>
             )}
           </div>
         </Link>
 
-        {/* Level buttons — same size */}
+        {/* Level buttons */}
         <div style={{ display: 'flex', gap: 10 }}>
           {levels.map(level => (
             <Link key={level.label} href={`/play/${level.slug}`} style={{ textDecoration: 'none', flex: 1 }}>
@@ -121,18 +121,17 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           ))}
         </div>
 
-        {/* Categories button — same height as daily */}
+        {/* Categories button */}
         <Link href="/categories" style={{ textDecoration: 'none' }}>
           <div style={{
             width: '100%', padding: '16px', borderRadius: 18,
-            background: '#fff',
-            border: `1px solid ${BROWN}15`,
+            background: `linear-gradient(135deg, ${GOLD}, #A07008)`,
+            boxShadow: `0 6px 0 ${GOLD}50`,
             textAlign: 'center', cursor: 'pointer',
             boxSizing: 'border-box',
-            boxShadow: `0 4px 0 ${BROWN}10`,
           }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: `${BROWN}70` }}>
-              Browse Categories
+            <div style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>
+              🗂 Categories
             </div>
           </div>
         </Link>
