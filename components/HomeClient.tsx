@@ -183,7 +183,7 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           </Link>
 
           {/* Level buttons */}
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 10, marginTop: 6 }}>
             {levels.map((level, i) => (
               <Link key={level.label} href={`/play/${level.slug}`} style={{ textDecoration: 'none', flex: 1 }} className="btn-level">
                 <div style={{
@@ -205,7 +205,7 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           </div>
 
           {/* Categories */}
-          <Link href="/categories" style={{ textDecoration: 'none' }}>
+          <Link href="/categories" style={{ textDecoration: 'none', marginTop: 6 }}>
             <div style={{
               width: '100%', padding: '16px', borderRadius: 18,
               background: '#1565C0',
