@@ -274,14 +274,19 @@ export default function GameBoard({ pack }: { pack: any }) {
           }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {pack.pairs.map((_: any, i: number) => (
-            <div key={i} style={{
-              width: 8, height: 8, borderRadius: '50%',
-              background: matched.length > i ? GOLD : `${BROWN}15`,
-              transition: 'all 0.3s',
-              boxShadow: matched.length > i ? `0 0 6px ${GOLD}` : 'none',
-            }} />
-          ))}
+          {pack.pairs.map((_: any, i: number) => {
+            const isJustMatched = matched.length - 1 === i
+            const isDone = matched.length > i
+            return (
+              <div key={i} style={{
+                width: 10, height: 10, borderRadius: '50%',
+                background: isDone ? '#4CAF50' : '#ef5350',
+                transition: 'all 0.3s',
+                boxShadow: isDone ? '0 0 8px #4CAF5090' : 'none',
+                animation: isJustMatched ? 'dotPop 0.4s ease' : 'none',
+              }} />
+            )
+          })}
         </div>
       </div>
 
