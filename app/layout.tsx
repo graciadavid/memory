@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Analytics from './analytics'
 import { Nunito } from 'next/font/google'
 import './globals.css'
 import BottomNav from '@/components/BottomNav'
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${nunito.variable} font-nunito`} style={{ background: '#f2f2f2', margin: 0 }}>
+        <Analytics />
         {children}
         <BottomNav />
       </body>
