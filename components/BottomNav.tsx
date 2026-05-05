@@ -35,9 +35,9 @@ export default function BottomNav() {
                 src={item.img}
                 alt={item.label}
                 style={{
-                  width: 32, height: 32,
+                  width: 44, height: 44,
                   objectFit: 'contain',
-                  opacity: isActive ? 1 : 0.4,
+                  opacity: 1,
                   transition: 'opacity 0.2s',
                 }}
               />

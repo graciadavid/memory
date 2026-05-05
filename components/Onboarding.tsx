@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
-const EAGLE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain.png'
+const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/logomemgenius.png'
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
@@ -43,7 +43,7 @@ export default function Onboarding({ onCreate }: { onCreate: (name: string) => v
       textAlign: 'center',
     }}>
       <img
-        src={EAGLE}
+        src={LOGO}
         alt="MemGenius"
         style={{
           width: 150, height: 150,
