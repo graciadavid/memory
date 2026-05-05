@@ -247,7 +247,7 @@ export default function GameBoard({ pack }: { pack: any }) {
         {/* Timer — centered */}
         <div style={{
           fontSize: 28, fontWeight: 700, fontFamily: 'monospace',
-          color: running ? BROWN : `${BROWN}20`,
+          color: BROWN,
           transition: 'color 0.3s', letterSpacing: 2,
         }}>{fmt(ms)}</div>
 
