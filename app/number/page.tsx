@@ -2,9 +2,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const BROWN = '#4A2C0A'
 const BLUE = '#1565C0'
+const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 
 type Phase = 'intro' | 'show' | 'input' | 'result' | 'gameover'
@@ -17,85 +20,74 @@ function generateNumber(digits: number) {
 
 export default function NumberPage() {
   const { profile } = usePlayer()
+  const router = useRouter()
   const [phase, setPhase] = useState<Phase>('intro')
   const [level, setLevel] = useState(1)
   const [current, setCurrent] = useState('')
   const [input, setInput] = useState('')
-  const [best, setBest] = useState(0)
   const [countdown, setCountdown] = useState(3)
+  const [worldRank, setWorldRank] = useState<number | null>(null)
   const [topScores, setTopScores] = useState<any[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    fetchTop()
-  }, [])
+  useEffect(() => { fetchTop() }, [])
 
   const fetchTop = async () => {
     const { data } = await supabase
       .from('number_scores')
       .select('player_name, level')
       .order('level', { ascending: false })
-      .limit(20)
+      .limit(200)
     if (data) {
       const best: Record<string, number> = {}
       data.forEach(s => {
-        if (!best[s.player_name] || s.level > best[s.player_name]) {
-          best[s.player_name] = s.level
-        }
+        if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level
       })
-      const sorted = Object.entries(best)
-        .map(([name, level]) => ({ name, level }))
-        .sort((a, b) => b.level - a.level)
-      setTopScores(sorted)
+      setTopScores(Object.entries(best).map(([name, level]) => ({ name, level })).sort((a, b) => b.level - a.level))
     }
   }
 
-  const startGame = () => {
-    setLevel(1)
-    setBest(0)
-    showNumber(1)
-  }
+  const startGame = () => { setLevel(1); showNumber(1) }
 
   const showNumber = (lvl: number) => {
     const num = generateNumber(lvl)
-    setCurrent(num)
-    setInput('')
-    setCountdown(lvl + 2)
+    setCurrent(num); setInput('')
+    setCountdown(Math.max(3, lvl + 1))
     setPhase('show')
   }
 
   useEffect(() => {
     if (phase !== 'show') return
-    if (countdown <= 0) {
-      setPhase('input')
-      setTimeout(() => inputRef.current?.focus(), 100)
-      return
-    }
+    if (countdown <= 0) { setPhase('input'); setTimeout(() => inputRef.current?.focus(), 100); return }
     const t = setTimeout(() => setCountdown(c => c - 1), 1000)
     return () => clearTimeout(t)
   }, [phase, countdown])
 
   const handleSubmit = async () => {
     if (input === current) {
-      setBest(level)
       setPhase('result')
     } else {
-      // Game over — save score
       if (profile?.name) {
-        await supabase.from('number_scores').insert({
-          player_name: profile.name,
-          level: level,
-        })
+        await supabase.from('number_scores').insert({ player_name: profile.name, level })
+        // Calculate rank
+        const { data } = await supabase.from('number_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
+        if (data) {
+          const best: Record<string, number> = {}
+          data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+          const sorted = Object.values(best).sort((a, b) => b - a)
+          const myBest = best[profile.name] || level
+          setWorldRank(sorted.filter(l => l > myBest).length + 1)
+        }
         fetchTop()
       }
       setPhase('gameover')
     }
   }
 
-  const nextLevel = () => {
-    const next = level + 1
-    setLevel(next)
-    showNumber(next)
+  const share = async () => {
+    const text = `🔢 I reached level ${level} in NumGenius!\nCan you beat me? 👉 https://memgenius.com/number`
+    if (navigator.share) await navigator.share({ text })
+    else { await navigator.clipboard.writeText(text); alert('Copied!') }
   }
 
   const fmt = (n: number) => n === 1 ? '1 digit' : `${n} digits`
@@ -112,82 +104,79 @@ export default function NumberPage() {
     }}>
 
       {/* Header */}
-      <div style={{ textAlign: 'center', padding: '28px 20px 0', position: 'relative', width: '100%' }}>
+      <div style={{ textAlign: 'center', padding: '28px 20px 0' }}>
         <div style={{ fontSize: 28, fontWeight: 900, color: BLUE, letterSpacing: -1 }}>
           Num<span style={{ color: BROWN }}>Genius</span>
         </div>
         <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 4 }}>
           How many digits can you remember?
         </div>
-        <a href="/number/ranking" style={{
-          position: 'absolute', right: 20, top: 28,
-          textDecoration: 'none',
-          background: '#fff', border: `1px solid ${BLUE}20`,
-          borderRadius: 10, padding: '6px 12px',
-          fontSize: 12, fontWeight: 800, color: BLUE,
-        }}>🏆 Ranking</a>
       </div>
 
       {/* INTRO */}
       {phase === 'intro' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 20 }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 14, width: '100%' }}>
           <div style={{ fontSize: 64 }}>🔢</div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 8 }}>Remember the number</div>
-            <div style={{ fontSize: 14, color: `${BROWN}60`, lineHeight: 1.6 }}>
-              A number will appear on screen.<br />Memorize it, then type it back.<br />Each level adds one more digit.
+            <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.6 }}>
+              A number will appear briefly.<br />Memorize it, then type it back.<br />Each level adds one more digit.
             </div>
           </div>
+
           <button onClick={startGame} style={{
             padding: '16px 48px', borderRadius: 18, border: 'none',
             background: BLUE, color: '#fff',
             fontSize: 18, fontWeight: 900, fontFamily: 'inherit',
             cursor: 'pointer', boxShadow: '0 6px 0 #0D47A160',
+            width: '100%',
           }}>Start</button>
 
-          {/* Top scores */}
+          <Link href="/number/ranking" style={{ textDecoration: 'none', width: '100%' }}>
+            <div style={{
+              width: '100%', padding: '14px', borderRadius: 16,
+              background: '#fff', border: `1.5px solid ${BLUE}20`,
+              textAlign: 'center', cursor: 'pointer', boxSizing: 'border-box',
+            }}>
+              <span style={{ fontSize: 14, fontWeight: 800, color: BLUE }}>🏆 World Ranking</span>
+            </div>
+          </Link>
+
+          {/* Top 3 preview */}
           {topScores.length > 0 && (
-            <div style={{ width: '100%', marginTop: 8 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 10, textAlign: 'center' }}>
-                World Ranking
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {topScores.slice(0, 5).map((s, i) => (
-                  <div key={s.name} style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    background: '#fff', borderRadius: 12, padding: '10px 14px',
-                    boxShadow: `0 2px 8px ${BROWN}08`,
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div style={{ fontSize: 13, fontWeight: 900, color: i === 0 ? '#C8960C' : `${BROWN}30`, width: 20 }}>{i + 1}</div>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{s.name}</div>
-                    </div>
-                    <div style={{ fontSize: 13, fontWeight: 900, color: BLUE }}>{fmt(s.level)}</div>
+            <div style={{ width: '100%' }}>
+              {topScores.slice(0, 3).map((s, i) => (
+                <div key={s.name} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  background: '#fff', borderRadius: 12, padding: '10px 14px', marginBottom: 6,
+                  boxShadow: `0 2px 8px ${BROWN}08`,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ fontSize: 13, fontWeight: 900, color: i === 0 ? GOLD : `${BROWN}30`, width: 20 }}>{i + 1}</div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{s.name}</div>
                   </div>
-                ))}
-              </div>
+                  <div style={{ fontSize: 13, fontWeight: 900, color: BLUE }}>{fmt(s.level)}</div>
+                </div>
+              ))}
             </div>
           )}
         </div>
       )}
 
-      {/* SHOW number */}
+      {/* SHOW */}
       {phase === 'show' && (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24 }}>
           <div style={{ fontSize: 13, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase' }}>
             Level {level} · {fmt(level)}
           </div>
           <div style={{
-            fontSize: level <= 4 ? 72 : level <= 7 ? 56 : level <= 10 ? 42 : 32,
+            fontSize: level <= 4 ? 72 : level <= 7 ? 52 : level <= 10 ? 38 : 28,
             fontWeight: 900, color: BLUE, fontFamily: 'monospace',
-            letterSpacing: 8, textAlign: 'center', padding: '0 20px',
-            lineHeight: 1.3,
+            letterSpacing: 8, textAlign: 'center', padding: '0 20px', lineHeight: 1.4,
           }}>
             {current}
           </div>
-          <div style={{
-            fontSize: 48, fontWeight: 900, color: `${BROWN}30`,
-          }}>{countdown}</div>
+          <div style={{ fontSize: 48, fontWeight: 900, color: `${BROWN}25` }}>{countdown}</div>
         </div>
       )}
 
@@ -209,9 +198,7 @@ export default function NumberPage() {
               borderRadius: 16, border: `2px solid ${BLUE}30`,
               background: '#fff', color: BROWN,
               fontSize: 28, fontWeight: 900, fontFamily: 'monospace',
-              textAlign: 'center', outline: 'none',
-              boxSizing: 'border-box',
-              letterSpacing: 4,
+              textAlign: 'center', outline: 'none', boxSizing: 'border-box', letterSpacing: 4,
             }}
           />
           <button onClick={handleSubmit} disabled={!input} style={{
@@ -221,63 +208,98 @@ export default function NumberPage() {
             fontSize: 16, fontWeight: 900, fontFamily: 'inherit',
             cursor: input ? 'pointer' : 'default',
             boxShadow: input ? '0 6px 0 #0D47A160' : 'none',
+            width: '100%',
           }}>Submit</button>
         </div>
       )}
 
       {/* RESULT — correct */}
       {phase === 'result' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: '0 24px' }}>
-          <div style={{ fontSize: 56 }}>✅</div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: '#2E7D32', textAlign: 'center' }}>
-            Correct!
-          </div>
-          <div style={{ fontSize: 48, fontWeight: 900, color: BROWN, fontFamily: 'monospace', letterSpacing: 4 }}>
-            {current}
-          </div>
-          <div style={{ fontSize: 14, color: `${BROWN}50`, fontWeight: 700 }}>
-            Level {level} completed
-          </div>
-          <button onClick={nextLevel} style={{
-            padding: '16px 48px', borderRadius: 18, border: 'none',
-            background: BLUE, color: '#fff',
-            fontSize: 18, fontWeight: 900, fontFamily: 'inherit',
-            cursor: 'pointer', boxShadow: '0 6px 0 #0D47A160',
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '0 24px', width: '100%' }}>
+          <div style={{ fontSize: 48 }}>✅</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: '#2E7D32' }}>Correct!</div>
+          <div style={{ fontSize: 40, fontWeight: 900, color: BROWN, fontFamily: 'monospace', letterSpacing: 4 }}>{current}</div>
+          <div style={{ fontSize: 14, color: `${BROWN}50`, fontWeight: 700 }}>Level {level} · {fmt(level)}</div>
+          <button onClick={() => { setLevel(l => l + 1); showNumber(level + 1) }} style={{
+            padding: '16px', borderRadius: 18, border: 'none',
+            background: BLUE, color: '#fff', fontSize: 18, fontWeight: 900,
+            fontFamily: 'inherit', cursor: 'pointer',
+            boxShadow: '0 6px 0 #0D47A160', width: '100%',
           }}>Next Level →</button>
         </div>
       )}
 
       {/* GAME OVER */}
       {phase === 'gameover' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '0 24px', width: '100%' }}>
-          <div style={{ fontSize: 56 }}>❌</div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: '#B71C1C', textAlign: 'center' }}>
-            Wrong!
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700, marginBottom: 4 }}>The number was</div>
-            <div style={{ fontSize: 36, fontWeight: 900, color: '#2E7D32', fontFamily: 'monospace', letterSpacing: 4 }}>{current}</div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700, marginBottom: 4 }}>You typed</div>
-            <div style={{ fontSize: 36, fontWeight: 900, color: '#B71C1C', fontFamily: 'monospace', letterSpacing: 4 }}>{input}</div>
-          </div>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '0 20px', width: '100%' }}>
+
+          {/* Result card */}
           <div style={{
-            background: `${BLUE}15`, border: `1px solid ${BLUE}30`,
-            borderRadius: 14, padding: '14px 24px', textAlign: 'center',
+            background: CREAM, borderRadius: 24, padding: '24px 20px',
+            width: '100%', boxSizing: 'border-box',
+            boxShadow: `0 8px 32px ${BROWN}20`,
+            border: `1px solid ${GOLD}30`,
+            textAlign: 'center',
           }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your best</div>
-            <div style={{ fontSize: 32, fontWeight: 900, color: BLUE }}>{fmt(level)}</div>
+            <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: `${BROWN}50`, textTransform: 'uppercase', marginBottom: 8 }}>
+              Your Result
+            </div>
+            <div style={{ fontSize: 36, fontWeight: 900, color: BROWN, marginBottom: 4 }}>
+              Level {level}
+            </div>
+            <div style={{ fontSize: 14, color: `${BROWN}50`, fontWeight: 700, marginBottom: 16 }}>
+              {fmt(level)}
+            </div>
+
+            {/* Correct vs wrong */}
+            <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+              <div style={{ flex: 1, background: '#E8F5E9', borderRadius: 12, padding: '10px 8px' }}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: '#2E7D32', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>Correct</div>
+                <div style={{ fontSize: 18, fontWeight: 900, color: '#2E7D32', fontFamily: 'monospace', letterSpacing: 2, wordBreak: 'break-all' }}>{current}</div>
+              </div>
+              <div style={{ flex: 1, background: '#FFEBEE', borderRadius: 12, padding: '10px 8px' }}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: '#B71C1C', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>You typed</div>
+                <div style={{ fontSize: 18, fontWeight: 900, color: '#B71C1C', fontFamily: 'monospace', letterSpacing: 2, wordBreak: 'break-all' }}>{input}</div>
+              </div>
+            </div>
+
+            {/* World rank */}
+            {worldRank && (
+              <div style={{
+                background: `${BLUE}10`, border: `1px solid ${BLUE}20`,
+                borderRadius: 12, padding: '10px', marginBottom: 12,
+              }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>World Ranking</div>
+                <div style={{ fontSize: 28, fontWeight: 900, color: BLUE }}>#{worldRank}</div>
+              </div>
+            )}
           </div>
-          <button onClick={startGame} style={{
-            padding: '14px 48px', borderRadius: 16, border: 'none',
-            background: BLUE, color: '#fff',
-            fontSize: 16, fontWeight: 900, fontFamily: 'inherit',
-            cursor: 'pointer', boxShadow: '0 6px 0 #0D47A160',
-          }}>Try again</button>
+
+          {/* Buttons */}
+          <button onClick={share} style={{
+            width: '100%', padding: '13px', borderRadius: 14, border: 'none',
+            background: 'linear-gradient(135deg, #1877F2, #0a5dc2)',
+            color: '#fff', fontSize: 14, fontWeight: 800,
+            fontFamily: 'inherit', cursor: 'pointer',
+            boxShadow: '0 6px 0 #0a4a9960',
+          }}>Share my result ↑</button>
+
+          <div style={{ display: 'flex', gap: 10, width: '100%' }}>
+            <button onClick={startGame} style={{
+              flex: 1, padding: '13px', borderRadius: 14, border: 'none',
+              background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
+              fontFamily: 'inherit', cursor: 'pointer',
+              boxShadow: `0 6px 0 ${GOLD}50`,
+            }}>Play again</button>
+            <button onClick={() => router.push('/')} style={{
+              flex: 1, padding: '13px', borderRadius: 14, border: 'none',
+              background: '#4CAF50', color: '#fff', fontSize: 13, fontWeight: 800,
+              fontFamily: 'inherit', cursor: 'pointer',
+              boxShadow: '0 6px 0 #2E7D3260',
+            }}>Home</button>
+          </div>
         </div>
       )}
-
     </main>
   )
 }
