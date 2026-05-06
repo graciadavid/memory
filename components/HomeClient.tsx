@@ -119,6 +119,19 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
             ))}
           </div>
 
+          {/* Categories */}
+          <Link href="/categories" style={{ textDecoration: 'none' }}>
+            <div style={{
+              width: '100%', padding: '16px', borderRadius: 18,
+              background: '#1565C0',
+              boxShadow: '0 6px 0 #0D47A160',
+              textAlign: 'center', cursor: 'pointer',
+              boxSizing: 'border-box',
+            }}>
+              <span style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>Categories</span>
+            </div>
+          </Link>
+
           {/* Rankings */}
           <Link href="/ranking" style={{ textDecoration: 'none' }}>
             <div style={{
@@ -131,19 +144,6 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
             }}>
               <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.png" alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
               <span style={{ fontSize: 14, fontWeight: 800, color: '#4A2C0A60' }}>Rankings</span>
-            </div>
-          </Link>
-
-          {/* Categories */}
-          <Link href="/categories" style={{ textDecoration: 'none' }}>
-            <div style={{
-              width: '100%', padding: '16px', borderRadius: 18,
-              background: '#1565C0',
-              boxShadow: '0 6px 0 #0D47A160',
-              textAlign: 'center', cursor: 'pointer',
-              boxSizing: 'border-box',
-            }}>
-              <span style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>Categories</span>
             </div>
           </Link>
 
