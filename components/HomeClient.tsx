@@ -135,6 +135,19 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
             ))}
           </div>
 
+          {/* Rankings */}
+          <Link href="/ranking" style={{ textDecoration: 'none' }}>
+            <div style={{
+              width: '100%', padding: '14px', borderRadius: 18,
+              background: '#fff',
+              border: '1.5px solid #4A2C0A20',
+              textAlign: 'center', cursor: 'pointer',
+              boxSizing: 'border-box',
+            }}>
+              <span style={{ fontSize: 14, fontWeight: 800, color: '#4A2C0A60' }}>🏆 Rankings</span>
+            </div>
+          </Link>
+
           {/* Categories */}
           <Link href="/categories" style={{ textDecoration: 'none' }}>
             <div style={{

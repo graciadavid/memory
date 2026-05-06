@@ -112,13 +112,20 @@ export default function NumberPage() {
     }}>
 
       {/* Header */}
-      <div style={{ textAlign: 'center', padding: '28px 20px 0' }}>
+      <div style={{ textAlign: 'center', padding: '28px 20px 0', position: 'relative', width: '100%' }}>
         <div style={{ fontSize: 28, fontWeight: 900, color: BLUE, letterSpacing: -1 }}>
           Num<span style={{ color: BROWN }}>Genius</span>
         </div>
         <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 4 }}>
           How many digits can you remember?
         </div>
+        <a href="/number/ranking" style={{
+          position: 'absolute', right: 20, top: 28,
+          textDecoration: 'none',
+          background: '#fff', border: `1px solid ${BLUE}20`,
+          borderRadius: 10, padding: '6px 12px',
+          fontSize: 12, fontWeight: 800, color: BLUE,
+        }}>🏆 Ranking</a>
       </div>
 
       {/* INTRO */}
