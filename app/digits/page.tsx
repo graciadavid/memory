@@ -308,7 +308,6 @@ export default function DigitsPage() {
               border: `1px solid ${GOLD}30`,
               textAlign: 'center',
             }}>
-              <img src={BRAIN_RED} alt="" style={{ width: 70, height: 70, objectFit: 'contain', marginBottom: 8 }} />
               <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: `${BROWN}50`, textTransform: 'uppercase', marginBottom: 6 }}>Your Result</div>
               <div style={{ fontSize: 32, fontWeight: 900, color: BROWN, marginBottom: 12 }}>Level {level}</div>
 

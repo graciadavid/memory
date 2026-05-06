@@ -52,12 +52,30 @@ export default function ProfilePage() {
   const [liveRanks, setLiveRanks] = useState<Record<string, { rank: number | null, time: number | null }>>({})
   const [dailyRank, setDailyRank] = useState<{ rank: number | null, time: number | null }>({ rank: null, time: null })
   const [loadingRanks, setLoadingRanks] = useState(true)
+  const [digitsRank, setDigitsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
 
   useEffect(() => {
     if (!profile?.name) return
+
+    const fetchDigitsRank = async () => {
+      const { data } = await supabase
+        .from('number_scores')
+        .select('player_name, level')
+        .order('level', { ascending: false })
+        .limit(500)
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+      const myLevel = best[profile.name]
+      if (!myLevel) return
+      const rank = Object.values(best).filter(l => l > myLevel).length + 1
+      setDigitsRank({ level: myLevel, rank })
+    }
+
     Promise.all([
       fetchLiveRanks(profile.name),
       fetchDailyRank(profile.name),
+      fetchDigitsRank(),
     ]).then(([ranks, daily]) => {
       setLiveRanks(ranks)
       setDailyRank(daily)
@@ -239,6 +257,67 @@ export default function ProfilePage() {
                 </div>
               )
             })}
+          </div>
+        </div>
+
+        {/* Digits Best */}
+        <div style={{
+          background: '#fff', borderRadius: 20, padding: '20px 22px',
+          boxShadow: `0 2px 12px ${BROWN}10`,
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
+            Digits — Best
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{
+              flex: 1, textAlign: 'center',
+              background: '#EEF4FF', border: '1px solid #1565C020',
+              borderRadius: 14, padding: '14px 8px',
+            }}>
+              <div style={{ fontSize: 9, fontWeight: 900, color: '#1565C0', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Best Level</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: digitsRank.level ? BROWN : `${BROWN}20` }}>
+                {loadingRanks ? '...' : digitsRank.level ? `${digitsRank.level}` : '—'}
+              </div>
+              <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
+                {digitsRank.level ? 'digits' : 'Not played'}
+              </div>
+            </div>
+            <div style={{
+              flex: 1, textAlign: 'center',
+              background: '#EEF4FF', border: '1px solid #1565C020',
+              borderRadius: 14, padding: '14px 8px',
+            }}>
+              <div style={{ fontSize: 9, fontWeight: 900, color: '#1565C0', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>World Rank</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: digitsRank.rank ? BROWN : `${BROWN}20` }}>
+                {loadingRanks ? '...' : digitsRank.rank ? `#${digitsRank.rank}` : '—'}
+              </div>
+              <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
+                {digitsRank.rank ? 'global' : ''}
+              </div>
+            </div>
+            {digitsRank.level && (
+              <div style={{
+                flex: 1, textAlign: 'center',
+                background: '#EEF4FF', border: '1px solid #1565C020',
+                borderRadius: 14, padding: '14px 8px',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <div style={{ fontSize: 9, fontWeight: 900, color: '#1565C0', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Share</div>
+                <button
+                  onClick={async () => {
+                    const text = `🔢 I reached level ${digitsRank.level} in MemGenius Digits! World #${digitsRank.rank}\nCan you beat me? 👉 https://memgenius.com/digits`
+                    if (navigator.share) await navigator.share({ text })
+                    else { await navigator.clipboard.writeText(text); alert('Copied!') }
+                  }}
+                  style={{
+                    width: 36, height: 36, borderRadius: 10, border: 'none',
+                    background: '#1565C0', color: '#fff',
+                    fontSize: 14, cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                >↑</button>
+              </div>
+            )}
           </div>
         </div>
 
