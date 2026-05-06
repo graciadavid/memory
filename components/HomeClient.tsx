@@ -26,7 +26,7 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
   useEffect(() => { setTimeout(() => setMounted(true), 50) }, [])
 
   if (!loaded) return null
-  if (!profile?.name) return <Onboarding onCreate={createProfile} />
+  if (!profile?.name) return null
 
   const today = new Date().toISOString().split('T')[0]
   const playedToday = profile?.lastPlayedDate === today

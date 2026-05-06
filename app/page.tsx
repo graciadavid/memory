@@ -1,6 +1,8 @@
 'use client'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { usePlayer } from '@/lib/usePlayer'
+import Onboarding from '@/components/Onboarding'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const LOGO = `${BASE}/logomemgenius.png`
@@ -10,7 +12,11 @@ const CREAM = '#FAF7F2'
 
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false)
+  const { profile, loaded, createProfile } = usePlayer()
   useEffect(() => { setTimeout(() => setMounted(true), 50) }, [])
+
+  if (!loaded) return null
+  if (!profile?.name) return <Onboarding onCreate={createProfile} />
 
   return (
     <main style={{
