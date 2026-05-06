@@ -7,7 +7,7 @@ const BLUE = '#1565C0'
 
 export default function RankingClient({ scores, dailyScores, digitScores }: { scores: any[], dailyScores: any[], digitScores: any[] }) {
   const [game, setGame] = useState<'memory' | 'digits'>('memory')
-  const [filter, setFilter] = useState<'today' | 1 | 2 | 3>('today')
+  const [filter, setFilter] = useState<1 | 2 | 3>(1)
   const [myName, setMyName] = useState<string>('')
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function RankingClient({ scores, dailyScores, digitScores }: { sc
       .sort((a, b) => b.level - a.level || a.created_at.localeCompare(b.created_at))
   }
 
-  const memoryFiltered = filter === 'today' ? getDailyBest() : getBest(filter as number)
+  const memoryFiltered = getBest(filter)
   const digitsFiltered = getDigitsBest()
 
   const share = async (position: number, score: any) => {
@@ -68,7 +68,6 @@ export default function RankingClient({ scores, dailyScores, digitScores }: { sc
   }
 
   const memoryTabs = [
-    { key: 'today' as const, label: 'Today', color: BROWN },
     { key: 1 as const, label: 'Easy', color: '#2E7D32' },
     { key: 2 as const, label: 'Medium', color: '#E65100' },
     { key: 3 as const, label: 'Hard', color: '#B71C1C' },

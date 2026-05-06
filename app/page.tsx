@@ -152,12 +152,7 @@ export default function LandingPage() {
               opacity: mounted ? 1 : 0,
               animation: mounted ? 'fadeUp 0.5s ease 0.1s both' : 'none',
             }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: 14, flexShrink: 0,
-                background: `${GOLD}30`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 24,
-              }}>🧠</div>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain-green.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Memory</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
@@ -178,12 +173,7 @@ export default function LandingPage() {
               opacity: mounted ? 1 : 0,
               animation: mounted ? 'fadeUp 0.5s ease 0.2s both' : 'none',
             }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: 14, flexShrink: 0,
-                background: 'rgba(255,255,255,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 24,
-              }}>🔢</div>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/1234.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Digits</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
