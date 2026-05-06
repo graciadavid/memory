@@ -19,7 +19,6 @@ const ACHIEVEMENTS = [
 ]
 
 const DIFF_CONFIG = [
-  { key: 'daily', label: 'Daily', color: BROWN },
   { key: 'easy', label: 'Easy', color: '#2E7D32' },
   { key: 'medium', label: 'Medium', color: '#E65100' },
   { key: 'hard', label: 'Hard', color: '#B71C1C' },
@@ -189,7 +188,7 @@ export default function ProfilePage() {
           boxShadow: `0 2px 12px ${BROWN}10`,
         }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
-            Best Positions
+            Memory — Best
           </div>
           {/* All — full width on top */}
           {(() => {
