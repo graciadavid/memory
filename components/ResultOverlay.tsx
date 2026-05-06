@@ -186,15 +186,21 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
       <nav style={{
         position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
         width: '100%', maxWidth: 430,
-        background: 'rgba(250,247,242,0.95)',
+        background: 'rgba(250,247,242,0.97)',
         backdropFilter: 'blur(20px)',
         borderTop: `1px solid ${BROWN}10`,
         display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-        padding: '8px 0 22px', zIndex: 300,
+        padding: '6px 0 16px', zIndex: 300,
       }}>
-        <Link href="/" style={{ textDecoration: 'none' }}><div style={{ fontSize: 22 }}>🏠</div></Link>
-        <Link href="/ranking" style={{ textDecoration: 'none' }}><div style={{ fontSize: 22 }}>🏆</div></Link>
-        <Link href="/profile" style={{ textDecoration: 'none' }}><div style={{ fontSize: 22 }}>👤</div></Link>
+        {[
+          { href: '/memory', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-home.png' },
+          { href: '/ranking', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.png' },
+          { href: '/profile', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-profile.png' },
+        ].map(item => (
+          <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
+            <img src={item.img} alt="" style={{ width: 44, height: 44, objectFit: 'contain' }} />
+          </Link>
+        ))}
       </nav>
     </>
   )

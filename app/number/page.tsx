@@ -142,24 +142,7 @@ export default function NumberPage() {
             </div>
           </Link>
 
-          {/* Top 3 preview */}
-          {topScores.length > 0 && (
-            <div style={{ width: '100%' }}>
-              {topScores.slice(0, 3).map((s, i) => (
-                <div key={s.name} style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  background: '#fff', borderRadius: 12, padding: '10px 14px', marginBottom: 6,
-                  boxShadow: `0 2px 8px ${BROWN}08`,
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{ fontSize: 13, fontWeight: 900, color: i === 0 ? GOLD : `${BROWN}30`, width: 20 }}>{i + 1}</div>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{s.name}</div>
-                  </div>
-                  <div style={{ fontSize: 13, fontWeight: 900, color: BLUE }}>{fmt(s.level)}</div>
-                </div>
-              ))}
-            </div>
-          )}
+
         </div>
       )}
 
@@ -176,7 +159,17 @@ export default function NumberPage() {
           }}>
             {current}
           </div>
-          <div style={{ fontSize: 48, fontWeight: 900, color: `${BROWN}25` }}>{countdown}</div>
+          <div style={{ width: '80%', marginTop: 16 }}>
+            <div style={{ height: 8, background: `${BLUE}15`, borderRadius: 8, overflow: 'hidden' }}>
+              <div style={{
+                height: '100%',
+                width: `${(countdown / Math.max(3, level + 1)) * 100}%`,
+                background: BLUE,
+                borderRadius: 8,
+                transition: 'width 0.9s linear',
+              }} />
+            </div>
+          </div>
         </div>
       )}
 
@@ -197,8 +190,8 @@ export default function NumberPage() {
               width: '100%', padding: '18px 16px',
               borderRadius: 16, border: `2px solid ${BLUE}30`,
               background: '#fff', color: BROWN,
-              fontSize: 28, fontWeight: 900, fontFamily: 'monospace',
-              textAlign: 'center', outline: 'none', boxSizing: 'border-box', letterSpacing: 4,
+              fontSize: 24, fontWeight: 900, fontFamily: 'var(--font-nunito), sans-serif',
+              textAlign: 'center', outline: 'none', boxSizing: 'border-box', letterSpacing: 2,
             }}
           />
           <button onClick={handleSubmit} disabled={!input} style={{
