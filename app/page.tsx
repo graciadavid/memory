@@ -62,7 +62,7 @@ export default function LandingPage() {
             </div>
           </div>
         </Link>
-        <Link href="/number" style={{ textDecoration: 'none' }}>
+        <Link href="/digits" style={{ textDecoration: 'none' }}>
           <div style={{
             width: '100%', borderRadius: 22,
             background: '#1565C0',
@@ -78,7 +78,7 @@ export default function LandingPage() {
               fontSize: 28,
             }}>🔢</div>
             <div>
-              <div style={{ fontSize: 20, fontWeight: 900, color: '#fff' }}>NumGenius</div>
+              <div style={{ fontSize: 20, fontWeight: 900, color: '#fff' }}>Digits</div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
                 How many digits can you remember?
               </div>

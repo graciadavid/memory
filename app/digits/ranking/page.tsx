@@ -43,7 +43,7 @@ export default function NumberRankingPage() {
   const myScore = myIndex >= 0 ? scores[myIndex] : null
 
   const share = async (position: number, level: number) => {
-    const text = `🔢 I'm #${position} in NumGenius with ${level} digits!\nCan you beat me? 👉 https://memgenius.com/number`
+    const text = `🔢 I'm #${position} in Digits with ${level} digits!\nCan you beat me? 👉 https://memgenius.com/digits`
     if (navigator.share) await navigator.share({ text })
     else { await navigator.clipboard.writeText(text); alert('Copied!') }
   }
@@ -63,7 +63,7 @@ export default function NumberRankingPage() {
           Leaderboard
         </div>
         <div style={{ fontSize: 26, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>
-          NumGenius Ranking
+          Digits Ranking
         </div>
       </div>
 
@@ -154,7 +154,7 @@ export default function NumberRankingPage() {
       )}
 
       {/* Back button */}
-      <Link href="/number" style={{
+      <Link href="/digits" style={{
         position: 'fixed', top: 16, left: 16,
         textDecoration: 'none', zIndex: 50,
       }}>

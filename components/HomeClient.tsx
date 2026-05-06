@@ -143,8 +143,10 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
               border: '1.5px solid #4A2C0A20',
               textAlign: 'center', cursor: 'pointer',
               boxSizing: 'border-box',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}>
-              <span style={{ fontSize: 14, fontWeight: 800, color: '#4A2C0A60' }}>🏆 Rankings</span>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.png" alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+              <span style={{ fontSize: 14, fontWeight: 800, color: '#4A2C0A60' }}>Rankings</span>
             </div>
           </Link>
 
