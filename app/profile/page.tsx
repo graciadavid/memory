@@ -190,44 +190,10 @@ export default function ProfilePage() {
           <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
             Memory — Best
           </div>
-          {/* All — full width on top */}
-          {(() => {
-            const d = DIFF_CONFIG[0]
-            const entry = dailyRank
-            const hasResult = entry?.rank != null
-            return (
-              <div style={{
-                background: `${d.color}08`,
-                border: `1px solid ${d.color}20`,
-                borderRadius: 14, padding: '14px 16px',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                marginBottom: 8,
-              }}>
-                <div>
-                  <div style={{ fontSize: 9, fontWeight: 900, color: `${d.color}80`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>{d.label}</div>
-                  <div style={{ fontSize: 28, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20`, letterSpacing: -1 }}>
-                    {loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}
-                  </div>
-                  <div style={{ fontSize: 11, fontFamily: 'monospace', fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20`, marginTop: 2 }}>
-                    {loadingRanks ? '' : hasResult ? fmt(entry.time!) : '—'}
-                  </div>
-                </div>
-                {hasResult && (
-                  <button onClick={() => shareCategory(d.key, d.label, d.color)} style={{
-                    padding: '10px 16px', borderRadius: 12, border: 'none',
-                    background: BROWN, color: '#fff',
-                    fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
-                    boxShadow: `0 4px 0 ${BROWN}50`,
-                  }}>Share</button>
-                )}
-              </div>
-            )
-          })()}
-
           {/* Easy Medium Hard — 3 columns */}
           <div style={{ display: 'flex', gap: 8 }}>
-            {DIFF_CONFIG.slice(1).map(d => {
-              const entry = d.key === 'daily' ? dailyRank : liveRanks[d.key]
+            {DIFF_CONFIG.map(d => {
+              const entry = liveRanks[d.key]
               const hasResult = entry?.rank != null
               return (
                 <div key={d.key} style={{
