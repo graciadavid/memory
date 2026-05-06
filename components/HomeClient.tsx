@@ -101,23 +101,7 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
         {/* Buttons */}
         <div style={{ width: '100%', padding: '20px 20px 0', display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-          {/* Daily Challenge */}
-          <Link href={`/play/${dailySlug}`} style={{ textDecoration: 'none' }}>
-            <div style={{
-              width: '100%', padding: '20px 24px', borderRadius: 22,
-              background: `linear-gradient(135deg, ${BROWN} 0%, #2C1A05 100%)`,
-              boxShadow: `0 8px 0 ${BROWN}60`,
-              textAlign: 'center', cursor: 'pointer',
-              boxSizing: 'border-box',
-            }}>
-              <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 4, color: GOLD, textTransform: 'uppercase', marginBottom: 5 }}>
-                ⚡ Daily Challenge
-              </div>
-              <div style={{ fontSize: 18, fontWeight: 900, color: '#fff' }}>
-                {playedToday ? 'Completed today ✓' : "Play Today's Game"}
-              </div>
-            </div>
-          </Link>
+
 
           {/* Level buttons */}
           <div style={{ display: 'flex', gap: 10 }}>
