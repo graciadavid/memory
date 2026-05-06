@@ -44,11 +44,16 @@ export default function RankingClient({ scores, dailyScores, digitScores }: { sc
   }
 
   const getDigitsBest = () => {
-    const map: Record<string, number> = {}
+    const map: Record<string, { level: number, created_at: string }> = {}
     digitScores.forEach(s => {
-      if (!map[s.player_name] || s.level > map[s.player_name]) map[s.player_name] = s.level
+      if (!map[s.player_name] || s.level > map[s.player_name].level ||
+        (s.level === map[s.player_name].level && s.created_at < map[s.player_name].created_at)) {
+        map[s.player_name] = { level: s.level, created_at: s.created_at }
+      }
     })
-    return Object.entries(map).map(([name, level]) => ({ name, level })).sort((a, b) => b.level - a.level)
+    return Object.entries(map)
+      .map(([name, data]) => ({ name, level: data.level, created_at: data.created_at }))
+      .sort((a, b) => b.level - a.level || a.created_at.localeCompare(b.created_at))
   }
 
   const memoryFiltered = filter === 'today' ? getDailyBest() : getBest(filter as number)
@@ -98,7 +103,7 @@ export default function RankingClient({ scores, dailyScores, digitScores }: { sc
     const isMe = score.name === myName
     return (
       <div id={isMe ? 'my-row' : undefined} style={{
-        display: 'grid', gridTemplateColumns: '36px 1fr 80px 32px',
+        display: 'grid', gridTemplateColumns: '36px 1fr 90px 32px',
         alignItems: 'center', gap: 6,
         background: isMe ? `${GOLD}22` : position === 1 ? `${GOLD}08` : '#fff',
         border: `1px solid ${isMe ? GOLD + '60' : position === 1 ? GOLD + '20' : BROWN + '08'}`,
@@ -110,7 +115,14 @@ export default function RankingClient({ scores, dailyScores, digitScores }: { sc
           {score.name}
           {isMe && <span style={{ fontSize: 8, color: GOLD, fontWeight: 900, background: `${GOLD}20`, padding: '1px 5px', borderRadius: 4 }}>YOU</span>}
         </div>
-        <div style={{ fontSize: 12, fontWeight: 900, color: BLUE, textAlign: 'center' }}>{score.level} digits</div>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 12, fontWeight: 900, color: BLUE }}>{score.level} digits</div>
+          {score.created_at && (
+            <div style={{ fontSize: 8, color: `${BROWN}35`, fontWeight: 700 }}>
+              {new Date(score.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })} {new Date(score.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          )}
+        </div>
         {isMe ? (
           <button onClick={() => share(position, score)} style={{ width: 26, height: 26, borderRadius: 7, border: 'none', background: GOLD, color: '#fff', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
         ) : <div />}

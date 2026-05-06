@@ -22,8 +22,9 @@ export default async function RankingPage() {
 
   const { data: digitScores } = await supabase
     .from('number_scores')
-    .select('player_name, level')
+    .select('player_name, level, created_at')
     .order('level', { ascending: false })
+    .order('created_at', { ascending: true })
     .limit(500)
 
   return (
