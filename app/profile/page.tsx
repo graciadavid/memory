@@ -2,6 +2,8 @@
 import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { fetchLiveRanks, fetchDailyRank } from './RanksFetcher'
+import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
 const GOLD = '#C8960C'
