@@ -23,6 +23,45 @@ function generateNumber(digits: number) {
   return Math.floor(Math.random() * (max - min + 1) + min).toString()
 }
 
+function playTone(freq: number, start: number, duration: number, gain: number, ctx: AudioContext, type: OscillatorType = 'sine') {
+  const osc = ctx.createOscillator()
+  const g = ctx.createGain()
+  osc.type = type
+  osc.frequency.setValueAtTime(freq, ctx.currentTime + start)
+  g.gain.setValueAtTime(0, ctx.currentTime + start)
+  g.gain.linearRampToValueAtTime(gain, ctx.currentTime + start + 0.01)
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + duration)
+  osc.connect(g); g.connect(ctx.destination)
+  osc.start(ctx.currentTime + start)
+  osc.stop(ctx.currentTime + start + duration)
+}
+
+function playSuccess() {
+  try {
+    const ctx = new AudioContext()
+    playTone(523, 0, 0.3, 0.2, ctx)
+    playTone(659, 0.1, 0.3, 0.2, ctx)
+    playTone(784, 0.2, 0.4, 0.25, ctx)
+    playTone(1047, 0.3, 0.5, 0.2, ctx)
+  } catch(e) {}
+}
+
+function playError() {
+  try {
+    const ctx = new AudioContext()
+    playTone(330, 0, 0.2, 0.2, ctx)
+    playTone(220, 0.15, 0.4, 0.25, ctx)
+  } catch(e) {}
+}
+
+function playTick(progress: number) {
+  try {
+    const ctx = new AudioContext()
+    const freq = 400 + (1 - progress) * 400
+    playTone(freq, 0, 0.08, 0.05, ctx, 'sine')
+  } catch(e) {}
+}
+
 export default function DigitsPage() {
   const { profile } = usePlayer()
   const router = useRouter()
@@ -34,6 +73,7 @@ export default function DigitsPage() {
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const [mounted, setMounted] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const totalTime = 4
 
   useEffect(() => { setTimeout(() => setMounted(true), 50) }, [])
 
@@ -42,21 +82,28 @@ export default function DigitsPage() {
   const showNumber = (lvl: number) => {
     const num = generateNumber(lvl)
     setCurrent(num); setInput('')
-    setCountdown(4)
+    setCountdown(totalTime)
     setPhase('show')
   }
 
   useEffect(() => {
     if (phase !== 'show') return
-    if (countdown <= 0) { setPhase('input'); setTimeout(() => inputRef.current?.focus(), 100); return }
+    if (countdown <= 0) {
+      setPhase('input')
+      setTimeout(() => inputRef.current?.focus(), 100)
+      return
+    }
+    playTick(countdown / totalTime)
     const t = setTimeout(() => setCountdown(c => c - 1), 1000)
     return () => clearTimeout(t)
   }, [phase, countdown])
 
   const handleSubmit = async () => {
     if (input === current) {
+      playSuccess()
       setPhase('result')
     } else {
+      playError()
       if (profile?.name) {
         await supabase.from('number_scores').insert({ player_name: profile.name, level })
         const { data } = await supabase.from('number_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
@@ -84,6 +131,10 @@ export default function DigitsPage() {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-6px); }
         }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(16px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
       `}</style>
 
       <main style={{
@@ -96,55 +147,75 @@ export default function DigitsPage() {
         overflow: 'hidden', paddingBottom: 80,
       }}>
 
-        {/* Header with logo */}
-        <div style={{ textAlign: 'center', padding: '24px 20px 0', width: '100%' }}>
+        {/* Header — same style as Memory */}
+        <div style={{ textAlign: 'center', paddingTop: 32, width: '100%' }}>
           <img
             src={LOGO}
             alt="MemGenius"
             style={{
-              height: 80, objectFit: 'contain',
+              height: phase === 'intro' ? 140 : 70,
+              objectFit: 'contain',
               animation: 'floatLogo 3s ease-in-out infinite',
-              filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.1))',
-              display: 'block', margin: '0 auto 6px',
+              filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.1))',
+              display: 'block', margin: '0 auto',
+              transition: 'height 0.3s',
             }}
           />
-          <div style={{ fontSize: 20, fontWeight: 900, color: BLUE, letterSpacing: -0.5 }}>
+          <div style={{
+            fontSize: phase === 'intro' ? 28 : 18,
+            fontWeight: 900, color: BLUE,
+            letterSpacing: -0.5, marginTop: 8,
+            transition: 'font-size 0.3s',
+          }}>
             Digits
           </div>
-          <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>
-            How far can you go?
-          </div>
+          {phase === 'intro' && (
+            <div style={{ fontSize: 13, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 4 }}>
+              How far can you go?
+            </div>
+          )}
         </div>
 
         {/* INTRO */}
         {phase === 'intro' && (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 14, width: '100%' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 18, fontWeight: 900, color: BROWN, marginBottom: 8 }}>Remember the number</div>
+          <div style={{
+            flex: 1, display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            padding: '0 20px', gap: 12, width: '100%',
+            opacity: mounted ? 1 : 0,
+            animation: mounted ? 'fadeUp 0.5s ease 0.1s both' : 'none',
+          }}>
+            <div style={{ textAlign: 'center', marginBottom: 4 }}>
+              <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 6 }}>Remember the number</div>
               <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.6 }}>
-                A number will appear briefly.<br />Memorize it, then type it back.<br />Each level adds one more digit.
+                A number appears briefly.<br />Memorize it, then type it back.<br />Each level adds one more digit.
               </div>
             </div>
 
             <button onClick={startGame} style={{
-              padding: '16px', borderRadius: 18, border: 'none',
+              padding: '18px', borderRadius: 20, border: 'none',
               background: BLUE, color: '#fff',
               fontSize: 18, fontWeight: 900, fontFamily: 'inherit',
-              cursor: 'pointer', boxShadow: '0 6px 0 #0D47A160',
+              cursor: 'pointer', boxShadow: '0 8px 0 #0D47A160',
               width: '100%',
             }}>Start</button>
 
             <Link href="/digits/ranking" style={{ textDecoration: 'none', width: '100%' }}>
               <div style={{
-                width: '100%', padding: '14px', borderRadius: 16,
+                width: '100%', padding: '16px', borderRadius: 18,
                 background: '#fff', border: `1.5px solid ${BLUE}20`,
                 textAlign: 'center', cursor: 'pointer', boxSizing: 'border-box',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                boxShadow: `0 4px 12px ${BROWN}08`,
               }}>
-                <img src={TROPHY} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-                <span style={{ fontSize: 14, fontWeight: 800, color: BLUE }}>World Ranking</span>
+                <img src={TROPHY} alt="" style={{ width: 26, height: 26, objectFit: 'contain' }} />
+                <span style={{ fontSize: 15, fontWeight: 800, color: BLUE }}>World Ranking</span>
               </div>
             </Link>
+
+            <div style={{ fontSize: 11, fontWeight: 700, color: `${BROWN}30`, letterSpacing: 1, marginTop: 4 }}>
+              Always free · No ads · No login
+            </div>
           </div>
         )}
 
@@ -163,14 +234,15 @@ export default function DigitsPage() {
             }}>
               {current}
             </div>
-            {/* Progress bar */}
-            <div style={{ width: '100%', height: 8, background: `${BLUE}15`, borderRadius: 8, overflow: 'hidden' }}>
+            {/* Progress bar — left to right, decreasing */}
+            <div style={{ width: '100%', height: 10, background: `${BLUE}15`, borderRadius: 8, overflow: 'hidden' }}>
               <div style={{
                 height: '100%',
-                width: `${(countdown / 4) * 100}%`,
-                background: '#F44336',
+                width: `${(countdown / totalTime) * 100}%`,
+                background: countdown <= 1 ? '#F44336' : countdown <= 2 ? '#FF9800' : '#F44336',
                 borderRadius: 8,
-                transition: 'width 0.9s linear',
+                transition: 'width 1s linear, background 0.3s',
+                transformOrigin: 'left',
               }} />
             </div>
           </div>
@@ -179,7 +251,7 @@ export default function DigitsPage() {
         {/* INPUT */}
         {phase === 'input' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, padding: '0 24px', width: '100%' }}>
-            <div style={{ fontSize: 13, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase' }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', textAlign: 'center' }}>
               Level {level} · What was the number?
             </div>
             <input
@@ -200,7 +272,7 @@ export default function DigitsPage() {
               }}
             />
             <button onClick={handleSubmit} disabled={!input} style={{
-              padding: '14px', borderRadius: 16, border: 'none',
+              padding: '16px', borderRadius: 16, border: 'none',
               background: input ? BLUE : '#e0e0e0',
               color: input ? '#fff' : '#aaa',
               fontSize: 16, fontWeight: 900, fontFamily: 'inherit',
@@ -214,14 +286,14 @@ export default function DigitsPage() {
         {/* RESULT — correct */}
         {phase === 'result' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '0 24px', width: '100%' }}>
-            <img src={BRAIN_GREEN} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
+            <img src={BRAIN_GREEN} alt="" style={{ width: 100, height: 100, objectFit: 'contain' }} />
             <div style={{
               fontSize: level <= 6 ? 56 : 38,
               fontWeight: 900, color: BROWN,
               fontFamily: 'var(--font-nunito), sans-serif',
-              letterSpacing: 4, textAlign: 'center',
+              letterSpacing: 4, textAlign: 'center', wordBreak: 'break-all',
             }}>{current}</div>
-            <div style={{ fontSize: 20, fontWeight: 900, color: '#2E7D32' }}>Correct!</div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: '#2E7D32' }}>Correct!</div>
             <div style={{ fontSize: 14, color: `${BROWN}50`, fontWeight: 700 }}>Level {level}</div>
             <button onClick={() => { const next = level + 1; setLevel(next); showNumber(next) }} style={{
               padding: '16px', borderRadius: 18, border: 'none',
@@ -258,7 +330,7 @@ export default function DigitsPage() {
               </div>
 
               {worldRank && (
-                <div style={{ background: `${BLUE}10`, border: `1px solid ${BLUE}20`, borderRadius: 12, padding: '10px', marginBottom: 4 }}>
+                <div style={{ background: `${BLUE}10`, border: `1px solid ${BLUE}20`, borderRadius: 12, padding: '10px' }}>
                   <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>World Ranking</div>
                   <div style={{ fontSize: 28, fontWeight: 900, color: BLUE }}>#{worldRank}</div>
                 </div>

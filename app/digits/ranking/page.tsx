@@ -153,16 +153,16 @@ export default function NumberRankingPage() {
         </div>
       )}
 
-      {/* Back button */}
+      {/* Back button — top right */}
       <Link href="/digits" style={{
-        position: 'fixed', top: 16, left: 16,
+        position: 'fixed', top: 16, right: 16,
         textDecoration: 'none', zIndex: 50,
       }}>
         <div style={{
           background: '#fff', border: `1px solid ${BROWN}15`,
           borderRadius: 10, padding: '6px 12px',
           fontSize: 12, fontWeight: 800, color: `${BROWN}60`,
-        }}>← Back</div>
+        }}>Back ✕</div>
       </Link>
     </main>
   )
