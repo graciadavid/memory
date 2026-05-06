@@ -147,33 +147,28 @@ export default function DigitsPage() {
         overflow: 'hidden', paddingBottom: 80,
       }}>
 
-        {/* Header — same style as Memory */}
-        <div style={{ textAlign: 'center', paddingTop: 32, width: '100%' }}>
+        {/* Header — logo left + Digits right */}
+        <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', width: '100%', gap: 12 }}>
           <img
             src={LOGO}
             alt="MemGenius"
             style={{
-              height: phase === 'intro' ? 140 : 70,
-              objectFit: 'contain',
+              height: 60, objectFit: 'contain',
               animation: 'floatLogo 3s ease-in-out infinite',
-              filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.1))',
-              display: 'block', margin: '0 auto',
-              transition: 'height 0.3s',
+              filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.1))',
+              flexShrink: 0,
             }}
           />
-          <div style={{
-            fontSize: phase === 'intro' ? 28 : 18,
-            fontWeight: 900, color: BLUE,
-            letterSpacing: -0.5, marginTop: 8,
-            transition: 'font-size 0.3s',
-          }}>
-            Digits
-          </div>
-          {phase === 'intro' && (
-            <div style={{ fontSize: 13, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 4 }}>
-              How far can you go?
+          <div>
+            <div style={{ fontSize: 28, fontWeight: 900, color: BLUE, letterSpacing: -0.5, lineHeight: 1 }}>
+              Digits
             </div>
-          )}
+            {phase === 'intro' && (
+              <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>
+                How far can you go?
+              </div>
+            )}
+          </div>
         </div>
 
         {/* INTRO */}
@@ -234,15 +229,14 @@ export default function DigitsPage() {
             }}>
               {current}
             </div>
-            {/* Progress bar — left to right, decreasing */}
-            <div style={{ width: '100%', height: 10, background: `${BLUE}15`, borderRadius: 8, overflow: 'hidden' }}>
+            {/* Progress bar — full green, empties left to right, turns red */}
+            <div style={{ width: '100%', height: 10, background: '#F4433620', borderRadius: 8, overflow: 'hidden', position: 'relative' }}>
               <div style={{
-                height: '100%',
+                position: 'absolute', left: 0, top: 0, bottom: 0,
                 width: `${(countdown / totalTime) * 100}%`,
-                background: countdown <= 1 ? '#F44336' : countdown <= 2 ? '#FF9800' : '#F44336',
+                background: countdown >= 3 ? '#4CAF50' : countdown >= 2 ? '#FF9800' : '#F44336',
                 borderRadius: 8,
-                transition: 'width 1s linear, background 0.3s',
-                transformOrigin: 'left',
+                transition: 'width 1s linear, background 0.5s ease',
               }} />
             </div>
           </div>
@@ -286,15 +280,15 @@ export default function DigitsPage() {
         {/* RESULT — correct */}
         {phase === 'result' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '0 24px', width: '100%' }}>
-            <img src={BRAIN_GREEN} alt="" style={{ width: 100, height: 100, objectFit: 'contain' }} />
+            <div style={{ fontSize: 14, color: `${BROWN}50`, fontWeight: 700 }}>Level {level}</div>
             <div style={{
               fontSize: level <= 6 ? 56 : 38,
               fontWeight: 900, color: BROWN,
               fontFamily: 'var(--font-nunito), sans-serif',
               letterSpacing: 4, textAlign: 'center', wordBreak: 'break-all',
             }}>{current}</div>
+            <img src={BRAIN_GREEN} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
             <div style={{ fontSize: 22, fontWeight: 900, color: '#2E7D32' }}>Correct!</div>
-            <div style={{ fontSize: 14, color: `${BROWN}50`, fontWeight: 700 }}>Level {level}</div>
             <button onClick={() => { const next = level + 1; setLevel(next); showNumber(next) }} style={{
               padding: '16px', borderRadius: 18, border: 'none',
               background: BLUE, color: '#fff', fontSize: 18, fontWeight: 900,
