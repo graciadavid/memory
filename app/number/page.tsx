@@ -52,7 +52,7 @@ export default function NumberPage() {
   const showNumber = (lvl: number) => {
     const num = generateNumber(lvl)
     setCurrent(num); setInput('')
-    setCountdown(Math.max(3, lvl + 1))
+    setCountdown(4)
     setPhase('show')
   }
 
@@ -109,7 +109,7 @@ export default function NumberPage() {
           Num<span style={{ color: BROWN }}>Genius</span>
         </div>
         <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 4 }}>
-          How many digits can you remember?
+          How far can you go?
         </div>
       </div>
 
@@ -150,7 +150,7 @@ export default function NumberPage() {
       {phase === 'show' && (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24 }}>
           <div style={{ fontSize: 13, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase' }}>
-            Level {level} · {fmt(level)}
+            Level {level}
           </div>
           <div style={{
             fontSize: level <= 4 ? 72 : level <= 7 ? 52 : level <= 10 ? 38 : 28,
@@ -163,8 +163,8 @@ export default function NumberPage() {
             <div style={{ height: 8, background: `${BLUE}15`, borderRadius: 8, overflow: 'hidden' }}>
               <div style={{
                 height: '100%',
-                width: `${(countdown / Math.max(3, level + 1)) * 100}%`,
-                background: BLUE,
+                width: `${(countdown / 4) * 100}%`,
+                background: '#F44336',
                 borderRadius: 8,
                 transition: 'width 0.9s linear',
               }} />
@@ -212,7 +212,7 @@ export default function NumberPage() {
           <div style={{ fontSize: 48 }}>✅</div>
           <div style={{ fontSize: 22, fontWeight: 900, color: '#2E7D32' }}>Correct!</div>
           <div style={{ fontSize: 40, fontWeight: 900, color: BROWN, fontFamily: 'monospace', letterSpacing: 4 }}>{current}</div>
-          <div style={{ fontSize: 14, color: `${BROWN}50`, fontWeight: 700 }}>Level {level} · {fmt(level)}</div>
+          <div style={{ fontSize: 14, color: `${BROWN}50`, fontWeight: 700 }}>Level {level}</div>
           <button onClick={() => { setLevel(l => l + 1); showNumber(level + 1) }} style={{
             padding: '16px', borderRadius: 18, border: 'none',
             background: BLUE, color: '#fff', fontSize: 18, fontWeight: 900,
