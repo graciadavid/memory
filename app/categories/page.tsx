@@ -8,6 +8,13 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 
 const CATEGORIES = [
   {
+    key: 'memgenius',
+    label: 'MemGenius',
+    img: `${BASE}/brain-logo.png`,
+    color: '#E91E8C',
+    slugs: ['memgenius-colors'],
+  },
+  {
     key: 'geography',
     label: 'Geography',
     img: `${BASE}/dubai-skyline.png`,
@@ -52,6 +59,7 @@ const CATEGORIES = [
 ]
 
 const PACK_IMGS: Record<string, string> = {
+  'memgenius-colors': `${BASE}/brain-logo.png`,
   'monuments-countries': `${BASE}/eiffel-tower.png`,
   'cities-skylines': `${BASE}/tokyo-skyline.png`,
   'skyscrapers-cities': `${BASE}/empire-state.png`,
