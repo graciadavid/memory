@@ -98,11 +98,18 @@ export default function SequencePage() {
     }
   }
 
-  const startGame = () => {
-    const first = Math.floor(Math.random() * 4)
-    setSequence([first])
+  const startGame = async () => {
+    const first = [Math.floor(Math.random() * 4)]
     setUserInput([])
     setPhase('showing')
+    await new Promise(r => setTimeout(r, 600))
+    for (const id of first) {
+      await flashButton(id, 500)
+      await new Promise(r => setTimeout(r, 200))
+    }
+    setSequence(first)
+    setUserInput([])
+    setPhase('input')
   }
 
   const flashButton = (id: number, duration = 400) => {
@@ -124,11 +131,7 @@ export default function SequencePage() {
     setPhase('input')
   }
 
-  useEffect(() => {
-    if (phase === 'showing' && sequence.length > 0) {
-      showSequence(sequence)
-    }
-  }, [sequence])
+
 
   const handlePress = async (id: number) => {
     if (phase !== 'input') return
