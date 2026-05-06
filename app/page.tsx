@@ -182,6 +182,29 @@ export default function LandingPage() {
               </div>
             </div>
           </Link>
+          <Link href="/sequence" style={{ textDecoration: 'none' }}>
+            <div style={{
+              width: '100%', borderRadius: 22,
+              background: '#6A1B9A',
+              boxShadow: '0 8px 0 #4A148C60',
+              padding: '20px 24px',
+              display: 'flex', alignItems: 'center', gap: 16,
+              cursor: 'pointer', boxSizing: 'border-box',
+            }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, width: 48, height: 48, flexShrink: 0 }}>
+                {['#F44336','#2196F3','#4CAF50','#FFEB3B'].map(c => (
+                  <div key={c} style={{ borderRadius: 6, background: c }} />
+                ))}
+              </div>
+              <div>
+                <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Sequence</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
+                  Repeat the pattern
+                </div>
+              </div>
+            </div>
+          </Link>
+
         </div>
 
         {/* Footer */}
