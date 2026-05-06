@@ -1,13 +1,14 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
+const BLUE = '#1565C0'
 
-export default function RankingClient({ scores, dailyScores }: { scores: any[], dailyScores: any[] }) {
+export default function RankingClient({ scores, dailyScores, digitScores }: { scores: any[], dailyScores: any[], digitScores: any[] }) {
+  const [game, setGame] = useState<'memory' | 'digits'>('memory')
   const [filter, setFilter] = useState<'today' | 1 | 2 | 3>('today')
   const [myName, setMyName] = useState<string>('')
-  const myRowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const stored = localStorage.getItem('memgenius_profile')
@@ -24,8 +25,8 @@ export default function RankingClient({ scores, dailyScores }: { scores: any[], 
   const diffColor = (d: number) => d === 1 ? '#2E7D32' : d === 2 ? '#E65100' : '#B71C1C'
   const diffLabel = (d: number) => d === 1 ? 'Easy' : d === 2 ? 'Med' : 'Hard'
 
-  const getBest = (diff: number) => {
-    const fil = scores.filter(s => s.packs?.difficulty === diff)
+  const getBest = (diff?: number) => {
+    const fil = diff ? scores.filter(s => s.packs?.difficulty === diff) : scores
     const map: Record<string, any> = {}
     fil.forEach(s => {
       const key = s.player_name
@@ -42,120 +43,157 @@ export default function RankingClient({ scores, dailyScores }: { scores: any[], 
     return Object.values(map).sort((a, b) => a.time_ms - b.time_ms)
   }
 
-  const filtered = filter === 'today' ? getDailyBest() : getBest(filter)
-  const myIndex = filtered.findIndex(s => s.player_name === myName)
-  const myScore = myIndex >= 0 ? filtered[myIndex] : null
-  const myPosition = myIndex + 1
-
-  const scrollToMe = () => {
-    const el = document.getElementById('my-row')
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  const getDigitsBest = () => {
+    const map: Record<string, number> = {}
+    digitScores.forEach(s => {
+      if (!map[s.player_name] || s.level > map[s.player_name]) map[s.player_name] = s.level
+    })
+    return Object.entries(map).map(([name, level]) => ({ name, level })).sort((a, b) => b.level - a.level)
   }
 
+  const memoryFiltered = filter === 'today' ? getDailyBest() : getBest(filter as number)
+  const digitsFiltered = getDigitsBest()
+
   const share = async (position: number, score: any) => {
-    const cat = filter === 'today' ? 'Daily Challenge' : filter === 1 ? 'Easy' : filter === 2 ? 'Medium' : 'Hard'
-    const text = `🦅 I'm #${position} in ${cat} on MemGenius!\nTime: ${fmt(score.time_ms)}\nCan you beat me?\nhttps://memgenius.com`
+    const text = game === 'memory'
+      ? `🧠 I'm #${position} in Memory on MemGenius with ${fmt(score.time_ms)}!\nhttps://memgenius.com/memory`
+      : `🔢 I'm #${position} in Digits on MemGenius with level ${score.level}!\nhttps://memgenius.com/digits`
     if (navigator.share) await navigator.share({ text })
     else { await navigator.clipboard.writeText(text); alert('Copied!') }
   }
 
-  const tabs = [
+  const memoryTabs = [
     { key: 'today' as const, label: 'Today', color: BROWN },
     { key: 1 as const, label: 'Easy', color: '#2E7D32' },
     { key: 2 as const, label: 'Medium', color: '#E65100' },
     { key: 3 as const, label: 'Hard', color: '#B71C1C' },
   ]
 
-  const ScoreRow = ({ score, position }: { score: any, position: number }) => {
+  const MemoryRow = ({ score, position }: { score: any, position: number }) => {
     const isMe = score.player_name === myName
     return (
-      <div
-        id={isMe ? 'my-row' : undefined}
-        style={{
-          display: 'grid', gridTemplateColumns: '36px 1fr 48px 80px 32px',
-          alignItems: 'center', gap: 6,
-          background: isMe ? `${GOLD}22` : position === 1 ? `${GOLD}08` : '#fff',
-          border: `1px solid ${isMe ? GOLD + '60' : position === 1 ? GOLD + '20' : BROWN + '08'}`,
-          borderRadius: 12, padding: '10px 10px',
-          boxShadow: isMe ? `0 4px 16px ${GOLD}25` : `0 1px 4px ${BROWN}06`,
-          boxSizing: 'border-box',
-        }}>
-        <div style={{
-          fontSize: 13, fontWeight: 900, textAlign: 'center',
-          color: position === 1 ? GOLD : position === 2 ? '#999' : position === 3 ? '#A0522D' : `${BROWN}30`,
-        }}>{position}</div>
-        <div style={{
-          fontSize: 13, fontWeight: 800, color: BROWN,
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          display: 'flex', alignItems: 'center', gap: 6,
-        }}>
+      <div id={isMe ? 'my-row' : undefined} style={{
+        display: 'grid', gridTemplateColumns: '36px 1fr 48px 80px 32px',
+        alignItems: 'center', gap: 6,
+        background: isMe ? `${GOLD}22` : position === 1 ? `${GOLD}08` : '#fff',
+        border: `1px solid ${isMe ? GOLD + '60' : position === 1 ? GOLD + '20' : BROWN + '08'}`,
+        borderRadius: 12, padding: '10px 10px',
+        boxShadow: isMe ? `0 4px 16px ${GOLD}25` : `0 1px 4px ${BROWN}06`,
+      }}>
+        <div style={{ fontSize: 13, fontWeight: 900, textAlign: 'center', color: position === 1 ? GOLD : position === 2 ? '#999' : position === 3 ? '#A0522D' : `${BROWN}30` }}>{position}</div>
+        <div style={{ fontSize: 13, fontWeight: 800, color: BROWN, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6 }}>
           {score.player_name}
-          {isMe && <span style={{ fontSize: 8, color: GOLD, fontWeight: 900, letterSpacing: 1, background: `${GOLD}20`, padding: '1px 5px', borderRadius: 4 }}>YOU</span>}
+          {isMe && <span style={{ fontSize: 8, color: GOLD, fontWeight: 900, background: `${GOLD}20`, padding: '1px 5px', borderRadius: 4 }}>YOU</span>}
         </div>
-        <div style={{
-          fontSize: 9, fontWeight: 900,
-          color: diffColor(score.packs?.difficulty),
-          background: `${diffColor(score.packs?.difficulty)}15`,
-          borderRadius: 5, padding: '2px 4px', textAlign: 'center',
-        }}>{diffLabel(score.packs?.difficulty)}</div>
-        <div style={{
-          fontSize: 11, fontWeight: 900, color: BROWN,
-          fontFamily: 'monospace', textAlign: 'center',
-        }}>{fmt(score.time_ms)}</div>
+        <div style={{ fontSize: 9, fontWeight: 900, color: diffColor(score.packs?.difficulty), background: `${diffColor(score.packs?.difficulty)}15`, borderRadius: 5, padding: '2px 4px', textAlign: 'center' }}>{diffLabel(score.packs?.difficulty)}</div>
+        <div style={{ fontSize: 11, fontWeight: 900, color: BROWN, fontFamily: 'monospace', textAlign: 'center' }}>{fmt(score.time_ms)}</div>
         {isMe ? (
-          <button onClick={() => share(position, score)} style={{
-            width: 26, height: 26, borderRadius: 7, border: 'none',
-            background: GOLD, color: '#fff', fontSize: 11,
-            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>↑</button>
+          <button onClick={() => share(position, score)} style={{ width: 26, height: 26, borderRadius: 7, border: 'none', background: GOLD, color: '#fff', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
         ) : <div />}
       </div>
     )
   }
 
+  const DigitsRow = ({ score, position }: { score: any, position: number }) => {
+    const isMe = score.name === myName
+    return (
+      <div id={isMe ? 'my-row' : undefined} style={{
+        display: 'grid', gridTemplateColumns: '36px 1fr 80px 32px',
+        alignItems: 'center', gap: 6,
+        background: isMe ? `${GOLD}22` : position === 1 ? `${GOLD}08` : '#fff',
+        border: `1px solid ${isMe ? GOLD + '60' : position === 1 ? GOLD + '20' : BROWN + '08'}`,
+        borderRadius: 12, padding: '10px 10px',
+        boxShadow: isMe ? `0 4px 16px ${GOLD}25` : `0 1px 4px ${BROWN}06`,
+      }}>
+        <div style={{ fontSize: 13, fontWeight: 900, textAlign: 'center', color: position === 1 ? GOLD : position === 2 ? '#999' : position === 3 ? '#A0522D' : `${BROWN}30` }}>{position}</div>
+        <div style={{ fontSize: 13, fontWeight: 800, color: BROWN, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6 }}>
+          {score.name}
+          {isMe && <span style={{ fontSize: 8, color: GOLD, fontWeight: 900, background: `${GOLD}20`, padding: '1px 5px', borderRadius: 4 }}>YOU</span>}
+        </div>
+        <div style={{ fontSize: 12, fontWeight: 900, color: BLUE, textAlign: 'center' }}>{score.level} digits</div>
+        {isMe ? (
+          <button onClick={() => share(position, score)} style={{ width: 26, height: 26, borderRadius: 7, border: 'none', background: GOLD, color: '#fff', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
+        ) : <div />}
+      </div>
+    )
+  }
+
+  const scrollToMe = () => {
+    document.getElementById('my-row')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+
+  const myMemoryIndex = memoryFiltered.findIndex(s => s.player_name === myName)
+  const myDigitsIndex = digitsFiltered.findIndex(s => s.name === myName)
+
   return (
     <>
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, padding: '0 16px 12px', flexShrink: 0 }}>
-        {tabs.map(tab => (
-          <button key={String(tab.key)} onClick={() => setFilter(tab.key)} style={{
-            flex: 1, padding: '9px 4px', borderRadius: 12, border: 'none',
-            background: filter === tab.key ? tab.color : '#fff',
-            color: filter === tab.key ? '#fff' : `${BROWN}60`,
-            fontSize: 11, fontWeight: 800,
+      {/* Game selector */}
+      <div style={{ display: 'flex', gap: 8, padding: '0 16px 10px', flexShrink: 0 }}>
+        {[
+          { key: 'memory' as const, label: '🧠 Memory', color: BROWN },
+          { key: 'digits' as const, label: '🔢 Digits', color: BLUE },
+        ].map(g => (
+          <button key={g.key} onClick={() => setGame(g.key)} style={{
+            flex: 1, padding: '10px 4px', borderRadius: 12, border: 'none',
+            background: game === g.key ? g.color : '#fff',
+            color: game === g.key ? '#fff' : `${BROWN}60`,
+            fontSize: 13, fontWeight: 800,
             fontFamily: 'inherit', cursor: 'pointer',
-            boxShadow: filter === tab.key ? `0 5px 0 ${tab.color}50` : `0 2px 6px ${BROWN}08`,
+            boxShadow: game === g.key ? `0 5px 0 ${g.color}50` : `0 2px 6px ${BROWN}08`,
             transition: 'all 0.2s',
-          }}>{tab.label}</button>
+          }}>{g.label}</button>
         ))}
       </div>
+
+      {/* Memory tabs */}
+      {game === 'memory' && (
+        <div style={{ display: 'flex', gap: 6, padding: '0 16px 10px', flexShrink: 0 }}>
+          {memoryTabs.map(tab => (
+            <button key={String(tab.key)} onClick={() => setFilter(tab.key)} style={{
+              flex: 1, padding: '8px 4px', borderRadius: 10, border: 'none',
+              background: filter === tab.key ? tab.color : '#fff',
+              color: filter === tab.key ? '#fff' : `${BROWN}60`,
+              fontSize: 11, fontWeight: 800,
+              fontFamily: 'inherit', cursor: 'pointer',
+              boxShadow: filter === tab.key ? `0 4px 0 ${tab.color}50` : `0 2px 6px ${BROWN}08`,
+              transition: 'all 0.2s',
+            }}>{tab.label}</button>
+          ))}
+        </div>
+      )}
 
       {/* Headers */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: '36px 1fr 48px 80px 32px',
-        padding: '0 16px 6px', gap: 6, flexShrink: 0,
-      }}>
-        {['#', 'Player', 'Lvl', 'Time', ''].map((h, i) => (
-          <div key={i} style={{ fontSize: 9, fontWeight: 900, color: `${BROWN}35`, letterSpacing: 2, textTransform: 'uppercase' }}>{h}</div>
-        ))}
-      </div>
+      {game === 'memory' ? (
+        <div style={{ display: 'grid', gridTemplateColumns: '36px 1fr 48px 80px 32px', padding: '0 16px 6px', gap: 6, flexShrink: 0 }}>
+          {['#', 'Player', 'Lvl', 'Time', ''].map((h, i) => (
+            <div key={i} style={{ fontSize: 9, fontWeight: 900, color: `${BROWN}35`, letterSpacing: 2, textTransform: 'uppercase' }}>{h}</div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: '36px 1fr 80px 32px', padding: '0 16px 6px', gap: 6, flexShrink: 0 }}>
+          {['#', 'Player', 'Digits', ''].map((h, i) => (
+            <div key={i} style={{ fontSize: 9, fontWeight: 900, color: `${BROWN}35`, letterSpacing: 2, textTransform: 'uppercase' }}>{h}</div>
+          ))}
+        </div>
+      )}
 
       {/* List */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 10px', paddingBottom: myScore ? 140 : 80 }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 10px', paddingBottom: 140 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          {filtered.length === 0 && (
-            <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, marginTop: 60 }}>
-              {filter === 'today' ? 'No one has played today yet. Be first!' : 'No scores yet'}
-            </div>
+          {game === 'memory' ? (
+            memoryFiltered.length === 0 ? (
+              <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, marginTop: 60 }}>No scores yet</div>
+            ) : memoryFiltered.map((score, i) => <MemoryRow key={score.id} score={score} position={i + 1} />)
+          ) : (
+            digitsFiltered.length === 0 ? (
+              <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, marginTop: 60 }}>No scores yet</div>
+            ) : digitsFiltered.map((score, i) => <DigitsRow key={score.name} score={score} position={i + 1} />)
           )}
-          {filtered.map((score, i) => (
-            <ScoreRow key={score.id} score={score} position={i + 1} />
-          ))}
         </div>
       </div>
 
       {/* Sticky my position */}
-      {myScore && (
+      {((game === 'memory' && myMemoryIndex >= 0) || (game === 'digits' && myDigitsIndex >= 0)) && (
         <div onClick={scrollToMe} style={{
           position: 'fixed', bottom: 60,
           left: '50%', transform: 'translateX(-50%)',
@@ -169,7 +207,12 @@ export default function RankingClient({ scores, dailyScores }: { scores: any[], 
           <div style={{ fontSize: 9, fontWeight: 900, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 5, paddingLeft: 4 }}>
             Your position · tap to find
           </div>
-          <ScoreRow score={myScore} position={myPosition} />
+          {game === 'memory' && myMemoryIndex >= 0 && (
+            <MemoryRow score={memoryFiltered[myMemoryIndex]} position={myMemoryIndex + 1} />
+          )}
+          {game === 'digits' && myDigitsIndex >= 0 && (
+            <DigitsRow score={digitsFiltered[myDigitsIndex]} position={myDigitsIndex + 1} />
+          )}
         </div>
       )}
     </>
