@@ -8,9 +8,9 @@ export default async function HallOfFamePage() {
     supabase.from('scores').select('player_name, time_ms, packs(difficulty)').eq('packs.difficulty', 1).order('time_ms', { ascending: true }).limit(500),
     supabase.from('scores').select('player_name, time_ms, packs(difficulty)').eq('packs.difficulty', 2).order('time_ms', { ascending: true }).limit(500),
     supabase.from('scores').select('player_name, time_ms, packs(difficulty)').eq('packs.difficulty', 3).order('time_ms', { ascending: true }).limit(500),
-    supabase.from('number_scores').select('player_name, level').order('level', { ascending: false }).order('created_at', { ascending: true }).limit(500),
-    supabase.from('sequence_scores').select('player_name, level').order('level', { ascending: false }).order('created_at', { ascending: true }).limit(500),
-    supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).order('created_at', { ascending: true }).limit(500),
+    supabase.from('number_scores').select('player_name, level').order('level', { ascending: false }).limit(1000),
+    supabase.from('sequence_scores').select('player_name, level').order('level', { ascending: false }).limit(1000),
+    supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(1000),
   ])
 
   // Get best per player
