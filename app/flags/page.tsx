@@ -293,7 +293,6 @@ export default function FlagsPage() {
               border: `1px solid ${GOLD}30`,
               textAlign: 'center',
             }}>
-              <img loading="lazy" src={BRAIN_RED} alt="" style={{ width: 70, height: 70, objectFit: 'contain', marginBottom: 8 }} />
               <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: `${BROWN}50`, textTransform: 'uppercase', marginBottom: 6 }}>Your Result</div>
               <div style={{ fontSize: 36, fontWeight: 900, color: BROWN, marginBottom: 4 }}>{level} flags</div>
               <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 700, marginBottom: 12 }}>in a row</div>
