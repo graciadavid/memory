@@ -153,8 +153,7 @@ export default function LandingPage() {
               padding: '14px 20px',
               display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
-              opacity: mounted ? 1 : 0,
-              animation: mounted ? 'fadeUp 0.5s ease 0.1s both' : 'none',
+              
             }}>
               <img src="/icons/memory.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
@@ -174,8 +173,7 @@ export default function LandingPage() {
               padding: '14px 20px',
               display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
-              opacity: mounted ? 1 : 0,
-              animation: mounted ? 'fadeUp 0.5s ease 0.2s both' : 'none',
+              
             }}>
               <img src="/icons/digits.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
