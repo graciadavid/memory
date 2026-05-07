@@ -73,7 +73,7 @@ export default function FlagsPage() {
   const [topScores, setTopScores] = useState<{ name: string, level: number }[]>([])
   const [progress, setProgress] = useState(100)
   const [imgLoaded, setImgLoaded] = useState(false)
-  const timerRef = useRef<NodeJS.Timeout>()
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => { fetchTop() }, [])
 
