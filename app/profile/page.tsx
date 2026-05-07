@@ -156,7 +156,35 @@ export default function ProfilePage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
           <Avatar name={profile.name} photo={profile.avatar} size={72} />
           <div>
-            <div style={{ fontSize: 26, fontWeight: 900, color: 'white', letterSpacing: -0.5 }}>{profile.name}</div>
+            {editingName ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <input
+                    type="text"
+                    value={newName}
+                    onChange={e => { setNewName(e.target.value); setNameError('') }}
+                    onKeyDown={e => e.key === 'Enter' && saveName()}
+                    maxLength={20}
+                    autoFocus
+                    style={{
+                      flex: 1, padding: '6px 10px', borderRadius: 8,
+                      border: '1px solid rgba(255,255,255,0.5)',
+                      background: 'rgba(255,255,255,0.15)',
+                      color: '#fff', fontSize: 16, fontWeight: 800,
+                      fontFamily: 'inherit', outline: 'none',
+                    }}
+                  />
+                  <button onClick={saveName} style={{ padding: '6px 12px', borderRadius: 8, border: 'none', background: GOLD, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>{nameSaving ? '...' : 'Save'}</button>
+                  <button onClick={() => { setEditingName(false); setNameError('') }} style={{ padding: '6px 10px', borderRadius: 8, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
+                </div>
+                {nameError && <div style={{ fontSize: 10, color: '#FFB3B3', fontWeight: 700 }}>{nameError}</div>}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ fontSize: 26, fontWeight: 900, color: 'white', letterSpacing: -0.5 }}>{profile.name}</div>
+                <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
+              </div>
+            )}
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 700, marginTop: 2 }}>Since {profile.joinedDate}</div>
           </div>
         </div>
