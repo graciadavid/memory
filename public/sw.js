@@ -1,4 +1,4 @@
-const CACHE = 'memgenius-v4'
+const CACHE = 'memgenius-v5'
 const ASSETS = [
   '/',
   '/memory',
