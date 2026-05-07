@@ -82,18 +82,14 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           </div>
         </div>
 
-        {/* Claim */}
-        <div style={{
-          fontSize: 13, color: `${BROWN}55`,
-          fontStyle: 'italic', fontFamily: 'Georgia, serif',
-          marginTop: 4,
-        }}>
-          Your daily brain workout
-        </div>
+
 
         {/* Greeting + streak */}
-        <div style={{ marginTop: 12, textAlign: 'center' }}>
-          <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>
+        <div style={{ marginTop: 16, textAlign: 'center' }}>
+          <div style={{ fontSize: 13, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 4 }}>
+            Your daily brain workout
+          </div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>
             Hey, {profile.name}!
           </div>
           {(profile?.streak ?? 0) > 0 && (
@@ -104,7 +100,7 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
         </div>
 
         {/* Buttons */}
-        <div style={{ width: '100%', padding: '20px 20px 0', display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ width: '100%', padding: '16px 20px 0', display: 'flex', flexDirection: 'column', gap: 12 }}>
 
 
 
@@ -113,12 +109,12 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
             {levels.map(level => (
               <Link key={level.label} href={`/play/${level.slug}`} style={{ textDecoration: 'none', flex: 1 }}>
                 <div style={{
-                  padding: '16px 8px', borderRadius: 18,
+                  padding: '20px 8px', borderRadius: 20,
                   background: level.bg,
-                  boxShadow: `0 6px 0 ${level.shadow}`,
+                  boxShadow: `0 8px 0 ${level.shadow}`,
                   textAlign: 'center', cursor: 'pointer',
                 }}>
-                  <div style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>{level.label}</div>
+                  <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{level.label}</div>
                 </div>
               </Link>
             ))}
