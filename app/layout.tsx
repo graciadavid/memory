@@ -1,4 +1,38 @@
 import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'MemGenius — Daily Brain Games',
+  description: 'Train your brain with Memory, Digits, Sequence and Flags. Free daily brain games with world rankings. No login required.',
+  keywords: ['memory game', 'brain training', 'daily game', 'flag quiz', 'number memory', 'simon says'],
+  openGraph: {
+    title: 'MemGenius — Daily Brain Games',
+    description: 'Train your brain with Memory, Digits, Sequence and Flags.',
+    url: 'https://memgenius.com',
+    siteName: 'MemGenius',
+    images: [
+      {
+        url: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/logomemgenius.png',
+        width: 1200,
+        height: 630,
+        alt: 'MemGenius',
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MemGenius — Daily Brain Games',
+    description: 'Train your brain with Memory, Digits, Sequence and Flags.',
+    images: ['https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/logomemgenius.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: 'https://memgenius.com',
+  },
+}
 import Analytics from './analytics'
 import { Nunito } from 'next/font/google'
 import './globals.css'
@@ -10,20 +44,6 @@ const nunito = Nunito({
   variable: '--font-nunito',
 })
 
-export const metadata: Metadata = {
-  title: 'MemGenius — Association Memory Game',
-  description: 'Match pairs and test your knowledge. World rankings, daily challenges.',
-  metadataBase: new URL('https://memgenius.com'),
-  openGraph: {
-    title: 'MemGenius — Association Memory Game',
-    description: 'Match pairs and test your knowledge. World rankings, daily challenges.',
-    images: [{ url: '/api/og', width: 1200, height: 630 }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['/api/og'],
-  },
-}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
