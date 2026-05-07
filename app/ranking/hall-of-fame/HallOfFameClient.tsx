@@ -188,14 +188,14 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
                         color: '#fff', fontSize: 14, fontWeight: 900,
                         cursor: 'pointer', fontFamily: 'inherit',
                         boxShadow: `0 5px 0 ${card.color}60`,
-                      }}>Share this record ↑</button>
+                      }}>Share</button>
                     </>
                   ) : (
                     <div style={{
                       background: '#fff', borderRadius: 16, padding: '20px',
                       textAlign: 'center', border: `1px dashed ${card.color}30`,
                     }}>
-                      <div style={{ fontSize: 24, marginBottom: 4 }}>🏆</div>
+                      <img src="/icons/nav-trophy.webp" alt="" style={{ width: 36, height: 36, objectFit: 'contain', marginBottom: 4, opacity: 0.3 }} />
                       <div style={{ fontSize: 13, color: `${BROWN}40`, fontWeight: 700 }}>No record yet</div>
                       <div style={{ fontSize: 11, color: `${BROWN}30`, marginTop: 2 }}>Be the first champion!</div>
                     </div>
