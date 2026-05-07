@@ -185,8 +185,9 @@ export default function AdminPage() {
           {/* Player list with game filter */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
             {[
-              { key: 'memory' as const, label: '🧠 Memory', color: BROWN },
-              { key: 'digits' as const, label: '🔢 Digits', color: BLUE },
+              { key: 'memory' as const, label: 'Memory', color: BROWN },
+              { key: 'digits' as const, label: 'Digits', color: BLUE },
+              { key: 'sequence' as const, label: 'Sequence', color: '#6A1B9A' },
             ].map(g => (
               <button key={g.key} onClick={() => setGameFilter(g.key)} style={{
                 flex: 1, padding: '9px', borderRadius: 12, border: 'none',
