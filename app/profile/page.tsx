@@ -1,7 +1,7 @@
 'use client'
 import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import { fetchLiveRanks, fetchDailyRank } from './RanksFetcher'
+import { fetchAllRanks } from './RanksFetcher'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
@@ -54,48 +54,15 @@ export default function ProfilePage() {
   const [loadingRanks, setLoadingRanks] = useState(true)
   const [digitsRank, setDigitsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [seqRank, setSeqRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     if (!profile?.name) return
-
-    const fetchSeqRank = async () => {
-      const { data } = await supabase
-        .from('sequence_scores')
-        .select('player_name, level')
-        .order('level', { ascending: false })
-        .limit(500)
-      if (!data) return
-      const best: Record<string, number> = {}
-      data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-      const myLevel = best[profile.name]
-      if (!myLevel) return
-      const rank = Object.values(best).filter(l => l > myLevel).length + 1
-      setSeqRank({ level: myLevel, rank })
-    }
-
-    const fetchDigitsRank = async () => {
-      const { data } = await supabase
-        .from('number_scores')
-        .select('player_name, level')
-        .order('level', { ascending: false })
-        .limit(500)
-      if (!data) return
-      const best: Record<string, number> = {}
-      data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-      const myLevel = best[profile.name]
-      if (!myLevel) return
-      const rank = Object.values(best).filter(l => l > myLevel).length + 1
-      setDigitsRank({ level: myLevel, rank })
-    }
-
-    Promise.all([
-      fetchLiveRanks(profile.name),
-      fetchDailyRank(profile.name),
-      fetchDigitsRank(),
-      fetchSeqRank(),
-    ]).then(([ranks, daily]) => {
-      setLiveRanks(ranks)
-      setDailyRank(daily)
+    fetchAllRanks(profile.name).then(({ memoryRanks, dailyRank, digitsRank, seqRank }) => {
+      setLiveRanks(memoryRanks)
+      setDailyRank(dailyRank)
+      setDigitsRank(digitsRank)
+      setSeqRank(seqRank)
       setLoadingRanks(false)
     })
   }, [profile?.name])
