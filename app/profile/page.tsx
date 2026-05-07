@@ -184,7 +184,9 @@ export default function ProfilePage() {
           background: '#fff', borderRadius: 20, padding: '20px 22px',
           boxShadow: `0 2px 12px ${BROWN}10`,
         }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
+          <InstallBanner />
+
+                <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
             Memory — Best
           </div>
           {/* Easy Medium Hard — 3 columns */}
