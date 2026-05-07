@@ -9,7 +9,7 @@ const BLUE = '#1565C0'
 const GREEN = '#2E7D32'
 const RED = '#B71C1C'
 
-type Period = 'today' | '7d' | '30d'
+type Period = 'today' | '7d' | '30d' | '2026' | '2026'
 
 export default function AdminPage() {
   const [password, setPassword] = useState('')
@@ -19,6 +19,7 @@ export default function AdminPage() {
   const [stats, setStats] = useState<any>(null)
   const [players, setPlayers] = useState<any>({})
   const [gameFilter, setGameFilter] = useState<'memory' | 'digits' | 'sequence' | 'flags'>('memory')
+  const [topFilter, setTopFilter] = useState<'topMemory' | 'topDigits' | 'topSequence' | 'topFlags'>('topMemory')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -40,14 +41,16 @@ export default function AdminPage() {
     const now = new Date()
     if (p === 'today') return new Date(now.toISOString().split('T')[0] + 'T00:00:00').toISOString()
     if (p === '7d') return new Date(now.getTime() - 7 * 86400000).toISOString()
-    return new Date(now.getTime() - 30 * 86400000).toISOString()
+    if (p === '30d') return new Date(now.getTime() - 30 * 86400000).toISOString()
+    return '2026-01-01T00:00:00.000Z'
   }
 
   const getPrevPeriodStart = (p: Period) => {
     const now = new Date()
     if (p === 'today') return new Date(new Date(now.getTime() - 86400000).toISOString().split('T')[0] + 'T00:00:00').toISOString()
     if (p === '7d') return new Date(now.getTime() - 14 * 86400000).toISOString()
-    return new Date(now.getTime() - 60 * 86400000).toISOString()
+    if (p === '30d') return new Date(now.getTime() - 60 * 86400000).toISOString()
+    return '2025-01-01T00:00:00.000Z'
   }
 
   const loadData = async () => {
@@ -183,14 +186,14 @@ export default function AdminPage() {
 
       {/* Period selector */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-        {(['today', '7d', '30d'] as Period[]).map(p => (
+        {(['today', '7d', '30d', '2026'] as Period[]).map(p => (
           <button key={p} onClick={() => setPeriod(p)} style={{
             flex: 1, padding: '9px', borderRadius: 12, border: 'none',
             background: period === p ? BROWN : '#fff',
             color: period === p ? '#fff' : `${BROWN}60`,
-            fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+            fontSize: 11, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
             boxShadow: period === p ? `0 4px 0 ${BROWN}50` : `0 2px 6px ${BROWN}08`,
-          }}>{p === 'today' ? 'Today' : p === '7d' ? '7 days' : '30 days'}</button>
+          }}>{p === 'today' ? 'Today' : p === '7d' ? '7d' : p === '30d' ? '30d' : '2026'}</button>
         ))}
       </div>
 
@@ -240,27 +243,30 @@ export default function AdminPage() {
 
           {/* Top players per game */}
           <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Top Players</div>
-          {[
-            { key: 'topMemory', label: 'Memory', color: BROWN },
-            { key: 'topDigits', label: 'Digits', color: BLUE },
-            { key: 'topSequence', label: 'Sequence', color: '#6A1B9A' },
-            { key: 'topFlags', label: 'Flags', color: '#00796B' },
-          ].map(game => (
-            <div key={game.key} style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: game.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>{game.label}</div>
-              <div style={{ background: '#fff', borderRadius: 14, padding: '10px 12px', boxShadow: `0 2px 8px ${BROWN}06` }}>
-                {(players[game.key] || []).map((p: any, i: number) => (
-                  <div key={p.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: i < (players[game.key].length - 1) ? `1px solid ${BROWN}08` : 'none' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <div style={{ fontSize: 12, fontWeight: 900, color: i === 0 ? GOLD : `${BROWN}30`, width: 18 }}>{i + 1}</div>
-                      <div style={{ fontSize: 13, fontWeight: 800, color: BROWN }}>{p.name}</div>
-                    </div>
-                    <div style={{ fontSize: 12, fontWeight: 900, color: game.color }}>{p.games} games</div>
-                  </div>
-                ))}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+            {[
+              { key: 'topMemory', label: 'Memory', color: BROWN },
+              { key: 'topDigits', label: 'Digits', color: BLUE },
+              { key: 'topSequence', label: 'Sequence', color: '#6A1B9A' },
+              { key: 'topFlags', label: 'Flags', color: '#00796B' },
+            ].map(g => (
+              <button key={g.key} onClick={() => setTopFilter(g.key as any)} style={{
+                flex: 1, padding: '7px 4px', borderRadius: 10, border: 'none',
+                background: topFilter === g.key ? g.color : '#fff',
+                color: topFilter === g.key ? '#fff' : `${BROWN}60`,
+                fontSize: 11, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+                boxShadow: topFilter === g.key ? `0 3px 0 ${g.color}50` : `0 2px 6px ${BROWN}08`,
+              }}>{g.label}</button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 }}>
+            {(players[topFilter] || []).map((p: any) => (
+              <div key={p.name} style={{ background: '#fff', borderRadius: 12, padding: '12px 14px', border: `1px solid ${BROWN}08`, boxShadow: `0 1px 4px ${BROWN}06`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{p.name}</div>
+                <div style={{ fontSize: 18, fontWeight: 900, color: BROWN }}>{p.games} <span style={{ fontSize: 10, color: `${BROWN}40` }}>games</span></div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
           {/* Recent players by game */}
           <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Recent Players</div>
