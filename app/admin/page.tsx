@@ -14,7 +14,7 @@ export default function AdminPage() {
   const [stats, setStats] = useState<any>(null)
   const [players, setPlayers] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
-  const [gameFilter, setGameFilter] = useState<'memory' | 'digits'>('memory')
+  const [gameFilter, setGameFilter] = useState<'memory' | 'digits' | 'sequence'>('memory')
 
   const login = () => {
     if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
@@ -29,18 +29,21 @@ export default function AdminPage() {
     setLoading(true)
     const today = new Date().toISOString().split('T')[0]
 
-    const [memScores, digScores] = await Promise.all([
+    const [memScores, digScores, seqScores] = await Promise.all([
       supabase.from('scores').select('player_name, time_ms, is_daily, play_date, created_at, packs(difficulty)').order('created_at', { ascending: false }),
       supabase.from('number_scores').select('player_name, level, created_at').order('created_at', { ascending: false }),
+      supabase.from('sequence_scores').select('player_name, level, created_at').order('created_at', { ascending: false }),
     ])
 
     const scores = memScores.data || []
     const digits = digScores.data || []
+    const sequence = seqScores.data || []
 
     // All players combined
     const allPlayers = new Set([
       ...scores.map(s => s.player_name),
       ...digits.map(s => s.player_name),
+      ...sequence.map(s => s.player_name),
     ])
 
     const memPlayersToday = new Set(scores.filter(s => s.created_at?.startsWith(today)).map(s => s.player_name))
@@ -60,8 +63,10 @@ export default function AdminPage() {
     setStats({
       totalGames: scores.length,
       totalGamesDigits: digits.length,
+      totalGamesSeq: sequence.length,
       totalGamesToday: scores.filter(s => s.created_at?.startsWith(today)).length,
       totalGamesTodayDigits: digits.filter(s => s.created_at?.startsWith(today)).length,
+      totalGamesTodaySeq: sequence.filter(s => s.created_at?.startsWith(today)).length,
       totalPlayers: allPlayers.size,
       playersToday: allPlayersToday.size,
       newToday,
@@ -86,10 +91,20 @@ export default function AdminPage() {
       if (s.level > digPlayerMap[s.player_name].bestLevel) digPlayerMap[s.player_name].bestLevel = s.level
     })
 
+    const seqPlayerMap: Record<string, { games: number, lastGame: string, firstGame: string, bestLevel: number }> = {}
+    sequence.forEach(s => {
+      if (!seqPlayerMap[s.player_name]) seqPlayerMap[s.player_name] = { games: 0, lastGame: s.created_at, firstGame: s.created_at, bestLevel: 0 }
+      seqPlayerMap[s.player_name].games++
+      if (s.created_at > seqPlayerMap[s.player_name].lastGame) seqPlayerMap[s.player_name].lastGame = s.created_at
+      if (s.created_at < seqPlayerMap[s.player_name].firstGame) seqPlayerMap[s.player_name].firstGame = s.created_at
+      if (s.level > seqPlayerMap[s.player_name].bestLevel) seqPlayerMap[s.player_name].bestLevel = s.level
+    })
+
     const memList = Object.entries(memPlayerMap).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
     const digList = Object.entries(digPlayerMap).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
+    const seqList = Object.entries(seqPlayerMap).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
 
-    setPlayers({ memory: memList, digits: digList } as any)
+    setPlayers({ memory: memList, digits: digList, sequence: seqList } as any)
     setLoading(false)
   }
 
@@ -117,7 +132,7 @@ export default function AdminPage() {
     )
   }
 
-  const currentPlayers = gameFilter === 'memory' ? (players as any)?.memory || [] : (players as any)?.digits || []
+  const currentPlayers = gameFilter === 'memory' ? (players as any)?.memory || [] : gameFilter === 'digits' ? (players as any)?.digits || [] : (players as any)?.sequence || []
 
   return (
     <main style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', padding: '24px 16px 100px' }}>
@@ -137,6 +152,8 @@ export default function AdminPage() {
               { label: 'Memory Today', value: stats.totalGamesToday },
               { label: 'Total Digits', value: stats.totalGamesDigits },
               { label: 'Digits Today', value: stats.totalGamesTodayDigits },
+              { label: 'Total Sequence', value: stats.totalGamesSeq },
+              { label: 'Sequence Today', value: stats.totalGamesTodaySeq },
             ].map(s => (
               <div key={s.label} style={{ background: '#fff', border: `1px solid ${BROWN}08`, borderRadius: 14, padding: '14px', boxShadow: `0 2px 8px ${BROWN}06` }}>
                 <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{s.label}</div>
