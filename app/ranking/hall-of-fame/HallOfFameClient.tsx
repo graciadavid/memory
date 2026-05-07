@@ -46,7 +46,7 @@ const CARDS = [
 ]
 
 function LeaderBadge({ since }: { since?: string }) {
-  const days = since ? Math.floor((Date.now() - new Date(since).getTime()) / 86400000) : 0
+  const days = since ? Math.max(0, Math.floor((Date.now() - new Date(since.replace(' ', 'T')).getTime()) / 86400000)) : 0
   return (
     <div style={{
       background: `linear-gradient(135deg, #C8960C, #FFD700)`,
