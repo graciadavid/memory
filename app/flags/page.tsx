@@ -209,19 +209,7 @@ export default function FlagsPage() {
               </div>
             </Link>
 
-            {topScores.slice(0, 3).map((s, i) => (
-              <div key={s.name} style={{
-                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                background: '#fff', borderRadius: 12, padding: '10px 14px',
-                boxShadow: `0 2px 8px ${BROWN}08`,
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ fontSize: 13, fontWeight: 900, color: i === 0 ? GOLD : `${BROWN}30`, width: 20 }}>{i + 1}</div>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{s.name}</div>
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 900, color: BROWN }}>{s.level} flags</div>
-              </div>
-            ))}
+
           </div>
         )}
 
