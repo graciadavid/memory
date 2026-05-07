@@ -104,7 +104,18 @@ export default function ProfilePage() {
     const file = e.target.files?.[0]
     if (!file) return
     const reader = new FileReader()
-    reader.onload = () => { save({ ...profile, avatar: reader.result as string }) }
+    reader.onload = async () => {
+      const avatarBase64 = reader.result as string
+      save({ ...profile, avatar: avatarBase64 })
+      // Also save to Supabase for Hall of Fame
+      if (profile?.name) {
+        await supabase.from('profiles').upsert({
+          player_name: profile.name,
+          avatar_url: avatarBase64,
+          updated_at: new Date().toISOString(),
+        })
+      }
+    }
     reader.readAsDataURL(file)
   }
 
