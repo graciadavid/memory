@@ -84,6 +84,28 @@ export default function ProfilePage() {
     })
   }, [profile?.name])
 
+  const saveName = async () => {
+    if (!newName.trim() || newName.trim() === profile?.name) { setEditingName(false); return }
+    setNameSaving(true)
+    setNameError('')
+    const { count } = await supabase.from('scores').select('*', { count: 'exact', head: true }).eq('player_name', newName.trim())
+    const { count: count2 } = await supabase.from('number_scores').select('*', { count: 'exact', head: true }).eq('player_name', newName.trim())
+    if ((count ?? 0) > 0 || (count2 ?? 0) > 0) {
+      setNameError('Name already taken')
+      setNameSaving(false)
+      return
+    }
+    const stored = localStorage.getItem('memgenius_profile')
+    if (stored) {
+      const p = JSON.parse(stored)
+      p.name = newName.trim()
+      localStorage.setItem('memgenius_profile', JSON.stringify(p))
+      window.location.reload()
+    }
+    setNameSaving(false)
+    setEditingName(false)
+  }
+
   if (!loaded) return null
 
   if (!profile?.name) {
