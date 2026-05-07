@@ -66,15 +66,22 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
   const [avatars, setAvatars] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    // Load avatars for all champions
     const names = [...new Set(Object.values(champions).filter(Boolean).map((c: any) => c.player_name))]
     if (!names.length) return
+
+    // Check localStorage first for current user
+    const stored = localStorage.getItem('memgenius_profile')
+    const localMap: Record<string, string> = {}
+    if (stored) {
+      const p = JSON.parse(stored)
+      if (p.name && p.avatar) localMap[p.name] = p.avatar
+    }
+
+    // Then load from Supabase for all champions
     supabase.from('profiles').select('player_name, avatar_url').in('player_name', names).then(({ data }) => {
-      if (data) {
-        const map: Record<string, string> = {}
-        data.forEach(p => { if (p.avatar_url) map[p.player_name] = p.avatar_url })
-        setAvatars(map)
-      }
+      const map: Record<string, string> = { ...localMap }
+      if (data) data.forEach(p => { if (p.avatar_url) map[p.player_name] = p.avatar_url })
+      setAvatars(map)
     })
   }, [])
 
@@ -177,8 +184,7 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
                             <div style={{ fontSize: 20, fontWeight: 900, color: card.color, lineHeight: 1.2 }}>{card.result(c)}</div>
                           </div>
                         </div>
-                        {/* Leader badge */}
-                        <LeaderBadge since={c.created_at} />
+
                       </div>
 
                       {/* Share button */}
