@@ -54,10 +54,22 @@ export default function ProfilePage() {
   const [loadingRanks, setLoadingRanks] = useState(true)
   const [digitsRank, setDigitsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [seqRank, setSeqRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
+  const [flagsRank, setFlagsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     if (!profile?.name) return
+    const fetchFlagsRank = async () => {
+      const { data } = await supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(500)
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+      const myLevel = best[profile.name]
+      if (!myLevel) return
+      setFlagsRank({ level: myLevel, rank: Object.values(best).filter(l => l > myLevel).length + 1 })
+    }
+    fetchFlagsRank()
+
     fetchAllRanks(profile.name).then(({ memoryRanks, dailyRank, digitsRank, seqRank }) => {
       setLiveRanks(memoryRanks)
       setDailyRank(dailyRank)
@@ -300,6 +312,43 @@ export default function ProfilePage() {
                   if (navigator.share) await navigator.share({ text })
                   else { await navigator.clipboard.writeText(text); alert('Copied!') }
                 }} style={{ width: 36, height: 36, borderRadius: 10, border: 'none', background: '#6A1B9A', color: '#fff', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Flags Best */}
+        <div style={{
+          background: '#fff', borderRadius: 20, padding: '20px 22px',
+          boxShadow: `0 2px 12px ${BROWN}10`,
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
+            Flags — Best
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ flex: 1, textAlign: 'center', background: '#E0F2F1', border: '1px solid #00796B20', borderRadius: 14, padding: '14px 8px' }}>
+              <div style={{ fontSize: 9, fontWeight: 900, color: '#00796B', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Best Streak</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: flagsRank.level ? BROWN : `${BROWN}20` }}>
+                {loadingRanks ? '...' : flagsRank.level ? `${flagsRank.level}` : '—'}
+              </div>
+              <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
+                {flagsRank.level ? 'flags' : 'Not played'}
+              </div>
+            </div>
+            <div style={{ flex: 1, textAlign: 'center', background: '#E0F2F1', border: '1px solid #00796B20', borderRadius: 14, padding: '14px 8px' }}>
+              <div style={{ fontSize: 9, fontWeight: 900, color: '#00796B', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>World Rank</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: flagsRank.rank ? BROWN : `${BROWN}20` }}>
+                {loadingRanks ? '...' : flagsRank.rank ? `#${flagsRank.rank}` : '—'}
+              </div>
+            </div>
+            {flagsRank.level && (
+              <div style={{ flex: 1, textAlign: 'center', background: '#E0F2F1', border: '1px solid #00796B20', borderRadius: 14, padding: '14px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                <div style={{ fontSize: 9, fontWeight: 900, color: '#00796B', letterSpacing: 1, textTransform: 'uppercase' }}>Share</div>
+                <button onClick={async () => {
+                  const text = `🚩 I got ${flagsRank.level} flags in a row on MemGenius! World #${flagsRank.rank}\nCan you beat me? 👉 https://memgenius.com/flags`
+                  if (navigator.share) await navigator.share({ text })
+                  else { await navigator.clipboard.writeText(text); alert('Copied!') }
+                }} style={{ width: 36, height: 36, borderRadius: 10, border: 'none', background: '#00796B', color: '#fff', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
               </div>
             )}
           </div>
