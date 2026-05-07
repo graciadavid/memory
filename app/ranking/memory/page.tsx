@@ -1,24 +1,31 @@
 import { supabase } from '@/lib/supabase'
 import MemoryRankingClient from './MemoryRankingClient'
 
-export const revalidate = 0
+export const revalidate = 60
 
 export default async function MemoryRankingPage() {
-  const today = new Date().toISOString().split('T')[0]
-
   const { data: scores } = await supabase
     .from('scores')
-    .select('*, packs(title, slug, difficulty)')
+    .select('player_name, time_ms, pack_id, packs(difficulty)')
     .order('time_ms', { ascending: true })
-    .limit(500)
+    .limit(1000)
 
-  const { data: dailyScores } = await supabase
-    .from('scores')
-    .select('*, packs(title, slug, difficulty)')
-    .eq('is_daily', true)
-    .eq('play_date', today)
-    .order('time_ms', { ascending: true })
-    .limit(500)
+  // Pre-compute best per player per difficulty on server
+  const byDiff: Record<number, Record<string, any>> = { 1: {}, 2: {}, 3: {} }
+
+  scores?.forEach(s => {
+    const diff = (s.packs as any)?.difficulty
+    if (!diff) return
+    if (!byDiff[diff][s.player_name] || s.time_ms < byDiff[diff][s.player_name].time_ms) {
+      byDiff[diff][s.player_name] = s
+    }
+  })
+
+  const ranked = {
+    1: Object.values(byDiff[1]).sort((a: any, b: any) => a.time_ms - b.time_ms),
+    2: Object.values(byDiff[2]).sort((a: any, b: any) => a.time_ms - b.time_ms),
+    3: Object.values(byDiff[3]).sort((a: any, b: any) => a.time_ms - b.time_ms),
+  }
 
   return (
     <main style={{
@@ -42,7 +49,7 @@ export default async function MemoryRankingPage() {
           <div style={{ background: '#fff', border: '1px solid #4A2C0A15', borderRadius: 10, padding: '6px 12px', fontSize: 12, fontWeight: 800, color: '#4A2C0A60' }}>Back ✕</div>
         </a>
       </div>
-      <MemoryRankingClient scores={scores || []} dailyScores={dailyScores || []} />
+      <MemoryRankingClient ranked={ranked} />
     </main>
   )
 }
