@@ -140,42 +140,16 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             </div>
           </div>
 
-          {lastFact && (
-            <div style={{
-              background: '#fff', border: `1px solid ${BROWN}10`,
-              borderRadius: 16, padding: '14px 16px',
-              marginBottom: 20, textAlign: 'left',
-            }}>
-              <div style={{
-                fontSize: 9, fontWeight: 900, letterSpacing: 2,
-                color: GOLD, textTransform: 'uppercase', marginBottom: 6,
-              }}>Did you know?</div>
-              <div style={{ fontSize: 12, color: `${BROWN}80`, lineHeight: 1.6 }}>{lastFact}</div>
-            </div>
-          )}
-
-          <button onClick={share} style={{
-            width: '100%', padding: '14px', borderRadius: 14, border: 'none',
-            background: shared ? `${BROWN}15` : 'linear-gradient(135deg, #1877F2, #0a5dc2)',
-            color: shared ? `${BROWN}60` : 'white',
-            fontSize: 14, fontWeight: 800, fontFamily: 'inherit',
-            cursor: 'pointer', marginBottom: 10,
-            boxShadow: shared ? 'none' : '0 6px 0 #0a4a9960',
-            transition: 'all 0.2s',
-          }}>
-            {shared ? 'Shared!' : 'Share my result'}
-          </button>
-
-          <button onClick={() => {
+                    <button onClick={() => {
             const url = `${window.location.origin}/challenge?game=memory&score=${pack?.slug}&by=${encodeURIComponent(profile?.name || 'Someone')}`
             if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${profile?.name} challenges you to Memory on MemGenius!`, url })
             else navigator.clipboard.writeText(url).then(() => alert('Challenge link copied!'))
           }} style={{
             width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-            background: BROWN,
+            background: '#C62828',
             color: '#fff', fontSize: 16, fontWeight: 900,
             fontFamily: 'inherit', cursor: 'pointer',
-            boxShadow: `0 6px 0 ${BROWN}60`,
+            boxShadow: '0 6px 0 #8B000060',
           }}>Challenge a friend</button>
 
           <div style={{ display: 'flex', gap: 10 }}>
