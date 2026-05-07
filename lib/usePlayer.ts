@@ -26,14 +26,25 @@ const DEFAULT_PROFILE: PlayerProfile = {
   achievements: [],
 }
 
+function loadProfile(): PlayerProfile | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const stored = localStorage.getItem('memgenius_profile')
+    return stored ? JSON.parse(stored) : null
+  } catch { return null }
+}
+
 export function usePlayer() {
-  const [profile, setProfile] = useState<PlayerProfile | null>(null)
-  const [loaded, setLoaded] = useState(false)
+  // Initialize synchronously from localStorage — no flash
+  const [profile, setProfile] = useState<PlayerProfile | null>(() => loadProfile())
+  const [loaded, setLoaded] = useState(() => typeof window !== 'undefined')
 
   useEffect(() => {
-    const stored = localStorage.getItem('memgenius_profile')
-    if (stored) setProfile(JSON.parse(stored))
-    setLoaded(true)
+    if (!loaded) {
+      const p = loadProfile()
+      setProfile(p)
+      setLoaded(true)
+    }
   }, [])
 
   const save = (p: PlayerProfile) => {
@@ -63,14 +74,10 @@ export function usePlayer() {
       : 1
 
     const bestRanks = { ...profile.bestRanks }
-    if (!bestRanks[packSlug] || worldRank < bestRanks[packSlug]) {
-      bestRanks[packSlug] = worldRank
-    }
+    if (!bestRanks[packSlug] || worldRank < bestRanks[packSlug]) bestRanks[packSlug] = worldRank
 
     const bestTimes = { ...profile.bestTimes }
-    if (!bestTimes[packSlug] || timeMs < bestTimes[packSlug]) {
-      bestTimes[packSlug] = timeMs
-    }
+    if (!bestTimes[packSlug] || timeMs < bestTimes[packSlug]) bestTimes[packSlug] = timeMs
 
     const achievements = [...(profile.achievements || [])]
     if (timeMs < 30000 && !achievements.includes('speed_genius')) achievements.push('speed_genius')
