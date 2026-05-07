@@ -133,7 +133,7 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
           </Link>
 
           {/* Rankings */}
-          <Link href="/ranking" style={{ textDecoration: 'none' }}>
+          <Link href="/ranking/memory" style={{ textDecoration: 'none' }}>
             <div style={{
               width: '100%', padding: '14px', borderRadius: 18,
               background: '#fff',
