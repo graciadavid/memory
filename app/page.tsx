@@ -52,6 +52,10 @@ export default function LandingPage() {
           from { opacity: 0; transform: translateY(16px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
       `}</style>
 
       <main style={{
@@ -165,7 +169,9 @@ export default function LandingPage() {
           <Link href="/digits" style={{ textDecoration: 'none' }}>
             <div style={{
               width: '100%', borderRadius: 22,
-              background: '#1565C0',
+              background: 'linear-gradient(105deg, #1565C0 40%, #2979CC 50%, #1565C0 60%)',
+              backgroundSize: '200% auto',
+              animation: 'shimmer 3s linear infinite 0.5s',
               boxShadow: '0 8px 0 #0D47A160',
               padding: '14px 20px',
               display: 'flex', alignItems: 'center', gap: 14,
@@ -185,7 +191,9 @@ export default function LandingPage() {
           <Link href="/sequence" style={{ textDecoration: 'none' }}>
             <div style={{
               width: '100%', borderRadius: 22,
-              background: '#6A1B9A',
+              background: 'linear-gradient(105deg, #6A1B9A 40%, #8B3DB5 50%, #6A1B9A 60%)',
+              backgroundSize: '200% auto',
+              animation: 'shimmer 3s linear infinite 1s',
               boxShadow: '0 8px 0 #4A148C60',
               padding: '14px 20px',
               display: 'flex', alignItems: 'center', gap: 14,
@@ -204,7 +212,9 @@ export default function LandingPage() {
           <Link href="/flags" style={{ textDecoration: 'none' }}>
             <div style={{
               width: '100%', borderRadius: 22,
-              background: '#00796B',
+              background: 'linear-gradient(105deg, #00796B 40%, #00998A 50%, #00796B 60%)',
+              backgroundSize: '200% auto',
+              animation: 'shimmer 3s linear infinite 1.5s',
               boxShadow: '0 8px 0 #00695160',
               padding: '14px 20px',
               display: 'flex', alignItems: 'center', gap: 14,

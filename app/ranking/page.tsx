@@ -40,7 +40,7 @@ export default function RankingHubPage() {
           <a href="/digits/ranking" style={{ textDecoration: 'none' }}>
             <div style={{
               width: '100%', borderRadius: 20, padding: '20px 24px',
-              background: '#1565C0', boxShadow: '0 8px 0 #0D47A160',
+              background: 'linear-gradient(105deg, #1565C0 40%, #2979CC 50%, #1565C0 60%)', backgroundSize: '200% auto', animation: 'shimmer 3s linear infinite 0.5s', boxShadow: '0 8px 0 #0D47A160',
               display: 'flex', alignItems: 'center', gap: 16,
               boxSizing: 'border-box',
             }}>
@@ -55,7 +55,7 @@ export default function RankingHubPage() {
           <a href="/sequence/ranking" style={{ textDecoration: 'none' }}>
             <div style={{
               width: '100%', borderRadius: 20, padding: '20px 24px',
-              background: '#6A1B9A', boxShadow: '0 8px 0 #4A148C60',
+              background: 'linear-gradient(105deg, #6A1B9A 40%, #8B3DB5 50%, #6A1B9A 60%)', backgroundSize: '200% auto', animation: 'shimmer 3s linear infinite 1s', boxShadow: '0 8px 0 #4A148C60',
               display: 'flex', alignItems: 'center', gap: 16,
               boxSizing: 'border-box',
             }}>
@@ -69,7 +69,7 @@ export default function RankingHubPage() {
           <a href="/flags/ranking" style={{ textDecoration: 'none' }}>
             <div style={{
               width: '100%', borderRadius: 20, padding: '20px 24px',
-              background: '#00796B', boxShadow: '0 8px 0 #00695160',
+              background: 'linear-gradient(105deg, #00796B 40%, #00998A 50%, #00796B 60%)', backgroundSize: '200% auto', animation: 'shimmer 3s linear infinite 1.5s', boxShadow: '0 8px 0 #00695160',
               display: 'flex', alignItems: 'center', gap: 16,
               boxSizing: 'border-box',
             }}>
