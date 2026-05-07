@@ -17,6 +17,36 @@ const BRAIN_GREEN = `${BASE}/brain-green.webp`
 const BRAIN_RED = `${BASE}/brain-red.webp`
 const FLAG_CDN = 'https://flagcdn.com/w320'
 
+function playCorrect() {
+  try {
+    const ctx = new AudioContext()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(523, ctx.currentTime)
+    osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1)
+    gain.gain.setValueAtTime(0.2, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+    osc.connect(gain); gain.connect(ctx.destination)
+    osc.start(); osc.stop(ctx.currentTime + 0.3)
+  } catch(e) {}
+}
+
+function playWrong() {
+  try {
+    const ctx = new AudioContext()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.type = 'sawtooth'
+    osc.frequency.setValueAtTime(200, ctx.currentTime)
+    osc.frequency.setValueAtTime(150, ctx.currentTime + 0.1)
+    gain.gain.setValueAtTime(0.2, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4)
+    osc.connect(gain); gain.connect(ctx.destination)
+    osc.start(); osc.stop(ctx.currentTime + 0.4)
+  } catch(e) {}
+}
+
 const COUNTRIES = [
   { code: 'fr', name: 'France' }, { code: 'de', name: 'Germany' },
   { code: 'es', name: 'Spain' }, { code: 'it', name: 'Italy' },
@@ -110,6 +140,7 @@ export default function FlagsPage() {
     const newLevel = correct ? level + 1 : level
 
     if (!correct) {
+      playWrong()
       setTimeout(async () => {
         if (profile?.name) {
           await supabase.from('flag_scores').insert({ player_name: profile.name, level })
@@ -125,6 +156,7 @@ export default function FlagsPage() {
         setPhase('gameover')
       }, 400)
     } else {
+      playCorrect()
       setLevel(newLevel)
       setTimeout(() => nextQuestion(newLevel), 1000)
     }
