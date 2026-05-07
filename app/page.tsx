@@ -52,9 +52,9 @@ export default function LandingPage() {
           from { opacity: 0; transform: translateY(16px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes shimmer {
-          0% { background-position: -200% center; }
-          100% { background-position: 200% center; }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.85; }
         }
       `}</style>
 
@@ -169,14 +169,13 @@ export default function LandingPage() {
           <Link href="/digits" style={{ textDecoration: 'none' }}>
             <div style={{
               width: '100%', borderRadius: 22,
-              background: 'linear-gradient(105deg, #1565C0 40%, #2979CC 50%, #1565C0 60%)',
-              backgroundSize: '200% auto',
+              background: '#1565C0',
               boxShadow: '0 8px 0 #0D47A160',
               padding: '14px 20px',
               display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
               opacity: mounted ? 1 : 0,
-              animation: mounted ? 'fadeUp 0.5s ease 0.2s both, shimmer 3s linear infinite 0.5s' : 'shimmer 3s linear infinite 0.5s',
+              animation: mounted ? 'fadeUp 0.5s ease 0.2s both' : 'none',
             }}>
               <img src="/icons/digits.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
@@ -190,13 +189,11 @@ export default function LandingPage() {
           <Link href="/sequence" style={{ textDecoration: 'none' }}>
             <div style={{
               width: '100%', borderRadius: 22,
-              background: 'linear-gradient(105deg, #6A1B9A 40%, #8B3DB5 50%, #6A1B9A 60%)',
-              backgroundSize: '200% auto',
+              background: '#6A1B9A',
               boxShadow: '0 8px 0 #4A148C60',
               padding: '14px 20px',
               display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
-              animation: 'shimmer 3s linear infinite 1s',
             }}>
               <img src="/icons/sequence.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
