@@ -64,18 +64,23 @@ export default function HomeClient({ easy, medium, hard, dailySlug, dailyTitle, 
         overflow: 'hidden', paddingBottom: 80,
       }}>
 
-        {/* Logo — brain + name */}
-        <img
-          src={LOGO}
-          alt="MemGenius"
-          style={{
-            height: 180,
-            objectFit: 'contain',
-            marginTop: 20,
-            animation: 'floatBrain 3s ease-in-out infinite',
-            filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.1))',
-          }}
-        />
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', width: '100%', gap: 12 }}>
+          <img
+            src={LOGO}
+            alt="Memory"
+            style={{
+              height: 80, objectFit: 'contain',
+              animation: 'floatBrain 3s ease-in-out infinite',
+              filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.1))',
+              flexShrink: 0,
+            }}
+          />
+          <div>
+            <div style={{ fontSize: 28, fontWeight: 900, color: BROWN, letterSpacing: -0.5, lineHeight: 1 }}>Memory</div>
+            <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Match pairs by connection</div>
+          </div>
+        </div>
 
         {/* Claim */}
         <div style={{
