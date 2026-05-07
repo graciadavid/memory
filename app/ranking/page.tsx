@@ -72,6 +72,21 @@ export default function RankingHubPage() {
               </div>
             </div>
           </a>
+          <a href="/flags/ranking" style={{ textDecoration: 'none' }}>
+            <div style={{
+              width: '100%', borderRadius: 20, padding: '20px 24px',
+              background: '#00796B', boxShadow: '0 8px 0 #00695160',
+              display: 'flex', alignItems: 'center', gap: 16,
+              boxSizing: 'border-box',
+            }}>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/flags.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
+              <div>
+                <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>Flags</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>Flag quiz ranking</div>
+              </div>
+            </div>
+          </a>
+
         </div>
       </div>
     </main>

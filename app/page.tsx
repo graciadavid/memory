@@ -205,6 +205,25 @@ export default function LandingPage() {
             </div>
           </Link>
 
+          <Link href="/flags" style={ textDecoration: 'none' }>
+            <div style={{
+              width: '100%', borderRadius: 22,
+              background: '#00796B',
+              boxShadow: '0 8px 0 #00695160',
+              padding: '20px 24px',
+              display: 'flex', alignItems: 'center', gap: 16,
+              cursor: 'pointer', boxSizing: 'border-box',
+            }}>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/flags.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain', flexShrink: 0 }} />
+              <div>
+                <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Flags</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
+                  How many flags in a row?
+                </div>
+              </div>
+            </div>
+          </Link>
+
         </div>
 
         {/* Footer */}
