@@ -24,10 +24,7 @@ export default function HomeClient({ easy, medium, hard }: Props) {
 
   useEffect(() => { setTimeout(() => setMounted(true), 50) }, [])
 
-  if (!loaded || !profile?.name) {
-    if (loaded && !profile?.name && typeof window !== 'undefined') window.location.href = '/'
-    return null
-  }
+  if (!loaded || !profile?.name) return null
 
   const levels = [
     { slug: easy, label: 'Easy', bg: '#2E7D32', shadow: '#1B5E2060' },
