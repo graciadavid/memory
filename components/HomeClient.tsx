@@ -16,9 +16,6 @@ interface Props {
   easy: string | null
   medium: string | null
   hard: string | null
-  dailySlug: string | null
-  dailyTitle: string | null
-  dailyDifficulty: number
 }
 
 export default function HomeClient({ easy, medium, hard }: Props) {
