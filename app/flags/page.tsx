@@ -15,7 +15,7 @@ const LOGO = `${BASE}/flags.webp`
 const TROPHY = `${BASE}/nav-trophy.webp`
 const BRAIN_GREEN = `${BASE}/brain-green.webp`
 const BRAIN_RED = `${BASE}/brain-red.webp`
-const FLAG_CDN = 'https://flagcdn.com/w320'
+const FLAG_CDN = 'https://flagcdn.com/w640'
 
 let sharedCtx: AudioContext | null = null
 
@@ -255,20 +255,31 @@ export default function FlagsPage() {
               width: '100%', borderRadius: 20,
               overflow: 'hidden',
               boxShadow: `0 8px 32px ${BROWN}25`,
-              background: '#eee',
+              background: '#f0f0f0',
               aspectRatio: '3/2',
               position: 'relative',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
+              {!imgLoaded && (
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: '#f0f0f0',
+                }}>
+                  <div style={{ fontSize: 32, opacity: 0.3 }}>🏳️</div>
+                </div>
+              )}
               <img
                 key={current.code}
                 src={`${FLAG_CDN}/${current.code}.png`}
                 alt="flag"
                 onLoad={() => setImgLoaded(true)}
+                onError={() => setImgLoaded(true)}
                 style={{
                   width: '100%', height: '100%',
                   objectFit: 'cover',
                   opacity: imgLoaded ? 1 : 0,
-                  transition: 'opacity 0.2s',
+                  transition: 'opacity 0.3s',
                 }}
               />
             </div>
