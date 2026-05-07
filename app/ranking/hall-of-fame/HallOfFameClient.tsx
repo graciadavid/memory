@@ -45,6 +45,23 @@ const CARDS = [
   { key: 'flags', label: 'Flags', phrase: 'The best in the world at Flags is', color: '#00796B', bg: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)', border: '#00796B40', icon: '/icons/flags.webp', result: (c: any) => `${c.level} flags`, unit: 'flags', share: (c: any) => `🚩 ${c?.player_name} is the world champion in Flags!\n🏆 ${c?.level} flags\nhttps://memgenius.com/flags` },
 ]
 
+function LeaderBadge({ since }: { since?: string }) {
+  const days = since ? Math.floor((Date.now() - new Date(since).getTime()) / 86400000) : 0
+  return (
+    <div style={{
+      background: `linear-gradient(135deg, #C8960C, #FFD700)`,
+      borderRadius: 12, padding: '8px 12px',
+      textAlign: 'center',
+      boxShadow: `0 4px 12px #C8960C50`,
+      flexShrink: 0,
+    }}>
+      <div style={{ fontSize: 9, fontWeight: 900, color: '#fff', letterSpacing: 1, textTransform: 'uppercase' }}>Leader</div>
+      <div style={{ fontSize: 16, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{days}</div>
+      <div style={{ fontSize: 8, fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}>days</div>
+    </div>
+  )
+}
+
 export default function HallOfFameClient({ champions }: { champions: Record<string, any> }) {
   const [avatars, setAvatars] = useState<Record<string, string>>({})
 
@@ -99,8 +116,8 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
             padding: '6px 12px', fontSize: 12, fontWeight: 800, color: `${BROWN}60`,
           }}>Back ✕</a>
 
-          {/* Gold trophy */}
-          <div style={{ fontSize: 48, marginBottom: 8, filter: 'drop-shadow(0 4px 12px #C8960C60)' }}>🏆</div>
+          {/* Trophy image */}
+          <img src="/icons/nav-trophy.webp" alt="" style={{ width: 64, height: 64, objectFit: 'contain', marginBottom: 8, filter: 'drop-shadow(0 4px 12px #C8960C60)' }} />
 
           <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 4, textTransform: 'uppercase', marginBottom: 6 }}>
             All Time Records
@@ -160,16 +177,8 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
                             <div style={{ fontSize: 20, fontWeight: 900, color: card.color, lineHeight: 1.2 }}>{card.result(c)}</div>
                           </div>
                         </div>
-                        {/* Gold badge */}
-                        <div style={{
-                          background: `linear-gradient(135deg, ${GOLD}, #FFD700)`,
-                          borderRadius: 10, padding: '6px 10px',
-                          textAlign: 'center',
-                          boxShadow: `0 4px 12px ${GOLD}50`,
-                        }}>
-                          <div style={{ fontSize: 18 }}>👑</div>
-                          <div style={{ fontSize: 8, fontWeight: 900, color: '#fff', letterSpacing: 0.5 }}>#1</div>
-                        </div>
+                        {/* Leader badge */}
+                        <LeaderBadge since={c.created_at} />
                       </div>
 
                       {/* Share button */}
