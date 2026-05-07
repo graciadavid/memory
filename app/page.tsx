@@ -171,13 +171,12 @@ export default function LandingPage() {
               width: '100%', borderRadius: 22,
               background: 'linear-gradient(105deg, #1565C0 40%, #2979CC 50%, #1565C0 60%)',
               backgroundSize: '200% auto',
-              animation: 'shimmer 3s linear infinite 0.5s',
               boxShadow: '0 8px 0 #0D47A160',
               padding: '14px 20px',
               display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
               opacity: mounted ? 1 : 0,
-              animation: mounted ? 'fadeUp 0.5s ease 0.2s both' : 'none',
+              animation: mounted ? 'fadeUp 0.5s ease 0.2s both, shimmer 3s linear infinite 0.5s' : 'shimmer 3s linear infinite 0.5s',
             }}>
               <img src="/icons/digits.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
@@ -193,11 +192,11 @@ export default function LandingPage() {
               width: '100%', borderRadius: 22,
               background: 'linear-gradient(105deg, #6A1B9A 40%, #8B3DB5 50%, #6A1B9A 60%)',
               backgroundSize: '200% auto',
-              animation: 'shimmer 3s linear infinite 1s',
               boxShadow: '0 8px 0 #4A148C60',
               padding: '14px 20px',
               display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
+              animation: 'shimmer 3s linear infinite 1s',
             }}>
               <img src="/icons/sequence.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
