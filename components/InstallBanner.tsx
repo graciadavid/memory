@@ -22,20 +22,19 @@ export default function InstallBanner() {
       <div
         onClick={() => setShowModal(true)}
         style={{
-          background: '#fff',
-          border: `1.5px solid ${BROWN}15`,
+          background: '#C62828',
           borderRadius: 16, padding: '14px 16px',
           display: 'flex', alignItems: 'center', gap: 12,
           cursor: 'pointer',
-          boxShadow: `0 2px 12px ${BROWN}08`,
+          boxShadow: '0 6px 0 #8B000060',
           fontFamily: 'var(--font-nunito), sans-serif',
         }}>
         <div style={{ fontSize: 28 }}>📲</div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 14, fontWeight: 900, color: BROWN }}>Install MemGenius</div>
-          <div style={{ fontSize: 11, color: `${BROWN}50`, marginTop: 2 }}>Add to your home screen</div>
+          <div style={{ fontSize: 14, fontWeight: 900, color: '#fff' }}>Install MemGenius</div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>Add to your home screen</div>
         </div>
-        <div style={{ fontSize: 12, color: `${BROWN}30`, fontWeight: 700 }}>→</div>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700 }}>→</div>
       </div>
 
       {/* Modal */}

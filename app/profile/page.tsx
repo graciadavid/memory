@@ -179,13 +179,13 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        <InstallBanner />
+
         {/* Best Positions — 4 columns with share */}
         <div style={{
           background: '#fff', borderRadius: 20, padding: '20px 22px',
           boxShadow: `0 2px 12px ${BROWN}10`,
         }}>
-                <InstallBanner />
-
         <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
             Memory — Best
           </div>
