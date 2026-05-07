@@ -16,8 +16,14 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false)
   const [gameFilter, setGameFilter] = useState<'memory' | 'digits' | 'sequence'>('memory')
 
+  useEffect(() => {
+    const saved = localStorage.getItem('memgenius_admin')
+    if (saved === 'true') { setAuth(true); loadData() }
+  }, [])
+
   const login = () => {
     if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+      localStorage.setItem('memgenius_admin', 'true')
       setAuth(true)
       loadData()
     } else {
