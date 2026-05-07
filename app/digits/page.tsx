@@ -343,6 +343,14 @@ export default function DigitsPage() {
               )}
             </div>
 
+            <button onClick={share} style={{
+              width: '100%', padding: '13px', borderRadius: 14, border: 'none',
+              background: '#C62828',
+              color: '#fff', fontSize: 14, fontWeight: 800,
+              fontFamily: 'inherit', cursor: 'pointer',
+              boxShadow: '0 6px 0 #8B000060',
+            }}>Share my result</button>
+
             <button onClick={() => {
               const url = `${window.location.origin}/challenge?game=digits&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${profile?.name} reached level ${level} in Digits. Can you beat them?`, url })
