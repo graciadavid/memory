@@ -159,8 +159,15 @@ export default function AdminPage() {
 
   return (
     <main style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', padding: '24px 16px 100px' }}>
-      <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, marginBottom: 20 }}>
-        Mem<span style={{ color: GOLD }}>Genius</span> Admin
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+        <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>
+          Mem<span style={{ color: GOLD }}>Genius</span> Admin
+        </div>
+        <button onClick={loadData} style={{
+          padding: '8px 16px', borderRadius: 10, border: 'none',
+          background: BROWN, color: '#fff',
+          fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+        }}>↺ Refresh</button>
       </div>
 
       {loading && <div style={{ color: `${BROWN}60`, fontSize: 14 }}>Loading...</div>}
