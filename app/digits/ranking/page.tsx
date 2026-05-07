@@ -148,7 +148,7 @@ export default function NumberRankingPage() {
             <div style={{ fontSize: 13, fontWeight: 900, textAlign: 'center', color: GOLD }}>{myIndex + 1}</div>
             <div style={{ fontSize: 13, fontWeight: 800, color: BROWN }}>{myScore.name}</div>
             <div style={{ fontSize: 12, fontWeight: 900, color: BLUE, textAlign: 'center' }}>{myScore.level} digits</div>
-            <div />
+            <button onClick={(e) => { e.stopPropagation(); share(myIndex + 1, myScore.level) }} style={{ width: 26, height: 26, borderRadius: 7, border: 'none', background: GOLD, color: '#fff', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontFamily: 'inherit' }}>↑</button>
           </div>
         </div>
       )}
