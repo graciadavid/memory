@@ -29,7 +29,7 @@ export default function RankingHubPage() {
               display: 'flex', alignItems: 'center', gap: 16,
               boxSizing: 'border-box',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memory.webp" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
+              <img src="/icons/memory.webp" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>Memory</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>Match pairs ranking</div>
@@ -44,7 +44,7 @@ export default function RankingHubPage() {
               display: 'flex', alignItems: 'center', gap: 16,
               boxSizing: 'border-box',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/digits.webp" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
+              <img src="/icons/digits.webp" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>Digits</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>Number memory ranking</div>
@@ -59,7 +59,7 @@ export default function RankingHubPage() {
               display: 'flex', alignItems: 'center', gap: 16,
               boxSizing: 'border-box',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sequence.webp" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
+              <img src="/icons/sequence.webp" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>Sequence</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>Pattern memory ranking</div>
@@ -73,7 +73,7 @@ export default function RankingHubPage() {
               display: 'flex', alignItems: 'center', gap: 16,
               boxSizing: 'border-box',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/flags.webp" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
+              <img src="/icons/flags.webp" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>Flags</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>Flag quiz ranking</div>

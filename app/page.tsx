@@ -152,7 +152,7 @@ export default function LandingPage() {
               opacity: mounted ? 1 : 0,
               animation: mounted ? 'fadeUp 0.5s ease 0.1s both' : 'none',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memory.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
+              <img src="/icons/memory.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Memory</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
@@ -173,7 +173,7 @@ export default function LandingPage() {
               opacity: mounted ? 1 : 0,
               animation: mounted ? 'fadeUp 0.5s ease 0.2s both' : 'none',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/digits.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
+              <img src="/icons/digits.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Digits</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
@@ -191,7 +191,7 @@ export default function LandingPage() {
               display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sequence.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
+              <img src="/icons/sequence.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Sequence</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
@@ -210,7 +210,7 @@ export default function LandingPage() {
               display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/flags.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
+              <img src="/icons/flags.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Flags</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>

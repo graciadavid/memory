@@ -193,9 +193,9 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
         padding: '6px 0 16px', zIndex: 300,
       }}>
         {[
-          { href: '/memory', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-home.webp' },
-          { href: '/ranking', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.webp' },
-          { href: '/profile', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-profile.webp' },
+          { href: '/memory', img: '/icons/nav-home.webp' },
+          { href: '/ranking', img: '/icons/nav-trophy.webp' },
+          { href: '/profile', img: '/icons/nav-profile.webp' },
         ].map(item => (
           <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
             <img src={item.img} alt="" style={{ width: 44, height: 44, objectFit: 'contain' }} />
