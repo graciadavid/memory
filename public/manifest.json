@@ -1,0 +1,24 @@
+{
+  "name": "MemGenius — Daily Brain Games",
+  "short_name": "MemGenius",
+  "description": "Train your brain with Memory, Digits, Sequence and Flags.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#4A2C0A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

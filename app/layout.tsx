@@ -49,6 +49,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <link rel="preconnect" href="https://bgmhfsccchktnknmqkuw.supabase.co" />
+      <link rel="manifest" href="/manifest.json" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      <meta name="apple-mobile-web-app-title" content="MemGenius" />
+      <link rel="apple-touch-icon" href="/icons/pwa-192.png" />
+      <meta name="theme-color" content="#4A2C0A" />
       <link rel="preconnect" href="https://flagcdn.com" />
       <body className={`${nunito.variable} font-nunito`} style={{ background: '#f2f2f2', margin: 0 }}>
         <Analytics />
