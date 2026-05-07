@@ -69,6 +69,45 @@ const COUNTRIES = [
   { code: 'cz', name: 'Czech Republic' }, { code: 'ro', name: 'Romania' },
   { code: 'hu', name: 'Hungary' }, { code: 'gr', name: 'Greece' },
   { code: 'ua', name: 'Ukraine' }, { code: 'il', name: 'Israel' },
+  { code: 'sg', name: 'Singapore' }, { code: 'my', name: 'Malaysia' },
+  { code: 'tw', name: 'Taiwan' }, { code: 'hk', name: 'Hong Kong' },
+  { code: 'ie', name: 'Ireland' }, { code: 'nz', name: 'New Zealand' },
+  { code: 'is', name: 'Iceland' }, { code: 'pt', name: 'Portugal' },
+  { code: 'sk', name: 'Slovakia' }, { code: 'hr', name: 'Croatia' },
+  { code: 'rs', name: 'Serbia' }, { code: 'bg', name: 'Bulgaria' },
+  { code: 'lt', name: 'Lithuania' }, { code: 'lv', name: 'Latvia' },
+  { code: 'ee', name: 'Estonia' }, { code: 'si', name: 'Slovenia' },
+  { code: 'ba', name: 'Bosnia' }, { code: 'mk', name: 'North Macedonia' },
+  { code: 'al', name: 'Albania' }, { code: 'md', name: 'Moldova' },
+  { code: 'by', name: 'Belarus' }, { code: 'ge', name: 'Georgia' },
+  { code: 'am', name: 'Armenia' }, { code: 'az', name: 'Azerbaijan' },
+  { code: 'kz', name: 'Kazakhstan' }, { code: 'uz', name: 'Uzbekistan' },
+  { code: 'tm', name: 'Turkmenistan' }, { code: 'tj', name: 'Tajikistan' },
+  { code: 'kg', name: 'Kyrgyzstan' }, { code: 'mn', name: 'Mongolia' },
+  { code: 'np', name: 'Nepal' }, { code: 'lk', name: 'Sri Lanka' },
+  { code: 'mm', name: 'Myanmar' }, { code: 'kh', name: 'Cambodia' },
+  { code: 'la', name: 'Laos' }, { code: 'bn', name: 'Brunei' },
+  { code: 'tz', name: 'Tanzania' }, { code: 'et', name: 'Ethiopia' },
+  { code: 'gh', name: 'Ghana' }, { code: 'cm', name: 'Cameroon' },
+  { code: 'ci', name: 'Ivory Coast' }, { code: 'sn', name: 'Senegal' },
+  { code: 'ug', name: 'Uganda' }, { code: 'dz', name: 'Algeria' },
+  { code: 'tn', name: 'Tunisia' }, { code: 'ly', name: 'Libya' },
+  { code: 'sd', name: 'Sudan' }, { code: 'ao', name: 'Angola' },
+  { code: 'mz', name: 'Mozambique' }, { code: 'zw', name: 'Zimbabwe' },
+  { code: 'bw', name: 'Botswana' }, { code: 'na', name: 'Namibia' },
+  { code: 'iq', name: 'Iraq' }, { code: 'ir', name: 'Iran' },
+  { code: 'jo', name: 'Jordan' }, { code: 'lb', name: 'Lebanon' },
+  { code: 'sy', name: 'Syria' }, { code: 'ye', name: 'Yemen' },
+  { code: 'om', name: 'Oman' }, { code: 'kw', name: 'Kuwait' },
+  { code: 'qa', name: 'Qatar' }, { code: 'bh', name: 'Bahrain' },
+  { code: 've', name: 'Venezuela' }, { code: 'ec', name: 'Ecuador' },
+  { code: 'bo', name: 'Bolivia' }, { code: 'py', name: 'Paraguay' },
+  { code: 'uy', name: 'Uruguay' }, { code: 'cr', name: 'Costa Rica' },
+  { code: 'pa', name: 'Panama' }, { code: 'gt', name: 'Guatemala' },
+  { code: 'hn', name: 'Honduras' }, { code: 'sv', name: 'El Salvador' },
+  { code: 'ni', name: 'Nicaragua' }, { code: 'do', name: 'Dominican Republic' },
+  { code: 'cu', name: 'Cuba' }, { code: 'jm', name: 'Jamaica' },
+  { code: 'ht', name: 'Haiti' }, { code: 'tt', name: 'Trinidad and Tobago' },
 ]
 
 type Phase = 'intro' | 'playing' | 'gameover'
@@ -119,6 +158,10 @@ export default function FlagsPage() {
     setSelected(null)
     setImgLoaded(false)
     setProgress(100)
+    // Preload next flag
+    const next = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)]
+    const img = new Image()
+    img.src = `${FLAG_CDN}/${next.code}.png`
   }
 
   const startGame = () => {
