@@ -167,8 +167,8 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
           </button>
 
           <button onClick={() => {
-            const url = `${window.location.origin}/challenge?game=memory&score=${pack?.slug}&by=${encodeURIComponent(playerName || 'Someone')}`
-            if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${playerName} challenges you to Memory on MemGenius!`, url })
+            const url = `${window.location.origin}/challenge?game=memory&score=${pack?.slug}&by=${encodeURIComponent(profile?.name || 'Someone')}`
+            if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${profile?.name} challenges you to Memory on MemGenius!`, url })
             else navigator.clipboard.writeText(url).then(() => alert('Challenge link copied!'))
           }} style={{
             width: '100%', padding: '16px', borderRadius: 16, border: 'none',
