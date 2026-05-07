@@ -44,19 +44,19 @@ export default async function RankingPage() {
           World Ranking
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <a href="/memory/ranking" style={{ textDecoration: 'none', flex: 1 }}>
+          <a href="/ranking" style={{ textDecoration: 'none', flex: 1 }}>
             <div style={{ background: '#4A2C0A', borderRadius: 12, padding: '10px', textAlign: 'center', boxShadow: '0 4px 0 #4A2C0A60' }}>
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#fff' }}>🧠 Memory</div>
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#fff' }}>Memory</div>
             </div>
           </a>
           <a href="/digits/ranking" style={{ textDecoration: 'none', flex: 1 }}>
             <div style={{ background: '#1565C0', borderRadius: 12, padding: '10px', textAlign: 'center', boxShadow: '0 4px 0 #0D47A160' }}>
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#fff' }}>🔢 Digits</div>
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#fff' }}>Digits</div>
             </div>
           </a>
           <a href="/sequence/ranking" style={{ textDecoration: 'none', flex: 1 }}>
             <div style={{ background: '#6A1B9A', borderRadius: 12, padding: '10px', textAlign: 'center', boxShadow: '0 4px 0 #4A148C60' }}>
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#fff' }}>🎵 Sequence</div>
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#fff' }}>Sequence</div>
             </div>
           </a>
         </div>

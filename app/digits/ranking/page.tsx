@@ -154,7 +154,7 @@ export default function NumberRankingPage() {
       )}
 
       {/* Back button — top right */}
-      <Link href="/digits" style={{
+      <Link href="/ranking" style={{
         position: 'fixed', top: 16, right: 16,
         textDecoration: 'none', zIndex: 50,
       }}>

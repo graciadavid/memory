@@ -59,7 +59,7 @@ export default function SequenceRankingPage() {
           <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>Leaderboard</div>
           <div style={{ fontSize: 26, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>Sequence Ranking</div>
         </div>
-        <Link href="/sequence" style={{ textDecoration: 'none' }}>
+        <Link href="/ranking" style={{ textDecoration: 'none' }}>
           <div style={{ background: '#fff', border: `1px solid ${BROWN}15`, borderRadius: 10, padding: '6px 12px', fontSize: 12, fontWeight: 800, color: `${BROWN}60` }}>Back ✕</div>
         </Link>
       </div>
