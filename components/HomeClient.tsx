@@ -86,17 +86,10 @@ export default function HomeClient({ easy, medium, hard }: Props) {
         }}>
 
           <div style={{ textAlign: 'center', marginBottom: 4 }}>
-            <div style={{ fontSize: 13, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 4 }}>
-              Your daily brain workout
+            <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 6 }}>Find the matching pairs</div>
+            <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.6 }}>
+              Cards are connected, not identical.<br />The Eiffel Tower goes with Paris.<br />How fast can you match them all?
             </div>
-            <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>
-              Hey, {profile.name}!
-            </div>
-            {(profile?.streak ?? 0) > 0 && (
-              <div style={{ fontSize: 12, fontWeight: 800, color: `${GOLD}90`, marginTop: 3 }}>
-                {profile.streak} day streak ✓
-              </div>
-            )}
           </div>
 
           {/* Level buttons */}
