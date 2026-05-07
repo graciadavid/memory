@@ -15,10 +15,10 @@ const BRAIN_GREEN = `${BASE}/brain-green.png`
 const BRAIN_RED = `${BASE}/brain-red.png`
 
 const COLORS = [
-  { id: 0, color: '#F44336', light: '#FF8A80', note: 261 },
-  { id: 1, color: '#2196F3', light: '#82B1FF', note: 329 },
-  { id: 2, color: '#4CAF50', light: '#B9F6CA', note: 392 },
-  { id: 3, color: '#FFEB3B', light: '#FFFF8D', note: 523 },
+  { id: 0, dim: '#FFCDD2', bright: '#F44336', note: 261 },  // Red - C4
+  { id: 1, dim: '#BBDEFB', bright: '#1565C0', note: 329 },  // Blue - E4
+  { id: 2, dim: '#C8E6C9', bright: '#2E7D32', note: 392 },  // Green - G4
+  { id: 3, dim: '#FFF9C4', bright: '#F9A825', note: 523 },  // Yellow - C5
 ]
 
 type Phase = 'intro' | 'showing' | 'input' | 'result' | 'gameover'
@@ -108,12 +108,12 @@ export default function SequencePage() {
     }
   }
 
-  const flash = async (id: number) => {
+  const flash = async (id: number, duration = 600) => {
     setActiveBtn(id)
-    playNote(COLORS[id].note, 0.4)
-    await sleep(500)
+    playNote(COLORS[id].note, duration / 1000)
+    await sleep(duration)
     setActiveBtn(null)
-    await sleep(200)
+    await sleep(150)
   }
 
   const runSequence = async (seq: number[]) => {
@@ -202,14 +202,13 @@ export default function SequencePage() {
           onPointerDown={() => interactive && handlePress(c.id)}
           style={{
             height: 140, borderRadius: 24, border: 'none',
-            background: activeBtn === c.id ? c.light : c.color,
+            background: activeBtn === c.id ? c.bright : c.dim,
             cursor: interactive ? 'pointer' : 'default',
-            transform: activeBtn === c.id ? 'scale(0.95)' : 'scale(1)',
-            transition: 'all 0.1s',
+            transform: activeBtn === c.id ? 'scale(0.97)' : 'scale(1)',
+            transition: 'background 0.08s, transform 0.08s',
             boxShadow: activeBtn === c.id
-              ? `0 2px 0 ${c.color}80, inset 0 0 30px rgba(255,255,255,0.4)`
-              : `0 6px 0 ${c.color}60`,
-            opacity: phase === 'showing' && activeBtn !== c.id ? 0.5 : 1,
+              ? `0 8px 24px ${c.bright}80, 0 2px 0 ${c.bright}60`
+              : `0 4px 0 ${c.dim}80`,
           }}
         />
       ))}
@@ -260,7 +259,7 @@ export default function SequencePage() {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, width: '100%' }}>
               {COLORS.map(c => (
-                <div key={c.id} style={{ height: 80, borderRadius: 20, background: c.color, boxShadow: `0 4px 0 ${c.color}60`, opacity: 0.8 }} />
+                <div key={c.id} style={{ height: 80, borderRadius: 20, background: c.dim, boxShadow: `0 4px 0 ${c.dim}80` }} />
               ))}
             </div>
 
@@ -311,7 +310,7 @@ export default function SequencePage() {
             <div style={{ fontSize: 32, fontWeight: 900, color: BROWN }}>Level {sequence.length}</div>
             <div style={{ display: 'flex', gap: 6, width: '100%', justifyContent: 'center', flexWrap: 'wrap' }}>
               {sequence.map((id, i) => (
-                <div key={i} style={{ width: 28, height: 28, borderRadius: 8, background: COLORS[id].color, boxShadow: `0 2px 0 ${COLORS[id].color}60` }} />
+                <div key={i} style={{ width: 28, height: 28, borderRadius: 8, background: COLORS[id].bright, boxShadow: `0 2px 0 ${COLORS[id].bright}60` }} />
               ))}
             </div>
             <AutoNext onNext={nextLevel} />
@@ -332,7 +331,7 @@ export default function SequencePage() {
               <div style={{ fontSize: 36, fontWeight: 900, color: BROWN, marginBottom: 8 }}>Level {sequence.length}</div>
               <div style={{ display: 'flex', gap: 6, marginBottom: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
                 {sequence.map((id, i) => (
-                  <div key={i} style={{ width: 28, height: 28, borderRadius: 8, background: COLORS[id].color }} />
+                  <div key={i} style={{ width: 28, height: 28, borderRadius: 8, background: COLORS[id].bright }} />
                 ))}
               </div>
               {worldRank && (
