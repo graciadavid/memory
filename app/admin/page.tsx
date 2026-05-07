@@ -38,9 +38,31 @@ export default function AdminPage() {
     }
   }
 
+  const getSpainOffset = () => {
+    // Spain UTC+1 winter, UTC+2 summer
+    const now = new Date()
+    const jan = new Date(now.getFullYear(), 0, 1)
+    const jul = new Date(now.getFullYear(), 6, 1)
+    const stdOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset())
+    return now.getTimezoneOffset() < stdOffset ? 2 : 1
+  }
+
+  const spainDayStart = (daysAgo = 0) => {
+    const offset = getSpainOffset()
+    const spainNow = new Date(Date.now() + offset * 3600000)
+    const spainDate = new Date(spainNow)
+    spainDate.setUTCDate(spainDate.getUTCDate() - daysAgo)
+    const dateStr = spainDate.toISOString().split('T')[0]
+    // Convert midnight Madrid to UTC
+    return new Date(dateStr + 'T00:00:00.000Z').toISOString().replace('Z', '') 
+      // subtract offset hours
+    return new Date(new Date(dateStr + 'T00:00:00.000Z').getTime() - offset * 3600000).toISOString()
+  }
+
   const getPeriodStart = (p: Period) => {
     const now = new Date()
-    if (p === 'today') return new Date(getSpainToday() + 'T00:00:00').toISOString()
+    const offset = getSpainOffset()
+    if (p === 'today') return new Date(new Date(getSpainToday() + 'T00:00:00.000Z').getTime() - offset * 3600000).toISOString()
     if (p === '7d') return new Date(now.getTime() - 7 * 86400000).toISOString()
     if (p === '30d') return new Date(now.getTime() - 30 * 86400000).toISOString()
     return '2026-01-01T00:00:00.000Z'
@@ -48,10 +70,8 @@ export default function AdminPage() {
 
   const getPrevPeriodStart = (p: Period) => {
     const now = new Date()
-    if (p === 'today') {
-      const yesterday = new Date(new Date(getSpainToday()).getTime() - 86400000)
-      return new Date(yesterday.toISOString().split('T')[0] + 'T00:00:00').toISOString()
-    }
+    const offset = getSpainOffset()
+    if (p === 'today') return new Date(new Date(getSpainToday() + 'T00:00:00.000Z').getTime() - offset * 3600000 - 86400000).toISOString()
     if (p === '7d') return new Date(now.getTime() - 14 * 86400000).toISOString()
     if (p === '30d') return new Date(now.getTime() - 60 * 86400000).toISOString()
     return '2025-01-01T00:00:00.000Z'
