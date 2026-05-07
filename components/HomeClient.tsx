@@ -20,10 +20,6 @@ interface Props {
 
 export default function HomeClient({ easy, medium, hard }: Props) {
   const { profile, loaded, createProfile } = usePlayer()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => { setTimeout(() => setMounted(true), 50) }, [])
-
   if (!loaded || !profile?.name) return null
 
   const levels = [
@@ -34,16 +30,7 @@ export default function HomeClient({ easy, medium, hard }: Props) {
 
   return (
     <>
-      <style>{`
-        @keyframes floatLogo {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-6px); }
-        }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+
 
       <main style={{
         height: '100dvh',
@@ -78,7 +65,6 @@ export default function HomeClient({ easy, medium, hard }: Props) {
           flex: 1, display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
           padding: '0 20px', gap: 12, width: '100%',
-          animation: mounted ? 'fadeUp 0.5s ease both' : 'none',
         }}>
 
           <div style={{ textAlign: 'center', marginBottom: 4 }}>
