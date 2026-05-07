@@ -69,7 +69,7 @@ export default function LandingPage() {
           src={LOGO}
           alt="MemGenius"
           style={{
-            height: 110, objectFit: 'contain',
+            height: 80, objectFit: 'contain',
             animation: 'floatLogo 3s ease-in-out infinite',
             filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.1))',
             marginBottom: 4,
@@ -80,7 +80,7 @@ export default function LandingPage() {
         <div style={{
           fontSize: 14, color: `${BROWN}55`,
           fontStyle: 'italic', fontFamily: 'Georgia, serif',
-          marginBottom: 16, letterSpacing: 0.3,
+          marginBottom: 10, letterSpacing: 0.3,
         }}>
           Your daily brain workout
         </div>
@@ -134,7 +134,7 @@ export default function LandingPage() {
             )}
           </div>
         ) : (
-          <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, marginBottom: 16 }}>
+          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 10 }}>
             Hey, {profile.name}!
           </div>
         )}
@@ -145,14 +145,14 @@ export default function LandingPage() {
             <div style={{
               width: '100%', borderRadius: 22,
               background: BROWN,
-              boxShadow: `0 8px 0 ${BROWN}60`,
-              padding: '20px 24px',
-              display: 'flex', alignItems: 'center', gap: 16,
+              boxShadow: `0 6px 0 ${BROWN}60`,
+              padding: '14px 20px',
+              display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
               opacity: mounted ? 1 : 0,
               animation: mounted ? 'fadeUp 0.5s ease 0.1s both' : 'none',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memory.png" alt="" style={{ width: 80, height: 80, objectFit: 'contain', flexShrink: 0 }} />
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memory.png" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Memory</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
@@ -167,13 +167,13 @@ export default function LandingPage() {
               width: '100%', borderRadius: 22,
               background: '#1565C0',
               boxShadow: '0 8px 0 #0D47A160',
-              padding: '20px 24px',
-              display: 'flex', alignItems: 'center', gap: 16,
+              padding: '14px 20px',
+              display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
               opacity: mounted ? 1 : 0,
               animation: mounted ? 'fadeUp 0.5s ease 0.2s both' : 'none',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/digits.png" alt="" style={{ width: 80, height: 80, objectFit: 'contain', flexShrink: 0 }} />
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/digits.png" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Digits</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
@@ -187,11 +187,11 @@ export default function LandingPage() {
               width: '100%', borderRadius: 22,
               background: '#6A1B9A',
               boxShadow: '0 8px 0 #4A148C60',
-              padding: '20px 24px',
-              display: 'flex', alignItems: 'center', gap: 16,
+              padding: '14px 20px',
+              display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sequence.png" alt="" style={{ width: 80, height: 80, objectFit: 'contain', flexShrink: 0 }} />
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sequence.png" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Sequence</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
@@ -206,11 +206,11 @@ export default function LandingPage() {
               width: '100%', borderRadius: 22,
               background: '#00796B',
               boxShadow: '0 8px 0 #00695160',
-              padding: '20px 24px',
-              display: 'flex', alignItems: 'center', gap: 16,
+              padding: '14px 20px',
+              display: 'flex', alignItems: 'center', gap: 14,
               cursor: 'pointer', boxSizing: 'border-box',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/flags.png" alt="" style={{ width: 80, height: 80, objectFit: 'contain', flexShrink: 0 }} />
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/flags.png" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Flags</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
