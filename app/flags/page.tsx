@@ -104,7 +104,7 @@ export default function FlagsPage() {
   const handleAnswer = async (code: string) => {
     if (selected) return
     setSelected(code)
-    clearTimeout(timerRef.current)
+    if (timerRef.current) clearTimeout(timerRef.current)
 
     const correct = code === current?.code
     const newLevel = correct ? level + 1 : level
