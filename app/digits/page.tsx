@@ -349,7 +349,19 @@ export default function DigitsPage() {
               color: '#fff', fontSize: 14, fontWeight: 800,
               fontFamily: 'inherit', cursor: 'pointer',
               boxShadow: '0 6px 0 #0a4a9960',
-            }}>Share my result ↑</button>
+            }}>Share my result</button>
+
+            <button onClick={() => {
+              const url = `${window.location.origin}/challenge?game=digits&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
+              if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${profile?.name} reached level ${level} in Digits. Can you beat them?`, url })
+              else navigator.clipboard.writeText(url).then(() => alert('Challenge link copied!'))
+            }} style={{
+              width: '100%', padding: '13px', borderRadius: 14, border: 'none',
+              background: '#1565C0',
+              color: '#fff', fontSize: 14, fontWeight: 800,
+              fontFamily: 'inherit', cursor: 'pointer',
+              boxShadow: '0 6px 0 #0D47A160',
+            }}>Challenge a friend 🎯</button>
 
             <div style={{ display: 'flex', gap: 10, width: '100%' }}>
               <button onClick={startGame} style={{
