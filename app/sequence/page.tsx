@@ -9,10 +9,10 @@ const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-const LOGO = `${BASE}/sequence.png`
-const TROPHY = `${BASE}/nav-trophy.png`
-const BRAIN_GREEN = `${BASE}/brain-green.png`
-const BRAIN_RED = `${BASE}/brain-red.png`
+const LOGO = `${BASE}/sequence.webp`
+const TROPHY = `${BASE}/nav-trophy.webp`
+const BRAIN_GREEN = `${BASE}/brain-green.webp`
+const BRAIN_RED = `${BASE}/brain-red.webp`
 
 const COLORS = [
   { id: 0, dim: '#FFCDD2', bright: '#F44336', note: 261 },  // Red - C4

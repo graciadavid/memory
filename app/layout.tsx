@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     siteName: 'MemGenius',
     images: [
       {
-        url: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/logomemgenius.png',
+        url: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/logomemgenius.webp',
         width: 1200,
         height: 630,
         alt: 'MemGenius',
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'MemGenius — Daily Brain Games',
     description: 'Train your brain with Memory, Digits, Sequence and Flags.',
-    images: ['https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/logomemgenius.png'],
+    images: ['https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/logomemgenius.webp'],
   },
   robots: {
     index: true,

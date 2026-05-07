@@ -6,8 +6,8 @@ import { usePlayer } from '@/lib/usePlayer'
 import Onboarding from './Onboarding'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-const LOGO = `${BASE}/memory.png`
-const TROPHY = `${BASE}/nav-trophy.png`
+const LOGO = `${BASE}/memory.webp`
+const TROPHY = `${BASE}/nav-trophy.webp`
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'

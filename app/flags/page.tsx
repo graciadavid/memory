@@ -11,10 +11,10 @@ const CREAM = '#FAF7F2'
 const GREEN = '#2E7D32'
 const RED = '#B71C1C'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-const LOGO = `${BASE}/flags.png`
-const TROPHY = `${BASE}/nav-trophy.png`
-const BRAIN_GREEN = `${BASE}/brain-green.png`
-const BRAIN_RED = `${BASE}/brain-red.png`
+const LOGO = `${BASE}/flags.webp`
+const TROPHY = `${BASE}/nav-trophy.webp`
+const BRAIN_GREEN = `${BASE}/brain-green.webp`
+const BRAIN_RED = `${BASE}/brain-red.webp`
 const FLAG_CDN = 'https://flagcdn.com/w320'
 
 const COUNTRIES = [

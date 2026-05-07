@@ -6,7 +6,7 @@ const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-const EAGLE = `${SUPABASE_URL}/storage/v1/object/public/storage/brain-logo.png`
+const EAGLE = `${SUPABASE_URL}/storage/v1/object/public/storage/brain-logo.webp`
 
 function imgUrl(f: string) {
   return `${SUPABASE_URL}/storage/v1/object/public/storage/${f}`

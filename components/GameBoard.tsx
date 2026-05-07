@@ -6,7 +6,7 @@ import Tutorial from './Tutorial'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const BUCKET = 'storage'
-const EAGLE = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/brain-logo.png`
+const EAGLE = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/brain-logo.webp`
 
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'

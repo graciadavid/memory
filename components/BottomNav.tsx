@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
 const ITEMS = [
-  { href: '/', img: `${BASE}/nav-home.png`, label: 'Home' },
-  { href: '/ranking', img: `${BASE}/nav-trophy.png`, label: 'Ranking' },
-  { href: '/profile', img: `${BASE}/nav-profile.png`, label: 'Profile' },
+  { href: '/', img: `${BASE}/nav-home.webp`, label: 'Home' },
+  { href: '/ranking', img: `${BASE}/nav-trophy.webp`, label: 'Ranking' },
+  { href: '/profile', img: `${BASE}/nav-profile.webp`, label: 'Profile' },
 ]
 
 export default function BottomNav() {
