@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import HallOfFameClient from './HallOfFameClient'
 
-export const revalidate = 3600
+export const revalidate = 0
 
 export default async function HallOfFamePage() {
   const [memEasy, memMed, memHard, digits, sequence, flags] = await Promise.all([
