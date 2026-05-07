@@ -21,7 +21,7 @@ export default function BottomNav() {
       backdropFilter: 'blur(20px)',
       borderTop: '1px solid rgba(74,44,10,0.08)',
       display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-      padding: '6px 0 16px',
+      padding: '4px 0 8px',
       zIndex: 50,
     }}>
       {ITEMS.map(item => {

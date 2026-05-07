@@ -69,10 +69,10 @@ export default function LandingPage() {
           src={LOGO}
           alt="MemGenius"
           style={{
-            height: 160, objectFit: 'contain',
+            height: 110, objectFit: 'contain',
             animation: 'floatLogo 3s ease-in-out infinite',
             filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.1))',
-            marginBottom: 8,
+            marginBottom: 4,
           }}
         />
 
@@ -80,7 +80,7 @@ export default function LandingPage() {
         <div style={{
           fontSize: 14, color: `${BROWN}55`,
           fontStyle: 'italic', fontFamily: 'Georgia, serif',
-          marginBottom: 24, letterSpacing: 0.3,
+          marginBottom: 16, letterSpacing: 0.3,
         }}>
           Your daily brain workout
         </div>
@@ -191,11 +191,7 @@ export default function LandingPage() {
               display: 'flex', alignItems: 'center', gap: 16,
               cursor: 'pointer', boxSizing: 'border-box',
             }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, width: 48, height: 48, flexShrink: 0 }}>
-                {['#F44336','#2196F3','#4CAF50','#FFEB3B'].map(c => (
-                  <div key={c} style={{ borderRadius: 6, background: c }} />
-                ))}
-              </div>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sequence.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Sequence</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>

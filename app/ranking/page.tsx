@@ -29,7 +29,7 @@ export default function RankingHubPage() {
               display: 'flex', alignItems: 'center', gap: 16,
               boxSizing: 'border-box',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain-green.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memory.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>Memory</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>Match pairs ranking</div>
@@ -44,7 +44,7 @@ export default function RankingHubPage() {
               display: 'flex', alignItems: 'center', gap: 16,
               boxSizing: 'border-box',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/1234.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/digits.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>Digits</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>Number memory ranking</div>
@@ -59,13 +59,7 @@ export default function RankingHubPage() {
               display: 'flex', alignItems: 'center', gap: 16,
               boxSizing: 'border-box',
             }}>
-              <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, width: 28, height: 28 }}>
-                  {['#F44336','#2196F3','#4CAF50','#FFEB3B'].map(c => (
-                    <div key={c} style={{ borderRadius: 3, background: c }} />
-                  ))}
-                </div>
-              </div>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sequence.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>Sequence</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>Pattern memory ranking</div>
