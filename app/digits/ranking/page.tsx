@@ -1,169 +1,47 @@
-'use client'
-import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { usePlayer } from '@/lib/usePlayer'
-import Link from 'next/link'
+import DigitsRankingClient from './DigitsRankingClient'
 
-const BROWN = '#4A2C0A'
-const BLUE = '#1565C0'
-const GOLD = '#C8960C'
-const CREAM = '#FAF7F2'
+export const revalidate = 60 // refresca cada 60 segundos
 
-export default function NumberRankingPage() {
-  const { profile } = usePlayer()
-  const [scores, setScores] = useState<{ name: string, level: number }[]>([])
-  const [loading, setLoading] = useState(true)
+export default async function DigitsRankingPage() {
+  const { data } = await supabase
+    .from('number_scores')
+    .select('player_name, level, created_at')
+    .order('level', { ascending: false })
+    .order('created_at', { ascending: true })
+    .limit(500)
 
-  useEffect(() => {
-    const fetch = async () => {
-      const { data } = await supabase
-        .from('number_scores')
-        .select('player_name, level')
-        .order('level', { ascending: false })
-        .limit(200)
-
-      if (data) {
-        const best: Record<string, number> = {}
-        data.forEach(s => {
-          if (!best[s.player_name] || s.level > best[s.player_name]) {
-            best[s.player_name] = s.level
-          }
-        })
-        const sorted = Object.entries(best)
-          .map(([name, level]) => ({ name, level }))
-          .sort((a, b) => b.level - a.level)
-        setScores(sorted)
-      }
-      setLoading(false)
+  // Pre-compute best per player on server
+  const best: Record<string, { level: number, created_at: string }> = {}
+  data?.forEach(s => {
+    if (!best[s.player_name] || s.level > best[s.player_name].level ||
+      (s.level === best[s.player_name].level && s.created_at < best[s.player_name].created_at)) {
+      best[s.player_name] = { level: s.level, created_at: s.created_at }
     }
-    fetch()
-  }, [])
+  })
 
-  const myIndex = scores.findIndex(s => s.name === profile?.name)
-  const myScore = myIndex >= 0 ? scores[myIndex] : null
-
-  const share = async (position: number, level: number) => {
-    const text = `🔢 I'm #${position} in Digits with ${level} digits!\nCan you beat me? 👉 https://memgenius.com/digits`
-    if (navigator.share) await navigator.share({ text })
-    else { await navigator.clipboard.writeText(text); alert('Copied!') }
-  }
+  const scores = Object.entries(best)
+    .map(([name, d]) => ({ name, level: d.level, created_at: d.created_at }))
+    .sort((a, b) => b.level - a.level || a.created_at.localeCompare(b.created_at))
 
   return (
     <main style={{
       height: '100dvh',
-      background: `linear-gradient(180deg, #EEF4FF 0%, ${CREAM} 100%)`,
+      background: 'linear-gradient(180deg, #EEF4FF 0%, #FAF7F2 100%)',
       fontFamily: 'var(--font-nunito), sans-serif',
       maxWidth: 430, margin: '0 auto',
-      display: 'flex', flexDirection: 'column',
-      overflow: 'hidden',
+      display: 'flex', flexDirection: 'column', overflow: 'hidden',
     }}>
-      {/* Header */}
-      <div style={{ padding: '24px 16px 12px', flexShrink: 0 }}>
-        <div style={{ fontSize: 11, fontWeight: 800, color: BLUE, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>
-          Leaderboard
+      <div style={{ padding: '24px 16px 12px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 800, color: '#C8960C', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>Leaderboard</div>
+          <div style={{ fontSize: 26, fontWeight: 900, color: '#4A2C0A', letterSpacing: -1 }}>Digits Ranking</div>
         </div>
-        <div style={{ fontSize: 26, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>
-          Digits Ranking
-        </div>
+        <a href="/ranking" style={{ textDecoration: 'none' }}>
+          <div style={{ background: '#fff', border: '1px solid #4A2C0A15', borderRadius: 10, padding: '6px 12px', fontSize: 12, fontWeight: 800, color: '#4A2C0A60' }}>Back ✕</div>
+        </a>
       </div>
-
-      {/* Headers */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: '36px 1fr 80px 32px',
-        padding: '0 16px 8px', gap: 6, flexShrink: 0,
-      }}>
-        {['#', 'Player', 'Digits', ''].map((h, i) => (
-          <div key={i} style={{ fontSize: 9, fontWeight: 900, color: `${BROWN}35`, letterSpacing: 2, textTransform: 'uppercase' }}>{h}</div>
-        ))}
-      </div>
-
-      {/* List */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 10px', paddingBottom: myScore ? 140 : 80 }}>
-        {loading ? (
-          <div style={{ textAlign: 'center', color: `${BROWN}40`, marginTop: 60, fontSize: 14 }}>Loading...</div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {scores.map((s, i) => {
-              const isMe = s.name === profile?.name
-              return (
-                <div key={s.name} id={isMe ? 'my-row' : undefined} style={{
-                  display: 'grid', gridTemplateColumns: '36px 1fr 80px 32px',
-                  alignItems: 'center', gap: 6,
-                  background: isMe ? `${GOLD}22` : i === 0 ? `${GOLD}08` : '#fff',
-                  border: `1px solid ${isMe ? GOLD + '60' : i === 0 ? GOLD + '20' : BROWN + '08'}`,
-                  borderRadius: 12, padding: '12px 10px',
-                  boxShadow: isMe ? `0 4px 16px ${GOLD}25` : `0 1px 4px ${BROWN}06`,
-                }}>
-                  <div style={{
-                    fontSize: 13, fontWeight: 900, textAlign: 'center',
-                    color: i === 0 ? GOLD : i === 1 ? '#999' : i === 2 ? '#A0522D' : `${BROWN}30`,
-                  }}>{i + 1}</div>
-                  <div style={{
-                    fontSize: 13, fontWeight: 800, color: BROWN,
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                    display: 'flex', alignItems: 'center', gap: 6,
-                  }}>
-                    {s.name}
-                    {isMe && <span style={{ fontSize: 8, color: GOLD, fontWeight: 900, background: `${GOLD}20`, padding: '1px 5px', borderRadius: 4 }}>YOU</span>}
-                  </div>
-                  <div style={{
-                    fontSize: 12, fontWeight: 900, color: BLUE, textAlign: 'center',
-                  }}>{s.level} digits</div>
-                  {isMe ? (
-                    <button onClick={() => share(i + 1, s.level)} style={{
-                      width: 26, height: 26, borderRadius: 7, border: 'none',
-                      background: GOLD, color: '#fff', fontSize: 11,
-                      cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>↑</button>
-                  ) : <div />}
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Sticky my position */}
-      {myScore && (
-        <div onClick={() => document.getElementById('my-row')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-          style={{
-            position: 'fixed', bottom: 60,
-            left: '50%', transform: 'translateX(-50%)',
-            width: '100%', maxWidth: 430,
-            padding: '8px 10px',
-            background: 'rgba(250,247,242,0.97)',
-            backdropFilter: 'blur(16px)',
-            borderTop: `2px solid ${GOLD}40`,
-            zIndex: 40, boxSizing: 'border-box', cursor: 'pointer',
-          }}>
-          <div style={{ fontSize: 9, fontWeight: 900, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 5, paddingLeft: 4 }}>
-            Your position · tap to find
-          </div>
-          <div style={{
-            display: 'grid', gridTemplateColumns: '36px 1fr 80px 32px',
-            alignItems: 'center', gap: 6,
-            background: `${GOLD}22`, border: `1px solid ${GOLD}60`,
-            borderRadius: 12, padding: '10px 10px',
-          }}>
-            <div style={{ fontSize: 13, fontWeight: 900, textAlign: 'center', color: GOLD }}>{myIndex + 1}</div>
-            <div style={{ fontSize: 13, fontWeight: 800, color: BROWN }}>{myScore.name}</div>
-            <div style={{ fontSize: 12, fontWeight: 900, color: BLUE, textAlign: 'center' }}>{myScore.level} digits</div>
-            <button onClick={(e) => { e.stopPropagation(); share(myIndex + 1, myScore.level) }} style={{ width: 26, height: 26, borderRadius: 7, border: 'none', background: GOLD, color: '#fff', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontFamily: 'inherit' }}>↑</button>
-          </div>
-        </div>
-      )}
-
-      {/* Back button — top right */}
-      <Link href="/ranking" style={{
-        position: 'fixed', top: 16, right: 16,
-        textDecoration: 'none', zIndex: 50,
-      }}>
-        <div style={{
-          background: '#fff', border: `1px solid ${BROWN}15`,
-          borderRadius: 10, padding: '6px 12px',
-          fontSize: 12, fontWeight: 800, color: `${BROWN}60`,
-        }}>Back ✕</div>
-      </Link>
+      <DigitsRankingClient scores={scores} />
     </main>
   )
 }
