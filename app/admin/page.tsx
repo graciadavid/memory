@@ -127,6 +127,7 @@ export default function AdminPage() {
     const seqList = Object.entries(seqPlayerMap).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
 
     const flagList = Object.entries(flagPlayerMap).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
+    console.log('flagList', flagList.length, flagList)
     setPlayers({ memory: memList, digits: digList, sequence: seqList, flags: flagList } as any)
     setLoading(false)
   }
