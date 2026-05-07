@@ -205,7 +205,7 @@ export default function LandingPage() {
             </div>
           </Link>
 
-          <Link href="/flags" style={ textDecoration: 'none' }>
+          <Link href="/flags" style={{ textDecoration: 'none' }}>
             <div style={{
               width: '100%', borderRadius: 22,
               background: '#00796B',
