@@ -97,7 +97,7 @@ export default function AdminPage() {
     const newInPeriod = Object.values(firstGame).filter(d => d >= periodStart).length
     const newInPrev = Object.values(firstGame).filter(d => d >= prevStart && d < periodStart).length
 
-    setStats({
+    setStats({ retentionData,
       games: [
         { label: 'Memory', curr: memP, pct: pct(memP, memPrev), color: BROWN },
         { label: 'Digits', curr: digP, pct: pct(digP, digPrev), color: BLUE },
@@ -135,6 +135,23 @@ export default function AdminPage() {
     })
     const topOf = (map: Record<string, any>) =>
       Object.entries(map).map(([name, d]: [string, any]) => ({ name, games: d.games })).sort((a, b) => b.games - a.games).slice(0, 5)
+
+    // Retention — count unique days played per player
+    const playerDays: Record<string, Set<string>> = {}
+    ;[...mem, ...dig, ...seq, ...flag].forEach(s => {
+      const day = s.created_at?.split('T')[0]
+      if (!day) return
+      if (!playerDays[s.player_name]) playerDays[s.player_name] = new Set()
+      playerDays[s.player_name].add(day)
+    })
+    const retention: Record<number, number> = {}
+    Object.values(playerDays).forEach(days => {
+      const n = days.size
+      retention[n] = (retention[n] || 0) + 1
+    })
+    const retentionData = Object.entries(retention)
+      .map(([days, players]) => ({ days: Number(days), players }))
+      .sort((a, b) => a.days - b.days)
 
     setPlayers({
       memory: toList(memMap).slice(0, 5),
@@ -243,6 +260,29 @@ export default function AdminPage() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Retention */}
+          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Retention — Days Active</div>
+          <div style={{ background: '#fff', borderRadius: 16, padding: '14px', marginBottom: 16, boxShadow: `0 2px 8px ${BROWN}06` }}>
+            {(stats.retentionData || []).filter((r: any) => r.days <= 30).map((r: any) => {
+              const maxPlayers = Math.max(...(stats.retentionData || []).map((x: any) => x.players))
+              const width = Math.round((r.players / maxPlayers) * 100)
+              return (
+                <div key={r.days} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, width: 40, textAlign: 'right', flexShrink: 0 }}>
+                    {r.days}d
+                  </div>
+                  <div style={{ flex: 1, height: 20, background: `${BROWN}08`, borderRadius: 6, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${width}%`, background: r.days === 1 ? `${BROWN}40` : r.days <= 3 ? GOLD : r.days <= 7 ? '#2E7D32' : '#1565C0', borderRadius: 6, transition: 'width 0.5s' }} />
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 900, color: BROWN, width: 30, flexShrink: 0 }}>{r.players}</div>
+                </div>
+              )
+            })}
+            <div style={{ fontSize: 10, color: `${BROWN}30`, marginTop: 8, fontStyle: 'italic' }}>
+              Players grouped by number of different days they played
+            </div>
           </div>
 
           {/* Top players per game */}
