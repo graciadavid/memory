@@ -188,7 +188,7 @@ export default function RankingClient({ scores, dailyScores, digitScores }: { sc
       </div>
 
       {/* Sticky my position */}
-      {((game === 'memory' && myMemoryIndex >= 0) || (game === 'digits' && myDigitsIndex >= 0)) && (
+      {(myMemoryIndex >= 0) && (
         <div onClick={scrollToMe} style={{
           position: 'fixed', bottom: 60,
           left: '50%', transform: 'translateX(-50%)',
@@ -202,11 +202,8 @@ export default function RankingClient({ scores, dailyScores, digitScores }: { sc
           <div style={{ fontSize: 9, fontWeight: 900, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 5, paddingLeft: 4 }}>
             Your position · tap to find
           </div>
-          {game === 'memory' && myMemoryIndex >= 0 && (
+          {myMemoryIndex >= 0 && (
             <MemoryRow score={memoryFiltered[myMemoryIndex]} position={myMemoryIndex + 1} />
-          )}
-          {game === 'digits' && myDigitsIndex >= 0 && (
-            <DigitsRow score={digitsFiltered[myDigitsIndex]} position={myDigitsIndex + 1} />
           )}
         </div>
       )}
