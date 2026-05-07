@@ -62,7 +62,7 @@ export default function HomeClient({ easy, medium, hard }: Props) {
             alt="Memory"
             style={{
               height: 70, objectFit: 'contain',
-              animation: 'floatLogo 3s ease-in-out infinite',
+              
               filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.1))',
               flexShrink: 0,
             }}
