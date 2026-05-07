@@ -1,4 +1,5 @@
 'use client'
+import { getSpainToday } from '@/lib/dailyChallenge'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { calculateRank } from '@/lib/rankUtils'
@@ -32,7 +33,7 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
 
     const saveAndRank = async () => {
       // 1. Save score
-      const today = new Date().toISOString().split('T')[0]
+      const today = getSpainToday()
       // Check if this pack is today's daily directly from Supabase
       const { data: dailyCheck } = await supabase
         .from('daily_challenges')

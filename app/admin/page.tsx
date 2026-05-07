@@ -1,4 +1,5 @@
 'use client'
+import { getSpainToday } from '@/lib/dailyChallenge'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 
