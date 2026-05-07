@@ -53,9 +53,25 @@ export default function ProfilePage() {
   const [dailyRank, setDailyRank] = useState<{ rank: number | null, time: number | null }>({ rank: null, time: null })
   const [loadingRanks, setLoadingRanks] = useState(true)
   const [digitsRank, setDigitsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
+  const [seqRank, setSeqRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
 
   useEffect(() => {
     if (!profile?.name) return
+
+    const fetchSeqRank = async () => {
+      const { data } = await supabase
+        .from('sequence_scores')
+        .select('player_name, level')
+        .order('level', { ascending: false })
+        .limit(500)
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+      const myLevel = best[profile.name]
+      if (!myLevel) return
+      const rank = Object.values(best).filter(l => l > myLevel).length + 1
+      setSeqRank({ level: myLevel, rank })
+    }
 
     const fetchDigitsRank = async () => {
       const { data } = await supabase
@@ -76,6 +92,7 @@ export default function ProfilePage() {
       fetchLiveRanks(profile.name),
       fetchDailyRank(profile.name),
       fetchDigitsRank(),
+      fetchSeqRank(),
     ]).then(([ranks, daily]) => {
       setLiveRanks(ranks)
       setDailyRank(daily)
@@ -282,6 +299,40 @@ export default function ProfilePage() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}
                 >↑</button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Sequence Best */}
+        <div style={{
+          background: '#fff', borderRadius: 20, padding: '20px 22px',
+          boxShadow: `0 2px 12px ${BROWN}10`,
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
+            Sequence — Best
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ flex: 1, textAlign: 'center', background: '#F3E5F5', border: '1px solid #6A1B9A20', borderRadius: 14, padding: '14px 8px' }}>
+              <div style={{ fontSize: 9, fontWeight: 900, color: '#6A1B9A', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Best Level</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: seqRank.level ? BROWN : `${BROWN}20` }}>
+                {loadingRanks ? '...' : seqRank.level ? `${seqRank.level}` : '—'}
+              </div>
+            </div>
+            <div style={{ flex: 1, textAlign: 'center', background: '#F3E5F5', border: '1px solid #6A1B9A20', borderRadius: 14, padding: '14px 8px' }}>
+              <div style={{ fontSize: 9, fontWeight: 900, color: '#6A1B9A', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>World Rank</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: seqRank.rank ? BROWN : `${BROWN}20` }}>
+                {loadingRanks ? '...' : seqRank.rank ? `#${seqRank.rank}` : '—'}
+              </div>
+            </div>
+            {seqRank.level && (
+              <div style={{ flex: 1, textAlign: 'center', background: '#F3E5F5', border: '1px solid #6A1B9A20', borderRadius: 14, padding: '14px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                <div style={{ fontSize: 9, fontWeight: 900, color: '#6A1B9A', letterSpacing: 1, textTransform: 'uppercase' }}>Share</div>
+                <button onClick={async () => {
+                  const text = `🎵 I reached level ${seqRank.level} in MemGenius Sequence! World #${seqRank.rank}\nCan you beat me? 👉 https://memgenius.com/sequence`
+                  if (navigator.share) await navigator.share({ text })
+                  else { await navigator.clipboard.writeText(text); alert('Copied!') }
+                }} style={{ width: 36, height: 36, borderRadius: 10, border: 'none', background: '#6A1B9A', color: '#fff', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
               </div>
             )}
           </div>

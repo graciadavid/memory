@@ -62,6 +62,14 @@ function playTick(progress: number) {
   } catch(e) {}
 }
 
+function DigitsAutoNext({ onNext }: { onNext: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onNext, 1500)
+    return () => clearTimeout(t)
+  }, [])
+  return <div style={{ fontSize: 13, color: '#2E7D32', fontWeight: 700, opacity: 0.6 }}>Next level in a moment...</div>
+}
+
 export default function DigitsPage() {
   const { profile } = usePlayer()
   const router = useRouter()

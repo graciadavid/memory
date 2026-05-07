@@ -6,7 +6,7 @@ const BROWN = '#4A2C0A'
 const BLUE = '#1565C0'
 
 export default function RankingClient({ scores, dailyScores, digitScores }: { scores: any[], dailyScores: any[], digitScores: any[] }) {
-  const [game, setGame] = useState<'memory' | 'digits'>('memory')
+  const game = 'memory'
   const [filter, setFilter] = useState<1 | 2 | 3>(1)
   const [myName, setMyName] = useState<string>('')
 
@@ -138,23 +138,7 @@ export default function RankingClient({ scores, dailyScores, digitScores }: { sc
 
   return (
     <>
-      {/* Game selector */}
-      <div style={{ display: 'flex', gap: 8, padding: '0 16px 10px', flexShrink: 0 }}>
-        {[
-          { key: 'memory' as const, label: '🧠 Memory', color: BROWN },
-          { key: 'digits' as const, label: '🔢 Digits', color: BLUE },
-        ].map(g => (
-          <button key={g.key} onClick={() => setGame(g.key)} style={{
-            flex: 1, padding: '10px 4px', borderRadius: 12, border: 'none',
-            background: game === g.key ? g.color : '#fff',
-            color: game === g.key ? '#fff' : `${BROWN}60`,
-            fontSize: 13, fontWeight: 800,
-            fontFamily: 'inherit', cursor: 'pointer',
-            boxShadow: game === g.key ? `0 5px 0 ${g.color}50` : `0 2px 6px ${BROWN}08`,
-            transition: 'all 0.2s',
-          }}>{g.label}</button>
-        ))}
-      </div>
+
 
       {/* Memory tabs */}
       {game === 'memory' && (

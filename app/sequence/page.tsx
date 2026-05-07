@@ -72,6 +72,14 @@ function playSuccess() {
 
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
+function AutoNext({ onNext }: { onNext: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onNext, 1500)
+    return () => clearTimeout(t)
+  }, [])
+  return <div style={{ fontSize: 13, color: '#2E7D32', fontWeight: 700, opacity: 0.6 }}>Next level in a moment...</div>
+}
+
 export default function SequencePage() {
   const { profile } = usePlayer()
   const router = useRouter()
@@ -276,19 +284,7 @@ export default function SequencePage() {
               </div>
             </Link>
 
-            {topScores.slice(0, 3).map((s, i) => (
-              <div key={s.name} style={{
-                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                background: '#fff', borderRadius: 12, padding: '10px 14px',
-                boxShadow: `0 2px 8px ${BROWN}08`,
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ fontSize: 13, fontWeight: 900, color: i === 0 ? GOLD : `${BROWN}30`, width: 20 }}>{i + 1}</div>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{s.name}</div>
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 900, color: '#6A1B9A' }}>Level {s.level}</div>
-              </div>
-            ))}
+
           </div>
         )}
 
@@ -307,7 +303,7 @@ export default function SequencePage() {
           </div>
         )}
 
-        {/* RESULT */}
+        {/* RESULT — auto next */}
         {phase === 'result' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '0 24px', width: '100%' }}>
             <img src={BRAIN_GREEN} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
@@ -318,12 +314,7 @@ export default function SequencePage() {
                 <div key={i} style={{ width: 28, height: 28, borderRadius: 8, background: COLORS[id].color, boxShadow: `0 2px 0 ${COLORS[id].color}60` }} />
               ))}
             </div>
-            <button onClick={nextLevel} style={{
-              padding: '16px', borderRadius: 18, border: 'none',
-              background: '#6A1B9A', color: '#fff', fontSize: 18, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer',
-              boxShadow: '0 8px 0 #4A148C60', width: '100%',
-            }}>Next Level →</button>
+            <AutoNext onNext={nextLevel} />
           </div>
         )}
 
