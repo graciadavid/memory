@@ -1,4 +1,5 @@
 'use client'
+import InstallBanner from '@/components/InstallBanner'
 import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { fetchAllRanks } from './RanksFetcher'
