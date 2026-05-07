@@ -89,12 +89,12 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
                       </div>
                     </div>
                     <button onClick={() => shareChampion(card)} style={{
-                      width: 44, height: 44, borderRadius: 12, border: 'none',
+                      padding: '10px 16px', borderRadius: 12, border: 'none',
                       background: GOLD, color: '#fff',
-                      fontSize: 18, cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 13, fontWeight: 900, cursor: 'pointer',
+                      fontFamily: 'var(--font-nunito), sans-serif',
                       boxShadow: `0 4px 0 ${GOLD}60`,
-                    }}>↑</button>
+                    }}>Share</button>
                   </div>
                 ) : (
                   <div style={{ fontSize: 14, color: `${BROWN}30`, fontWeight: 700 }}>No record yet — be the first!</div>
