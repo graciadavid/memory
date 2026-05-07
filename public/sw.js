@@ -1,10 +1,11 @@
-const CACHE = 'memgenius-v1'
+const CACHE = 'memgenius-v2'
 const ASSETS = [
   '/',
   '/memory',
   '/digits',
   '/sequence',
   '/flags',
+  '/ranking/hall-of-fame',
   '/icons/logomemgenius.webp',
   '/icons/memory.webp',
   '/icons/digits.webp',
