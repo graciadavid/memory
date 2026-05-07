@@ -48,6 +48,8 @@ const nunito = Nunito({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <link rel="preconnect" href="https://bgmhfsccchktnknmqkuw.supabase.co" />
+      <link rel="preconnect" href="https://flagcdn.com" />
       <body className={`${nunito.variable} font-nunito`} style={{ background: '#f2f2f2', margin: 0 }}>
         <Analytics />
         {children}

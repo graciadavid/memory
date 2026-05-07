@@ -316,7 +316,7 @@ export default function SequencePage() {
         {/* RESULT — auto next */}
         {phase === 'result' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '0 24px', width: '100%' }}>
-            <img src={BRAIN_GREEN} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
+            <img loading="lazy" src={BRAIN_GREEN} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
             <div style={{ fontSize: 22, fontWeight: 900, color: '#2E7D32' }}>Correct!</div>
             <div style={{ fontSize: 32, fontWeight: 900, color: BROWN }}>Level {sequence.length}</div>
             <div style={{ display: 'flex', gap: 6, width: '100%', justifyContent: 'center', flexWrap: 'wrap' }}>

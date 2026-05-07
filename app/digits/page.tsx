@@ -303,7 +303,7 @@ export default function DigitsPage() {
               fontFamily: 'var(--font-nunito), sans-serif',
               letterSpacing: 4, textAlign: 'center', wordBreak: 'break-all',
             }}>{current}</div>
-            <img src={BRAIN_GREEN} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
+            <img loading="lazy" src={BRAIN_GREEN} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
             <div style={{ fontSize: 22, fontWeight: 900, color: '#2E7D32' }}>Correct!</div>
             <AutoNextDigits onNext={() => { const next = level + 1; setLevel(next); showNumber(next) }} />
           </div>
