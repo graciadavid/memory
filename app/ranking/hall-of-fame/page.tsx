@@ -4,36 +4,61 @@ import HallOfFameClient from './HallOfFameClient'
 export const revalidate = 0
 
 export default async function HallOfFamePage() {
-  const [memEasy, memMed, memHard, digits, sequence, flags] = await Promise.all([
-    supabase.from('scores').select('player_name, time_ms, packs(difficulty)').eq('packs.difficulty', 1).order('time_ms', { ascending: true }).limit(500),
-    supabase.from('scores').select('player_name, time_ms, packs(difficulty)').eq('packs.difficulty', 2).order('time_ms', { ascending: true }).limit(500),
-    supabase.from('scores').select('player_name, time_ms, packs(difficulty)').eq('packs.difficulty', 3).order('time_ms', { ascending: true }).limit(500),
-    supabase.from('number_scores').select('player_name, level').order('level', { ascending: false }).limit(1000),
-    supabase.from('sequence_scores').select('player_name, level').order('level', { ascending: false }).limit(1000),
-    supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(1000),
+
+  // Get best flag score
+  const { data: flagData } = await supabase
+    .from('flag_scores')
+    .select('player_name, level')
+    .order('level', { ascending: false })
+    .limit(1)
+
+  // Get best digits score  
+  const { data: digitsData } = await supabase
+    .from('number_scores')
+    .select('player_name, level')
+    .order('level', { ascending: false })
+    .limit(1)
+
+  // Get best sequence score
+  const { data: seqData } = await supabase
+    .from('sequence_scores')
+    .select('player_name, level')
+    .order('level', { ascending: false })
+    .limit(1)
+
+  // Get best memory scores per difficulty
+  const { data: packsData } = await supabase
+    .from('packs')
+    .select('id, difficulty')
+
+  const easyIds = packsData?.filter(p => p.difficulty === 1).map(p => p.id) || []
+  const medIds = packsData?.filter(p => p.difficulty === 2).map(p => p.id) || []
+  const hardIds = packsData?.filter(p => p.difficulty === 3).map(p => p.id) || []
+
+  const getBestMemory = async (ids: string[]) => {
+    if (!ids.length) return null
+    const { data } = await supabase
+      .from('scores')
+      .select('player_name, time_ms')
+      .in('pack_id', ids)
+      .order('time_ms', { ascending: true })
+      .limit(1)
+    return data?.[0] || null
+  }
+
+  const [memEasy, memMed, memHard] = await Promise.all([
+    getBestMemory(easyIds),
+    getBestMemory(medIds),
+    getBestMemory(hardIds),
   ])
 
-  // Get best per player
-  const getBestMemory = (data: any[]) => {
-    const map: Record<string, any> = {}
-    data?.forEach(s => { if (s.packs && (!map[s.player_name] || s.time_ms < map[s.player_name].time_ms)) map[s.player_name] = s })
-    return Object.values(map).sort((a, b) => a.time_ms - b.time_ms)[0] || null
-  }
-
-  const getBestLevel = (data: any[]) => {
-    const map: Record<string, number> = {}
-    data?.forEach(s => { if (!map[s.player_name] || s.level > map[s.player_name]) map[s.player_name] = s.level })
-    const sorted = Object.entries(map).sort((a, b) => b[1] - a[1])
-    return sorted[0] ? { player_name: sorted[0][0], level: sorted[0][1] } : null
-  }
-
   const champions = {
-    memoryEasy: getBestMemory(memEasy.data || []),
-    memoryMedium: getBestMemory(memMed.data || []),
-    memoryHard: getBestMemory(memHard.data || []),
-    digits: getBestLevel(digits.data || []),
-    sequence: getBestLevel(sequence.data || []),
-    flags: getBestLevel(flags.data || []),
+    memoryEasy: memEasy,
+    memoryMedium: memMed,
+    memoryHard: memHard,
+    digits: digitsData?.[0] || null,
+    sequence: seqData?.[0] || null,
+    flags: flagData?.[0] || null,
   }
 
   return <HallOfFameClient champions={champions} />
