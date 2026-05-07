@@ -23,18 +23,29 @@ const COLORS = [
 
 type Phase = 'intro' | 'showing' | 'input' | 'result' | 'gameover'
 
+let sharedCtx: AudioContext | null = null
+
+function getCtx() {
+  if (!sharedCtx || sharedCtx.state === 'closed') {
+    sharedCtx = new AudioContext()
+  }
+  if (sharedCtx.state === 'suspended') sharedCtx.resume()
+  return sharedCtx
+}
+
 function playNote(freq: number, duration = 0.3) {
   try {
-    const ctx = new AudioContext()
+    const ctx = getCtx()
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     osc.type = 'sine'
     osc.frequency.setValueAtTime(freq, ctx.currentTime)
     gain.gain.setValueAtTime(0, ctx.currentTime)
-    gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.01)
+    gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.02)
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
     osc.connect(gain); gain.connect(ctx.destination)
-    osc.start(); osc.stop(ctx.currentTime + duration)
+    osc.start()
+    osc.stop(ctx.currentTime + duration)
   } catch(e) {}
 }
 
