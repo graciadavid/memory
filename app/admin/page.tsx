@@ -238,19 +238,29 @@ export default function AdminPage() {
             ))}
           </div>
 
-          {/* Top players */}
+          {/* Top players per game */}
           <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Top Players</div>
-          <div style={{ background: '#fff', borderRadius: 16, padding: '12px', marginBottom: 16, boxShadow: `0 2px 8px ${BROWN}06` }}>
-            {(players.top || []).map((p: any, i: number) => (
-              <div key={p.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 4px', borderBottom: i < players.top.length - 1 ? `1px solid ${BROWN}08` : 'none' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ fontSize: 13, fontWeight: 900, color: i === 0 ? GOLD : `${BROWN}30`, width: 20 }}>{i + 1}</div>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{p.name}</div>
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 900, color: `${BROWN}60` }}>{p.total} games</div>
+          {[
+            { key: 'topMemory', label: 'Memory', color: BROWN },
+            { key: 'topDigits', label: 'Digits', color: BLUE },
+            { key: 'topSequence', label: 'Sequence', color: '#6A1B9A' },
+            { key: 'topFlags', label: 'Flags', color: '#00796B' },
+          ].map(game => (
+            <div key={game.key} style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: game.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>{game.label}</div>
+              <div style={{ background: '#fff', borderRadius: 14, padding: '10px 12px', boxShadow: `0 2px 8px ${BROWN}06` }}>
+                {(players[game.key] || []).map((p: any, i: number) => (
+                  <div key={p.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: i < (players[game.key].length - 1) ? `1px solid ${BROWN}08` : 'none' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ fontSize: 12, fontWeight: 900, color: i === 0 ? GOLD : `${BROWN}30`, width: 18 }}>{i + 1}</div>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: BROWN }}>{p.name}</div>
+                    </div>
+                    <div style={{ fontSize: 12, fontWeight: 900, color: game.color }}>{p.games} games</div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
 
           {/* Recent players by game */}
           <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Recent Players</div>
