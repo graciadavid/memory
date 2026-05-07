@@ -27,8 +27,16 @@ export default function HomeClient({ easy, medium, hard }: Props) {
 
   useEffect(() => { setTimeout(() => setMounted(true), 50) }, [])
 
-  if (!loaded) return null
-  if (!profile?.name) return null
+  if (!loaded) return (
+    <div style={{ height: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAF7F2' }}>
+      <div style={{ fontSize: 32, animation: 'spin 1s linear infinite' }}>🧠</div>
+      <style>{`@keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }`}</style>
+    </div>
+  )
+  if (!profile?.name) {
+    if (typeof window !== 'undefined') window.location.href = '/'
+    return null
+  }
 
   const levels = [
     { slug: easy, label: 'Easy', bg: '#2E7D32', shadow: '#1B5E2060' },
