@@ -14,11 +14,14 @@ export default function AdminPage() {
   const [stats, setStats] = useState<any>(null)
   const [players, setPlayers] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
-  const [gameFilter, setGameFilter] = useState<'memory' | 'digits' | 'sequence'>('memory')
+  const [gameFilter, setGameFilter] = useState<'memory' | 'digits' | 'sequence' | 'flags'>('memory')
 
   useEffect(() => {
     const saved = localStorage.getItem('memgenius_admin')
-    if (saved === 'true') { setAuth(true); loadData() }
+    if (saved === 'true') {
+      setAuth(true)
+      setTimeout(() => loadData(), 100)
+    }
   }, [])
 
   const login = () => {
@@ -35,21 +38,24 @@ export default function AdminPage() {
     setLoading(true)
     const today = new Date().toISOString().split('T')[0]
 
-    const [memScores, digScores, seqScores] = await Promise.all([
+    const [memScores, digScores, seqScores, flagScores] = await Promise.all([
       supabase.from('scores').select('player_name, time_ms, is_daily, play_date, created_at, packs(difficulty)').order('created_at', { ascending: false }),
       supabase.from('number_scores').select('player_name, level, created_at').order('created_at', { ascending: false }),
       supabase.from('sequence_scores').select('player_name, level, created_at').order('created_at', { ascending: false }),
+      supabase.from('flag_scores').select('player_name, level, created_at').order('created_at', { ascending: false }),
     ])
 
     const scores = memScores.data || []
     const digits = digScores.data || []
     const sequence = seqScores.data || []
+    const flags = flagScores.data || []
 
     // All players combined
     const allPlayers = new Set([
       ...scores.map(s => s.player_name),
       ...digits.map(s => s.player_name),
       ...sequence.map(s => s.player_name),
+      ...flags.map(s => s.player_name),
     ])
 
     const memPlayersToday = new Set(scores.filter(s => s.created_at?.startsWith(today)).map(s => s.player_name))
@@ -70,9 +76,11 @@ export default function AdminPage() {
       totalGames: scores.length,
       totalGamesDigits: digits.length,
       totalGamesSeq: sequence.length,
+      totalGamesFlags: flags.length,
       totalGamesToday: scores.filter(s => s.created_at?.startsWith(today)).length,
       totalGamesTodayDigits: digits.filter(s => s.created_at?.startsWith(today)).length,
       totalGamesTodaySeq: sequence.filter(s => s.created_at?.startsWith(today)).length,
+      totalGamesTodayFlags: flags.filter(s => s.created_at?.startsWith(today)).length,
       totalPlayers: allPlayers.size,
       playersToday: allPlayersToday.size,
       newToday,
@@ -106,11 +114,20 @@ export default function AdminPage() {
       if (s.level > seqPlayerMap[s.player_name].bestLevel) seqPlayerMap[s.player_name].bestLevel = s.level
     })
 
+    const flagPlayerMap: Record<string, { games: number, lastGame: string, firstGame: string, bestLevel: number }> = {}
+    flags.forEach(s => {
+      if (!flagPlayerMap[s.player_name]) flagPlayerMap[s.player_name] = { games: 0, lastGame: s.created_at, firstGame: s.created_at, bestLevel: 0 }
+      flagPlayerMap[s.player_name].games++
+      if (s.created_at > flagPlayerMap[s.player_name].lastGame) flagPlayerMap[s.player_name].lastGame = s.created_at
+      if (s.level > flagPlayerMap[s.player_name].bestLevel) flagPlayerMap[s.player_name].bestLevel = s.level
+    })
+
     const memList = Object.entries(memPlayerMap).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
     const digList = Object.entries(digPlayerMap).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
     const seqList = Object.entries(seqPlayerMap).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
 
-    setPlayers({ memory: memList, digits: digList, sequence: seqList } as any)
+    const flagList = Object.entries(flagPlayerMap).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
+    setPlayers({ memory: memList, digits: digList, sequence: seqList, flags: flagList } as any)
     setLoading(false)
   }
 
@@ -138,7 +155,7 @@ export default function AdminPage() {
     )
   }
 
-  const currentPlayers = gameFilter === 'memory' ? (players as any)?.memory || [] : gameFilter === 'digits' ? (players as any)?.digits || [] : (players as any)?.sequence || []
+  const currentPlayers = gameFilter === 'memory' ? (players as any)?.memory || [] : gameFilter === 'digits' ? (players as any)?.digits || [] : gameFilter === 'sequence' ? (players as any)?.sequence || [] : (players as any)?.flags || []
 
   return (
     <main style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', padding: '24px 16px 100px' }}>
@@ -160,6 +177,8 @@ export default function AdminPage() {
               { label: 'Digits Today', value: stats.totalGamesTodayDigits },
               { label: 'Total Sequence', value: stats.totalGamesSeq },
               { label: 'Sequence Today', value: stats.totalGamesTodaySeq },
+              { label: 'Total Flags', value: stats.totalGamesFlags },
+              { label: 'Flags Today', value: stats.totalGamesTodayFlags },
             ].map(s => (
               <div key={s.label} style={{ background: '#fff', border: `1px solid ${BROWN}08`, borderRadius: 14, padding: '14px', boxShadow: `0 2px 8px ${BROWN}06` }}>
                 <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{s.label}</div>
@@ -194,6 +213,7 @@ export default function AdminPage() {
               { key: 'memory' as const, label: 'Memory', color: BROWN },
               { key: 'digits' as const, label: 'Digits', color: BLUE },
               { key: 'sequence' as const, label: 'Sequence', color: '#6A1B9A' },
+              { key: 'flags' as const, label: 'Flags', color: '#00796B' },
             ].map(g => (
               <button key={g.key} onClick={() => setGameFilter(g.key)} style={{
                 flex: 1, padding: '9px', borderRadius: 12, border: 'none',

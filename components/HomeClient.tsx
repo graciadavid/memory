@@ -1,4 +1,5 @@
 'use client'
+// v2
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
