@@ -97,7 +97,24 @@ export default function AdminPage() {
     const newInPeriod = Object.values(firstGame).filter(d => d >= periodStart).length
     const newInPrev = Object.values(firstGame).filter(d => d >= prevStart && d < periodStart).length
 
-    setStats({ retentionData,
+    // Retention
+    const playerDays2: Record<string, Set<string>> = {}
+    ;[...mem, ...dig, ...seq, ...flag].forEach(s => {
+      const day = s.created_at?.split('T')[0]
+      if (!day) return
+      if (!playerDays2[s.player_name]) playerDays2[s.player_name] = new Set()
+      playerDays2[s.player_name].add(day)
+    })
+    const retention2: Record<number, number> = {}
+    Object.values(playerDays2).forEach(days => {
+      const n = days.size
+      retention2[n] = (retention2[n] || 0) + 1
+    })
+    const retentionData2 = Object.entries(retention2)
+      .map(([days, players]) => ({ days: Number(days), players }))
+      .sort((a, b) => a.days - b.days)
+
+    setStats({ retentionData: retentionData2,
       games: [
         { label: 'Memory', curr: memP, pct: pct(memP, memPrev), color: BROWN },
         { label: 'Digits', curr: digP, pct: pct(digP, digPrev), color: BLUE },
