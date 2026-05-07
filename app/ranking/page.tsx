@@ -5,13 +5,13 @@ const CREAM = '#FAF7F2'
 export default function RankingHubPage() {
   return (
     <main style={{
-      height: '100dvh',
+      minHeight: '100dvh',
       background: `linear-gradient(180deg, ${CREAM} 0%, #F0EBE1 100%)`,
       fontFamily: 'var(--font-nunito), sans-serif',
       maxWidth: 430, margin: '0 auto',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
-      padding: '0 20px',
+      padding: '20px 20px 100px',
     }}>
       <div style={{ width: '100%', marginBottom: 40 }}>
         <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6, textAlign: 'center' }}>
