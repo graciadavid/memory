@@ -343,34 +343,26 @@ export default function DigitsPage() {
               )}
             </div>
 
-            <button onClick={share} style={{
-              width: '100%', padding: '13px', borderRadius: 14, border: 'none',
-              background: 'linear-gradient(135deg, #1877F2, #0a5dc2)',
-              color: '#fff', fontSize: 14, fontWeight: 800,
-              fontFamily: 'inherit', cursor: 'pointer',
-              boxShadow: '0 6px 0 #0a4a9960',
-            }}>Share my result</button>
-
             <button onClick={() => {
               const url = `${window.location.origin}/challenge?game=digits&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${profile?.name} reached level ${level} in Digits. Can you beat them?`, url })
               else navigator.clipboard.writeText(url).then(() => alert('Challenge link copied!'))
             }} style={{
-              width: '100%', padding: '13px', borderRadius: 14, border: 'none',
+              width: '100%', padding: '16px', borderRadius: 16, border: 'none',
               background: '#1565C0',
-              color: '#fff', fontSize: 14, fontWeight: 800,
+              color: '#fff', fontSize: 16, fontWeight: 900,
               fontFamily: 'inherit', cursor: 'pointer',
               boxShadow: '0 6px 0 #0D47A160',
-            }}>Challenge a friend 🎯</button>
+            }}>Challenge a friend</button>
 
             <div style={{ display: 'flex', gap: 10, width: '100%' }}>
               <button onClick={startGame} style={{
-                flex: 1, padding: '13px', borderRadius: 14, border: 'none',
+                flex: 1, padding: '16px', borderRadius: 16, border: 'none',
                 background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
               }}>Play again</button>
               <button onClick={() => router.push('/')} style={{
-                flex: 1, padding: '13px', borderRadius: 14, border: 'none',
+                flex: 1, padding: '16px', borderRadius: 16, border: 'none',
                 background: '#4CAF50', color: '#fff', fontSize: 13, fontWeight: 800,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #2E7D3260',
               }}>Home</button>
