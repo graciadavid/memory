@@ -133,14 +133,18 @@ export default function AdminPage() {
     ;[...mem, ...dig, ...seq, ...flag].forEach(s => {
       totalMap[s.player_name] = (totalMap[s.player_name] || 0) + 1
     })
-    const topPlayers = Object.entries(totalMap).map(([name, total]) => ({ name, total })).sort((a, b) => b.total - a.total).slice(0, 10)
+    const topOf = (map: Record<string, any>) =>
+      Object.entries(map).map(([name, d]: [string, any]) => ({ name, games: d.games })).sort((a, b) => b.games - a.games).slice(0, 5)
 
     setPlayers({
       memory: toList(memMap).slice(0, 5),
       digits: toList(digMap).slice(0, 5),
       sequence: toList(seqMap).slice(0, 5),
       flags: toList(flagMap).slice(0, 5),
-      top: topPlayers,
+      topMemory: topOf(memMap),
+      topDigits: topOf(digMap),
+      topSequence: topOf(seqMap),
+      topFlags: topOf(flagMap),
     })
     setLoading(false)
   }
