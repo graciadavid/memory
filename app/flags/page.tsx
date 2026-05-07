@@ -123,7 +123,7 @@ export default function FlagsPage() {
           fetchTop()
         }
         setPhase('gameover')
-      }, 1200)
+      }, 400)
     } else {
       setLevel(newLevel)
       setTimeout(() => nextQuestion(newLevel), 1000)
