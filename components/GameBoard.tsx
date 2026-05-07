@@ -44,8 +44,10 @@ interface Card {
 function Confetti() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   useEffect(() => {
-    const canvas = canvasRef.current!
-    const ctx = canvas.getContext('2d')!
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
     const colors = [GOLD, BROWN, '#FF4D6D', '#ff8c00', '#FFD700', '#00e676']
@@ -178,7 +180,7 @@ export default function GameBoard({ pack }: { pack: any }) {
 
   const playMatch = () => {
     try {
-      const ctx = new AudioContext()
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
       // Rich chord — root + major third + fifth
       playTone(523, 0, 0.4, 0.2, ctx)    // C5
       playTone(659, 0.05, 0.4, 0.2, ctx) // E5
@@ -191,7 +193,7 @@ export default function GameBoard({ pack }: { pack: any }) {
   }
   const playChimes = () => {
     try {
-      const ctx = new AudioContext()
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
       const notes = [523, 659, 784, 1047, 1319, 1047, 784, 1319, 1047]
       notes.forEach((freq, i) => playTone(freq, i * 0.15, 0.6, 0.25, ctx))
     } catch(e) {}
