@@ -56,21 +56,35 @@ async function getDailyPack() {
 }
 
 export default async function Home() {
-  const [easy, medium, hard, daily] = await Promise.all([
-    getRandomPack(1),
-    getRandomPack(2),
-    getRandomPack(3),
-    getDailyPack(),
-  ])
+  try {
+    const [easy, medium, hard, daily] = await Promise.all([
+      getRandomPack(1),
+      getRandomPack(2),
+      getRandomPack(3),
+      getDailyPack(),
+    ])
 
-  return (
-    <HomeClient
-      easy={easy}
-      medium={medium}
-      hard={hard}
-      dailySlug={daily?.pack_slug || null}
-      dailyTitle={daily?.title || null}
-      dailyDifficulty={daily?.difficulty || 1}
-    />
-  )
+    return (
+      <HomeClient
+        easy={easy}
+        medium={medium}
+        hard={hard}
+        dailySlug={daily?.pack_slug || null}
+        dailyTitle={daily?.title || null}
+        dailyDifficulty={daily?.difficulty || 1}
+      />
+    )
+  } catch(e) {
+    console.error('Memory page error:', e)
+    return (
+      <HomeClient
+        easy={null}
+        medium={null}
+        hard={null}
+        dailySlug={null}
+        dailyTitle={null}
+        dailyDifficulty={1}
+      />
+    )
+  }
 }
