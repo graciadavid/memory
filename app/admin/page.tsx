@@ -10,7 +10,7 @@ const BLUE = '#1565C0'
 const GREEN = '#2E7D32'
 const RED = '#B71C1C'
 
-type Period = 'today' | '7d' | '30d' | '2026' | '2026'
+type Period = 'today' | '7d' | '30d' | '2026'
 
 export default function AdminPage() {
   const [password, setPassword] = useState('')
@@ -40,7 +40,7 @@ export default function AdminPage() {
 
   const getPeriodStart = (p: Period) => {
     const now = new Date()
-    if (p === 'today') return new Date(now.toISOString().split('T')[0] + 'T00:00:00').toISOString()
+    if (p === 'today') return new Date(getSpainToday() + 'T00:00:00').toISOString()
     if (p === '7d') return new Date(now.getTime() - 7 * 86400000).toISOString()
     if (p === '30d') return new Date(now.getTime() - 30 * 86400000).toISOString()
     return '2026-01-01T00:00:00.000Z'
@@ -48,7 +48,10 @@ export default function AdminPage() {
 
   const getPrevPeriodStart = (p: Period) => {
     const now = new Date()
-    if (p === 'today') return new Date(new Date(now.getTime() - 86400000).toISOString().split('T')[0] + 'T00:00:00').toISOString()
+    if (p === 'today') {
+      const yesterday = new Date(new Date(getSpainToday()).getTime() - 86400000)
+      return new Date(yesterday.toISOString().split('T')[0] + 'T00:00:00').toISOString()
+    }
     if (p === '7d') return new Date(now.getTime() - 14 * 86400000).toISOString()
     if (p === '30d') return new Date(now.getTime() - 60 * 86400000).toISOString()
     return '2025-01-01T00:00:00.000Z'
