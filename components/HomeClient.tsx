@@ -24,14 +24,8 @@ export default function HomeClient({ easy, medium, hard }: Props) {
 
   useEffect(() => { setTimeout(() => setMounted(true), 50) }, [])
 
-  if (!loaded) return (
-    <div style={{ height: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FAF7F2' }}>
-      <div style={{ fontSize: 32, animation: 'spin 1s linear infinite' }}>🧠</div>
-      <style>{`@keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }`}</style>
-    </div>
-  )
-  if (!profile?.name) {
-    if (typeof window !== 'undefined') window.location.href = '/'
+  if (!loaded || !profile?.name) {
+    if (loaded && !profile?.name && typeof window !== 'undefined') window.location.href = '/'
     return null
   }
 
