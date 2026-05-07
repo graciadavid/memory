@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
+import { revalidateRanking } from '@/app/actions'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -184,6 +185,7 @@ export default function FlagsPage() {
       setTimeout(async () => {
         if (profile?.name) {
           await supabase.from('flag_scores').insert({ player_name: profile.name, level })
+          revalidateRanking('flags')
           const { data } = await supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
           if (data) {
             const best: Record<string, number> = {}

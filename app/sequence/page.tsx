@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
+import { revalidateRanking } from '@/app/actions'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
