@@ -17,35 +17,31 @@ const BRAIN_GREEN = `${BASE}/brain-green.webp`
 const BRAIN_RED = `${BASE}/brain-red.webp`
 const FLAG_CDN = 'https://flagcdn.com/w320'
 
-function playCorrect() {
+let sharedCtx: AudioContext | null = null
+
+function getAudioCtx() {
+  if (!sharedCtx || sharedCtx.state === 'closed') sharedCtx = new AudioContext()
+  if (sharedCtx.state === 'suspended') sharedCtx.resume()
+  return sharedCtx
+}
+
+function playTone(freq1: number, freq2: number, duration: number, type: OscillatorType, vol: number) {
   try {
-    const ctx = new AudioContext()
+    const ctx = getAudioCtx()
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
-    osc.type = 'sine'
-    osc.frequency.setValueAtTime(523, ctx.currentTime)
-    osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1)
-    gain.gain.setValueAtTime(0.2, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+    osc.type = type
+    osc.frequency.setValueAtTime(freq1, ctx.currentTime)
+    osc.frequency.setValueAtTime(freq2, ctx.currentTime + 0.08)
+    gain.gain.setValueAtTime(vol, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
     osc.connect(gain); gain.connect(ctx.destination)
-    osc.start(); osc.stop(ctx.currentTime + 0.3)
+    osc.start(); osc.stop(ctx.currentTime + duration)
   } catch(e) {}
 }
 
-function playWrong() {
-  try {
-    const ctx = new AudioContext()
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.type = 'sawtooth'
-    osc.frequency.setValueAtTime(200, ctx.currentTime)
-    osc.frequency.setValueAtTime(150, ctx.currentTime + 0.1)
-    gain.gain.setValueAtTime(0.2, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4)
-    osc.connect(gain); gain.connect(ctx.destination)
-    osc.start(); osc.stop(ctx.currentTime + 0.4)
-  } catch(e) {}
-}
+function playCorrect() { playTone(523, 659, 0.3, 'sine', 0.25) }
+function playWrong() { playTone(200, 150, 0.4, 'sawtooth', 0.2) }
 
 const COUNTRIES = [
   { code: 'fr', name: 'France' }, { code: 'de', name: 'Germany' },
@@ -126,6 +122,7 @@ export default function FlagsPage() {
   }
 
   const startGame = () => {
+    try { getAudioCtx() } catch(e) {}
     setLevel(0)
     setPhase('playing')
     nextQuestion(0)
