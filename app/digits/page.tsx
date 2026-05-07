@@ -70,6 +70,14 @@ function DigitsAutoNext({ onNext }: { onNext: () => void }) {
   return <div style={{ fontSize: 13, color: '#2E7D32', fontWeight: 700, opacity: 0.6 }}>Next level in a moment...</div>
 }
 
+function AutoNextDigits({ onNext }: { onNext: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onNext, 1500)
+    return () => clearTimeout(t)
+  }, [])
+  return <div style={{ fontSize: 13, color: '#2E7D32', fontWeight: 700, opacity: 0.6 }}>Next level in a moment...</div>
+}
+
 export default function DigitsPage() {
   const { profile } = usePlayer()
   const router = useRouter()
@@ -297,12 +305,7 @@ export default function DigitsPage() {
             }}>{current}</div>
             <img src={BRAIN_GREEN} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
             <div style={{ fontSize: 22, fontWeight: 900, color: '#2E7D32' }}>Correct!</div>
-            <button onClick={() => { const next = level + 1; setLevel(next); showNumber(next) }} style={{
-              padding: '16px', borderRadius: 18, border: 'none',
-              background: BLUE, color: '#fff', fontSize: 18, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer',
-              boxShadow: '0 6px 0 #0D47A160', width: '100%',
-            }}>Next Level →</button>
+            <AutoNextDigits onNext={() => { const next = level + 1; setLevel(next); showNumber(next) }} />
           </div>
         )}
 
