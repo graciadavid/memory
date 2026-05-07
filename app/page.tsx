@@ -73,7 +73,7 @@ export default function LandingPage() {
           src={LOGO}
           alt="MemGenius"
           style={{
-            height: 80, objectFit: 'contain',
+            height: 96, objectFit: 'contain',
             animation: 'floatLogo 3s ease-in-out infinite',
             filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.1))',
             marginBottom: 4,
