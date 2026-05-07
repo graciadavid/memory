@@ -248,7 +248,7 @@ export default function FlagsPage() {
 
         {/* INTRO */}
         {phase === 'intro' && (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 14, width: '100%', animation: 'fadeUp 0.5s ease both' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 14, width: '100%' }}>
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 6 }}>Guess the flag</div>
               <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.6 }}>

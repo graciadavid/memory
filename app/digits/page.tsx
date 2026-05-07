@@ -88,11 +88,8 @@ export default function DigitsPage() {
   const [input, setInput] = useState('')
   const [countdown, setCountdown] = useState(4)
   const [worldRank, setWorldRank] = useState<number | null>(null)
-  const [mounted, setMounted] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const totalTime = 4
-
-  useEffect(() => { setTimeout(() => setMounted(true), 50) }, [])
 
   const startGame = () => { setLevel(1); showNumber(1) }
 
@@ -195,8 +192,6 @@ export default function DigitsPage() {
             flex: 1, display: 'flex', flexDirection: 'column',
             alignItems: 'center', justifyContent: 'center',
             padding: '0 20px', gap: 12, width: '100%',
-            opacity: mounted ? 1 : 0,
-            animation: mounted ? 'fadeUp 0.5s ease 0.1s both' : 'none',
           }}>
             <div style={{ textAlign: 'center', marginBottom: 4 }}>
               <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 6 }}>Remember the number</div>
