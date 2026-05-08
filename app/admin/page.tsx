@@ -258,6 +258,9 @@ export default function AdminPage() {
             <div style={{ fontSize: 13, fontWeight: 900, color: 'rgba(255,255,255,0.7)', letterSpacing: 1, textTransform: 'uppercase' }}>Total Games</div>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
               <div style={{ fontSize: 32, fontWeight: 900, color: '#fff' }}>{stats.games.reduce((a: number, g: any) => a + g.curr, 0)}</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 700, marginLeft: 8, marginBottom: 4 }}>
+                {(() => { const total = stats.games.reduce((a: number, g: any) => a + g.curr, 0); const users = new Set(stats.games.map((g: any) => g.users)).size; return total > 0 ? `${(total / Math.max(...stats.games.map((g: any) => g.users))).toFixed(1)} avg/user` : '' })()}
+              </div>
               {(() => {
                 const totalPct = Math.round(stats.games.reduce((a: number, g: any) => a + g.curr, 0) / Math.max(1, stats.games.reduce((a: number, g: any) => a + (g.curr / (1 + (g.pct || 0) / 100)), 0)) * 100) - 100
                 return totalPct !== 0 ? (
@@ -275,9 +278,9 @@ export default function AdminPage() {
               <div key={g.label} style={{ background: '#fff', borderRadius: 12, padding: '10px 14px', boxShadow: `0 2px 8px ${BROWN}06`, border: `1px solid ${g.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ fontSize: 12, fontWeight: 800, color: g.color, letterSpacing: 0.5 }}>{g.label}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ fontSize: 11, color: `${BROWN}40`, fontWeight: 700, textAlign: 'right' }}>
-                    <div>{g.gpu}x</div>
-                    <div style={{ fontSize: 9 }}>per user</div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 11, color: `${BROWN}40`, fontWeight: 700 }}>{g.users} users</div>
+                    <div style={{ fontSize: 11, color: g.color, fontWeight: 800 }}>{g.avg} avg</div>
                   </div>
                   <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>{g.curr}</div>
                   {g.pct !== null && (
