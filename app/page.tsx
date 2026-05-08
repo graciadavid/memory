@@ -136,40 +136,67 @@ export default function LandingPage() {
       </div>
 
       {!profile?.name ? (
-        /* NOT REGISTERED — only name input */
+        /* NOT REGISTERED */
         <div style={{ width: '100%' }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' }}>
-            Your name
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <input
-              type="text"
-              placeholder="Enter your name"
-              value={name}
-              onChange={e => { setName(e.target.value); setError('') }}
-              onKeyDown={e => e.key === 'Enter' && handleSave()}
-              maxLength={20}
-              autoFocus
-              style={{
-                flex: 1, padding: '12px 14px', borderRadius: 14,
-                border: error ? '2px solid #B71C1C' : `2px solid ${BROWN}18`,
-                background: '#fff', color: BROWN,
-                fontSize: 16, fontWeight: 800,
-                fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box',
-              }}
-            />
-            <button onClick={handleSave} disabled={!name.trim() || checking} style={{
-              padding: '12px 18px', borderRadius: 14, border: 'none',
-              background: name.trim() ? BROWN : '#e0d9cf',
-              color: name.trim() ? '#fff' : '#aaa',
-              fontSize: 14, fontWeight: 900, fontFamily: 'inherit',
-              cursor: name.trim() ? 'pointer' : 'default',
-              boxShadow: name.trim() ? `0 6px 0 ${BROWN}50` : 'none',
-              flexShrink: 0,
-            }}>
-              {checking ? '...' : 'Save'}
-            </button>
-          </div>
+          {!nameExists ? (
+            <>
+              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' }}>
+                Your name
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input
+                  type="text"
+                  placeholder="Enter your name"
+                  value={name}
+                  onChange={e => { setName(e.target.value); setError('') }}
+                  onKeyDown={e => e.key === 'Enter' && handleSave()}
+                  maxLength={20}
+                  autoFocus
+                  style={{
+                    flex: 1, padding: '12px 14px', borderRadius: 14,
+                    border: error ? '2px solid #B71C1C' : `2px solid ${BROWN}18`,
+                    background: '#fff', color: BROWN,
+                    fontSize: 16, fontWeight: 800,
+                    fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box',
+                  }}
+                />
+                <button onClick={handleSave} disabled={!name.trim() || checking} style={{
+                  padding: '12px 18px', borderRadius: 14, border: 'none',
+                  background: name.trim() ? BROWN : '#e0d9cf',
+                  color: name.trim() ? '#fff' : '#aaa',
+                  fontSize: 14, fontWeight: 900, fontFamily: 'inherit',
+                  cursor: name.trim() ? 'pointer' : 'default',
+                  boxShadow: name.trim() ? `0 6px 0 ${BROWN}50` : 'none',
+                  flexShrink: 0,
+                }}>{checking ? '...' : 'Next'}</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, textAlign: 'center', marginBottom: 4 }}>Welcome back, {name}!</div>
+              <div style={{ fontSize: 12, color: `${BROWN}60`, textAlign: 'center', marginBottom: 16 }}>Enter your password to continue</div>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Your password"
+                  value={password}
+                  onChange={e => { setPassword(e.target.value); setError('') }}
+                  onKeyDown={e => e.key === 'Enter' && handleSave()}
+                  autoFocus
+                  style={{
+                    flex: 1, padding: '12px 14px', borderRadius: 14,
+                    border: error ? '2px solid #B71C1C' : `2px solid ${BROWN}18`,
+                    background: '#fff', color: BROWN,
+                    fontSize: 16, fontWeight: 800,
+                    fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box',
+                  }}
+                />
+                <button onClick={() => setShowPassword(!showPassword)} style={{ padding: '12px', borderRadius: 14, border: `1px solid ${BROWN}20`, background: '#fff', fontSize: 16, cursor: 'pointer', flexShrink: 0 }}>{showPassword ? '🙈' : '👁'}</button>
+                <button onClick={handleSave} disabled={checking} style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: BROWN, color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${BROWN}50`, flexShrink: 0 }}>{checking ? '...' : 'Enter'}</button>
+              </div>
+              <button onClick={() => { setNameExists(false); setPassword(''); setError('') }} style={{ background: 'none', border: 'none', color: `${BROWN}50`, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', width: '100%', textAlign: 'center', padding: '4px' }}>← Use a different name</button>
+            </>
+          )}
           {error && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700, marginTop: 6, textAlign: 'center' }}>{error}</div>}
         </div>
       ) : (
