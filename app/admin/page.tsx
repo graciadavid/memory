@@ -326,6 +326,19 @@ export default function AdminPage() {
             ))}
           </div>
 
+          {/* Groups */}
+          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Groups</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16 }}>
+            <div style={{ background: '#fff', borderRadius: 14, padding: '14px', boxShadow: `0 2px 8px ${BROWN}06`, border: `1px solid ${GOLD}15` }}>
+              <div style={{ fontSize: 10, fontWeight: 800, color: GOLD, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>Groups</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>{stats.groupsCount}</div>
+            </div>
+            <div style={{ background: '#fff', borderRadius: 14, padding: '14px', boxShadow: `0 2px 8px ${BROWN}06`, border: `1px solid ${GOLD}15` }}>
+              <div style={{ fontSize: 10, fontWeight: 800, color: GOLD, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>Members</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>{stats.membersCount}</div>
+            </div>
+          </div>
+
           {/* Retention */}
           <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Retention — Days Active</div>
           <div style={{ background: '#fff', borderRadius: 16, padding: '14px', marginBottom: 16, boxShadow: `0 2px 8px ${BROWN}06` }}>
