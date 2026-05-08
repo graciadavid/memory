@@ -275,19 +275,21 @@ export default function AdminPage() {
           {/* Per game */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 }}>
             {stats.games.map((g: any) => (
-              <div key={g.label} style={{ background: '#fff', borderRadius: 12, padding: '10px 14px', boxShadow: `0 2px 8px ${BROWN}06`, border: `1px solid ${g.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ fontSize: 12, fontWeight: 800, color: g.color, letterSpacing: 0.5 }}>{g.label}</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 11, color: `${BROWN}40`, fontWeight: 700 }}>{g.users} users</div>
-                    <div style={{ fontSize: 11, color: g.color, fontWeight: 800 }}>{g.avg} avg</div>
+              <div key={g.label} style={{ background: '#fff', borderRadius: 12, padding: '10px 14px', boxShadow: `0 2px 8px ${BROWN}06`, border: `1px solid ${g.color}15` }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: g.color, letterSpacing: 0.5, marginBottom: 8 }}>{g.label}</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 4 }}>
+                  <div>
+                    <div style={{ fontSize: 18, fontWeight: 900, color: BROWN }}>{g.curr}</div>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: `${BROWN}40`, textTransform: 'uppercase', letterSpacing: 1 }}>Games</div>
                   </div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>{g.curr}</div>
-                  {g.pct !== null && (
-                    <div style={{ fontSize: 11, fontWeight: 800, color: g.pct >= 0 ? GREEN : RED }}>
-                      {g.pct >= 0 ? '↑' : '↓'}{Math.abs(g.pct)}%
-                    </div>
-                  )}
+                  <div>
+                    <div style={{ fontSize: 18, fontWeight: 900, color: BROWN }}>{g.users}</div>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: `${BROWN}40`, textTransform: 'uppercase', letterSpacing: 1 }}>Users</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 18, fontWeight: 900, color: g.color }}>{g.avg}</div>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: `${BROWN}40`, textTransform: 'uppercase', letterSpacing: 1 }}>Avg</div>
+                  </div>
                 </div>
               </div>
             ))}
