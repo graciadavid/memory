@@ -355,7 +355,7 @@ export default function SequencePage() {
             </div>
 
             <button onClick={() => {
-              window.gtag?.('event', 'challenge_shared', { game: 'sequence' })
+              (window as any).gtag?.('event', 'challenge_shared', { game: 'sequence' })
               const url = `${window.location.origin}/challenge?game=sequence&score=${sequence.length}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${profile?.name} reached level ${sequence.length} in Sequence. Can you beat them?`, url })
               else navigator.clipboard.writeText(url).then(() => alert('Challenge link copied!'))

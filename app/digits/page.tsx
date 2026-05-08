@@ -339,7 +339,7 @@ export default function DigitsPage() {
             </div>
 
             <button onClick={() => {
-              window.gtag?.('event', 'challenge_shared', { game: 'digits' })
+              (window as any).gtag?.('event', 'challenge_shared', { game: 'digits' })
               const url = `${window.location.origin}/challenge?game=digits&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${profile?.name} reached level ${level} in Digits. Can you beat them?`, url })
               else navigator.clipboard.writeText(url).then(() => alert('Challenge link copied!'))
