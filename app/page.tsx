@@ -10,15 +10,19 @@ const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 
+const GAMES = [
+  { key: 'memory', href: '/memory', icon: '/icons/memory.webp', label: 'Memory', sub: 'Match pairs by connection', bg: BROWN, shadow: `${BROWN}60` },
+  { key: 'digits', href: '/digits', icon: '/icons/digits.webp', label: 'Digits', sub: 'How many digits can you remember?', bg: '#1565C0', shadow: '#0D47A160' },
+  { key: 'sequence', href: '/sequence', icon: '/icons/sequence.webp', label: 'Sequence', sub: 'Repeat the pattern', bg: '#6A1B9A', shadow: '#4A148C60' },
+  { key: 'flags', href: '/flags', icon: '/icons/flags.webp', label: 'Flags', sub: 'How many flags in a row?', bg: '#00796B', shadow: '#00695160' },
+]
+
 export default function LandingPage() {
   const { profile, loaded, createProfile } = usePlayer()
-  const [mounted, setMounted] = useState(false)
   const [name, setName] = useState('')
   const [checking, setChecking] = useState(false)
   const [error, setError] = useState('')
   const [records, setRecords] = useState<Record<string, { value: string, by: string }>>({})
-
-  useEffect(() => { setTimeout(() => setMounted(true), 50) }, [])
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -48,18 +52,12 @@ export default function LandingPage() {
     if (!name.trim()) return
     setChecking(true)
     setError('')
-
-    const { count } = await supabase
-      .from('scores')
-      .select('*', { count: 'exact', head: true })
-      .eq('player_name', name.trim())
-
+    const { count } = await supabase.from('scores').select('*', { count: 'exact', head: true }).eq('player_name', name.trim())
     if ((count ?? 0) > 0) {
       setError(`"${name.trim()}" is already taken. Choose another.`)
       setChecking(false)
       return
     }
-
     createProfile(name.trim())
     setChecking(false)
   }
@@ -67,223 +65,104 @@ export default function LandingPage() {
   if (!loaded) return null
 
   return (
-    <>
-      <style>{`
-        @keyframes floatLogo {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-6px); }
-        }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.85; }
-        }
-      `}</style>
+    <main style={{
+      height: '100dvh',
+      background: `radial-gradient(ellipse at 50% 0%, #fff8ee 0%, ${CREAM} 40%, #EDE5D8 100%)`,
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      maxWidth: 430, margin: '0 auto',
+      padding: '0 20px',
+      overflowY: 'auto',
+    }}>
 
-      <main style={{
-        height: '100dvh',
-        background: `radial-gradient(ellipse at 50% 0%, #fff8ee 0%, ${CREAM} 40%, #EDE5D8 100%)`,
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'var(--font-nunito), sans-serif',
-        maxWidth: 430, margin: '0 auto',
-        padding: '0 20px',
-      }}>
+      {/* Logo */}
+      <img src={LOGO} alt="MemGenius" style={{ height: 96, objectFit: 'contain', marginBottom: 8 }} />
 
-        {/* Logo */}
-        <img
-          src={LOGO}
-          alt="MemGenius"
-          style={{
-            height: 96, objectFit: 'contain',
-            animation: 'floatLogo 3s ease-in-out infinite',
-            filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.1))',
-            marginBottom: 4,
-          }}
-        />
+      {/* Claim */}
+      <div style={{ fontSize: 14, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 20, letterSpacing: 0.3 }}>
+        Your daily brain workout
+      </div>
 
-        {/* Claim */}
-        <div style={{
-          fontSize: 14, color: `${BROWN}55`,
-          fontStyle: 'italic', fontFamily: 'Georgia, serif',
-          marginBottom: 10, letterSpacing: 0.3,
-        }}>
-          Your daily brain workout
-        </div>
-
-        {/* Name input or greeting */}
-        {!profile?.name ? (
-          <div style={{ width: '100%', marginBottom: 16 }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' }}>
-              Your name
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <input
-                type="text"
-                placeholder="Enter your name"
-                value={name}
-                onChange={e => { setName(e.target.value); setError('') }}
-                onKeyDown={e => e.key === 'Enter' && handleSave()}
-                maxLength={20}
-                autoFocus
-                style={{
-                  flex: 1, padding: '12px 14px',
-                  borderRadius: 14,
-                  border: error ? '2px solid #B71C1C' : `2px solid ${BROWN}18`,
-                  background: '#fff', color: BROWN,
-                  fontSize: 16, fontWeight: 800,
-                  fontFamily: 'inherit', outline: 'none',
-                  boxSizing: 'border-box',
-                }}
-              />
-              <button
-                onClick={handleSave}
-                disabled={!name.trim() || checking}
-                style={{
-                  padding: '12px 18px', borderRadius: 14, border: 'none',
-                  background: name.trim() ? BROWN : '#e0d9cf',
-                  color: name.trim() ? '#fff' : '#aaa',
-                  fontSize: 14, fontWeight: 900,
-                  fontFamily: 'inherit',
-                  cursor: name.trim() ? 'pointer' : 'default',
-                  boxShadow: name.trim() ? `0 6px 0 ${BROWN}50` : 'none',
-                  flexShrink: 0,
-                }}
-              >
-                {checking ? '...' : 'Save'}
-              </button>
-            </div>
-            {error && (
-              <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700, marginTop: 6, textAlign: 'center' }}>
-                {error}
-              </div>
-            )}
+      {!profile?.name ? (
+        /* NOT REGISTERED — only name input */
+        <div style={{ width: '100%' }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' }}>
+            Your name
           </div>
-        ) : (
-          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 10 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <input
+              type="text"
+              placeholder="Enter your name"
+              value={name}
+              onChange={e => { setName(e.target.value); setError('') }}
+              onKeyDown={e => e.key === 'Enter' && handleSave()}
+              maxLength={20}
+              autoFocus
+              style={{
+                flex: 1, padding: '12px 14px', borderRadius: 14,
+                border: error ? '2px solid #B71C1C' : `2px solid ${BROWN}18`,
+                background: '#fff', color: BROWN,
+                fontSize: 16, fontWeight: 800,
+                fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box',
+              }}
+            />
+            <button onClick={handleSave} disabled={!name.trim() || checking} style={{
+              padding: '12px 18px', borderRadius: 14, border: 'none',
+              background: name.trim() ? BROWN : '#e0d9cf',
+              color: name.trim() ? '#fff' : '#aaa',
+              fontSize: 14, fontWeight: 900, fontFamily: 'inherit',
+              cursor: name.trim() ? 'pointer' : 'default',
+              boxShadow: name.trim() ? `0 6px 0 ${BROWN}50` : 'none',
+              flexShrink: 0,
+            }}>
+              {checking ? '...' : 'Save'}
+            </button>
+          </div>
+          {error && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700, marginTop: 6, textAlign: 'center' }}>{error}</div>}
+        </div>
+      ) : (
+        /* REGISTERED — greeting + game buttons */
+        <>
+          <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, marginBottom: 16 }}>
             Hey, {profile.name}!
           </div>
-        )}
 
-        {/* Game buttons */}
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <Link href="/memory" style={{ textDecoration: 'none' }}>
-            <div style={{
-              width: '100%', borderRadius: 22,
-              background: BROWN,
-              boxShadow: `0 6px 0 ${BROWN}60`,
-              padding: '14px 20px',
-              display: 'flex', alignItems: 'center', gap: 14,
-              cursor: 'pointer', boxSizing: 'border-box',
-              
-            }}>
-              <img src="/icons/memory.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
-              <div>
-                <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Memory</div>
-                {records.memory?.value && (
-                  <div style={{ fontSize: 12, fontWeight: 800, color: '#C8960C', marginTop: 2 }}>
-                    {records.memory.value} · {records.memory.by}
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {GAMES.map(game => (
+              <Link key={game.key} href={game.href} style={{ textDecoration: 'none' }}>
+                <div style={{
+                  width: '100%', borderRadius: 20,
+                  background: game.bg,
+                  boxShadow: `0 6px 0 ${game.shadow}`,
+                  padding: '14px 20px',
+                  display: 'flex', alignItems: 'center', gap: 14,
+                  cursor: 'pointer', boxSizing: 'border-box',
+                }}>
+                  <img src={game.icon} alt="" style={{ width: 52, height: 52, objectFit: 'contain', flexShrink: 0 }} />
+                  <div>
+                    <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{game.label}</div>
+                    {records[game.key]?.value && (
+                      <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, marginTop: 1 }}>
+                        {records[game.key].value} · {records[game.key].by}
+                      </div>
+                    )}
                   </div>
-                )}
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
-                  Match pairs by connection
                 </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/digits" style={{ textDecoration: 'none' }}>
-            <div style={{
-              width: '100%', borderRadius: 22,
-              background: '#1565C0',
-              boxShadow: '0 8px 0 #0D47A160',
-              padding: '14px 20px',
-              display: 'flex', alignItems: 'center', gap: 14,
-              cursor: 'pointer', boxSizing: 'border-box',
-              
-            }}>
-              <img src="/icons/digits.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
-              <div>
-                <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Digits</div>
-                {records.digits?.value && (
-                  <div style={{ fontSize: 12, fontWeight: 800, color: '#C8960C', marginTop: 2 }}>
-                    {records.digits.value} · {records.digits.by}
-                  </div>
-                )}
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
-                  How many digits can you remember?
-                </div>
-              </div>
-            </div>
-          </Link>
-          <Link href="/sequence" style={{ textDecoration: 'none' }}>
-            <div style={{
-              width: '100%', borderRadius: 22,
-              background: '#6A1B9A',
-              boxShadow: '0 8px 0 #4A148C60',
-              padding: '14px 20px',
-              display: 'flex', alignItems: 'center', gap: 14,
-              cursor: 'pointer', boxSizing: 'border-box',
-            }}>
-              <img src="/icons/sequence.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
-              <div>
-                <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Sequence</div>
-                {records.sequence?.value && (
-                  <div style={{ fontSize: 12, fontWeight: 800, color: '#C8960C', marginTop: 2 }}>
-                    {records.sequence.value} · {records.sequence.by}
-                  </div>
-                )}
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
-                  Repeat the pattern
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/flags" style={{ textDecoration: 'none' }}>
-            <div style={{
-              width: '100%', borderRadius: 22,
-              background: 'linear-gradient(105deg, #00796B 40%, #00998A 50%, #00796B 60%)',
-              backgroundSize: '200% auto',
-              animation: 'shimmer 3s linear infinite 1.5s',
-              boxShadow: '0 8px 0 #00695160',
-              padding: '14px 20px',
-              display: 'flex', alignItems: 'center', gap: 14,
-              cursor: 'pointer', boxSizing: 'border-box',
-            }}>
-              <img src="/icons/flags.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
-              <div>
-                <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Flags</div>
-                {records.flags?.value && (
-                  <div style={{ fontSize: 12, fontWeight: 800, color: '#C8960C', marginTop: 2 }}>
-                    {records.flags.value} · {records.flags.by}
-                  </div>
-                )}
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
-                  How many flags in a row?
-                </div>
-              </div>
-            </div>
-          </Link>
-
-        </div>
-
-        {/* Footer */}
-        <div style={{ marginTop: 20, textAlign: 'center' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: `${BROWN}30`, letterSpacing: 1 }}>
-            Always free · No ads · No login
+              </Link>
+            ))}
           </div>
-          <a href="/privacy" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>
-            Privacy Policy
-          </a>
-        </div>
-          </>
-        )}
 
-      </main>
-    </>
+          <div style={{ marginTop: 16, textAlign: 'center' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: `${BROWN}30`, letterSpacing: 1 }}>
+              Always free · No ads · No login
+            </div>
+            <a href="/privacy" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>
+              Privacy Policy
+            </a>
+          </div>
+        </>
+      )}
+    </main>
   )
 }
