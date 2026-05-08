@@ -16,8 +16,33 @@ export default function LandingPage() {
   const [name, setName] = useState('')
   const [checking, setChecking] = useState(false)
   const [error, setError] = useState('')
+  const [records, setRecords] = useState<Record<string, { value: string, by: string }>>({})
 
   useEffect(() => { setTimeout(() => setMounted(true), 50) }, [])
+
+  useEffect(() => {
+    const fetchRecords = async () => {
+      const [mem, dig, seq, flag] = await Promise.all([
+        supabase.from('scores').select('player_name, time_ms').order('time_ms', { ascending: true }).limit(1),
+        supabase.from('number_scores').select('player_name, level').order('level', { ascending: false }).limit(1),
+        supabase.from('sequence_scores').select('player_name, level').order('level', { ascending: false }).limit(1),
+        supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(1),
+      ])
+      const fmt = (ms: number) => {
+        const m = Math.floor(ms / 60000)
+        const s = Math.floor((ms % 60000) / 1000)
+        const c = Math.floor((ms % 1000) / 10)
+        return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
+      }
+      setRecords({
+        memory: mem.data?.[0] ? { value: fmt(mem.data[0].time_ms), by: mem.data[0].player_name } : { value: '', by: '' },
+        digits: dig.data?.[0] ? { value: `Level ${dig.data[0].level}`, by: dig.data[0].player_name } : { value: '', by: '' },
+        sequence: seq.data?.[0] ? { value: `Level ${seq.data[0].level}`, by: seq.data[0].player_name } : { value: '', by: '' },
+        flags: flag.data?.[0] ? { value: `${flag.data[0].level} flags`, by: flag.data[0].player_name } : { value: '', by: '' },
+      })
+    }
+    fetchRecords()
+  }, [])
 
   const handleSave = async () => {
     if (!name.trim()) return
