@@ -274,7 +274,11 @@ export default function AdminPage() {
             {stats.games.map((g: any) => (
               <div key={g.label} style={{ background: '#fff', borderRadius: 12, padding: '10px 14px', boxShadow: `0 2px 8px ${BROWN}06`, border: `1px solid ${g.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ fontSize: 12, fontWeight: 800, color: g.color, letterSpacing: 0.5 }}>{g.label}</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ fontSize: 11, color: `${BROWN}40`, fontWeight: 700, textAlign: 'right' }}>
+                    <div>{g.gpu}x</div>
+                    <div style={{ fontSize: 9 }}>per user</div>
+                  </div>
                   <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>{g.curr}</div>
                   {g.pct !== null && (
                     <div style={{ fontSize: 11, fontWeight: 800, color: g.pct >= 0 ? GREEN : RED }}>
