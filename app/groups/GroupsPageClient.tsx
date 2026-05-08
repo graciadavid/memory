@@ -23,14 +23,15 @@ export default function GroupsPageClient({ publicGroups, memberCounts }: { publi
       {/* Create group button */}
       <a href="/create-group" style={{ textDecoration: 'none', display: 'block', marginBottom: 24 }}>
         <div style={{
-          background: BROWN, borderRadius: 20, padding: '18px 20px',
+          background: 'linear-gradient(135deg, #1A3A5C, #1565C0)',
+          borderRadius: 20, padding: '18px 20px',
           display: 'flex', alignItems: 'center', gap: 14,
-          boxShadow: `0 8px 0 ${BROWN}60`,
+          boxShadow: '0 8px 0 #0D47A160',
         }}>
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: `${GOLD}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>+</div>
+          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/groups.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
           <div>
             <div style={{ fontSize: 17, fontWeight: 900, color: '#fff' }}>Create a group</div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>Invite friends via link</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>Invite friends via link</div>
           </div>
         </div>
       </a>
