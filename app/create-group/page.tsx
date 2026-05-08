@@ -30,7 +30,7 @@ export default function CreateGroupPage() {
 
     if (group) {
       await supabase.from('group_members').insert({ group_id: group.id, player_name: playerName })
-      router.push(`/groups/${group.id}`)
+      window.location.href = `/groups/${group.id}`
     }
     setCreating(false)
   }
