@@ -54,7 +54,7 @@ export default function GroupsPageClient({ publicGroups, memberCounts }: { publi
                   {memberCounts[group.id] || 0} members
                 </div>
               </div>
-              <div style={{ fontSize: 13, color: `${BROWN}30`, fontWeight: 700 }}>→</div>
+              <div style={{ padding: '8px 16px', borderRadius: 10, background: BROWN, color: '#fff', fontSize: 12, fontWeight: 900 }}>Join</div>
             </div>
           </a>
         ))}
