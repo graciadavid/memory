@@ -18,9 +18,24 @@ export default function CreateGroupPage() {
     if (stored) setPlayerName(JSON.parse(stored).name || '')
   }, [])
 
+  const [nameError, setNameError] = useState('')
+
   const create = async () => {
     if (!name.trim() || !playerName || creating) return
     setCreating(true)
+    setNameError('')
+
+    // Check if group name already exists
+    const { count } = await supabase
+      .from('groups')
+      .select('*', { count: 'exact', head: true })
+      .eq('name', name.trim())
+
+    if ((count ?? 0) > 0) {
+      setNameError('A group with this name already exists')
+      setCreating(false)
+      return
+    }
 
     const { data: group } = await supabase
       .from('groups')
@@ -57,19 +72,20 @@ export default function CreateGroupPage() {
           type="text"
           placeholder="e.g. Friends, Madrid crew, Work team..."
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={e => { setName(e.target.value); setNameError('') }}
           onKeyDown={e => e.key === 'Enter' && create()}
           maxLength={30}
           autoFocus
           style={{
             width: '100%', padding: '14px 16px', borderRadius: 14,
-            border: `2px solid ${BROWN}15`,
+            border: `2px solid ${nameError ? '#B71C1C' : BROWN}15`,
             background: CREAM, color: BROWN,
             fontSize: 16, fontWeight: 800,
             fontFamily: 'inherit', outline: 'none',
-            boxSizing: 'border-box', marginBottom: 16,
+            boxSizing: 'border-box', marginBottom: 8,
           }}
         />
+        {nameError && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700, marginBottom: 12 }}>{nameError}</div>}
 
         <button onClick={create} disabled={!name.trim() || creating} style={{
           width: '100%', padding: '16px', borderRadius: 16, border: 'none',
