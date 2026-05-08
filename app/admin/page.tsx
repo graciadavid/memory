@@ -148,10 +148,10 @@ export default function AdminPage() {
 
     setStats({ retentionData: retentionData2,
       games: [
-        { label: 'Memory', curr: memP, pct: pct(memP, memPrev), color: BROWN },
-        { label: 'Digits', curr: digP, pct: pct(digP, digPrev), color: BLUE },
-        { label: 'Sequence', curr: seqP, pct: pct(seqP, seqPrev), color: '#6A1B9A' },
-        { label: 'Flags', curr: flagP, pct: pct(flagP, flagPrev), color: '#00796B' },
+        { label: 'Memory', curr: memP, pct: pct(memP, memPrev), color: BROWN, users: memU, avg: memU > 0 ? (memP / memU).toFixed(1) : '0' },
+        { label: 'Digits', curr: digP, pct: pct(digP, digPrev), color: BLUE, users: digU, avg: digU > 0 ? (digP / digU).toFixed(1) : '0' },
+        { label: 'Sequence', curr: seqP, pct: pct(seqP, seqPrev), color: '#6A1B9A', users: seqU, avg: seqU > 0 ? (seqP / seqU).toFixed(1) : '0' },
+        { label: 'Flags', curr: flagP, pct: pct(flagP, flagPrev), color: '#00796B', users: flagU, avg: flagU > 0 ? (flagP / flagU).toFixed(1) : '0' },
       ],
       players: { total: allPlayers.size, period: periodPlayers.size, pctPlayers: pct(periodPlayers.size, prevPlayers.size), newPeriod: newInPeriod, pctNew: pct(newInPeriod, newInPrev) },
     })
