@@ -7,6 +7,7 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 const ITEMS = [
   { href: '/', img: `${BASE}/nav-home.webp`, label: 'Home' },
   { href: '/ranking', img: `${BASE}/nav-trophy.webp`, label: 'Ranking' },
+  { href: '/groups', img: `${BASE}/groups.png`, label: 'Groups' },
   { href: '/profile', img: `${BASE}/nav-profile.webp`, label: 'Profile' },
 ]
 
