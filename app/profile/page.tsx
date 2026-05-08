@@ -188,7 +188,7 @@ export default function ProfilePage() {
 
       {/* HEADER */}
       <div style={{
-        background: 'linear-gradient(135deg, #1B5E20, #2E7D32)',
+        background: 'linear-gradient(135deg, #2C3E50, #4A5568, #2C3E50)',
         padding: '48px 24px 28px', borderRadius: '0 0 28px 28px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
