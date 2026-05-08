@@ -17,7 +17,7 @@ export default function TermsPage() {
         { title: 'Acceptance', text: 'By using MemGenius you agree to these terms. If you do not agree, please do not use the service.' },
         { title: 'Use of Service', text: 'MemGenius is free for personal non-commercial use. You agree not to misuse the service or interfere with other users.' },
         { title: 'User Content', text: 'Your player name is visible in rankings. We reserve the right to remove offensive or inappropriate names.' },
-        { title: 'Intellectual Property', text: 'All content and code of MemGenius is owned by Clinc Marketing. You may not copy or distribute any part without permission.' },
+        { title: 'Intellectual Property', text: 'All content and code of MemGenius is owned by D.G.L. You may not copy or distribute any part without permission.' },
         { title: 'Disclaimers', text: 'MemGenius is provided as-is. We do not guarantee uninterrupted access or that the service will be error-free.' },
         { title: 'Limitation of Liability', text: 'We shall not be liable for any indirect or consequential damages arising from your use of the service.' },
         { title: 'Changes', text: 'We may update these terms at any time. Continued use constitutes acceptance of the new terms.' },
