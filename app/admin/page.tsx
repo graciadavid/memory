@@ -10,7 +10,7 @@ const BLUE = '#1565C0'
 const GREEN = '#2E7D32'
 const RED = '#B71C1C'
 
-type Period = 'today' | '7d' | '30d' | '2026'
+type Period = '1h' | 'today' | '7d' | '30d' | '2026'
 
 export default function AdminPage() {
   const [password, setPassword] = useState('')
@@ -62,6 +62,7 @@ export default function AdminPage() {
   const getPeriodStart = (p: Period) => {
     const now = new Date()
     const offset = getSpainOffset()
+    if (p === '1h') return new Date(now.getTime() - 3600000).toISOString()
     if (p === 'today') return new Date(new Date(getSpainToday() + 'T00:00:00.000Z').getTime() - offset * 3600000).toISOString()
     if (p === '7d') return new Date(now.getTime() - 7 * 86400000).toISOString()
     if (p === '30d') return new Date(now.getTime() - 30 * 86400000).toISOString()
@@ -71,6 +72,7 @@ export default function AdminPage() {
   const getPrevPeriodStart = (p: Period) => {
     const now = new Date()
     const offset = getSpainOffset()
+    if (p === '1h') return new Date(now.getTime() - 7200000).toISOString()
     if (p === 'today') return new Date(new Date(getSpainToday() + 'T00:00:00.000Z').getTime() - offset * 3600000 - 86400000).toISOString()
     if (p === '7d') return new Date(now.getTime() - 14 * 86400000).toISOString()
     if (p === '30d') return new Date(now.getTime() - 60 * 86400000).toISOString()
@@ -233,14 +235,14 @@ export default function AdminPage() {
 
       {/* Period selector */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-        {(['today', '7d', '30d', '2026'] as Period[]).map(p => (
+        {(['1h', 'today', '7d', '30d', '2026'] as Period[]).map(p => (
           <button key={p} onClick={() => setPeriod(p)} style={{
             flex: 1, padding: '9px', borderRadius: 12, border: 'none',
             background: period === p ? BROWN : '#fff',
             color: period === p ? '#fff' : `${BROWN}60`,
             fontSize: 11, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
             boxShadow: period === p ? `0 4px 0 ${BROWN}50` : `0 2px 6px ${BROWN}08`,
-          }}>{p === 'today' ? 'Today' : p === '7d' ? '7d' : p === '30d' ? '30d' : '2026'}</button>
+          }}>{p === '1h' ? '1h' : p === 'today' ? 'Today' : p === '7d' ? '7d' : p === '30d' ? '30d' : '2026'}</button>
         ))}
       </div>
 
