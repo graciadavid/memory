@@ -111,6 +111,11 @@ export default function AdminPage() {
     const seqPrev = inPrev(seq).length
     const flagPrev = inPrev(flag).length
 
+    const memU = uniq(inPeriod(mem))
+    const digU = uniq(inPeriod(dig))
+    const seqU = uniq(inPeriod(seq))
+    const flagU = uniq(inPeriod(flag))
+
     // All players
     const allPlayers = new Set([...mem, ...dig, ...seq, ...flag].map(s => s.player_name))
     const periodPlayers = new Set([...inPeriod(mem), ...inPeriod(dig), ...inPeriod(seq), ...inPeriod(flag)].map(s => s.player_name))
