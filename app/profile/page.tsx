@@ -59,6 +59,14 @@ export default function ProfilePage() {
   const [mounted, setMounted] = useState(false)
   const [myGroups, setMyGroups] = useState<any[]>([])
   const [editingName, setEditingName] = useState(false)
+  const [editingPassword, setEditingPassword] = useState(false)
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordSaving, setPasswordSaving] = useState(false)
+  const [passwordSaved, setPasswordSaved] = useState(false)
+  const [showPwd, setShowPwd] = useState(false)
+  const [hasPassword, setHasPassword] = useState(false)
   const [newName, setNewName] = useState('')
   const [nameError, setNameError] = useState('')
   const [nameSaving, setNameSaving] = useState(false)
@@ -76,6 +84,11 @@ export default function ProfilePage() {
     }
     fetchFlagsRank()
 
+    // Check if has password
+    supabase.from('profiles').select('password_hash').eq('player_name', profile.name).single().then(({ data }) => {
+      setHasPassword(!!data?.password_hash)
+    })
+
     // Fetch groups
     supabase.from('group_members').select('group_id, groups(id, name)').eq('player_name', profile.name).then(({ data }) => {
       if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean))
@@ -89,6 +102,26 @@ export default function ProfilePage() {
       setLoadingRanks(false)
     })
   }, [profile?.name])
+
+  const savePassword = async () => {
+    if (!newPassword.trim()) return
+    if (newPassword !== confirmPassword) { setPasswordError("Passwords don't match"); return }
+    if (newPassword.length < 4) { setPasswordError('Password must be at least 4 characters'); return }
+    setPasswordSaving(true)
+    await supabase.from('profiles').upsert({
+      player_name: profile.name,
+      password_hash: newPassword.trim(),
+      updated_at: new Date().toISOString(),
+    })
+    setHasPassword(true)
+    setPasswordSaved(true)
+    setEditingPassword(false)
+    setNewPassword('')
+    setConfirmPassword('')
+    setPasswordError('')
+    setPasswordSaving(false)
+    setTimeout(() => setPasswordSaved(false), 3000)
+  }
 
   const saveName = async () => {
     if (!newName.trim() || newName.trim() === profile?.name) { setEditingName(false); return }
@@ -430,6 +463,61 @@ export default function ProfilePage() {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Password */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '20px 22px', boxShadow: `0 2px 12px ${BROWN}10` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase' }}>Password</div>
+              <div style={{ fontSize: 12, color: hasPassword ? '#2E7D32' : '#E65100', fontWeight: 700, marginTop: 2 }}>
+                {hasPassword ? '✓ Profile protected' : '⚠️ Profile not protected'}
+              </div>
+            </div>
+            <button onClick={() => { setEditingPassword(!editingPassword); setPasswordError('') }} style={{
+              padding: '6px 14px', borderRadius: 10, border: `1px solid ${BROWN}20`,
+              background: '#fff', color: BROWN, fontSize: 12, fontWeight: 800,
+              fontFamily: 'inherit', cursor: 'pointer',
+            }}>{hasPassword ? 'Change' : 'Add'}</button>
+          </div>
+
+          {!hasPassword && !editingPassword && (
+            <div style={{ fontSize: 12, color: `${BROWN}60`, lineHeight: 1.6 }}>
+              Add a password so you can recover your profile on any device.
+            </div>
+          )}
+
+          {passwordSaved && (
+            <div style={{ fontSize: 13, color: '#2E7D32', fontWeight: 800, textAlign: 'center' }}>✓ Password saved!</div>
+          )}
+
+          {editingPassword && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPwd ? 'text' : 'password'}
+                  placeholder={hasPassword ? 'New password' : 'Create password'}
+                  value={newPassword}
+                  onChange={e => { setNewPassword(e.target.value); setPasswordError('') }}
+                  style={{ width: '100%', padding: '12px 44px 12px 14px', borderRadius: 12, border: `1px solid ${BROWN}20`, background: '#FAF7F2', color: BROWN, fontSize: 14, fontWeight: 800, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }}
+                />
+                <button onClick={() => setShowPwd(!showPwd)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16 }}>{showPwd ? '🙈' : '👁'}</button>
+              </div>
+              <input
+                type={showPwd ? 'text' : 'password'}
+                placeholder="Confirm password"
+                value={confirmPassword}
+                onChange={e => { setConfirmPassword(e.target.value); setPasswordError('') }}
+                style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1px solid ${BROWN}20`, background: '#FAF7F2', color: BROWN, fontSize: 14, fontWeight: 800, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }}
+              />
+              {passwordError && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700 }}>{passwordError}</div>}
+              <button onClick={savePassword} disabled={passwordSaving} style={{
+                width: '100%', padding: '13px', borderRadius: 12, border: 'none',
+                background: BROWN, color: '#fff', fontSize: 14, fontWeight: 900,
+                fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 5px 0 ${BROWN}60`,
+              }}>{passwordSaving ? '...' : 'Save password'}</button>
+            </div>
+          )}
         </div>
 
         {/* Groups */}

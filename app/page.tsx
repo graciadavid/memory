@@ -23,6 +23,9 @@ export default function LandingPage() {
   const [checking, setChecking] = useState(false)
   const [error, setError] = useState('')
   const [records, setRecords] = useState<Record<string, { value: string, by: string }>>({})
+  const [nameExists, setNameExists] = useState(false)
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -52,12 +55,60 @@ export default function LandingPage() {
     if (!name.trim()) return
     setChecking(true)
     setError('')
-    const { count } = await supabase.from('scores').select('*', { count: 'exact', head: true }).eq('player_name', name.trim())
-    if ((count ?? 0) > 0) {
-      setError(`"${name.trim()}" is already taken. Choose another.`)
+
+    // Check if name exists in profiles
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('player_name, password_hash')
+      .eq('player_name', name.trim())
+      .single()
+
+    if (existingProfile) {
+      // Name exists — ask for password
+      if (!nameExists) {
+        setNameExists(true)
+        setChecking(false)
+        return
+      }
+      // Validate password
+      if (!password.trim()) {
+        setError('Please enter your password')
+        setChecking(false)
+        return
+      }
+      if (existingProfile.password_hash && existingProfile.password_hash !== password.trim()) {
+        setError('Wrong password')
+        setNameExists(false)
+        setPassword('')
+        setChecking(false)
+        return
+      }
+      // Correct password or no password set — enter
+      createProfile(name.trim())
       setChecking(false)
       return
     }
+
+    // Check scores tables for legacy users without profile entry
+    const { count } = await supabase.from('scores').select('*', { count: 'exact', head: true }).eq('player_name', name.trim())
+    const { count: count2 } = await supabase.from('number_scores').select('*', { count: 'exact', head: true }).eq('player_name', name.trim())
+    const { count: count3 } = await supabase.from('flag_scores').select('*', { count: 'exact', head: true }).eq('player_name', name.trim())
+    const { count: count4 } = await supabase.from('sequence_scores').select('*', { count: 'exact', head: true }).eq('player_name', name.trim())
+
+    if ((count ?? 0) + (count2 ?? 0) + (count3 ?? 0) + (count4 ?? 0) > 0) {
+      // Legacy user — ask for password
+      if (!nameExists) {
+        setNameExists(true)
+        setChecking(false)
+        return
+      }
+      // No password set for legacy user — let them in
+      createProfile(name.trim())
+      setChecking(false)
+      return
+    }
+
+    // New user
     createProfile(name.trim())
     setChecking(false)
   }
