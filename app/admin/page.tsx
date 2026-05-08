@@ -84,6 +84,9 @@ export default function AdminPage() {
     const periodStart = getPeriodStart(period)
     const prevStart = getPrevPeriodStart(period)
 
+    const { count: groupsCount } = await supabase.from('groups').select('*', { count: 'exact', head: true })
+    const { count: membersCount } = await supabase.from('group_members').select('*', { count: 'exact', head: true })
+
     const [memAll, digAll, seqAll, flagAll] = await Promise.all([
       supabase.from('scores').select('player_name, time_ms, created_at, packs(difficulty)').order('created_at', { ascending: false }),
       supabase.from('number_scores').select('player_name, level, created_at').order('created_at', { ascending: false }),
@@ -146,7 +149,7 @@ export default function AdminPage() {
       .map(([days, players]) => ({ days: Number(days), players }))
       .sort((a, b) => a.days - b.days)
 
-    setStats({ retentionData: retentionData2,
+    setStats({ retentionData: retentionData2, groupsCount: groupsCount ?? 0, membersCount: membersCount ?? 0,
       games: [
         { label: 'Memory', curr: memP, pct: pct(memP, memPrev), color: BROWN, users: memU, avg: memU > 0 ? (memP / memU).toFixed(1) : '0' },
         { label: 'Digits', curr: digP, pct: pct(digP, digPrev), color: BLUE, users: digU, avg: digU > 0 ? (digP / digU).toFixed(1) : '0' },
