@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation'
 
 export const revalidate = 60
 
-export default async function GroupPage({ searchParams }: { searchParams: { id: string } }) {
-  const id = searchParams.id
+export default async function GroupPage({ searchParams }: { searchParams: Promise<{ id: string }> }) {
+  const { id } = await searchParams
   const { data: group } = await supabase
     .from('groups')
     .select('*')
