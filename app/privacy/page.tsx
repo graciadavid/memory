@@ -24,7 +24,7 @@ export default function PrivacyPage() {
       {[
         { title: 'What we collect', text: 'MemGenius only stores the player name you choose and your game scores. No email, no password, no personal data. Your name and scores are stored in our database to power the world rankings.' },
         { title: 'Local storage', text: "We use your browser's local storage to remember your profile, streak, and game preferences. This data never leaves your device except for your name and scores which are submitted to our leaderboard." },
-        { title: 'No ads', text: 'MemGenius is completely free and contains no advertisements. We do not sell your data to any third party.' },
+        
         { title: 'Cookies', text: 'We do not use tracking cookies. Local storage is used solely for game functionality.' },
         { title: 'Third party services', text: 'We use Supabase to store game scores and Vercel to host the application. Both services comply with GDPR.' },
         { title: 'Data deletion', text: 'To delete your data, contact us through memgenius.com. We will remove your scores and profile within 48 hours.' },
