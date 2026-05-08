@@ -252,14 +252,32 @@ export default function AdminPage() {
         <>
           {/* Games */}
           <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Games</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16 }}>
+
+          {/* Total */}
+          <div style={{ background: BROWN, borderRadius: 14, padding: '14px 16px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: 13, fontWeight: 900, color: 'rgba(255,255,255,0.7)', letterSpacing: 1, textTransform: 'uppercase' }}>Total Games</div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
+              <div style={{ fontSize: 32, fontWeight: 900, color: '#fff' }}>{stats.games.reduce((a: number, g: any) => a + g.curr, 0)}</div>
+              {(() => {
+                const totalPct = Math.round(stats.games.reduce((a: number, g: any) => a + g.curr, 0) / Math.max(1, stats.games.reduce((a: number, g: any) => a + (g.curr / (1 + (g.pct || 0) / 100)), 0)) * 100) - 100
+                return totalPct !== 0 ? (
+                  <div style={{ fontSize: 12, fontWeight: 800, color: totalPct >= 0 ? '#81C784' : '#EF9A9A', marginBottom: 6 }}>
+                    {totalPct >= 0 ? '↑' : '↓'}{Math.abs(totalPct)}%
+                  </div>
+                ) : null
+              })()}
+            </div>
+          </div>
+
+          {/* Per game */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 }}>
             {stats.games.map((g: any) => (
-              <div key={g.label} style={{ background: '#fff', borderRadius: 14, padding: '14px', boxShadow: `0 2px 8px ${BROWN}06`, border: `1px solid ${g.color}15` }}>
-                <div style={{ fontSize: 10, fontWeight: 800, color: g.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{g.label}</div>
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
-                  <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>{g.curr}</div>
+              <div key={g.label} style={{ background: '#fff', borderRadius: 12, padding: '10px 14px', boxShadow: `0 2px 8px ${BROWN}06`, border: `1px solid ${g.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: 12, fontWeight: 800, color: g.color, letterSpacing: 0.5 }}>{g.label}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>{g.curr}</div>
                   {g.pct !== null && (
-                    <div style={{ fontSize: 12, fontWeight: 800, color: g.pct >= 0 ? GREEN : RED, marginBottom: 4 }}>
+                    <div style={{ fontSize: 11, fontWeight: 800, color: g.pct >= 0 ? GREEN : RED }}>
                       {g.pct >= 0 ? '↑' : '↓'}{Math.abs(g.pct)}%
                     </div>
                   )}
