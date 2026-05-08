@@ -280,6 +280,8 @@ export default function LandingPage() {
             Privacy Policy
           </a>
         </div>
+        </>
+        )}
 
       </main>
     </>
