@@ -56,3 +56,4 @@ export default async function GroupPage({ params }: { params: { id: string } }) 
     />
   )
 }
+// force
