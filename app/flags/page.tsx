@@ -399,6 +399,7 @@ export default function FlagsPage() {
             </div>
 
             <button onClick={() => {
+              window.gtag?.('event', 'challenge_shared', { game: 'flags' })
               const url = `${window.location.origin}/challenge?game=flags&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${profile?.name} got ${level} flags. Can you beat them?`, url })
               else navigator.clipboard.writeText(url).then(() => alert('Challenge link copied!'))
