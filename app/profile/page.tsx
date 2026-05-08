@@ -109,7 +109,7 @@ export default function ProfilePage() {
     if (newPassword.length < 4) { setPasswordError('Password must be at least 4 characters'); return }
     setPasswordSaving(true)
     await supabase.from('profiles').upsert({
-      player_name: profile.name,
+      player_name: profile!.name,
       password_hash: newPassword.trim(),
       updated_at: new Date().toISOString(),
     })
@@ -175,7 +175,7 @@ export default function ProfilePage() {
       // Also save to Supabase for Hall of Fame
       if (profile?.name) {
         await supabase.from('profiles').upsert({
-          player_name: profile.name,
+          player_name: profile!.name,
           avatar_url: avatarBase64,
           updated_at: new Date().toISOString(),
         })
