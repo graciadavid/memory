@@ -1,5 +1,4 @@
 'use client'
-import InstallBanner from '@/components/InstallBanner'
 import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { fetchAllRanks } from './RanksFetcher'
@@ -9,15 +8,6 @@ import Link from 'next/link'
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
-
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-const ACHIEVEMENTS = [
-  { key: 'speed_genius', label: 'Speed Genius', desc: 'Finish in under 30 seconds', img: `${BASE}/bald-eagle.png` },
-  { key: 'week_streak', label: '7-Day Streak', desc: 'Play 7 days in a row', img: `${BASE}/northern-lights.png` },
-  { key: 'month_streak', label: '30-Day Streak', desc: 'Play 30 days in a row', img: `${BASE}/volcano.png` },
-  { key: 'world_1', label: 'World #1', desc: 'Reach the top of any ranking', img: `${BASE}/pyramids-sphinx.png` },
-  { key: '10_games', label: 'Dedicated', desc: 'Complete 10 games', img: `${BASE}/great-wall.png` },
-]
 
 const DIFF_CONFIG = [
   { key: 'easy', label: 'Easy', color: '#2E7D32' },
@@ -32,17 +22,26 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-function Avatar({ name, photo, size = 72 }: { name: string, photo?: string, size?: number }) {
-  if (photo) return <img src={photo} alt="avatar" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', border: `3px solid ${GOLD}` }} />
+function getColor(name: string) {
+  const colors = ['#C8960C', '#1565C0', '#2E7D32', '#6A1B9A', '#B71C1C', '#00796B']
+  let hash = 0
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  return colors[Math.abs(hash) % colors.length]
+}
+
+function Avatar({ name, photo, size = 80 }: { name: string, photo?: string, size?: number }) {
+  if (photo) return <img src={photo} alt="avatar" style={{ width: size, height: size, borderRadius: size * 0.28, objectFit: 'cover', border: `3px solid ${GOLD}`, flexShrink: 0 }} />
+  const color = getColor(name)
   return (
     <div style={{
-      width: size, height: size, borderRadius: '50%',
-      background: `linear-gradient(135deg, ${GOLD}, ${BROWN})`,
+      width: size, height: size, borderRadius: size * 0.28,
+      background: `linear-gradient(135deg, ${color}, ${color}AA)`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontSize: size * 0.4, fontWeight: 900, color: 'white',
-      border: '3px solid rgba(255,255,255,0.3)', flexShrink: 0,
+      border: `3px solid rgba(255,255,255,0.3)`, flexShrink: 0,
+      boxShadow: `0 4px 16px ${color}50`,
     }}>
-      {name.charAt(0).toUpperCase()}
+      {name.slice(0, 2).toUpperCase()}
     </div>
   )
 }
@@ -51,14 +50,20 @@ export default function ProfilePage() {
   const { profile, loaded, save } = usePlayer()
   const fileRef = useRef<HTMLInputElement>(null)
   const [liveRanks, setLiveRanks] = useState<Record<string, { rank: number | null, time: number | null }>>({})
-  const [dailyRank, setDailyRank] = useState<{ rank: number | null, time: number | null }>({ rank: null, time: null })
   const [loadingRanks, setLoadingRanks] = useState(true)
   const [digitsRank, setDigitsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [seqRank, setSeqRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [flagsRank, setFlagsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
-  const [mounted, setMounted] = useState(false)
   const [myGroups, setMyGroups] = useState<any[]>([])
+  const [hasPassword, setHasPassword] = useState(false)
+
+  // Edit name
   const [editingName, setEditingName] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [nameError, setNameError] = useState('')
+  const [nameSaving, setNameSaving] = useState(false)
+
+  // Edit password
   const [editingPassword, setEditingPassword] = useState(false)
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -66,61 +71,47 @@ export default function ProfilePage() {
   const [passwordSaving, setPasswordSaving] = useState(false)
   const [passwordSaved, setPasswordSaved] = useState(false)
   const [showPwd, setShowPwd] = useState(false)
-  const [hasPassword, setHasPassword] = useState(false)
-  const [newName, setNewName] = useState('')
-  const [nameError, setNameError] = useState('')
-  const [nameSaving, setNameSaving] = useState(false)
 
   useEffect(() => {
     if (!profile?.name) return
-    const fetchFlagsRank = async () => {
-      const { data } = await supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(500)
+
+    supabase.from('profiles').select('password_hash').eq('player_name', profile.name).single().then(({ data }) => {
+      setHasPassword(!!data?.password_hash)
+    })
+
+    supabase.from('group_members').select('group_id, groups(id, name)').eq('player_name', profile.name).then(({ data }) => {
+      if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean))
+    })
+
+    supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(500).then(({ data }) => {
       if (!data) return
       const best: Record<string, number> = {}
       data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
       const myLevel = best[profile.name]
       if (!myLevel) return
       setFlagsRank({ level: myLevel, rank: Object.values(best).filter(l => l > myLevel).length + 1 })
-    }
-    fetchFlagsRank()
-
-    // Check if has password
-    supabase.from('profiles').select('password_hash').eq('player_name', profile.name).single().then(({ data }) => {
-      setHasPassword(!!data?.password_hash)
     })
 
-    // Fetch groups
-    supabase.from('group_members').select('group_id, groups(id, name)').eq('player_name', profile.name).then(({ data }) => {
-      if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean))
-    })
-
-    fetchAllRanks(profile.name).then(({ memoryRanks, dailyRank, digitsRank, seqRank }) => {
+    fetchAllRanks(profile.name).then(({ memoryRanks, digitsRank, seqRank }) => {
       setLiveRanks(memoryRanks)
-      setDailyRank(dailyRank)
       setDigitsRank(digitsRank)
       setSeqRank(seqRank)
       setLoadingRanks(false)
     })
   }, [profile?.name])
 
-  const savePassword = async () => {
-    if (!newPassword.trim()) return
-    if (newPassword !== confirmPassword) { setPasswordError("Passwords don't match"); return }
-    if (newPassword.length < 4) { setPasswordError('Password must be at least 4 characters'); return }
-    setPasswordSaving(true)
-    await supabase.from('profiles').upsert({
-      player_name: profile!.name,
-      password_hash: newPassword.trim(),
-      updated_at: new Date().toISOString(),
-    })
-    setHasPassword(true)
-    setPasswordSaved(true)
-    setEditingPassword(false)
-    setNewPassword('')
-    setConfirmPassword('')
-    setPasswordError('')
-    setPasswordSaving(false)
-    setTimeout(() => setPasswordSaved(false), 3000)
+  const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = async () => {
+      const avatarBase64 = reader.result as string
+      save({ ...profile!, avatar: avatarBase64 })
+      if (profile?.name) {
+        await supabase.from('profiles').upsert({ player_name: profile.name, avatar_url: avatarBase64, updated_at: new Date().toISOString() })
+      }
+    }
+    reader.readAsDataURL(file)
   }
 
   const saveName = async () => {
@@ -149,6 +140,27 @@ export default function ProfilePage() {
     setEditingName(false)
   }
 
+  const savePassword = async () => {
+    if (!newPassword.trim()) return
+    if (newPassword !== confirmPassword) { setPasswordError("Passwords don't match"); return }
+    if (newPassword.length < 4) { setPasswordError('Min 4 characters'); return }
+    setPasswordSaving(true)
+    await supabase.from('profiles').upsert({ player_name: profile!.name, password_hash: newPassword.trim(), updated_at: new Date().toISOString() })
+    setHasPassword(true)
+    setPasswordSaved(true)
+    setEditingPassword(false)
+    setNewPassword('')
+    setConfirmPassword('')
+    setPasswordError('')
+    setPasswordSaving(false)
+    setTimeout(() => setPasswordSaved(false), 3000)
+  }
+
+  const shareScore = async (text: string) => {
+    if (navigator.share) await navigator.share({ text })
+    else { await navigator.clipboard.writeText(text); alert('Copied!') }
+  }
+
   if (!loaded) return null
 
   if (!profile?.name) {
@@ -165,372 +177,94 @@ export default function ProfilePage() {
     )
   }
 
-  const handlePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = async () => {
-      const avatarBase64 = reader.result as string
-      save({ ...profile, avatar: avatarBase64 })
-      // Also save to Supabase for Hall of Fame
-      if (profile?.name) {
-        await supabase.from('profiles').upsert({
-          player_name: profile!.name,
-          avatar_url: avatarBase64,
-          updated_at: new Date().toISOString(),
-        })
-      }
-    }
-    reader.readAsDataURL(file)
-  }
-
-  const today = new Date().toISOString().split('T')[0]
-  const playedToday = profile.lastPlayedDate === today
-
-  const shareCategory = async (key: string, label: string, color: string) => {
-    const entry = liveRanks[key]
-    if (!entry?.rank) return
-    const text = `🦅 I'm #${entry.rank} in ${label} on MemGenius!\nTime: ${fmt(entry.time!)}\nCan you beat me? 👉 https://memgenius.com`
-    if (navigator.share) await navigator.share({ text })
-    else { await navigator.clipboard.writeText(text); alert('Copied!') }
-  }
-
   return (
     <main style={{
       minHeight: '100dvh',
       background: `linear-gradient(180deg, ${CREAM} 0%, #F0EBE1 100%)`,
       fontFamily: 'var(--font-nunito), sans-serif',
       maxWidth: 430, margin: '0 auto',
-      paddingBottom: 100, overflowY: 'auto',
+      paddingBottom: 100,
     }}>
-      {/* Header */}
-      <div style={{
-        background: `url(https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/northern-lights.png)`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center top',
-        padding: '44px 24px 28px',
-        borderRadius: '0 0 24px 24px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-      <div style={{
-        position: 'absolute', inset: 0,
-        background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.45) 100%)',
-      }} />
-      <div style={{ position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
-          <Avatar name={profile.name} photo={profile.avatar} size={72} />
-          <div>
+
+      {/* HEADER */}
+      <div style={{ background: BROWN, padding: '48px 24px 28px', borderRadius: '0 0 28px 28px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+          <div style={{ position: 'relative' }}>
+            <Avatar name={profile.name} photo={profile.avatar} size={80} />
+            <button onClick={() => fileRef.current?.click()} style={{
+              position: 'absolute', bottom: -4, right: -4,
+              width: 26, height: 26, borderRadius: 8,
+              background: GOLD, border: '2px solid #fff',
+              fontSize: 12, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>📷</button>
+            <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhoto} />
+          </div>
+
+          <div style={{ flex: 1 }}>
             {editingName ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <div style={{ display: 'flex', gap: 6 }}>
-                  <input
-                    type="text"
-                    value={newName}
-                    onChange={e => { setNewName(e.target.value); setNameError('') }}
-                    onKeyDown={e => e.key === 'Enter' && saveName()}
-                    maxLength={20}
-                    autoFocus
-                    style={{
-                      flex: 1, padding: '6px 10px', borderRadius: 8,
-                      border: '1px solid rgba(255,255,255,0.5)',
-                      background: 'rgba(255,255,255,0.15)',
-                      color: '#fff', fontSize: 16, fontWeight: 800,
-                      fontFamily: 'inherit', outline: 'none',
-                    }}
-                  />
-                  <button onClick={saveName} style={{ padding: '6px 12px', borderRadius: 8, border: 'none', background: GOLD, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>{nameSaving ? '...' : 'Save'}</button>
-                  <button onClick={() => { setEditingName(false); setNameError('') }} style={{ padding: '6px 10px', borderRadius: 8, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
+                  <input type="text" value={newName} onChange={e => { setNewName(e.target.value); setNameError('') }} onKeyDown={e => e.key === 'Enter' && saveName()} maxLength={20} autoFocus
+                    style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 16, fontWeight: 800, fontFamily: 'inherit', outline: 'none' }} />
+                  <button onClick={saveName} style={{ padding: '8px 12px', borderRadius: 10, border: 'none', background: GOLD, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>{nameSaving ? '...' : 'Save'}</button>
+                  <button onClick={() => { setEditingName(false); setNameError('') }} style={{ padding: '8px 10px', borderRadius: 10, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
                 </div>
                 {nameError && <div style={{ fontSize: 10, color: '#FFB3B3', fontWeight: 700 }}>{nameError}</div>}
               </div>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ fontSize: 26, fontWeight: 900, color: 'white', letterSpacing: -0.5 }}>{profile.name}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
                 <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
               </div>
             )}
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 700, marginTop: 2 }}>Since {profile.joinedDate}</div>
-          </div>
-        </div>
-        <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhoto} />
-        <button onClick={() => fileRef.current?.click()} style={{
-          background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)',
-          color: 'white', fontSize: 12, fontWeight: 800,
-          padding: '7px 16px', borderRadius: 20, fontFamily: 'inherit', cursor: 'pointer',
-        }}>Edit photo</button>
-      </div>
-      </div>
 
-      <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-
-        {/* Streak */}
-        <div style={{
-          background: '#fff', borderRadius: 20, padding: '20px 22px',
-          boxShadow: `0 2px 12px ${BROWN}10`,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        }}>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Current Streak</div>
-            <div style={{ fontSize: 40, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>
-              {profile.streak} <span style={{ fontSize: 18, opacity: 0.5 }}>days</span>
-            </div>
-          </div>
-          <div style={{
-            fontSize: 11, fontWeight: 800,
-            color: playedToday ? '#2E7D32' : '#B71C1C',
-            background: playedToday ? '#2E7D3215' : '#B71C1C15',
-            border: `1px solid ${playedToday ? '#2E7D3230' : '#B71C1C30'}`,
-            borderRadius: 10, padding: '6px 12px',
-          }}>
-            {playedToday ? 'Done today' : 'Play today!'}
-          </div>
-        </div>
-
-        <InstallBanner />
-
-        {/* Best Positions — 4 columns with share */}
-        <div style={{
-          background: '#fff', borderRadius: 20, padding: '20px 22px',
-          boxShadow: `0 2px 12px ${BROWN}10`,
-        }}>
-        <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
-            Memory — Best
-          </div>
-          {/* Easy Medium Hard — 3 columns */}
-          <div style={{ display: 'flex', gap: 8 }}>
-            {DIFF_CONFIG.map(d => {
-              const entry = liveRanks[d.key]
-              const hasResult = entry?.rank != null
-              return (
-                <div key={d.key} style={{
-                  flex: 1, textAlign: 'center',
-                  background: `${d.color}08`,
-                  border: `1px solid ${d.color}20`,
-                  borderRadius: 14, padding: '14px 8px',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-                }}>
-                  <div style={{ fontSize: 9, fontWeight: 900, color: d.color, letterSpacing: 1, textTransform: 'uppercase' }}>
-                    {d.label}
-                  </div>
-                  <div style={{ fontSize: 24, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20`, letterSpacing: -1 }}>
-                    {loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}
-                  </div>
-                  <div style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20` }}>
-                    {loadingRanks ? '' : hasResult ? fmt(entry.time!) : '—'}
-                  </div>
-                  {hasResult && (
-                    <button onClick={() => shareCategory(d.key, d.label, d.color)} style={{
-                      marginTop: 4, padding: '6px 10px', borderRadius: 8, border: 'none',
-                      background: d.color, color: '#fff',
-                      fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
-                      boxShadow: `0 3px 0 ${d.color}50`,
-                    }}>Share</button>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Digits Best */}
-        <div style={{
-          background: '#fff', borderRadius: 20, padding: '20px 22px',
-          boxShadow: `0 2px 12px ${BROWN}10`,
-        }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
-            Digits — Best
-          </div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <div style={{
-              flex: 1, textAlign: 'center',
-              background: '#EEF4FF', border: '1px solid #1565C020',
-              borderRadius: 14, padding: '14px 8px',
+            {/* Protect button */}
+            <button onClick={() => setEditingPassword(!editingPassword)} style={{
+              padding: '6px 14px', borderRadius: 20, border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+              background: hasPassword ? 'rgba(46,125,50,0.3)' : 'rgba(230,81,0,0.8)',
+              color: '#fff', fontSize: 11, fontWeight: 800,
             }}>
-              <div style={{ fontSize: 9, fontWeight: 900, color: '#1565C0', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Best Level</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: digitsRank.level ? BROWN : `${BROWN}20` }}>
-                {loadingRanks ? '...' : digitsRank.level ? `${digitsRank.level}` : '—'}
-              </div>
-              <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
-                {digitsRank.level ? 'digits' : 'Not played'}
-              </div>
-            </div>
-            <div style={{
-              flex: 1, textAlign: 'center',
-              background: '#EEF4FF', border: '1px solid #1565C020',
-              borderRadius: 14, padding: '14px 8px',
-            }}>
-              <div style={{ fontSize: 9, fontWeight: 900, color: '#1565C0', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>World Rank</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: digitsRank.rank ? BROWN : `${BROWN}20` }}>
-                {loadingRanks ? '...' : digitsRank.rank ? `#${digitsRank.rank}` : '—'}
-              </div>
-              <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
-                {digitsRank.rank ? 'global' : ''}
-              </div>
-            </div>
-            {digitsRank.level && (
-              <div style={{
-                flex: 1, textAlign: 'center',
-                background: '#EEF4FF', border: '1px solid #1565C020',
-                borderRadius: 14, padding: '14px 8px',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <div style={{ fontSize: 9, fontWeight: 900, color: '#1565C0', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Share</div>
-                <button
-                  onClick={async () => {
-                    const text = `🔢 I reached level ${digitsRank.level} in MemGenius Digits! World #${digitsRank.rank}\nCan you beat me? 👉 https://memgenius.com/digits`
-                    if (navigator.share) await navigator.share({ text })
-                    else { await navigator.clipboard.writeText(text); alert('Copied!') }
-                  }}
-                  style={{
-                    width: 36, height: 36, borderRadius: 10, border: 'none',
-                    background: '#1565C0', color: '#fff',
-                    fontSize: 14, cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}
-                >↑</button>
-              </div>
-            )}
+              {hasPassword ? '🔒 Protected' : '⚠️ Protect profile'}
+            </button>
           </div>
         </div>
 
-        {/* Sequence Best */}
-        <div style={{
-          background: '#fff', borderRadius: 20, padding: '20px 22px',
-          boxShadow: `0 2px 12px ${BROWN}10`,
-        }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
-            Sequence — Best
-          </div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <div style={{ flex: 1, textAlign: 'center', background: '#F3E5F5', border: '1px solid #6A1B9A20', borderRadius: 14, padding: '14px 8px' }}>
-              <div style={{ fontSize: 9, fontWeight: 900, color: '#6A1B9A', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Best Level</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: seqRank.level ? BROWN : `${BROWN}20` }}>
-                {loadingRanks ? '...' : seqRank.level ? `${seqRank.level}` : '—'}
-              </div>
+        {/* Password editor */}
+        {editingPassword && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
+            {passwordSaved && <div style={{ fontSize: 13, color: '#81C784', fontWeight: 800, textAlign: 'center' }}>✓ Password saved!</div>}
+            <div style={{ position: 'relative' }}>
+              <input type={showPwd ? 'text' : 'password'} placeholder={hasPassword ? 'New password' : 'Create password'} value={newPassword}
+                onChange={e => { setNewPassword(e.target.value); setPasswordError('') }}
+                style={{ width: '100%', padding: '12px 44px 12px 14px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 14, fontWeight: 800, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }} />
+              <button onClick={() => setShowPwd(!showPwd)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16 }}>{showPwd ? '🙈' : '👁'}</button>
             </div>
-            <div style={{ flex: 1, textAlign: 'center', background: '#F3E5F5', border: '1px solid #6A1B9A20', borderRadius: 14, padding: '14px 8px' }}>
-              <div style={{ fontSize: 9, fontWeight: 900, color: '#6A1B9A', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>World Rank</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: seqRank.rank ? BROWN : `${BROWN}20` }}>
-                {loadingRanks ? '...' : seqRank.rank ? `#${seqRank.rank}` : '—'}
-              </div>
+            <input type={showPwd ? 'text' : 'password'} placeholder="Confirm password" value={confirmPassword}
+              onChange={e => { setConfirmPassword(e.target.value); setPasswordError('') }}
+              style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 14, fontWeight: 800, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }} />
+            {passwordError && <div style={{ fontSize: 11, color: '#FFB3B3', fontWeight: 700 }}>{passwordError}</div>}
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={savePassword} disabled={passwordSaving} style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: GOLD, color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>{passwordSaving ? '...' : 'Save password'}</button>
+              <button onClick={() => { setEditingPassword(false); setPasswordError('') }} style={{ padding: '12px 16px', borderRadius: 12, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 14, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
             </div>
-            {seqRank.level && (
-              <div style={{ flex: 1, textAlign: 'center', background: '#F3E5F5', border: '1px solid #6A1B9A20', borderRadius: 14, padding: '14px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                <div style={{ fontSize: 9, fontWeight: 900, color: '#6A1B9A', letterSpacing: 1, textTransform: 'uppercase' }}>Share</div>
-                <button onClick={async () => {
-                  const text = `🎵 I reached level ${seqRank.level} in MemGenius Sequence! World #${seqRank.rank}\nCan you beat me? 👉 https://memgenius.com/sequence`
-                  if (navigator.share) await navigator.share({ text })
-                  else { await navigator.clipboard.writeText(text); alert('Copied!') }
-                }} style={{ width: 36, height: 36, borderRadius: 10, border: 'none', background: '#6A1B9A', color: '#fff', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
-              </div>
-            )}
           </div>
-        </div>
+        )}
+      </div>
 
-        {/* Flags Best */}
-        <div style={{
-          background: '#fff', borderRadius: 20, padding: '20px 22px',
-          boxShadow: `0 2px 12px ${BROWN}10`,
-        }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
-            Flags — Best
-          </div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <div style={{ flex: 1, textAlign: 'center', background: '#E0F2F1', border: '1px solid #00796B20', borderRadius: 14, padding: '14px 8px' }}>
-              <div style={{ fontSize: 9, fontWeight: 900, color: '#00796B', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Best Streak</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: flagsRank.level ? BROWN : `${BROWN}20` }}>
-                {loadingRanks ? '...' : flagsRank.level ? `${flagsRank.level}` : '—'}
-              </div>
-              <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
-                {flagsRank.level ? 'flags' : 'Not played'}
-              </div>
-            </div>
-            <div style={{ flex: 1, textAlign: 'center', background: '#E0F2F1', border: '1px solid #00796B20', borderRadius: 14, padding: '14px 8px' }}>
-              <div style={{ fontSize: 9, fontWeight: 900, color: '#00796B', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>World Rank</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: flagsRank.rank ? BROWN : `${BROWN}20` }}>
-                {loadingRanks ? '...' : flagsRank.rank ? `#${flagsRank.rank}` : '—'}
-              </div>
-            </div>
-            {flagsRank.level && (
-              <div style={{ flex: 1, textAlign: 'center', background: '#E0F2F1', border: '1px solid #00796B20', borderRadius: 14, padding: '14px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                <div style={{ fontSize: 9, fontWeight: 900, color: '#00796B', letterSpacing: 1, textTransform: 'uppercase' }}>Share</div>
-                <button onClick={async () => {
-                  const text = `🚩 I got ${flagsRank.level} flags in a row on MemGenius! World #${flagsRank.rank}\nCan you beat me? 👉 https://memgenius.com/flags`
-                  if (navigator.share) await navigator.share({ text })
-                  else { await navigator.clipboard.writeText(text); alert('Copied!') }
-                }} style={{ width: 36, height: 36, borderRadius: 10, border: 'none', background: '#00796B', color: '#fff', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>↑</button>
-              </div>
-            )}
-          </div>
-        </div>
+      <div style={{ padding: '16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-        {/* Password */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '20px 22px', boxShadow: `0 2px 12px ${BROWN}10` }}>
+        {/* GROUPS */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase' }}>Password</div>
-              <div style={{ fontSize: 12, color: hasPassword ? '#2E7D32' : '#E65100', fontWeight: 700, marginTop: 2 }}>
-                {hasPassword ? '✓ Profile protected' : '⚠️ Profile not protected'}
-              </div>
-            </div>
-            <button onClick={() => { setEditingPassword(!editingPassword); setPasswordError('') }} style={{
-              padding: '6px 14px', borderRadius: 10, border: `1px solid ${BROWN}20`,
-              background: '#fff', color: BROWN, fontSize: 12, fontWeight: 800,
-              fontFamily: 'inherit', cursor: 'pointer',
-            }}>{hasPassword ? 'Change' : 'Add'}</button>
-          </div>
-
-          {!hasPassword && !editingPassword && (
-            <div style={{ fontSize: 12, color: `${BROWN}60`, lineHeight: 1.6 }}>
-              Add a password so you can recover your profile on any device.
-            </div>
-          )}
-
-          {passwordSaved && (
-            <div style={{ fontSize: 13, color: '#2E7D32', fontWeight: 800, textAlign: 'center' }}>✓ Password saved!</div>
-          )}
-
-          {editingPassword && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ position: 'relative' }}>
-                <input
-                  type={showPwd ? 'text' : 'password'}
-                  placeholder={hasPassword ? 'New password' : 'Create password'}
-                  value={newPassword}
-                  onChange={e => { setNewPassword(e.target.value); setPasswordError('') }}
-                  style={{ width: '100%', padding: '12px 44px 12px 14px', borderRadius: 12, border: `1px solid ${BROWN}20`, background: '#FAF7F2', color: BROWN, fontSize: 14, fontWeight: 800, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }}
-                />
-                <button onClick={() => setShowPwd(!showPwd)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16 }}>{showPwd ? '🙈' : '👁'}</button>
-              </div>
-              <input
-                type={showPwd ? 'text' : 'password'}
-                placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={e => { setConfirmPassword(e.target.value); setPasswordError('') }}
-                style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: `1px solid ${BROWN}20`, background: '#FAF7F2', color: BROWN, fontSize: 14, fontWeight: 800, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }}
-              />
-              {passwordError && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700 }}>{passwordError}</div>}
-              <button onClick={savePassword} disabled={passwordSaving} style={{
-                width: '100%', padding: '13px', borderRadius: 12, border: 'none',
-                background: BROWN, color: '#fff', fontSize: 14, fontWeight: 900,
-                fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 5px 0 ${BROWN}60`,
-              }}>{passwordSaving ? '...' : 'Save password'}</button>
-            </div>
-          )}
-        </div>
-
-        {/* Groups */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '20px 22px', boxShadow: `0 2px 12px ${BROWN}10` }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase' }}>My Groups</div>
-            <a href="/create-group" style={{ padding: '6px 14px', borderRadius: 10, background: BROWN, color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none' }}>+ New</a>
+            <div style={{ fontSize: 13, fontWeight: 900, color: BROWN }}>My Groups</div>
+            <a href="/create-group" style={{ padding: '6px 14px', borderRadius: 10, background: BROWN, color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none', boxShadow: `0 3px 0 ${BROWN}60` }}>+ New</a>
           </div>
           {myGroups.length === 0 ? (
-            <div style={{ fontSize: 13, color: `${BROWN}30`, fontWeight: 700 }}>No groups yet — create one and invite friends!</div>
+            <div style={{ fontSize: 13, color: `${BROWN}30`, fontWeight: 700 }}>Create a group and invite friends to compete!</div>
           ) : myGroups.map((g: any) => (
             <a key={g.id} href={`/group?id=${g.id}`} style={{ textDecoration: 'none' }}>
-              <div style={{ background: `${BROWN}06`, borderRadius: 12, padding: '12px 14px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: `1px solid ${BROWN}10` }}>
+              <div style={{ background: `${BROWN}06`, borderRadius: 12, padding: '12px 14px', marginBottom: 6, display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: `1px solid ${BROWN}10` }}>
                 <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{g.name}</div>
                 <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700 }}>→</div>
               </div>
@@ -538,38 +272,110 @@ export default function ProfilePage() {
           ))}
         </div>
 
-        {/* Achievements */}
-        <div style={{
-          background: '#fff', borderRadius: 20, padding: '20px 22px',
-          boxShadow: `0 2px 12px ${BROWN}10`,
-        }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>
-            Achievements
+        {/* RECORDS */}
+        <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', paddingLeft: 4 }}>My Records</div>
+
+        {/* Memory */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+            <img src="/icons/memory.webp" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+            <div style={{ fontSize: 13, fontWeight: 900, color: BROWN }}>Memory</div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {ACHIEVEMENTS.map(a => {
-              const unlocked = profile.achievements?.includes(a.key)
+          <div style={{ display: 'flex', gap: 8 }}>
+            {DIFF_CONFIG.map(d => {
+              const entry = liveRanks[d.key]
+              const hasResult = entry?.rank != null
               return (
-                <div key={a.key} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <div style={{
-                    width: 52, height: 52, borderRadius: 13, flexShrink: 0,
-                    background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: unlocked ? `0 4px 10px ${GOLD}40` : 'none',
-                    filter: unlocked ? 'none' : 'grayscale(1) opacity(0.25)',
-                    border: unlocked ? `2px solid ${GOLD}` : `2px solid ${BROWN}10`,
-                  }}>
-                    <img src={a.img} alt={a.label} style={{ width: '90%', height: '90%', objectFit: 'contain' }} />
+                <div key={d.key} style={{ flex: 1, textAlign: 'center', background: `${d.color}08`, border: `1px solid ${d.color}20`, borderRadius: 14, padding: '12px 6px' }}>
+                  <div style={{ fontSize: 9, fontWeight: 900, color: d.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>{d.label}</div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20` }}>
+                    {loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}
                   </div>
-                  <div style={{ flex: 1, opacity: unlocked ? 1 : 0.4 }}>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{a.label}</div>
-                    <div style={{ fontSize: 11, color: `${BROWN}60`, marginTop: 1 }}>{a.desc}</div>
+                  <div style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20`, marginBottom: hasResult ? 8 : 0 }}>
+                    {loadingRanks ? '' : hasResult ? fmt(entry.time!) : ''}
                   </div>
-                  {unlocked && <div style={{ fontSize: 10, fontWeight: 900, color: GOLD, letterSpacing: 1, textTransform: 'uppercase' }}>Done</div>}
+                  {hasResult && (
+                    <button onClick={() => shareScore(`🧠 I'm #${entry.rank} in ${d.label} Memory on MemGenius!\n⏱ ${fmt(entry.time!)}\nhttps://memgenius.com/memory`)}
+                      style={{ padding: '5px 10px', borderRadius: 8, border: 'none', background: d.color, color: '#fff', fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+                  )}
                 </div>
               )
             })}
           </div>
         </div>
+
+        {/* Digits */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <img src="/icons/digits.webp" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#1565C0' }}>Digits</div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : digitsRank.level ?? '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Level</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : digitsRank.rank ? `#${digitsRank.rank}` : '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+              </div>
+              {digitsRank.level && (
+                <button onClick={() => shareScore(`🔢 I reached level ${digitsRank.level} in MemGenius Digits! World #${digitsRank.rank}\nhttps://memgenius.com/digits`)}
+                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#1565C0', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Sequence */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <img src="/icons/sequence.webp" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#6A1B9A' }}>Sequence</div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : seqRank.level ?? '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Level</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : seqRank.rank ? `#${seqRank.rank}` : '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+              </div>
+              {seqRank.level && (
+                <button onClick={() => shareScore(`🎵 I reached level ${seqRank.level} in MemGenius Sequence! World #${seqRank.rank}\nhttps://memgenius.com/sequence`)}
+                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#6A1B9A', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Flags */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <img src="/icons/flags.webp" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#00796B' }}>Flags</div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : flagsRank.level ?? '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Flags</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : flagsRank.rank ? `#${flagsRank.rank}` : '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+              </div>
+              {flagsRank.level && (
+                <button onClick={() => shareScore(`🚩 I got ${flagsRank.level} flags in a row on MemGenius! World #${flagsRank.rank}\nhttps://memgenius.com/flags`)}
+                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#00796B', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+              )}
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
   )
