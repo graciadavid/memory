@@ -57,6 +57,7 @@ export default function ProfilePage() {
   const [seqRank, setSeqRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [flagsRank, setFlagsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [mounted, setMounted] = useState(false)
+  const [myGroups, setMyGroups] = useState<any[]>([])
   const [editingName, setEditingName] = useState(false)
   const [newName, setNewName] = useState('')
   const [nameError, setNameError] = useState('')
@@ -74,6 +75,11 @@ export default function ProfilePage() {
       setFlagsRank({ level: myLevel, rank: Object.values(best).filter(l => l > myLevel).length + 1 })
     }
     fetchFlagsRank()
+
+    // Fetch groups
+    supabase.from('group_members').select('group_id, groups(id, name)').eq('player_name', profile.name).then(({ data }) => {
+      if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean))
+    })
 
     fetchAllRanks(profile.name).then(({ memoryRanks, dailyRank, digitsRank, seqRank }) => {
       setLiveRanks(memoryRanks)
