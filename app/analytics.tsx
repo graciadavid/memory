@@ -1,6 +1,7 @@
 import Script from 'next/script'
 
 export default function Analytics() {
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')) return null
   return (
     <>
       <Script
