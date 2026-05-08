@@ -432,6 +432,24 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        {/* Groups */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '20px 22px', boxShadow: `0 2px 12px ${BROWN}10` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase' }}>My Groups</div>
+            <a href="/groups/create" style={{ padding: '6px 14px', borderRadius: 10, background: BROWN, color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none' }}>+ New</a>
+          </div>
+          {myGroups.length === 0 ? (
+            <div style={{ fontSize: 13, color: `${BROWN}30`, fontWeight: 700 }}>No groups yet — create one and invite friends!</div>
+          ) : myGroups.map((g: any) => (
+            <a key={g.id} href={`/groups/${g.id}`} style={{ textDecoration: 'none' }}>
+              <div style={{ background: `${BROWN}06`, borderRadius: 12, padding: '12px 14px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: `1px solid ${BROWN}10` }}>
+                <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{g.name}</div>
+                <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700 }}>→</div>
+              </div>
+            </a>
+          ))}
+        </div>
+
         {/* Achievements */}
         <div style={{
           background: '#fff', borderRadius: 20, padding: '20px 22px',
