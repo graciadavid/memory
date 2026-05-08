@@ -1,12 +1,12 @@
 import { supabase } from '@/lib/supabase'
 import GroupsPageClient from './GroupsPageClient'
 
-export const revalidate = 60
+export const revalidate = 0
 
 export default async function GroupsPage() {
   const { data: publicGroups } = await supabase
     .from('groups')
-    .select('id, name, slug, is_public')
+    .select('id, name, slug, is_public, icon')
     .eq('is_public', true)
     .order('created_at', { ascending: true })
 
