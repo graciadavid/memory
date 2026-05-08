@@ -17,7 +17,7 @@ export default function AboutPage() {
       {[
         { title: 'What is MemGenius?', text: 'MemGenius is a free daily brain training platform with four games: Memory, Digits, Sequence and Flags. All games feature world rankings so you can compete globally.' },
         { title: 'Our mission', text: 'We believe brain training should be fun, free and accessible to everyone. MemGenius gives you a quick mental workout in under 5 minutes a day.' },
-        { title: 'Who made this?', text: 'MemGenius was created by Clinc Marketing, a digital product studio that builds simple, well-designed web products.' },
+        { title: 'Who made this?', text: 'MemGenius was created by a small independent team passionate about brain training and good design.' },
         { title: 'Is it really free?', text: 'Yes. Completely free, no login required, no ads, no in-app purchases.' },
         { title: 'Contact', text: 'Have feedback or found a bug? We would love to hear from you.' },
       ].map(s => (

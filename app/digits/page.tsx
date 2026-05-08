@@ -222,7 +222,7 @@ export default function DigitsPage() {
             </Link>
 
             <div style={{ fontSize: 11, fontWeight: 700, color: `${BROWN}30`, letterSpacing: 1, marginTop: 4 }}>
-              Always free · No ads · No login
+              Always free · No login required
             </div>
           </div>
         )}

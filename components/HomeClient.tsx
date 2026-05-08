@@ -122,7 +122,7 @@ export default function HomeClient({ easy, medium, hard }: Props) {
           {/* Footer */}
           <div style={{ textAlign: 'center', paddingTop: 4 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: `${BROWN}30`, letterSpacing: 1 }}>
-              Always free · No ads · No login
+              Always free · No login required
             </div>
             <a href="/privacy" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>
               Privacy Policy
