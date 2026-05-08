@@ -127,17 +127,15 @@ export default function LandingPage() {
       overflowY: 'auto',
     }}>
 
-      {/* Logo */}
-      <img src={LOGO} alt="MemGenius" style={{ height: 96, objectFit: 'contain', marginBottom: 8 }} />
-
-      {/* Claim */}
-      <div style={{ fontSize: 14, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 20, letterSpacing: 0.3 }}>
-        Your daily brain workout
-      </div>
-
       {!profile?.name ? (
         /* NOT REGISTERED */
-        <div style={{ width: '100%' }}>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {/* Logo */}
+          <img src={LOGO} alt="MemGenius" style={{ height: 110, objectFit: 'contain', marginBottom: 8 }} />
+          {/* Claim */}
+          <div style={{ fontSize: 14, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 28, letterSpacing: 0.3 }}>
+            Your daily brain workout
+          </div>
           {!nameExists ? (
             <>
               <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' }}>
@@ -202,6 +200,10 @@ export default function LandingPage() {
       ) : (
         /* REGISTERED — greeting + game buttons */
         <>
+          <img src={LOGO} alt="MemGenius" style={{ height: 96, objectFit: 'contain', marginBottom: 8 }} />
+          <div style={{ fontSize: 14, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 16, letterSpacing: 0.3 }}>
+            Your daily brain workout
+          </div>
           <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, marginBottom: 16 }}>
             Hey, {profile.name}!
           </div>
