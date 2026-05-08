@@ -12,7 +12,7 @@ export default async function GroupPage({ searchParams }: { searchParams: Promis
     .eq('id', id)
     .single()
 
-  if (!group) return <div style={{padding:20,fontFamily:'sans-serif'}}><h1>Group not found</h1><p>ID: {id}</p></div>
+  if (!group) return <div style={{ padding: 20, fontFamily: 'var(--font-nunito)', textAlign: 'center', marginTop: 80 }}><div style={{ fontSize: 24 }}>😕</div><div style={{ fontWeight: 900, color: '#4A2C0A' }}>Group not found</div></div>
 
   const { data: members } = await supabase
     .from('group_members')
