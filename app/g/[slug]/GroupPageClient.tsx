@@ -118,20 +118,7 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
           )}
         </div>
 
-        {/* Members */}
-        <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Members</div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
-          {members.map((m: any) => (
-            <div key={m.player_name} style={{
-              background: m.player_name === myName ? `${GOLD}20` : '#fff',
-              border: `1px solid ${m.player_name === myName ? GOLD : BROWN}20`,
-              borderRadius: 20, padding: '6px 12px',
-              fontSize: 12, fontWeight: 800, color: BROWN,
-            }}>
-              {m.player_name === myName ? `${m.player_name} (you)` : m.player_name}
-            </div>
-          ))}
-        </div>
+
 
         {/* Ranking tabs */}
         <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Ranking</div>
