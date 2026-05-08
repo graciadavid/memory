@@ -100,6 +100,7 @@ export default function AdminPage() {
     const inPrev = (arr: any[]) => arr.filter(s => s.created_at >= prevStart && s.created_at < periodStart)
 
     const pct = (curr: number, prev: number) => prev === 0 ? null : Math.round(((curr - prev) / prev) * 100)
+    const uniq = (arr: any[]) => new Set(arr.map(s => s.player_name)).size
 
     const memP = inPeriod(mem).length
     const digP = inPeriod(dig).length
