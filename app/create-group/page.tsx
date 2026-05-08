@@ -89,7 +89,7 @@ export default function CreateGroupPage() {
 
         <button onClick={create} disabled={!name.trim() || creating} style={{
           width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-          background: name.trim() ? BROWN : '#e0d9cf',
+          background: name.trim() ? '#2E7D32' : '#e0d9cf',
           color: name.trim() ? '#fff' : '#aaa',
           fontSize: 16, fontWeight: 900, fontFamily: 'inherit',
           cursor: name.trim() ? 'pointer' : 'default',
