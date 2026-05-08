@@ -88,9 +88,13 @@ export default function ProfilePage() {
     if (!newName.trim() || newName.trim() === profile?.name) { setEditingName(false); return }
     setNameSaving(true)
     setNameError('')
-    const { count } = await supabase.from('scores').select('*', { count: 'exact', head: true }).eq('player_name', newName.trim())
-    const { count: count2 } = await supabase.from('number_scores').select('*', { count: 'exact', head: true }).eq('player_name', newName.trim())
-    if ((count ?? 0) > 0 || (count2 ?? 0) > 0) {
+    const [r1, r2, r3, r4] = await Promise.all([
+      supabase.from('scores').select('*', { count: 'exact', head: true }).eq('player_name', newName.trim()),
+      supabase.from('number_scores').select('*', { count: 'exact', head: true }).eq('player_name', newName.trim()),
+      supabase.from('sequence_scores').select('*', { count: 'exact', head: true }).eq('player_name', newName.trim()),
+      supabase.from('flag_scores').select('*', { count: 'exact', head: true }).eq('player_name', newName.trim()),
+    ])
+    if ((r1.count ?? 0) > 0 || (r2.count ?? 0) > 0 || (r3.count ?? 0) > 0 || (r4.count ?? 0) > 0) {
       setNameError('Name already taken')
       setNameSaving(false)
       return
