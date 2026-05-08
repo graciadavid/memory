@@ -48,10 +48,17 @@ export default function GroupsPageClient({ publicGroups, memberCounts }: { publi
               boxShadow: `0 4px 16px ${BROWN}08`,
               border: `1px solid ${BROWN}08`,
             }}>
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 900, color: BROWN }}>{group.name}</div>
-                <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700, marginTop: 2 }}>
-                  {memberCounts[group.id] || 0} members
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                {group.icon === 'flags' ? (
+                  <img src="/icons/flags.webp" alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
+                ) : (
+                  <div style={{ fontSize: 32 }}>{group.icon}</div>
+                )}
+                <div>
+                  <div style={{ fontSize: 16, fontWeight: 900, color: BROWN }}>{group.name}</div>
+                  <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700, marginTop: 2 }}>
+                    {memberCounts[group.id] || 0} members
+                  </div>
                 </div>
               </div>
               <div style={{ padding: '8px 16px', borderRadius: 10, background: BROWN, color: '#fff', fontSize: 12, fontWeight: 900 }}>Join</div>
