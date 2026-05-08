@@ -266,7 +266,7 @@ export default function ProfilePage() {
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <div style={{ fontSize: 13, fontWeight: 900, color: BROWN }}>My Groups</div>
-            <a href="/create-group" style={{ padding: '6px 14px', borderRadius: 10, background: BROWN, color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none', boxShadow: `0 3px 0 ${BROWN}60` }}>+ New</a>
+            <a href="/create-group" style={{ padding: '6px 14px', borderRadius: 10, background: '#2E7D32', color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none', boxShadow: '0 3px 0 #1B5E2060' }}>+ New</a>
           </div>
           {myGroups.length === 0 ? (
             <div style={{ fontSize: 13, color: `${BROWN}30`, fontWeight: 700 }}>Create a group and invite friends to compete!</div>

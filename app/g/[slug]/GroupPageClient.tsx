@@ -103,9 +103,9 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
         <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
           <button onClick={share} style={{
             flex: 1, padding: '13px', borderRadius: 14, border: 'none',
-            background: GOLD, color: '#fff',
+            background: '#2E7D32', color: '#fff',
             fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
-            boxShadow: `0 5px 0 ${GOLD}60`,
+            boxShadow: '0 5px 0 #1B5E2060',
           }}>Invite friends</button>
 
           {!joined && myName && (
