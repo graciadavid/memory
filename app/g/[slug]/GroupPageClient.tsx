@@ -91,7 +91,7 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
       padding: '0 0 100px',
     }}>
       {/* Header */}
-      <div style={{ background: BROWN, padding: '28px 20px 24px' }}>
+      <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #1565C0)', padding: '28px 20px 24px' }}>
         <a href="/profile" style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 800, textDecoration: 'none' }}>← Profile</a>
         <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginTop: 12, marginBottom: 4 }}>Group</div>
         <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{group.name}</div>
