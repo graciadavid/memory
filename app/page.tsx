@@ -161,6 +161,7 @@ export default function LandingPage() {
               <a href="/privacy" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>Privacy</a>
               <a href="/terms" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>Terms</a>
               <a href="/about" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>About</a>
+              <a href="/how-to-play" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>How to Play</a>
             </div>
           </div>
         </>
