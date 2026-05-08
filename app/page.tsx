@@ -157,9 +157,11 @@ export default function LandingPage() {
             <div style={{ fontSize: 11, fontWeight: 700, color: `${BROWN}30`, letterSpacing: 1 }}>
               Always free · No ads · No login
             </div>
-            <a href="/privacy" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>
-              Privacy Policy
-            </a>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 4 }}>
+              <a href="/privacy" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>Privacy</a>
+              <a href="/terms" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>Terms</a>
+              <a href="/about" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>About</a>
+            </div>
           </div>
         </>
       )}
