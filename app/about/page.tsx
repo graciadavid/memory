@@ -32,6 +32,13 @@ export default function AboutPage() {
         </p>
       </div>
 
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 900, marginBottom: 6 }}>Cookie Policy</div>
+        <p style={{ fontSize: 13, lineHeight: 1.8, color: `${BROWN}75`, margin: 0 }}>
+          MemGenius uses only essential local storage to save your game profile and preferences on your device. We do not use tracking cookies or third-party advertising cookies. If we introduce advertising in the future, we will update this policy and request your consent where required by law.
+        </p>
+      </div>
+
       <div style={{ background: '#fff', borderRadius: 16, padding: '20px', border: `1px solid ${BROWN}10`, boxShadow: `0 4px 16px ${BROWN}08` }}>
         <div style={{ fontSize: 13, fontWeight: 900, color: BROWN, marginBottom: 8 }}>Get in touch</div>
         <a href="mailto:hello@memgenius.com" style={{ fontSize: 14, fontWeight: 800, color: GOLD, textDecoration: 'none' }}>hello@memgenius.com</a>
