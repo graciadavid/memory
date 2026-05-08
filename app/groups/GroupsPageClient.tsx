@@ -41,7 +41,7 @@ export default function GroupsPageClient({ publicGroups, memberCounts }: { publi
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {publicGroups.map(group => (
-          <a key={group.id} href={`/g/${group.slug || group.id}`} style={{ textDecoration: 'none' }}>
+          <a key={group.id} href={`/g/${group.id}`} style={{ textDecoration: 'none' }}>
             <div style={{
               background: '#fff', borderRadius: 18, padding: '16px 18px',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',

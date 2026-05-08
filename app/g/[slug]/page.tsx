@@ -1,26 +1,25 @@
 import { supabase } from '@/lib/supabase'
 import GroupPageClient from './GroupPageClient'
 
-export const revalidate = 60
+export const revalidate = 0
 
-export default async function GroupSlugPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function GroupPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
 
-  const { data: group } = await supabase
-    .from('groups')
-    .select('*')
-    .eq('slug', slug)
-    .single()
+  // Try by slug first, then by id
+  let { data: group } = await supabase.from('groups').select('*').eq('slug', slug).single()
+  if (!group) {
+    const res = await supabase.from('groups').select('*').eq('id', slug).single()
+    group = res.data
+  }
 
   if (!group) return <div style={{ padding: 40, textAlign: 'center', fontFamily: 'sans-serif' }}>Group not found</div>
 
   const { data: members } = await supabase
-    .from('group_members')
-    .select('player_name, joined_at')
-    .eq('group_id', group.id)
-    .order('joined_at', { ascending: true })
+    .from('group_members').select('player_name, joined_at')
+    .eq('group_id', group.id).order('joined_at', { ascending: true })
 
-  const memberNames = members?.map(m => m.player_name) || []
+  const memberNames = members?.map((m: any) => m.player_name) || []
 
   const [memScores, digScores, seqScores, flagScores] = await Promise.all([
     supabase.from('scores').select('player_name, time_ms').in('player_name', memberNames).order('time_ms', { ascending: true }),
