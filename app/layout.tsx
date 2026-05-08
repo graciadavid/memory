@@ -50,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <link rel="preconnect" href="https://bgmhfsccchktnknmqkuw.supabase.co" />
       <link rel="manifest" href="/manifest.json" />
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724686954428374" crossOrigin="anonymous"></script>
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
