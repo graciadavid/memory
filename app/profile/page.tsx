@@ -272,9 +272,9 @@ export default function ProfilePage() {
             <div style={{ fontSize: 13, color: `${BROWN}30`, fontWeight: 700 }}>Create a group and invite friends to compete!</div>
           ) : myGroups.map((g: any) => (
             <a key={g.id} href={`/g/${g.id}`} style={{ textDecoration: 'none' }}>
-              <div style={{ background: `${BROWN}06`, borderRadius: 12, padding: '12px 14px', marginBottom: 6, display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: `1px solid ${BROWN}10` }}>
-                <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{g.name}</div>
-                <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700 }}>→</div>
+              <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #1565C0)', borderRadius: 14, padding: '12px 16px', marginBottom: 6, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 0 #0D47A160' }}>
+                <div style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>{g.name}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700 }}>→</div>
               </div>
             </a>
           ))}
