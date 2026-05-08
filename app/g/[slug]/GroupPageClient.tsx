@@ -20,7 +20,7 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, bestMemory, bestDigits, bestSeq, bestFlags }: any) {
+export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags }: any) {
   const [tab, setTab] = useState('flags')
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
@@ -46,7 +46,7 @@ export default function GroupPageClient({ group, members, bestMemory, bestDigits
   }
 
   const share = async () => {
-    const url = `${window.location.origin}/groups/${group.id}`
+    const url = `${window.location.origin}/g/${group.slug || group.id}`
     const text = `Join my group "${group.name}" on MemGenius! Compete with me in Memory, Digits, Sequence and Flags 🧠`
     if (navigator.share) await navigator.share({ title: group.name, text, url })
     else { await navigator.clipboard.writeText(`${text}\n${url}`); alert('Link copied!') }
@@ -95,7 +95,7 @@ export default function GroupPageClient({ group, members, bestMemory, bestDigits
         <a href="/profile" style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 800, textDecoration: 'none' }}>← Profile</a>
         <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginTop: 12, marginBottom: 4 }}>Group</div>
         <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{group.name}</div>
-        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>{members.length} member{members.length !== 1 ? 's' : ''}</div>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>{memberCount} member{memberCount !== 1 ? 's' : ''}</div>
       </div>
 
       <div style={{ padding: '16px' }}>

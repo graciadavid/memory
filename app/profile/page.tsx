@@ -271,7 +271,7 @@ export default function ProfilePage() {
           {myGroups.length === 0 ? (
             <div style={{ fontSize: 13, color: `${BROWN}30`, fontWeight: 700 }}>Create a group and invite friends to compete!</div>
           ) : myGroups.map((g: any) => (
-            <a key={g.id} href={`/groups/${g.slug || g.id}`} style={{ textDecoration: 'none' }}>
+            <a key={g.id} href={`/g/${g.slug || g.id}`} style={{ textDecoration: 'none' }}>
               <div style={{ background: `${BROWN}06`, borderRadius: 12, padding: '12px 14px', marginBottom: 6, display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: `1px solid ${BROWN}10` }}>
                 <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{g.name}</div>
                 <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700 }}>→</div>
