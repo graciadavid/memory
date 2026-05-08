@@ -1,4 +1,3 @@
-// Service Worker v6 - minimal, no caching
 self.addEventListener('install', () => self.skipWaiting())
 self.addEventListener('activate', e => {
   e.waitUntil(
@@ -7,5 +6,6 @@ self.addEventListener('activate', e => {
   self.clients.claim()
 })
 self.addEventListener('fetch', e => {
-  e.respondWith(fetch(e.request))
+  if (e.request.method !== 'GET') return
+  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)))
 })
