@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const LOGO = `${BASE}/logomemgenius.webp`
@@ -158,6 +159,11 @@ export default function LandingPage() {
               <img src="/icons/memory.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Memory</div>
+                {records.memory?.value && (
+                  <div style={{ fontSize: 12, fontWeight: 800, color: '#C8960C', marginTop: 2 }}>
+                    {records.memory.value} · {records.memory.by}
+                  </div>
+                )}
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
                   Match pairs by connection
                 </div>
@@ -178,6 +184,11 @@ export default function LandingPage() {
               <img src="/icons/digits.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Digits</div>
+                {records.digits?.value && (
+                  <div style={{ fontSize: 12, fontWeight: 800, color: '#C8960C', marginTop: 2 }}>
+                    {records.digits.value} · {records.digits.by}
+                  </div>
+                )}
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
                   How many digits can you remember?
                 </div>
@@ -196,6 +207,11 @@ export default function LandingPage() {
               <img src="/icons/sequence.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Sequence</div>
+                {records.sequence?.value && (
+                  <div style={{ fontSize: 12, fontWeight: 800, color: '#C8960C', marginTop: 2 }}>
+                    {records.sequence.value} · {records.sequence.by}
+                  </div>
+                )}
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
                   Repeat the pattern
                 </div>
@@ -217,6 +233,11 @@ export default function LandingPage() {
               <img src="/icons/flags.webp" alt="" style={{ width: 56, height: 56, objectFit: 'contain', flexShrink: 0 }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>Flags</div>
+                {records.flags?.value && (
+                  <div style={{ fontSize: 12, fontWeight: 800, color: '#C8960C', marginTop: 2 }}>
+                    {records.flags.value} · {records.flags.by}
+                  </div>
+                )}
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>
                   How many flags in a row?
                 </div>
