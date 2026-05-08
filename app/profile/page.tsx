@@ -187,7 +187,14 @@ export default function ProfilePage() {
     }}>
 
       {/* HEADER */}
-      <div style={{ background: BROWN, padding: '48px 24px 28px', borderRadius: '0 0 28px 28px' }}>
+      <div style={{
+        background: `url(https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/northern-lights.png)`,
+        backgroundSize: 'cover', backgroundPosition: 'center top',
+        padding: '48px 24px 28px', borderRadius: '0 0 28px 28px',
+        position: 'relative', overflow: 'hidden',
+      }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 100%)' }} />
+      <div style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
           <div style={{ position: 'relative' }}>
             <Avatar name={profile.name} photo={profile.avatar} size={80} />
@@ -250,6 +257,7 @@ export default function ProfilePage() {
             </div>
           </div>
         )}
+      </div>
       </div>
 
       <div style={{ padding: '16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
