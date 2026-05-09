@@ -21,6 +21,16 @@ export default function RankingHubPage() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
+        <a href="/ranking/hall-of-fame" style={{ textDecoration: 'none' }}>
+          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: 'linear-gradient(135deg, #B8860B, #FFD700, #B8860B)', boxShadow: '0 8px 0 #B8860B60', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
+            <img src="/icons/nav-trophy.webp" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>Hall of Fame</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 700, marginTop: 2 }}>All time world records</div>
+            </div>
+          </div>
+        </a>
+
         <a href="/ranking/memory" style={{ textDecoration: 'none' }}>
           <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: BROWN, boxShadow: `0 8px 0 ${BROWN}60`, display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
             <img src="/icons/memory.webp" alt="" style={{ width: 44, height: 44, objectFit: 'contain' }} />
@@ -71,15 +81,7 @@ export default function RankingHubPage() {
           </div>
         </a>
 
-        <a href="/ranking/hall-of-fame" style={{ textDecoration: 'none' }}>
-          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: 'linear-gradient(135deg, #B8860B, #FFD700, #B8860B)', boxShadow: '0 8px 0 #B8860B60', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
-            <img src="/icons/nav-trophy.webp" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>Hall of Fame</div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 700, marginTop: 2 }}>All time world records</div>
-            </div>
-          </div>
-        </a>
+
 
       </div>
     </main>
