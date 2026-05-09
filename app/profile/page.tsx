@@ -58,6 +58,8 @@ export default function ProfilePage() {
   const [precRank, setPrecRank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
   const [profileStreak, setProfileStreak] = useState<{ current: number, longest: number }>({ current: 0, longest: 0 })
   const [versusRank, setVersusRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
+  const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
+  const [versusAreaRank, setVersusAreaRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [myGroups, setMyGroups] = useState<any[]>([])
   const [hasPassword, setHasPassword] = useState(false)
 
@@ -109,14 +111,19 @@ export default function ProfilePage() {
     // Fetch streak
     getStreak(profile.name).then(s => setProfileStreak({ current: s.current, longest: s.longest }))
 
-    // Fetch versus (best across all categories)
+    // Fetch versus by category
     supabase.from('higher_lower_scores').select('player_name, level, category').order('level', { ascending: false }).limit(1000).then(({ data }) => {
       if (!data) return
-      const best: Record<string, number> = {}
-      data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-      const myLevel = best[profile.name]
-      if (!myLevel) return
-      setVersusRank({ level: myLevel, rank: Object.values(best).filter(l => l > myLevel).length + 1 })
+      const calcRank = (cat: string) => {
+        const catData = data.filter((s: any) => s.category === cat)
+        const best: Record<string, number> = {}
+        catData.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+        const myLevel = best[profile.name]
+        if (!myLevel) return { level: null, rank: null }
+        return { level: myLevel, rank: Object.values(best).filter(l => l > myLevel).length + 1 }
+      }
+      setVersusPopRank(calcRank('population'))
+      setVersusAreaRank(calcRank('area'))
     })
 
     fetchAllRanks(profile.name).then(({ memoryRanks, digitsRank, seqRank }) => {
@@ -393,25 +400,32 @@ https://memgenius.com/precision` },
 
         {/* Versus */}
         <div style={{ background: '#fff', borderRadius: 20, padding: '14px 16px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png" alt="" style={{ width: 22, height: 22, objectFit: 'contain' }} />
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#C62828' }}>Versus</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 20, fontWeight: 900, color: BROWN }}>{versusRank.level ?? '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Best</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 20, fontWeight: 900, color: BROWN }}>{versusRank.rank ? `#${versusRank.rank}` : '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
-              </div>
-              {versusRank.level && (
-                <button onClick={() => shareScore(`⚔️ I'm #${versusRank.rank} in MemGenius Versus with ${versusRank.level} correct!\nhttps://memgenius.com/versus`)}
-                  style={{ padding: '6px 12px', borderRadius: 10, border: 'none', background: '#C62828', color: '#fff', fontSize: 11, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-              )}
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png" alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+            <div style={{ fontSize: 13, fontWeight: 900, color: '#C62828' }}>Versus</div>
+          </div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {[
+              { label: 'Population', data: versusPopRank, share: `🌍 I got ${versusPopRank.level} correct in Versus Population! #${versusPopRank.rank}\nhttps://memgenius.com/versus/population` },
+              { label: 'Area km²', data: versusAreaRank, share: `🗺️ I got ${versusAreaRank.level} correct in Versus Area! #${versusAreaRank.rank}\nhttps://memgenius.com/versus/area` },
+            ].map(v => {
+              const hasResult = v.data.rank != null
+              return (
+                <div key={v.label} style={{ flex: 1, textAlign: 'center', background: '#C6282808', border: '1px solid #C6282820', borderRadius: 12, padding: '8px 4px' }}>
+                  <div style={{ fontSize: 8, fontWeight: 900, color: '#C62828', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{v.label}</div>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20` }}>
+                    {loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}
+                  </div>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20` }}>
+                    {loadingRanks ? '' : hasResult ? `${v.data.level} correct` : ''}
+                  </div>
+                  {hasResult && (
+                    <button onClick={() => shareScore(v.share)}
+                      style={{ marginTop: 4, padding: '3px 8px', borderRadius: 6, border: 'none', background: '#C62828', color: '#fff', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
 
