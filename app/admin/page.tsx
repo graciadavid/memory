@@ -143,12 +143,7 @@ export default function AdminPage() {
     const pct = (curr: number, prev: number) => prev === 0 ? null : Math.round(((curr - prev) / prev) * 100)
     const uniq = (arr: any[]) => new Set(arr.map(s => s.player_name)).size
 
-    console.log('periodStart:', periodStart, 'periodEnd:', periodEnd)
-    console.log('prevStart:', prevStart)
-    console.log('total all games:', mem.length + dig.length + seq.length + flag.length + prec.length + vs.length)
-    console.log('inPeriod total:', inPeriod([...mem,...dig,...seq,...flag,...prec,...vs]).length)
-    console.log('inPrev total:', inPrev([...mem,...dig,...seq,...flag,...prec,...vs]).length)
-    const memP = inPeriod(mem).length
+const memP = inPeriod(mem).length
     const digP = inPeriod(dig).length
     const seqP = inPeriod(seq).length
     const flagP = inPeriod(flag).length
@@ -328,7 +323,9 @@ export default function AdminPage() {
                 {(() => { const total = stats.games.reduce((a: number, g: any) => a + g.curr, 0); const users = new Set(stats.games.map((g: any) => g.users)).size; return total > 0 ? `${(total / Math.max(...stats.games.map((g: any) => g.users))).toFixed(1)} avg/user` : '' })()}
               </div>
               {(() => {
-                const totalPct = Math.round(stats.games.reduce((a: number, g: any) => a + g.curr, 0) / Math.max(1, stats.games.reduce((a: number, g: any) => a + (g.curr / (1 + (g.pct || 0) / 100)), 0)) * 100) - 100
+                const totalCurr = stats.games.reduce((a: number, g: any) => a + g.curr, 0)
+                const totalPrevCalc = stats.games.reduce((a: number, g: any) => a + (g.pct !== null ? Math.round(g.curr / (1 + g.pct / 100)) : g.curr), 0)
+                const totalPct = totalPrevCalc === 0 ? null : Math.round(((totalCurr - totalPrevCalc) / totalPrevCalc) * 100)
                 return totalPct !== 0 ? (
                   <div style={{ fontSize: 12, fontWeight: 800, color: totalPct >= 0 ? '#81C784' : '#EF9A9A', marginBottom: 6 }}>
                     {totalPct >= 0 ? '↑' : '↓'}{Math.abs(totalPct)}%
