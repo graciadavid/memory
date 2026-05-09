@@ -109,8 +109,8 @@ export default function ProfilePage() {
     // Fetch streak
     getStreak(profile.name).then(s => setProfileStreak({ current: s.current, longest: s.longest }))
 
-    // Fetch versus
-    supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').order('level', { ascending: false }).limit(500).then(({ data }) => {
+    // Fetch versus (best across all categories)
+    supabase.from('higher_lower_scores').select('player_name, level, category').order('level', { ascending: false }).limit(1000).then(({ data }) => {
       if (!data) return
       const best: Record<string, number> = {}
       data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
