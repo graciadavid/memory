@@ -59,23 +59,56 @@ export default function AdminPage() {
     return new Date(new Date(dateStr + 'T00:00:00.000Z').getTime() - offset * 3600000).toISOString()
   }
 
-  const getPeriodStart = (p: Period) => {
-    const now = new Date()
+  const getSpainMidnight = (daysAgo: number) => {
+    // Get midnight in Madrid for N days ago
     const offset = getSpainOffset()
-    if (p === '1h') return new Date(now.getTime() - 3600000).toISOString()
-    if (p === 'today') return new Date(new Date(getSpainToday() + 'T00:00:00.000Z').getTime() - offset * 3600000).toISOString()
-    if (p === '7d') { const y = new Date(now); y.setDate(y.getDate()-1); y.setHours(0,0,0,0); return y.toISOString() }
-    if (p === '30d') return new Date(now.getTime() - 30 * 86400000).toISOString()
+    const now = new Date()
+    const spainNow = new Date(now.getTime() + offset * 3600000)
+    spainNow.setUTCDate(spainNow.getUTCDate() - daysAgo)
+    spainNow.setUTCHours(0, 0, 0, 0)
+    return new Date(spainNow.getTime() - offset * 3600000).toISOString()
+  }
+
+  const getSpainHourStart = () => {
+    // Start of current hour in Madrid
+    const offset = getSpainOffset()
+    const now = new Date()
+    const spainNow = new Date(now.getTime() + offset * 3600000)
+    spainNow.setUTCMinutes(0, 0, 0)
+    return new Date(spainNow.getTime() - offset * 3600000).toISOString()
+  }
+
+  const getPeriodStart = (p: Period) => {
+    if (p === '1h') return getSpainHourStart()
+    if (p === 'today') return getSpainMidnight(0)
+    if (p === '7d') return getSpainMidnight(1)  // yesterday 00:00
+    if (p === '30d') return getSpainMidnight(30)
     return '2026-01-01T00:00:00.000Z'
   }
 
+  const getPeriodEnd = (p: Period) => {
+    if (p === '7d') return getSpainMidnight(0)  // yesterday ends at today 00:00
+    if (p === '1h') {
+      const offset = getSpainOffset()
+      const now = new Date()
+      const spainNow = new Date(now.getTime() + offset * 3600000)
+      spainNow.setUTCMinutes(59, 59, 999)
+      return new Date(spainNow.getTime() - offset * 3600000).toISOString()
+    }
+    return new Date().toISOString()
+  }
+
   const getPrevPeriodStart = (p: Period) => {
-    const now = new Date()
-    const offset = getSpainOffset()
-    if (p === '1h') return new Date(now.getTime() - 7200000).toISOString()
-    if (p === 'today') return new Date(new Date(getSpainToday() + 'T00:00:00.000Z').getTime() - offset * 3600000 - 86400000).toISOString()
-    if (p === '7d') { const y = new Date(now); y.setDate(y.getDate()-2); y.setHours(0,0,0,0); return y.toISOString() }
-    if (p === '30d') return new Date(now.getTime() - 60 * 86400000).toISOString()
+    if (p === '1h') {
+      const offset = getSpainOffset()
+      const now = new Date()
+      const spainNow = new Date(now.getTime() + offset * 3600000)
+      spainNow.setUTCHours(spainNow.getUTCHours() - 1, 0, 0, 0)
+      return new Date(spainNow.getTime() - offset * 3600000).toISOString()
+    }
+    if (p === 'today') return getSpainMidnight(1)
+    if (p === '7d') return getSpainMidnight(2)
+    if (p === '30d') return getSpainMidnight(60)
     return '2025-01-01T00:00:00.000Z'
   }
 
@@ -103,7 +136,8 @@ export default function AdminPage() {
     const prec = precAll.data || []
     const vs = vsAll?.data || []
 
-    const inPeriod = (arr: any[]) => arr.filter(s => s.created_at >= periodStart)
+    const periodEnd = getPeriodEnd(period)
+    const inPeriod = (arr: any[]) => arr.filter(s => s.created_at >= periodStart && s.created_at < periodEnd)
     const inPrev = (arr: any[]) => arr.filter(s => s.created_at >= prevStart && s.created_at < periodStart)
 
     const pct = (curr: number, prev: number) => prev === 0 ? null : Math.round(((curr - prev) / prev) * 100)
