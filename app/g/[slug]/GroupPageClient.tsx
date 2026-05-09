@@ -88,11 +88,6 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
           .filter((n: string) => bestVersus[n] !== undefined)
           .map((n: string) => ({ name: n, score: `${bestVersus[n]} correct`, raw: bestVersus[n] }))
           .sort((a: any, b: any) => b.raw - a.raw)
-      case 'versus':
-        return memberNames
-          .filter((n: string) => bestVersus[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestVersus[n]} correct`, raw: bestVersus[n] }))
-          .sort((a: any, b: any) => b.raw - a.raw)
       default: return []
     }
   }
