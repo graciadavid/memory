@@ -5,14 +5,7 @@ const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
 const COLOR = '#C62828'
 
-export default function VersusRankingClient({ scores }: { scores: { name: string, level: number, created_at: string }[] }) {
-  const [myName, setMyName] = useState('')
-
-  useEffect(() => {
-    const stored = localStorage.getItem('memgenius_profile')
-    if (stored) setMyName(JSON.parse(stored).name || '')
-  }, [])
-
+function RankingList({ scores, myName }: { scores: { name: string, level: number, created_at: string }[], myName: string }) {
   const myIndex = scores.findIndex(s => s.name === myName)
   const myScore = myIndex >= 0 ? scores[myIndex] : null
 
@@ -71,5 +64,38 @@ export default function VersusRankingClient({ scores }: { scores: { name: string
         </div>
       )}
     </>
+  )
+}
+
+export default function VersusRankingClient({ popScores, areaScores }: { popScores: any[], areaScores: any[] }) {
+  const [myName, setMyName] = useState('')
+  const [tab, setTab] = useState<'population' | 'area'>('population')
+
+  useEffect(() => {
+    const stored = localStorage.getItem('memgenius_profile')
+    if (stored) setMyName(JSON.parse(stored).name || '')
+  }, [])
+
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 8, padding: '0 16px 12px', flexShrink: 0 }}>
+        {[
+          { key: 'population', label: '🌍 Population' },
+          { key: 'area', label: '🗺️ Area km²' },
+        ].map(t => (
+          <button key={t.key} onClick={() => setTab(t.key as any)} style={{
+            flex: 1, padding: '10px', borderRadius: 12, border: 'none',
+            background: tab === t.key ? COLOR : '#fff',
+            color: tab === t.key ? '#fff' : `${BROWN}60`,
+            fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
+            boxShadow: tab === t.key ? `0 4px 0 ${COLOR}60` : `0 2px 8px ${BROWN}08`,
+          }}>{t.label}</button>
+        ))}
+      </div>
+
+      {tab === 'population' && <RankingList scores={popScores} myName={myName} />}
+      {tab === 'area' && <RankingList scores={areaScores} myName={myName} />}
+    </div>
   )
 }

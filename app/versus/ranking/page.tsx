@@ -4,24 +4,22 @@ import VersusRankingClient from './VersusRankingClient'
 export const revalidate = 60
 
 export default async function VersusRankingPage() {
-  const { data } = await supabase
-    .from('higher_lower_scores')
-    .select('player_name, level, created_at')
-    .eq('category', 'population')
-    .order('level', { ascending: false })
-    .order('created_at', { ascending: true })
-    .limit(500)
+  const [popData, areaData] = await Promise.all([
+    supabase.from('higher_lower_scores').select('player_name, level, created_at').eq('category', 'population').order('level', { ascending: false }).order('created_at', { ascending: true }).limit(500),
+    supabase.from('higher_lower_scores').select('player_name, level, created_at').eq('category', 'area').order('level', { ascending: false }).order('created_at', { ascending: true }).limit(500),
+  ])
 
-  const best: Record<string, { level: number, created_at: string }> = {}
-  data?.forEach(s => {
-    if (!best[s.player_name] || s.level > best[s.player_name].level) {
-      best[s.player_name] = { level: s.level, created_at: s.created_at }
-    }
-  })
-
-  const scores = Object.entries(best)
-    .map(([name, d]) => ({ name, level: d.level, created_at: d.created_at }))
-    .sort((a, b) => b.level - a.level || a.created_at.localeCompare(b.created_at))
+  const getBest = (data: any[]) => {
+    const best: Record<string, { level: number, created_at: string }> = {}
+    data?.forEach(s => {
+      if (!best[s.player_name] || s.level > best[s.player_name].level) {
+        best[s.player_name] = { level: s.level, created_at: s.created_at }
+      }
+    })
+    return Object.entries(best)
+      .map(([name, d]) => ({ name, level: d.level, created_at: d.created_at }))
+      .sort((a, b) => b.level - a.level || a.created_at.localeCompare(b.created_at))
+  }
 
   return (
     <main style={{
@@ -40,7 +38,7 @@ export default async function VersusRankingPage() {
           <div style={{ background: '#fff', border: '1px solid #4A2C0A15', borderRadius: 10, padding: '6px 12px', fontSize: 12, fontWeight: 800, color: '#4A2C0A60' }}>Back ✕</div>
         </a>
       </div>
-      <VersusRankingClient scores={scores} />
+      <VersusRankingClient popScores={getBest(popData.data || [])} areaScores={getBest(areaData.data || [])} />
     </main>
   )
 }
