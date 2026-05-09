@@ -21,16 +21,6 @@ export default function RankingHubPage() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-        <a href="/versus/ranking" style={{ textDecoration: 'none' }}>
-          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: '#C62828', boxShadow: '0 6px 0 #C6282860', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
-            <div style={{ fontSize: 36 }}>⚔️</div>
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Versus</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 1 }}>Population ranking</div>
-            </div>
-          </div>
-        </a>
-
         <a href="/ranking/hall-of-fame" style={{ textDecoration: 'none' }}>
           <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: 'linear-gradient(135deg, #B8860B, #FFD700, #B8860B)', boxShadow: '0 8px 0 #B8860B60', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
             <img src="/icons/nav-trophy.webp" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
