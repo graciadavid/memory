@@ -198,7 +198,7 @@ export default function VersusPage() {
     }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
-        <div style={{ fontSize: 48, flexShrink: 0 }}>🌍</div>
+        <img src={`${BASE}/higher.png`} alt="" style={{ height: 60, objectFit: 'contain', flexShrink: 0 }} onError={e => { (e.target as any).style.display='none' }} />
         <div>
           <div style={{ fontSize: 26, fontWeight: 900, color: COLOR, letterSpacing: -0.5 }}>Higher or Lower</div>
           <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Which country has more people?</div>
@@ -229,8 +229,9 @@ export default function VersusPage() {
 
         {phase === 'playing' && pair && (
           <>
-            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase' }}>
-              Streak: <span style={{ color: COLOR, fontSize: 16 }}>{streak}</span>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase' }}>Streak</div>
+              <div style={{ fontSize: 48, fontWeight: 900, color: COLOR, lineHeight: 1 }}>{streak}</div>
             </div>
 
             <button onClick={() => answer('a')} disabled={!!selected} style={{
@@ -279,7 +280,7 @@ export default function VersusPage() {
           <>
             <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
               <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Your score</div>
-              <div style={{ fontSize: 56, fontWeight: 900, color: BROWN, letterSpacing: -2 }}>{streak}</div>
+              <div style={{ fontSize: 80, fontWeight: 900, color: BROWN, letterSpacing: -3 }}>{streak}</div>
               <div style={{ fontSize: 14, color: `${BROWN}50`, marginBottom: 16 }}>correct in a row</div>
               {worldRank && (
                 <div style={{ fontSize: 14, color: `${BROWN}60`, fontWeight: 700 }}>
