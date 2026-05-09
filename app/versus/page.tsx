@@ -78,7 +78,7 @@ function fmt(n: number) {
   if (n >= 100000000) return `${(n / 1000000).toFixed(0)}M`
   if (n >= 10000000) return `${(n / 1000000).toFixed(1)}M`
   if (n >= 1000000) return `${(n / 1000000).toFixed(2)}M`
-  return `${(n / 1000000).toFixed(2)}M`
+  return `${(n / 1000).toFixed(0)}K`
 }
 
 let sharedCtx: AudioContext | null = null
@@ -114,8 +114,8 @@ export default function VersusPage() {
   const { profile } = usePlayer()
   const [phase, setPhase] = useState<'idle' | 'playing' | 'result'>('idle')
   const [deck, setDeck] = useState<typeof COUNTRIES>([])
-  const [current, setCurrent] = useState(0) // index of the "next" card
-  const [revealed, setRevealed] = useState<typeof COUNTRIES>([]) // cards shown
+  const [current, setCurrent] = useState(0)
+  const [revealed, setRevealed] = useState<typeof COUNTRIES>([])
   const [streak, setStreak] = useState(0)
   const [answered, setAnswered] = useState<boolean | null>(null)
   const [worldRank, setWorldRank] = useState<number | null>(null)
@@ -144,10 +144,7 @@ export default function VersusPage() {
     if (answered !== null) return
     const prev = revealed[revealed.length - 1]
     const next = deck[current]
-    const correct = isHigher
-      ? next.population >= prev.population
-      : next.population < prev.population
-
+    const correct = isHigher ? next.population >= prev.population : next.population < prev.population
     setAnswered(correct)
     if (correct) playCorrect(); else playWrong()
 
@@ -182,10 +179,10 @@ export default function VersusPage() {
       background: `radial-gradient(ellipse at 50% 0%, #FFEBEE 0%, ${CREAM} 50%)`,
       display: 'flex', flexDirection: 'column',
       fontFamily: 'var(--font-nunito), sans-serif',
-      maxWidth: 430, margin: '0 auto', overflow: 'hidden',
+      maxWidth: 430, margin: '0 auto',
     }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px 0', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px 0', gap: 12, flexShrink: 0 }}>
         <div style={{ fontSize: 40 }}>⚔️</div>
         <div>
           <div style={{ fontSize: 24, fontWeight: 900, color: COLOR, letterSpacing: -0.5 }}>Versus</div>
@@ -199,10 +196,11 @@ export default function VersusPage() {
         )}
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '12px 16px', gap: 8, overflow: 'hidden' }}>
+      {/* Content */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch', justifyContent: 'center', padding: '16px 16px 80px' }}>
 
         {phase === 'idle' && (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
             <div style={{ textAlign: 'center', color: `${BROWN}60`, fontSize: 15, fontWeight: 700, lineHeight: 1.6 }}>
               Is the next country's population<br />Higher or Lower than the previous?
             </div>
@@ -221,66 +219,60 @@ export default function VersusPage() {
         )}
 
         {phase === 'playing' && next && (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            {/* Scrolling chain — only show last 2 revealed */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 8, overflow: 'hidden', paddingBottom: 8 }}>
-              {revealed.slice(-2).map((c, i, arr) => (
-                <div key={c.code} style={{
-                  background: '#fff', borderRadius: 16, padding: '12px 14px',
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  boxShadow: `0 2px 8px ${BROWN}08`,
-                  border: `1px solid ${i === arr.length - 1 ? COLOR + '50' : BROWN + '08'}`,
-                  opacity: i < arr.length - 1 ? 0.5 : 1,
-                  transition: 'all 0.3s',
-                }}>
-                  <img src={`${FLAG_CDN}/${c.code}.png`} alt="" style={{ width: 52, height: 35, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
-                  <div style={{ flex: 1, fontWeight: 900, color: BROWN, fontSize: 16 }}>{c.name}</div>
-                  <div style={{ fontWeight: 900, color: COLOR, fontSize: 15 }}>{fmt(c.population)}</div>
-                </div>
-              ))}
-
-              {/* Next card — hidden */}
-              <div style={{
-                background: answered === false ? '#FFEBEE' : answered === true ? '#E8F5E9' : `${COLOR}08`,
-                borderRadius: 16, padding: '12px 14px',
-                display: 'flex', alignItems: 'center', gap: 10,
-                border: `2px solid ${answered === false ? '#B71C1C50' : answered === true ? '#2E7D3250' : COLOR + '40'}`,
-                transition: 'all 0.3s',
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {/* Last revealed */}
+            {revealed.slice(-2).map((c, i, arr) => (
+              <div key={c.code} style={{
+                background: '#fff', borderRadius: 16, padding: '14px 16px',
+                display: 'flex', alignItems: 'center', gap: 12,
+                boxShadow: `0 2px 8px ${BROWN}08`,
+                border: `1px solid ${i === arr.length - 1 ? COLOR + '50' : BROWN + '08'}`,
+                opacity: i < arr.length - 1 ? 0.45 : 1,
               }}>
-                <img src={`${FLAG_CDN}/${next.code}.png`} alt="" style={{ width: 52, height: 35, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
-                <div style={{ flex: 1, fontWeight: 900, color: BROWN, fontSize: 16 }}>{next.name}</div>
-                <div style={{ fontWeight: 900, fontSize: 15, color: answered !== null ? (answered ? '#2E7D32' : '#B71C1C') : `${BROWN}20` }}>
-                  {answered !== null ? fmt(next.population) : '???'}
-                </div>
+                <img src={`${FLAG_CDN}/${c.code}.png`} alt="" style={{ width: 56, height: 38, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+                <div style={{ flex: 1, fontWeight: 900, color: BROWN, fontSize: 17 }}>{c.name}</div>
+                <div style={{ fontWeight: 900, color: COLOR, fontSize: 16 }}>{fmt(c.population)}</div>
+              </div>
+            ))}
+
+            {/* Next — hidden */}
+            <div style={{
+              background: answered === false ? '#FFEBEE' : answered === true ? '#E8F5E9' : `${COLOR}08`,
+              borderRadius: 16, padding: '14px 16px',
+              display: 'flex', alignItems: 'center', gap: 12,
+              border: `2px solid ${answered === false ? '#B71C1C50' : answered === true ? '#2E7D3250' : COLOR + '40'}`,
+            }}>
+              <img src={`${FLAG_CDN}/${next.code}.png`} alt="" style={{ width: 56, height: 38, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+              <div style={{ flex: 1, fontWeight: 900, color: BROWN, fontSize: 17 }}>{next.name}</div>
+              <div style={{ fontWeight: 900, fontSize: 16, color: answered !== null ? (answered ? '#2E7D32' : '#B71C1C') : `${BROWN}20` }}>
+                {answered !== null ? fmt(next.population) : '???'}
               </div>
             </div>
 
-            {/* Fixed buttons at bottom */}
-            <div style={{ paddingTop: 8 }}>
-              {answered === null ? (
-                <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={() => answer(true)} style={{
-                    flex: 1, padding: '18px', borderRadius: 16, border: 'none',
-                    background: '#2E7D32', color: '#fff', fontSize: 18, fontWeight: 900,
-                    fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #1B5E2060',
-                  }}>↑ Higher</button>
-                  <button onClick={() => answer(false)} style={{
-                    flex: 1, padding: '18px', borderRadius: 16, border: 'none',
-                    background: COLOR, color: '#fff', fontSize: 18, fontWeight: 900,
-                    fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${COLOR}60`,
-                  }}>↓ Lower</button>
-                </div>
-              ) : (
-                <div style={{ fontSize: 20, fontWeight: 900, color: answered ? '#2E7D32' : '#B71C1C', textAlign: 'center', padding: '16px' }}>
-                  {answered ? '✓ Correct!' : '✗ Wrong!'}
-                </div>
-              )}
-            </div>
+            {/* Buttons */}
+            {answered === null ? (
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                <button onClick={() => answer(true)} style={{
+                  flex: 1, padding: '18px', borderRadius: 16, border: 'none',
+                  background: '#2E7D32', color: '#fff', fontSize: 18, fontWeight: 900,
+                  fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #1B5E2060',
+                }}>↑ Higher</button>
+                <button onClick={() => answer(false)} style={{
+                  flex: 1, padding: '18px', borderRadius: 16, border: 'none',
+                  background: COLOR, color: '#fff', fontSize: 18, fontWeight: 900,
+                  fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${COLOR}60`,
+                }}>↓ Lower</button>
+              </div>
+            ) : (
+              <div style={{ fontSize: 20, fontWeight: 900, color: answered ? '#2E7D32' : '#B71C1C', textAlign: 'center', padding: '8px' }}>
+                {answered ? '✓ Correct!' : '✗ Wrong!'}
+              </div>
+            )}
           </div>
         )}
 
         {phase === 'result' && (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
             <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
               <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Your score</div>
               <div style={{ fontSize: 80, fontWeight: 900, color: BROWN, letterSpacing: -3 }}>{streak}</div>
@@ -291,7 +283,6 @@ export default function VersusPage() {
                 </div>
               )}
             </div>
-
             <button onClick={() => {
               const url = `${window.location.origin}/challenge?game=versus&score=${streak}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               const text = `⚔️ ${profile?.name} got ${streak} correct in Versus on MemGenius! Can you beat them? ${url}`
@@ -302,7 +293,6 @@ export default function VersusPage() {
               fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
-
             <button onClick={startGame} style={{
               width: '100%', padding: '16px', borderRadius: 16, border: 'none',
               background: COLOR, color: '#fff', fontSize: 16, fontWeight: 900,
