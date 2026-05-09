@@ -160,6 +160,7 @@ export default function AdminPage() {
         { label: 'Digits', curr: digP, pct: pct(digP, digPrev), color: BLUE, users: digU, avg: digU > 0 ? (digP / digU).toFixed(1) : '0' },
         { label: 'Sequence', curr: seqP, pct: pct(seqP, seqPrev), color: '#6A1B9A', users: seqU, avg: seqU > 0 ? (seqP / seqU).toFixed(1) : '0' },
         { label: 'Flags', curr: flagP, pct: pct(flagP, flagPrev), color: '#00796B', users: flagU, avg: flagU > 0 ? (flagP / flagU).toFixed(1) : '0' },
+          { label: 'Precision', curr: precP, pct: pct(precP, precPrev), color: '#4A148C', users: precU, avg: precU > 0 ? (precP / precU).toFixed(1) : '0' },
       ],
       players: { total: allPlayers.size, period: periodPlayers.size, pctPlayers: pct(periodPlayers.size, prevPlayers.size), newPeriod: newInPeriod, pctNew: pct(newInPeriod, newInPrev) },
     })
