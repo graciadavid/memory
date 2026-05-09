@@ -129,6 +129,7 @@ export default function LandingPage() {
   if (!loaded) return null
 
   return (
+    <>
     <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }`}</style>
     <main style={{
       height: '100dvh',
@@ -259,5 +260,6 @@ export default function LandingPage() {
         </>
       )}
     </main>
+    </>
   )
 }
