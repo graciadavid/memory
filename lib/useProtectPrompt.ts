@@ -14,7 +14,7 @@ export function useProtectPrompt(playerName: string | undefined) {
       .from('profiles')
       .select('password_hash')
       .eq('player_name', playerName)
-      .single()
+      .maybeSingle()
 
     if (data?.password_hash) return // already protected
 
