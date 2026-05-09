@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
@@ -14,12 +14,11 @@ const ITEMS = [
 
 export default function BottomNav() {
   const path = usePathname()
-  const [hasProfile, setHasProfile] = useState(false)
-
-  useEffect(() => {
+  const [hasProfile] = useState(() => {
+    if (typeof window === 'undefined') return false
     const stored = localStorage.getItem('memgenius_profile')
-    setHasProfile(!!(stored && JSON.parse(stored).name))
-  }, [path])
+    return !!(stored && JSON.parse(stored).name)
+  })
 
   // Hide bottom nav on home if no profile (onboarding)
   if (path === '/' && !hasProfile) return null
