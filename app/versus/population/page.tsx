@@ -186,7 +186,7 @@ export default function VersusPage() {
         <div style={{ fontSize: 40 }}>⚔️</div>
         <div>
           <div style={{ fontSize: 24, fontWeight: 900, color: COLOR, letterSpacing: -0.5 }}>Versus</div>
-          <div style={{ fontSize: 11, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>Population — Higher or Lower</div>
+
         </div>
         {phase === 'playing' && (
           <div style={{ marginLeft: 'auto', textAlign: 'center' }}>
@@ -220,6 +220,12 @@ export default function VersusPage() {
 
         {phase === 'playing' && next && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {/* Topic label */}
+            <div style={{ textAlign: 'center', fontSize: 22, fontWeight: 900, color: BROWN, letterSpacing: -0.5, marginBottom: 4 }}>Population</div>
+
+            {/* Topic label */}
+            <div style={{ textAlign: 'center', fontSize: 22, fontWeight: 900, color: BROWN, letterSpacing: -0.5, marginBottom: 4 }}>Population</div>
+
             {/* Last revealed */}
             {revealed.slice(-2).map((c, i, arr) => (
               <div key={c.code} style={{
