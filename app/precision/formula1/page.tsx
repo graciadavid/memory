@@ -5,6 +5,52 @@ import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
 const BROWN = '#4A2C0A'
+
+let audioCtx: AudioContext | null = null
+function getAudioCtx() {
+  if (!audioCtx || audioCtx.state === 'closed') audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+  if (audioCtx.state === 'suspended') audioCtx.resume()
+  return audioCtx
+}
+function playLight() {
+  try {
+    const ctx = getAudioCtx()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(880, ctx.currentTime)
+    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.15)
+    gain.gain.setValueAtTime(0.3, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    osc.start()
+    osc.stop(ctx.currentTime + 0.3)
+  } catch(e) {}
+}
+
+let audioCtx: AudioContext | null = null
+function getAudioCtx() {
+  if (!audioCtx || audioCtx.state === 'closed') audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+  if (audioCtx.state === 'suspended') audioCtx.resume()
+  return audioCtx
+}
+function playLight() {
+  try {
+    const ctx = getAudioCtx()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(880, ctx.currentTime)
+    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.15)
+    gain.gain.setValueAtTime(0.3, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    osc.start()
+    osc.stop(ctx.currentTime + 0.3)
+  } catch(e) {}
+}
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const RED = '#E8002D'
@@ -32,6 +78,7 @@ export default function Formula1Page() {
   }, [profile?.name])
 
   const startSequence = () => {
+    try { getAudioCtx() } catch(e) {}
     setPhase('lighting')
     setLitCount(0)
 
@@ -40,6 +87,8 @@ export default function Formula1Page() {
     const lightUp = () => {
       count++
       setLitCount(count)
+      playLight()
+      playLight()
       if (count < 5) {
         timeoutRef.current = setTimeout(lightUp, 1000)
       } else {
@@ -142,11 +191,14 @@ export default function Formula1Page() {
 
         {/* Semaphores */}
         {(phase === 'idle' || phase === 'lighting' || phase === 'waiting' || phase === 'go') && (
+          <>
+          <div style={{ fontSize: 13, fontWeight: 900, color: phase === 'go' ? 'rgba(255,255,255,0.7)' : `${BROWN}60`, letterSpacing: 3, textTransform: 'uppercase', textAlign: 'center' }}>Reaction Time</div>
           <div style={{ display: 'flex', gap: 8 }}>
             {[1, 2, 3, 4, 5].map(n => (
               <Semaphore key={n} lit={phase === 'waiting' ? true : litCount >= n} />
             ))}
           </div>
+          </>
         )}
 
         {phase === 'idle' && (
