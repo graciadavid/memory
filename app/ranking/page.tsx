@@ -10,8 +10,8 @@ const GAMES = [
   { key: 'digits', href: '/digits/ranking', icon: `${BASE}/digits.webp`, label: 'Digits', bg: '#1565C0', shadow: '#1565C060', emoji: false },
   { key: 'sequence', href: '/sequence/ranking', icon: `${BASE}/sequence.webp`, label: 'Sequence', bg: '#6A1B9A', shadow: '#6A1B9A60', emoji: false },
   { key: 'flags', href: '/flags/ranking', icon: `${BASE}/flags.webp`, label: 'Flags', bg: '#00796B', shadow: '#00796B60', emoji: false },
-  { key: 'precision', href: '/precision/ranking', icon: '', label: 'Precision', bg: '#4A148C', shadow: '#4A148C60', emoji: true, emojiIcon: '⏱' },
-  { key: 'versus', href: '/versus/ranking', icon: '', label: 'Versus', bg: '#C62828', shadow: '#C6282860', emoji: true, emojiIcon: '⚔️' },
+  { key: 'precision', href: '/precision/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', label: 'Precision', bg: '#4A148C', shadow: '#4A148C60', emoji: false },
+  { key: 'versus', href: '/versus/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higher.png', label: 'Versus', bg: '#C62828', shadow: '#C6282860', emoji: false },
 ]
 
 export default function RankingPage() {
