@@ -141,7 +141,7 @@ export default function VersusPage() {
   useEffect(() => {
     if (!profile?.name) return
     supabase.from('higher_lower_scores')
-      .select('level').eq('player_name', profile.name).eq('category', 'population')
+      .select('level').eq('player_name', profile.name).eq('category', 'area')
       .order('level', { ascending: false }).limit(1)
       .then(({ data }) => { if (data?.[0]) setBestScore(data[0].level) })
   }, [profile?.name])
@@ -180,7 +180,7 @@ export default function VersusPage() {
         await updateStreak(profile.name)
           const { count } = await supabase.from('higher_lower_scores')
             .select('*', { count: 'exact', head: true })
-            .eq('category', 'population').gt('level', finalStreak)
+            .eq('category', 'area').gt('level', finalStreak)
           setWorldRank((count ?? 0) + 1)
           if (bestScore === null || finalStreak > bestScore) setBestScore(finalStreak)
         }
@@ -220,7 +220,7 @@ export default function VersusPage() {
         {phase === 'idle' && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
             <div style={{ textAlign: 'center', color: `${BROWN}60`, fontSize: 15, fontWeight: 700, lineHeight: 1.6 }}>
-              Is the next country's population<br />Higher or Lower than the previous?
+              Is the next country's area<br />Higher or Lower than the previous?
             </div>
             {bestScore !== null && (
               <div style={{ background: `${COLOR}10`, borderRadius: 16, padding: '12px 24px', textAlign: 'center', border: `1px solid ${COLOR}20` }}>
@@ -254,7 +254,7 @@ export default function VersusPage() {
             ))}
 
             {/* Topic label */}
-            <div style={{ textAlign: 'center', fontSize: 20, fontWeight: 900, color: BROWN, letterSpacing: -0.5 }}>Population</div>
+            <div style={{ textAlign: 'center', fontSize: 20, fontWeight: 900, color: BROWN, letterSpacing: -0.5 }}>Area km²</div>
 
             {/* Next — hidden */}
             <div style={{
@@ -305,7 +305,7 @@ export default function VersusPage() {
               )}
             </div>
             <button onClick={() => {
-              const url = `${window.location.origin}/challenge?game=versus-population&score=${streak}&by=${encodeURIComponent(profile?.name || 'Someone')}`
+              const url = `${window.location.origin}/challenge?game=versus-area&score=${streak}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               const text = `⚔️ ${profile?.name} got ${streak} correct in Versus Area km² on MemGenius! Can you beat them? ${url}`
               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
             }} style={{
