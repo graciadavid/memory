@@ -390,8 +390,7 @@ https://memgenius.com/precision` },
                 <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
               </div>
               {versusRank.level && (
-                <button onClick={() => shareScore(`⚔️ I'm #${versusRank.rank} in MemGenius Versus with ${versusRank.level} correct!
-https://memgenius.com/versus`)}
+                <button onClick={() => shareScore(`⚔️ I'm #${versusRank.rank} in MemGenius Versus with ${versusRank.level} correct!\nhttps://memgenius.com/versus`)}
                   style={{ padding: '6px 12px', borderRadius: 10, border: 'none', background: '#C62828', color: '#fff', fontSize: 11, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
               )}
             </div>
