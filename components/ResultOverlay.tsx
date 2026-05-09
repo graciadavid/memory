@@ -147,12 +147,14 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             else navigator.clipboard.writeText(url).then(() => alert('Challenge link copied!'))
           }} style={{
             width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-            background: '#C62828',
+            background: '#25D366',
             color: '#fff', fontSize: 16, fontWeight: 900,
             fontFamily: 'inherit', cursor: 'pointer',
-            boxShadow: '0 6px 0 #8B000060',
-          }}>Challenge a friend</button>
+            boxShadow: '0 6px 0 #128C7E60',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
 
+          <div style={{ marginTop: 12 }} />
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={onReset} style={{
               flex: 1, padding: '13px', borderRadius: 14, border: 'none',
