@@ -56,6 +56,7 @@ export default function ProfilePage() {
   const [seqRank, setSeqRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [flagsRank, setFlagsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [precRank, setPrecRank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
+  const [f1Rank, setF1Rank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
   const [profileStreak, setProfileStreak] = useState<{ current: number, longest: number }>({ current: 0, longest: 0 })
   const [versusRank, setVersusRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
@@ -110,6 +111,16 @@ export default function ProfilePage() {
 
     // Fetch streak
     getStreak(profile.name).then(s => setProfileStreak({ current: s.current, longest: s.longest }))
+
+    // Fetch F1
+    supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'formula1').order('difference_ms', { ascending: true }).limit(500).then(({ data }) => {
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach((s: any) => { if (!best[s.player_name] || s.difference_ms < best[s.player_name]) best[s.player_name] = s.difference_ms })
+      const myDiff = best[profile.name]
+      if (!myDiff && myDiff !== 0) return
+      setF1Rank({ diff: myDiff, rank: Object.values(best).filter(d => d < myDiff).length + 1 })
+    })
 
     // Fetch versus by category
     supabase.from('higher_lower_scores').select('player_name, level, category').order('level', { ascending: false }).limit(1000).then(({ data }) => {

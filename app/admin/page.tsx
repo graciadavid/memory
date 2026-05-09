@@ -125,7 +125,7 @@ export default function AdminPage() {
       supabase.from('number_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
       supabase.from('sequence_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
       supabase.from('flag_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
-      supabase.from('precision_scores').select('player_name, difference_ms, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
+      supabase.from('precision_scores').select('player_name, difference_ms, created_at, game_type').neq('player_name', 'David').order('created_at', { ascending: false }),
       supabase.from('higher_lower_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
     ])
 
@@ -133,7 +133,8 @@ export default function AdminPage() {
     const dig = digAll.data || []
     const seq = seqAll.data || []
     const flag = flagAll.data || []
-    const prec = precAll.data || []
+    const prec = (precAll.data || []).filter((s: any) => !s.game_type || s.game_type === null)
+    const f1 = (precAll.data || []).filter((s: any) => s.game_type === 'formula1')
     const vs = vsAll?.data || []
 
     const periodEnd = getPeriodEnd(period)
@@ -148,12 +149,14 @@ const memP = inPeriod(mem).length
     const seqP = inPeriod(seq).length
     const flagP = inPeriod(flag).length
     const precP = inPeriod(prec).length
+    const f1P = inPeriod(f1).length
     const vsP = inPeriod(vs).length
     const memPrev = inPrev(mem).length
     const digPrev = inPrev(dig).length
     const seqPrev = inPrev(seq).length
     const flagPrev = inPrev(flag).length
     const precPrev = inPrev(prec).length
+    const f1Prev = inPrev(f1).length
     const vsPrev = inPrev(vs).length
 
     const memU = uniq(inPeriod(mem))
@@ -161,6 +164,7 @@ const memP = inPeriod(mem).length
     const seqU = uniq(inPeriod(seq))
     const flagU = uniq(inPeriod(flag))
     const precU = uniq(inPeriod(prec))
+    const f1U = uniq(inPeriod(f1))
     const vsU = uniq(inPeriod(vs))
 
     // All players
@@ -200,6 +204,7 @@ const memP = inPeriod(mem).length
         { label: 'Sequence', curr: seqP, prev: seqPrev, pct: pct(seqP, seqPrev), color: '#6A1B9A', users: seqU, avg: seqU > 0 ? (seqP / seqU).toFixed(1) : '0' },
         { label: 'Flags', curr: flagP, prev: flagPrev, pct: pct(flagP, flagPrev), color: '#00796B', users: flagU, avg: flagU > 0 ? (flagP / flagU).toFixed(1) : '0' },
           { label: 'Precision', curr: precP, prev: precPrev, pct: pct(precP, precPrev), color: '#4A148C', users: precU, avg: precU > 0 ? (precP / precU).toFixed(1) : '0' },
+          { label: 'F1', curr: f1P, prev: f1Prev, pct: pct(f1P, f1Prev), color: '#E8002D', users: f1U, avg: f1U > 0 ? (f1P / f1U).toFixed(1) : '0' },
           { label: 'Versus', curr: vsP, prev: vsPrev, pct: pct(vsP, vsPrev), color: '#C62828', users: vsU, avg: vsU > 0 ? (vsP / vsU).toFixed(1) : '0' },
       ],
       players: { total: allPlayers.size, period: periodPlayers.size, prevPeriod: prevPlayers.size, pctPlayers: pct(periodPlayers.size, prevPlayers.size), newPeriod: newInPeriod, prevNew: newInPrev, pctNew: pct(newInPeriod, newInPrev) },

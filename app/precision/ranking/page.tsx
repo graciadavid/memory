@@ -4,23 +4,30 @@ import PrecisionRankingClient from './PrecisionRankingClient'
 export const revalidate = 60
 
 export default async function PrecisionRankingPage() {
-  const { data } = await supabase
-    .from('precision_scores')
-    .select('player_name, difference_ms, created_at')
-    .order('difference_ms', { ascending: true })
-    .order('created_at', { ascending: true })
-    .limit(500)
+  const [stopData, f1Data] = await Promise.all([
+    supabase.from('precision_scores').select('player_name, difference_ms, created_at')
+      .is('game_type', null)
+      .order('difference_ms', { ascending: true })
+      .order('created_at', { ascending: true })
+      .limit(500),
+    supabase.from('precision_scores').select('player_name, difference_ms, created_at')
+      .eq('game_type', 'formula1')
+      .order('difference_ms', { ascending: true })
+      .order('created_at', { ascending: true })
+      .limit(500),
+  ])
 
-  const best: Record<string, { diff: number, created_at: string }> = {}
-  data?.forEach(s => {
-    if (!best[s.player_name] || s.difference_ms < best[s.player_name].diff) {
-      best[s.player_name] = { diff: s.difference_ms, created_at: s.created_at }
-    }
-  })
-
-  const scores = Object.entries(best)
-    .map(([name, d]) => ({ name, diff: d.diff, created_at: d.created_at }))
-    .sort((a, b) => a.diff - b.diff || a.created_at.localeCompare(b.created_at))
+  const getBest = (data: any[], lowerIsBetter = true) => {
+    const best: Record<string, { diff: number, created_at: string }> = {}
+    data?.forEach(s => {
+      if (!best[s.player_name] || (lowerIsBetter ? s.difference_ms < best[s.player_name].diff : s.difference_ms > best[s.player_name].diff)) {
+        best[s.player_name] = { diff: s.difference_ms, created_at: s.created_at }
+      }
+    })
+    return Object.entries(best)
+      .map(([name, d]) => ({ name, diff: d.diff, created_at: d.created_at }))
+      .sort((a, b) => a.diff - b.diff || a.created_at.localeCompare(b.created_at))
+  }
 
   return (
     <main style={{
@@ -39,7 +46,7 @@ export default async function PrecisionRankingPage() {
           <div style={{ background: '#fff', border: '1px solid #4A2C0A15', borderRadius: 10, padding: '6px 12px', fontSize: 12, fontWeight: 800, color: '#4A2C0A60' }}>Back ✕</div>
         </a>
       </div>
-      <PrecisionRankingClient scores={scores} />
+      <PrecisionRankingClient stopScores={getBest(stopData.data || [])} f1Scores={getBest(f1Data.data || [])} />
     </main>
   )
 }
