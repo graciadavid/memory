@@ -11,7 +11,7 @@ const TABS = [
   { key: 'digits', label: 'Digits', color: '#1565C0' },
   { key: 'sequence', label: 'Sequence', color: '#6A1B9A' },
   { key: 'flags', label: 'Flags', color: '#00796B' },
-  { key: 'precision', label: '⏱', color: '#4A148C' },
+  { key: 'precision', label: 'Precision', color: '#4A148C' },
 ]
 
 function fmt(ms: number) {
