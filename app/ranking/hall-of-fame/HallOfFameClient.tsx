@@ -136,14 +136,7 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
                           <div style={{ fontSize: 22, fontWeight: 900, color: card.color, lineHeight: 1.2 }}>{card.result(c)}</div>
                         </div>
                       </div>
-                      <div style={{
-                        background: `linear-gradient(135deg, ${GOLD}, #FFD700)`,
-                        borderRadius: 10, padding: '8px 12px',
-                        textAlign: 'center', boxShadow: `0 4px 12px ${GOLD}50`,
-                      }}>
-                        <div style={{ fontSize: 18 }}>👑</div>
-                        <div style={{ fontSize: 8, fontWeight: 900, color: '#fff', letterSpacing: 0.5 }}>#1</div>
-                      </div>
+
                     </div>
                   ) : (
                     <div style={{ background: '#fff', borderRadius: 16, padding: '20px', textAlign: 'center', border: `1px dashed ${card.color}30` }}>
