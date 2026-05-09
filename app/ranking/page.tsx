@@ -34,10 +34,10 @@ export default function RankingPage() {
         {/* Hall of Fame */}
         <Link href="/ranking/hall-of-fame" style={{ textDecoration: 'none', display: 'block', marginBottom: 20 }}>
           <div style={{
-            background: `linear-gradient(135deg, ${BROWN}, #7A4C1A)`,
+            background: 'linear-gradient(135deg, #C8960C, #F5D062, #B8860B)',
             borderRadius: 20, padding: '18px 20px',
             display: 'flex', alignItems: 'center', gap: 14,
-            boxShadow: `0 8px 0 ${BROWN}60`,
+            boxShadow: '0 8px 0 #C8960C60',
           }}>
             <img src={`/icons/nav-trophy.webp`} alt="" style={{ width: 52, height: 52, objectFit: 'contain' }} />
             <div>
