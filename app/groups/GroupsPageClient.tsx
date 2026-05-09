@@ -1,10 +1,19 @@
 'use client'
+import { useEffect } from 'react'
+import { usePlayer } from '@/lib/usePlayer'
 
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 
 export default function GroupsPageClient({ publicGroups, memberCounts }: { publicGroups: any[], memberCounts: Record<string, number> }) {
+  const { profile, loaded } = usePlayer()
+
+  useEffect(() => {
+    if (loaded && !profile?.name) window.location.href = '/'
+  }, [loaded, profile?.name])
+
+  if (!loaded || !profile?.name) return null
   return (
     <main style={{
       minHeight: '100dvh',
