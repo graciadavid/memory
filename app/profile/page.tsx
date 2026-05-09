@@ -54,6 +54,7 @@ export default function ProfilePage() {
   const [digitsRank, setDigitsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [seqRank, setSeqRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [flagsRank, setFlagsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
+  const [precRank, setPrecRank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
   const [myGroups, setMyGroups] = useState<any[]>([])
   const [hasPassword, setHasPassword] = useState(false)
 
@@ -90,6 +91,16 @@ export default function ProfilePage() {
       const myLevel = best[profile.name]
       if (!myLevel) return
       setFlagsRank({ level: myLevel, rank: Object.values(best).filter(l => l > myLevel).length + 1 })
+    })
+
+    // Fetch precision
+    supabase.from('precision_scores').select('player_name, difference_ms').order('difference_ms', { ascending: true }).limit(500).then(({ data }) => {
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach((s: any) => { if (!best[s.player_name] || s.difference_ms < best[s.player_name]) best[s.player_name] = s.difference_ms })
+      const myDiff = best[profile.name]
+      if (!myDiff && myDiff !== 0) return
+      setPrecRank({ diff: myDiff, rank: Object.values(best).filter(d => d < myDiff).length + 1 })
     })
 
     fetchAllRanks(profile.name).then(({ memoryRanks, digitsRank, seqRank }) => {
@@ -258,6 +269,31 @@ export default function ProfilePage() {
       </div>
 
       <div style={{ padding: '16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+
+        {/* Precision */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontSize: 28 }}>⏱</div>
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#4A148C' }}>Precision</div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s` : '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Best</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : precRank.rank ? `#${precRank.rank}` : '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+              </div>
+              {precRank.diff !== null && (
+                <button onClick={() => shareScore(`⏱ I'm #${precRank.rank} in MemGenius Precision with ${(precRank.diff!/1000).toFixed(3)}s off!
+https://memgenius.com/precision`)}
+                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#4A148C', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* GROUPS */}
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>

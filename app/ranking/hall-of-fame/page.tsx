@@ -52,6 +52,12 @@ export default async function HallOfFamePage() {
     getBestMemory(hardIds),
   ])
 
+  const { data: precData } = await supabase
+    .from('precision_scores')
+    .select('player_name, difference_ms, created_at')
+    .order('difference_ms', { ascending: true })
+    .limit(1)
+
   const champions = {
     memoryEasy: memEasy,
     memoryMedium: memMed,
@@ -59,6 +65,7 @@ export default async function HallOfFamePage() {
     digits: digitsData?.[0] || null,
     sequence: seqData?.[0] || null,
     flags: flagData?.[0] || null,
+    precision: precData?.[0] || null,
   }
 
   return <HallOfFameClient champions={champions} />
