@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 import { usePlayer } from '@/lib/usePlayer'
 import { revalidateRanking } from '@/app/actions'
 import Link from 'next/link'

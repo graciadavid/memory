@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 import { usePlayer } from '@/lib/usePlayer'
 import { revalidateRanking } from '@/app/actions'
 import Link from 'next/link'
@@ -120,6 +121,7 @@ export default function DigitsPage() {
       playError()
       if (profile?.name) {
         await supabase.from('number_scores').insert({ player_name: profile.name, level })
+      await updateStreak(profile.name)
         revalidateRanking('digits')
         const { data } = await supabase.from('number_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
         if (data) {

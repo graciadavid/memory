@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 import ResultOverlay from './ResultOverlay'
 import Tutorial from './Tutorial'
 

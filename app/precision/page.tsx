@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 import { useRouter } from 'next/navigation'
 
 const BROWN = '#4A2C0A'
@@ -66,6 +67,7 @@ export default function PrecisionPage() {
     setPhase('result')
 
     if (profile?.name) {
+      await updateStreak(profile.name)
       await supabase.from('precision_scores').insert({
         player_name: profile.name,
         difference_ms: Math.abs(diff),

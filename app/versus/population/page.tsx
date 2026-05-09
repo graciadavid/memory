@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
@@ -160,6 +161,7 @@ export default function VersusPage() {
         const finalStreak = streak
         if (profile?.name && finalStreak > 0) {
           await supabase.from('higher_lower_scores').insert({ player_name: profile.name, level: finalStreak, category: 'population' })
+        await updateStreak(profile.name)
           const { count } = await supabase.from('higher_lower_scores')
             .select('*', { count: 'exact', head: true })
             .eq('category', 'population').gt('level', finalStreak)
