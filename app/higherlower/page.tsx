@@ -288,7 +288,7 @@ export default function HigherLowerPage() {
             </div>
 
             <button onClick={() => {
-              const url = `${window.location.origin}/challenge?game=higher-lower&score=${streak}&by=${encodeURIComponent(profile?.name || 'Someone')}`
+              const url = `${window.location.origin}/challenge?game=higherlower&score=${streak}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               const text = `🌍 ${profile?.name} got ${streak} correct in Higher or Lower on MemGenius! Can you beat them? ${url}`
               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
             }} style={{
