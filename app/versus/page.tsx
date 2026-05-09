@@ -10,6 +10,31 @@ const COLOR = '#C62828'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const FLAG_CDN = 'https://flagcdn.com/w320'
 
+let sharedCtx: AudioContext | null = null
+function getAudioCtx() {
+  if (!sharedCtx || sharedCtx.state === 'closed') sharedCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+  if (sharedCtx.state === 'suspended') sharedCtx.resume()
+  return sharedCtx
+}
+function playCorrect() {
+  try {
+    const ctx = getAudioCtx()
+    const osc = ctx.createOscillator(); const gain = ctx.createGain()
+    osc.type = 'sine'; osc.frequency.setValueAtTime(523, ctx.currentTime); osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1)
+    gain.gain.setValueAtTime(0.15, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.3)
+  } catch(e) {}
+}
+function playWrong() {
+  try {
+    const ctx = getAudioCtx()
+    const osc = ctx.createOscillator(); const gain = ctx.createGain()
+    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, ctx.currentTime); osc.frequency.setValueAtTime(150, ctx.currentTime + 0.1)
+    gain.gain.setValueAtTime(0.15, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4)
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.4)
+  } catch(e) {}
+}
+
 const COUNTRIES = [
   { name: 'China', code: 'cn', population: 1412000000 },
   { name: 'India', code: 'in', population: 1408000000 },
@@ -114,6 +139,7 @@ export default function VersusPage() {
   }, [profile?.name])
 
   const startGame = () => {
+    try { getAudioCtx() } catch(e) {}
     const newUsed = new Set<number>()
     const p = getPair(newUsed)
     if (!p) return
@@ -132,6 +158,7 @@ export default function VersusPage() {
       ? pair.a.population >= pair.b.population
       : pair.b.population >= pair.a.population
     setCorrect(isCorrect)
+    if (isCorrect) playCorrect(); else playWrong()
 
     if (!isCorrect) {
       setTimeout(async () => {
@@ -171,7 +198,7 @@ export default function VersusPage() {
     }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
-        <img src={`${BASE}/higher.png`} alt="Higher or Lower" style={{ height: 60, objectFit: 'contain', flexShrink: 0 }} />
+        <div style={{ fontSize: 48, flexShrink: 0 }}>🌍</div>
         <div>
           <div style={{ fontSize: 26, fontWeight: 900, color: COLOR, letterSpacing: -0.5 }}>Higher or Lower</div>
           <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Which country has more people?</div>
@@ -215,14 +242,14 @@ export default function VersusPage() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <img src={`${FLAG_CDN}/${pair.a.code}.png`} alt="" style={{ width: 64, height: 43, objectFit: 'cover', borderRadius: 6 }} />
-                <div style={{ textAlign: 'left' }}>
+                <div style={{ textAlign: 'left', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ fontSize: 18, fontWeight: 900, color: BROWN }}>{pair.a.name}</div>
-                  {selected && <div style={{ fontSize: 14, fontWeight: 700, color: `${BROWN}60` }}>{fmt(pair.a.population)}</div>}
+                  {selected && <div style={{ fontSize: 14, fontWeight: 800, color: COLOR }}>{fmt(pair.a.population)}</div>}
                 </div>
               </div>
             </button>
 
-            <div style={{ fontSize: 16, fontWeight: 900, color: `${BROWN}30` }}>VS</div>
+            <div style={{ fontSize: 16, fontWeight: 900, color: COLOR }}>VS</div>
 
             <button onClick={() => answer('b')} disabled={!!selected} style={{
               width: '100%', borderRadius: 20,
@@ -233,9 +260,9 @@ export default function VersusPage() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <img src={`${FLAG_CDN}/${pair.b.code}.png`} alt="" style={{ width: 64, height: 43, objectFit: 'cover', borderRadius: 6 }} />
-                <div style={{ textAlign: 'left' }}>
+                <div style={{ textAlign: 'left', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ fontSize: 18, fontWeight: 900, color: BROWN }}>{pair.b.name}</div>
-                  {selected && <div style={{ fontSize: 14, fontWeight: 700, color: `${BROWN}60` }}>{fmt(pair.b.population)}</div>}
+                  {selected && <div style={{ fontSize: 14, fontWeight: 800, color: COLOR }}>{fmt(pair.b.population)}</div>}
                 </div>
               </div>
             </button>
