@@ -406,30 +406,7 @@ export default function ProfilePage() {
 
       </div>
 
-        {/* Versus */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ fontSize: 22 }}>⚔️</div>
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#C62828' }}>Versus</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{versusRank.level ?? '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Best</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{versusRank.rank ? `#${versusRank.rank}` : '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
-              </div>
-              {versusRank.level && (
-                <button onClick={() => shareScore(`⚔️ I'm #${versusRank.rank} in MemGenius Versus with ${versusRank.level} correct!
-https://memgenius.com/versus`)}
-                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#C62828', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-              )}
-            </div>
-          </div>
-        </div>
+
 
         {/* Precision */}
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
@@ -451,6 +428,31 @@ https://memgenius.com/versus`)}
                 <button onClick={() => shareScore(`⏱ I'm #${precRank.rank} in MemGenius Precision!
 https://memgenius.com/precision`)}
                   style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#4A148C', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Versus */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontSize: 22 }}>⚔️</div>
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#C62828' }}>Versus</div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{versusRank.level ?? '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Best</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{versusRank.rank ? `#${versusRank.rank}` : '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+              </div>
+              {versusRank.level && (
+                <button onClick={() => shareScore(`⚔️ I'm #${versusRank.rank} in MemGenius Versus with ${versusRank.level} correct!
+https://memgenius.com/versus`)}
+                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#C62828', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
               )}
             </div>
           </div>
