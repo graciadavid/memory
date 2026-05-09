@@ -21,8 +21,10 @@ export function useProtectPrompt(playerName: string | undefined) {
     const key = `protect_count_${playerName}`
     const current = parseInt(sessionStorage.getItem(key) || '0') + 1
     sessionStorage.setItem(key, String(current))
+    console.log('Protect count:', current, 'threshold:', THRESHOLD)
 
     if (current % THRESHOLD === 0) {
+      console.log('Showing protect prompt!')
       setShow(true)
     }
   }
