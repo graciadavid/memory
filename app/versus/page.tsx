@@ -32,17 +32,19 @@ export default function VersusPage() {
           </div>
         </Link>
 
-        <div style={{
-          background: '#fff', borderRadius: 20, padding: '20px 24px',
-          display: 'flex', alignItems: 'center', gap: 14,
-          border: `1px dashed ${BROWN}20`, opacity: 0.5,
-        }}>
-          <div style={{ fontSize: 44 }}>🏔️</div>
-          <div>
-            <div style={{ fontSize: 19, fontWeight: 900, color: BROWN }}>Area km²</div>
-            <div style={{ fontSize: 12, color: `${BROWN}50`, marginTop: 2 }}>Coming soon</div>
+        <Link href="/versus/area" style={{ textDecoration: 'none' }}>
+          <div style={{
+            background: COLOR, borderRadius: 20, padding: '20px 24px',
+            display: 'flex', alignItems: 'center', gap: 14,
+            boxShadow: `0 8px 0 ${COLOR}60`,
+          }}>
+            <div style={{ fontSize: 44 }}>🏔️</div>
+            <div>
+              <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>Area km²</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>Which country is bigger?</div>
+            </div>
           </div>
-        </div>
+        </Link>
 
         <div style={{
           background: '#fff', borderRadius: 20, padding: '20px 24px',
