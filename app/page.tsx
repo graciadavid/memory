@@ -129,6 +129,7 @@ export default function LandingPage() {
   if (!loaded) return null
 
   return (
+    <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }`}</style>
     <main style={{
       height: '100dvh',
       background: `radial-gradient(ellipse at 50% 0%, #fff8ee 0%, ${CREAM} 40%, #EDE5D8 100%)`,
@@ -220,9 +221,9 @@ export default function LandingPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 2 }}>
             <div style={{ fontSize: 20, fontWeight: 900, color: BROWN }}>Hey, {profile.name}!</div>
             {streak.current > 0 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#FFF8E1', borderRadius: 10, padding: '4px 10px', border: '1.5px solid #F9A82540' }}>
-                <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 20, height: 20, objectFit: 'contain' }} />
-                <span style={{ fontSize: 13, fontWeight: 900, color: '#E65100' }}>{streak.current} day{streak.current !== 1 ? 's' : ''}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#E8F5E9', borderRadius: 10, padding: '4px 10px', border: '1.5px solid #2E7D32' }}>
+                <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 20, height: 20, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite' }} />
+                <span style={{ fontSize: 13, fontWeight: 900, color: '#2E7D32' }}>{streak.current} day{streak.current !== 1 ? 's' : ''}</span>
               </div>
             )}
           </div>
@@ -239,16 +240,16 @@ export default function LandingPage() {
                 <div style={{
                   background: game.bg,
                   borderRadius: 20,
-                  padding: '14px 12px',
+                  padding: '10px 12px 8px',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                   gap: 6,
                   boxShadow: `0 6px 0 ${game.shadow}`,
-                  aspectRatio: '4/3',
+                  aspectRatio: '5/3',
                 }}>
                   {(game as any).emoji ? (
-                    <div style={{ fontSize: 52 }}>{game.icon}</div>
+                    <div style={{ fontSize: 58 }}>{game.icon}</div>
                   ) : (
-                    <img src={game.icon} alt="" style={{ width: 72, height: 72, objectFit: 'contain' }} />
+                    <img src={game.icon} alt="" style={{ width: 80, height: 80, objectFit: 'contain' }} />
                   )}
                   <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', textAlign: 'center', letterSpacing: -0.3 }}>{game.label}</div>
                 </div>
