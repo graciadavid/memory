@@ -33,7 +33,9 @@ function getColor(name: string) {
 function Avatar({ name, photo, size = 80 }: { name: string, photo?: string, size?: number }) {
   if (photo) return <img src={photo} alt="avatar" style={{ width: size, height: size, borderRadius: size * 0.28, objectFit: 'cover', border: `3px solid ${GOLD}`, flexShrink: 0 }} />
   const color = getColor(name)
-  return (
+  return (<>
+    <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }`}</style>
+    <>
     <div style={{
       width: size, height: size, borderRadius: size * 0.28,
       background: `linear-gradient(135deg, ${color}, ${color}AA)`,
@@ -291,10 +293,10 @@ export default function ProfilePage() {
         {/* Streak banner */}
         {profileStreak.current > 0 && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, background: '#fff', borderRadius: 20, padding: '16px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 64, height: 64, objectFit: 'contain' }} />
-            <div>
-              <div style={{ fontSize: 48, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{profileStreak.current}</div>
-              <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>day streak</div>
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 56, height: 56, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite' }} />
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <div style={{ fontSize: 52, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{profileStreak.current}</div>
+              <div style={{ fontSize: 14, color: `${BROWN}60`, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>day streak</div>
             </div>
             {profileStreak.longest > profileStreak.current && (
               <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
