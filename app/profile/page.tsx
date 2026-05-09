@@ -328,8 +328,7 @@ export default function ProfilePage() {
                     {loadingRanks ? '' : hasResult ? fmt(entry.time!) : ''}
                   </div>
                   {hasResult && (
-                    <button onClick={() => shareScore(`🧠 I'm #${entry.rank} in ${d.label} Memory!
-https://memgenius.com/memory`)}
+                    <button onClick={() => shareScore(`🧠 I'm #${entry.rank} in ${d.label} Memory!\nhttps://memgenius.com/memory`)}
                       style={{ marginTop: 4, padding: '3px 8px', borderRadius: 6, border: 'none', background: d.color, color: '#fff', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
                   )}
                 </div>
@@ -347,7 +346,7 @@ https://memgenius.com/digits` },
 https://memgenius.com/sequence` },
             { key: 'flags', label: 'Flags', color: '#00796B', icon: '/icons/flags.webp', score: flagsRank.level, rank: flagsRank.rank, unit: 'Flags', share: `🚩 ${flagsRank.level} flags! #${flagsRank.rank}
 https://memgenius.com/flags` },
-            { key: 'precision', label: 'Precision', color: '#4A148C', icon: null, emoji: '⏱', score: precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s` : null, rank: precRank.rank, unit: 'Best', share: `⏱ #${precRank.rank} in Precision!
+            { key: 'precision', label: 'Precision', color: '#4A148C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', emoji: null, score: precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s` : null, rank: precRank.rank, unit: 'Best', share: `⏱ #${precRank.rank} in Precision!
 https://memgenius.com/precision` },
           ].map(g => (
             <div key={g.key} style={{ background: '#fff', borderRadius: 20, padding: '14px', boxShadow: `0 2px 12px ${BROWN}08` }}>
@@ -377,7 +376,7 @@ https://memgenius.com/precision` },
         <div style={{ background: '#fff', borderRadius: 20, padding: '14px 16px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ fontSize: 20 }}>⚔️</div>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higher.png" alt="" style={{ width: 22, height: 22, objectFit: 'contain' }} />
               <div style={{ fontSize: 13, fontWeight: 900, color: '#C62828' }}>Versus</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -397,6 +396,7 @@ https://memgenius.com/precision` },
           </div>
         </div>
 
+      </div>
       </div>
     </main>
   )
