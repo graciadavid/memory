@@ -394,10 +394,6 @@ export default function ProfilePage() {
         </div>
 
       </div>
-      </div>
-    </main>
-  )
-}
 
         {/* Precision */}
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
@@ -416,11 +412,16 @@ export default function ProfilePage() {
                 <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
               </div>
               {precRank.diff !== null && (
-                <button onClick={() => shareScore(`⏱ I'm #${precRank.rank} in MemGenius Precision with ${(precRank.diff!/1000).toFixed(3)}s off!
+                <button onClick={() => shareScore(`⏱ I'm #${precRank.rank} in MemGenius Precision!
 https://memgenius.com/precision`)}
                   style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#4A148C', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
               )}
             </div>
           </div>
         </div>
+
+      </div>
+    </main>
+  )
+}
 
