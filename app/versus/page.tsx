@@ -199,7 +199,7 @@ export default function VersusPage() {
         )}
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '12px 16px', gap: 8, overflowY: 'auto', paddingBottom: 80 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '12px 16px', gap: 8, overflow: 'hidden' }}>
 
         {phase === 'idle' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
