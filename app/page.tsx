@@ -211,73 +211,49 @@ export default function LandingPage() {
           {error && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700, marginTop: 6, textAlign: 'center' }}>{error}</div>}
         </div>
       ) : (
-        /* REGISTERED — greeting + game buttons */
+        /* REGISTERED */
         <>
-          <img src={LOGO} alt="MemGenius" style={{ height: 96, objectFit: 'contain', marginBottom: 8 }} />
-          <div style={{ fontSize: 14, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 16, letterSpacing: 0.3 }}>
+          {/* Logo */}
+          <img src={LOGO} alt="MemGenius" style={{ height: 72, objectFit: 'contain', marginBottom: 4 }} />
+
+          {/* Greeting + Streak */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 2 }}>
+            <div style={{ fontSize: 20, fontWeight: 900, color: BROWN }}>Hey, {profile.name}!</div>
+            {streak.current > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#FFF8E1', borderRadius: 10, padding: '4px 10px', border: '1.5px solid #F9A82540' }}>
+                <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 20, height: 20, objectFit: 'contain' }} />
+                <span style={{ fontSize: 15, fontWeight: 900, color: '#E65100' }}>{streak.current}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Claim */}
+          <div style={{ fontSize: 12, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 16, letterSpacing: 0.3 }}>
             Your daily brain workout
           </div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, marginBottom: 8 }}>
-            Hey, {profile.name}!
-          </div>
-          {streak.current > 0 && (
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: streak.playedToday ? '#E8F5E9' : '#FFF8E1',
-              border: `1.5px solid ${streak.playedToday ? '#2E7D3240' : '#F9A82540'}`,
-              borderRadius: 14, padding: '8px 16px', marginBottom: 16,
-            }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 36, height: 36, objectFit: 'contain' }} />
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 900, color: streak.playedToday ? '#2E7D32' : '#E65100' }}>
-                  {streak.current} day{streak.current !== 1 ? 's' : ''} streak
-                </div>
-                <div style={{ fontSize: 10, color: streak.playedToday ? '#2E7D3280' : '#E6510080', fontWeight: 700 }}>
-                  {streak.playedToday ? '✓ Done for today' : 'Play to keep it alive!'}
-                </div>
-              </div>
-            </div>
-          )}
 
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {/* Game grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, width: '100%' }}>
             {GAMES.map(game => (
-              <Link key={game.key} href={game.href} style={{ textDecoration: 'none' }}>
+              <a key={game.key} href={game.href} style={{ textDecoration: 'none' }}>
                 <div style={{
-                  width: '100%', borderRadius: 20,
                   background: game.bg,
+                  borderRadius: 20,
+                  padding: '20px 12px 16px',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  gap: 8,
                   boxShadow: `0 6px 0 ${game.shadow}`,
-                  padding: '14px 20px',
-                  display: 'flex', alignItems: 'center', gap: 14,
-                  cursor: 'pointer', boxSizing: 'border-box',
+                  aspectRatio: '1',
                 }}>
                   {(game as any).emoji ? (
-                    <div style={{ fontSize: 40, flexShrink: 0, width: 52, textAlign: 'center' }}>{game.icon}</div>
+                    <div style={{ fontSize: 44 }}>{game.icon}</div>
                   ) : (
-                    <img src={game.icon} alt="" style={{ width: 52, height: 52, objectFit: 'contain', flexShrink: 0 }} />
+                    <img src={game.icon} alt="" style={{ width: 64, height: 64, objectFit: 'contain' }} />
                   )}
-                  <div>
-                    <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{game.label}</div>
-                    {records[game.key]?.value && (
-                      <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, marginTop: 1 }}>
-                        {records[game.key].value} · {records[game.key].by}
-                      </div>
-                    )}
-                  </div>
+                  <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', textAlign: 'center', letterSpacing: -0.3 }}>{game.label}</div>
                 </div>
-              </Link>
+              </a>
             ))}
-          </div>
-
-          <div style={{ marginTop: 16, textAlign: 'center' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: `${BROWN}30`, letterSpacing: 1 }}>
-              Always free · No login required
-            </div>
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 4 }}>
-              <a href="/privacy" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>Privacy</a>
-              <a href="/terms" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>Terms</a>
-              <a href="/about" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>About</a>
-              <a href="/how-to-play" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>How to Play</a>
-            </div>
           </div>
         </>
       )}
