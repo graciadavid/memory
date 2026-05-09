@@ -6,51 +6,9 @@ import { updateStreak } from '@/lib/streak'
 
 const BROWN = '#4A2C0A'
 
-let audioCtx: AudioContext | null = null
-function getAudioCtx() {
-  if (!audioCtx || audioCtx.state === 'closed') audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
-  if (audioCtx.state === 'suspended') audioCtx.resume()
-  return audioCtx
-}
-function playLight() {
-  try {
-    const ctx = getAudioCtx()
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.type = 'sine'
-    osc.frequency.setValueAtTime(880, ctx.currentTime)
-    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.15)
-    gain.gain.setValueAtTime(0.3, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
-    osc.connect(gain)
-    gain.connect(ctx.destination)
-    osc.start()
-    osc.stop(ctx.currentTime + 0.3)
-  } catch(e) {}
-}
 
-let audioCtx: AudioContext | null = null
-function getAudioCtx() {
-  if (!audioCtx || audioCtx.state === 'closed') audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
-  if (audioCtx.state === 'suspended') audioCtx.resume()
-  return audioCtx
-}
-function playLight() {
-  try {
-    const ctx = getAudioCtx()
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.type = 'sine'
-    osc.frequency.setValueAtTime(880, ctx.currentTime)
-    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.15)
-    gain.gain.setValueAtTime(0.3, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
-    osc.connect(gain)
-    gain.connect(ctx.destination)
-    osc.start()
-    osc.stop(ctx.currentTime + 0.3)
-  } catch(e) {}
-}
+
+
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const RED = '#E8002D'
@@ -65,6 +23,32 @@ export default function Formula1Page() {
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const goTimeRef = useRef<number>(0)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const audioCtxRef = useRef<AudioContext | null>(null)
+
+  const getAudioCtx = () => {
+    if (!audioCtxRef.current || audioCtxRef.current.state === 'closed') {
+      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+    }
+    if (audioCtxRef.current.state === 'suspended') audioCtxRef.current.resume()
+    return audioCtxRef.current
+  }
+
+  const playLight = () => {
+    try {
+      const ctx = getAudioCtx()
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(880, ctx.currentTime)
+      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.15)
+      gain.gain.setValueAtTime(0.3, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start()
+      osc.stop(ctx.currentTime + 0.3)
+    } catch(e) {}
+  }
 
   useEffect(() => {
     if (!profile?.name) return
