@@ -216,7 +216,7 @@ export default function LandingPage() {
         /* REGISTERED */
         <>
           {/* Logo */}
-          <img src={LOGO} alt="MemGenius" style={{ height: 90, objectFit: 'contain', marginBottom: 4 }} />
+          <img src={LOGO} alt="MemGenius" style={{ height: 100, objectFit: 'contain', marginBottom: 2 }} />
 
           {/* Greeting + Streak */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 2 }}>
@@ -235,17 +235,17 @@ export default function LandingPage() {
           </div>
 
           {/* Game grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, width: '100%' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, width: '100%' }}>
             {GAMES.map(game => (
               <a key={game.key} href={game.href} style={{ textDecoration: 'none' }}>
                 <div style={{
                   background: game.bg,
                   borderRadius: 20,
-                  padding: '10px 12px 8px',
+                  padding: '6px 12px 6px',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  gap: 6,
+                  gap: 4,
                   boxShadow: `0 6px 0 ${game.shadow}`,
-                  aspectRatio: '5/3',
+                  aspectRatio: '5/2.5',
                 }}>
                   {(game as any).emoji ? (
                     <div style={{ fontSize: 58 }}>{game.icon}</div>
