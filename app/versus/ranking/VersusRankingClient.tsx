@@ -81,8 +81,8 @@ export default function VersusRankingClient({ popScores, areaScores }: { popScor
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 8, padding: '0 16px 12px', flexShrink: 0 }}>
         {[
-          { key: 'population', label: '🌍 Population' },
-          { key: 'area', label: '🗺️ Area km²' },
+          { key: 'population', label: 'Population' },
+          { key: 'area', label: 'Area km²' },
         ].map(t => (
           <button key={t.key} onClick={() => setTab(t.key as any)} style={{
             flex: 1, padding: '10px', borderRadius: 12, border: 'none',
@@ -90,7 +90,7 @@ export default function VersusRankingClient({ popScores, areaScores }: { popScor
             color: tab === t.key ? '#fff' : `${BROWN}60`,
             fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
             boxShadow: tab === t.key ? `0 4px 0 ${COLOR}60` : `0 2px 8px ${BROWN}08`,
-          }}>{t.label}</button>
+          }}><img src={(t as any).img} alt="" style={{ width: 18, height: 18, objectFit: 'contain', marginRight: 4 }} />{t.label}</button>
         ))}
       </div>
 

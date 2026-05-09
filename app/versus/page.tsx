@@ -7,8 +7,8 @@ const COLOR = '#C62828'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
 const TOPICS = [
-  { href: '/versus/population', emoji: '🌍', label: 'Population', sub: 'Which country has more people?' },
-  { href: '/versus/area', emoji: '🗺️', label: 'Area km²', sub: 'Which country is bigger?' },
+  { href: '/versus/population', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/population.png', label: 'Population', sub: 'Which country has more people?' },
+  { href: '/versus/area', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/area.png', label: 'Area km²', sub: 'Which country is bigger?' },
 ]
 
 export default function VersusPage() {
@@ -38,7 +38,7 @@ export default function VersusPage() {
               display: 'flex', alignItems: 'center', gap: 14,
               boxShadow: `0 8px 0 ${COLOR}60`,
             }}>
-              <div style={{ fontSize: 44 }}>{t.emoji}</div>
+              <img src={t.img} alt="" style={{ width: 52, height: 52, objectFit: 'contain' }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>{t.label}</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>{t.sub}</div>
