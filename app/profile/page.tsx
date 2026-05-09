@@ -3,6 +3,7 @@ import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { fetchAllRanks } from './RanksFetcher'
 import { supabase } from '@/lib/supabase'
+import { getStreak } from '@/lib/streak'
 import Link from 'next/link'
 
 const GOLD = '#C8960C'
@@ -55,6 +56,7 @@ export default function ProfilePage() {
   const [seqRank, setSeqRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [flagsRank, setFlagsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [precRank, setPrecRank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
+  const [profileStreak, setProfileStreak] = useState<{ current: number, longest: number }>({ current: 0, longest: 0 })
   const [versusRank, setVersusRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [myGroups, setMyGroups] = useState<any[]>([])
   const [hasPassword, setHasPassword] = useState(false)
@@ -103,6 +105,9 @@ export default function ProfilePage() {
       if (!myDiff && myDiff !== 0) return
       setPrecRank({ diff: myDiff, rank: Object.values(best).filter(d => d < myDiff).length + 1 })
     })
+
+    // Fetch streak
+    getStreak(profile.name).then(s => setProfileStreak({ current: s.current, longest: s.longest }))
 
     // Fetch versus
     supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').order('level', { ascending: false }).limit(500).then(({ data }) => {
@@ -304,27 +309,28 @@ export default function ProfilePage() {
         <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', paddingLeft: 4 }}>My Records</div>
 
         {/* Memory */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-            <img src="/icons/memory.webp" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+        <div style={{ background: '#fff', borderRadius: 20, padding: '14px 16px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+            <img src="/icons/memory.webp" alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
             <div style={{ fontSize: 13, fontWeight: 900, color: BROWN }}>Memory</div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 6 }}>
             {DIFF_CONFIG.map(d => {
               const entry = liveRanks[d.key]
               const hasResult = entry?.rank != null
               return (
-                <div key={d.key} style={{ flex: 1, textAlign: 'center', background: `${d.color}08`, border: `1px solid ${d.color}20`, borderRadius: 14, padding: '12px 6px' }}>
-                  <div style={{ fontSize: 9, fontWeight: 900, color: d.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>{d.label}</div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20` }}>
+                <div key={d.key} style={{ flex: 1, textAlign: 'center', background: `${d.color}08`, border: `1px solid ${d.color}20`, borderRadius: 12, padding: '8px 4px' }}>
+                  <div style={{ fontSize: 8, fontWeight: 900, color: d.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{d.label}</div>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20` }}>
                     {loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}
                   </div>
-                  <div style={{ fontSize: 9, fontFamily: 'monospace', fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20`, marginBottom: hasResult ? 8 : 0 }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20` }}>
                     {loadingRanks ? '' : hasResult ? fmt(entry.time!) : ''}
                   </div>
                   {hasResult && (
-                    <button onClick={() => shareScore(`🧠 I'm #${entry.rank} in ${d.label} Memory on MemGenius!\n⏱ ${fmt(entry.time!)}\nhttps://memgenius.com/memory`)}
-                      style={{ padding: '5px 10px', borderRadius: 8, border: 'none', background: d.color, color: '#fff', fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+                    <button onClick={() => shareScore(`🧠 I'm #${entry.rank} in ${d.label} Memory!
+https://memgenius.com/memory`)}
+                      style={{ marginTop: 4, padding: '3px 8px', borderRadius: 6, border: 'none', background: d.color, color: '#fff', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
                   )}
                 </div>
               )
@@ -332,104 +338,39 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Digits */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <img src="/icons/digits.webp" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#1565C0' }}>Digits</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : digitsRank.level ?? '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Level</div>
+        {/* Other games grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          {[
+            { key: 'digits', label: 'Digits', color: '#1565C0', icon: '/icons/digits.webp', score: digitsRank.level, rank: digitsRank.rank, unit: 'Level', share: `🔢 Level ${digitsRank.level} in Digits! #${digitsRank.rank}
+https://memgenius.com/digits` },
+            { key: 'sequence', label: 'Sequence', color: '#6A1B9A', icon: '/icons/sequence.webp', score: seqRank.level, rank: seqRank.rank, unit: 'Level', share: `🎵 Level ${seqRank.level} in Sequence! #${seqRank.rank}
+https://memgenius.com/sequence` },
+            { key: 'flags', label: 'Flags', color: '#00796B', icon: '/icons/flags.webp', score: flagsRank.level, rank: flagsRank.rank, unit: 'Flags', share: `🚩 ${flagsRank.level} flags! #${flagsRank.rank}
+https://memgenius.com/flags` },
+            { key: 'precision', label: 'Precision', color: '#4A148C', icon: null, emoji: '⏱', score: precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s` : null, rank: precRank.rank, unit: 'Best', share: `⏱ #${precRank.rank} in Precision!
+https://memgenius.com/precision` },
+          ].map(g => (
+            <div key={g.key} style={{ background: '#fff', borderRadius: 20, padding: '14px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                {g.icon ? <img src={g.icon} alt="" style={{ width: 22, height: 22, objectFit: 'contain' }} /> : <span style={{ fontSize: 18 }}>{g.emoji}</span>}
+                <div style={{ fontSize: 12, fontWeight: 900, color: g.color }}>{g.label}</div>
               </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : digitsRank.rank ? `#${digitsRank.rank}` : '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+              <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: g.score ? BROWN : `${BROWN}20` }}>{loadingRanks ? '...' : g.score ?? '—'}</div>
+                  <div style={{ fontSize: 8, color: `${BROWN}40`, fontWeight: 700, textTransform: 'uppercase' }}>{g.unit}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: g.rank ? GOLD : `${BROWN}20` }}>{loadingRanks ? '...' : g.rank ? `#${g.rank}` : '—'}</div>
+                  <div style={{ fontSize: 8, color: `${BROWN}40`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+                </div>
               </div>
-              {digitsRank.level && (
-                <button onClick={() => shareScore(`🔢 I reached level ${digitsRank.level} in MemGenius Digits! World #${digitsRank.rank}\nhttps://memgenius.com/digits`)}
-                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#1565C0', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+              {g.score && (
+                <button onClick={() => shareScore(g.share)}
+                  style={{ marginTop: 8, width: '100%', padding: '5px', borderRadius: 8, border: 'none', background: g.color, color: '#fff', fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
               )}
             </div>
-          </div>
-        </div>
-
-        {/* Sequence */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <img src="/icons/sequence.webp" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#6A1B9A' }}>Sequence</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : seqRank.level ?? '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Level</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : seqRank.rank ? `#${seqRank.rank}` : '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
-              </div>
-              {seqRank.level && (
-                <button onClick={() => shareScore(`🎵 I reached level ${seqRank.level} in MemGenius Sequence! World #${seqRank.rank}\nhttps://memgenius.com/sequence`)}
-                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#6A1B9A', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Flags */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <img src="/icons/flags.webp" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#00796B' }}>Flags</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : flagsRank.level ?? '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Flags</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : flagsRank.rank ? `#${flagsRank.rank}` : '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
-              </div>
-              {flagsRank.level && (
-                <button onClick={() => shareScore(`🚩 I got ${flagsRank.level} flags in a row on MemGenius! World #${flagsRank.rank}\nhttps://memgenius.com/flags`)}
-                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#00796B', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-              )}
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-
-
-        {/* Precision */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ fontSize: 18, fontWeight: 900, color: '#4A148C' }}>⏱ Precision</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s` : '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Best</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{precRank.rank ? `#${precRank.rank}` : '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
-              </div>
-              {precRank.diff !== null && (
-                <button onClick={() => shareScore(`⏱ I'm #${precRank.rank} in MemGenius Precision!
-https://memgenius.com/precision`)}
-                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#4A148C', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-              )}
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Versus */}
