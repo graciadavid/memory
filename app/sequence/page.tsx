@@ -3,8 +3,6 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 import { usePlayer } from '@/lib/usePlayer'
-import { useProtectPrompt } from '@/lib/useProtectPrompt'
-import ProtectPrompt from '@/components/ProtectPrompt'
 import { revalidateRanking } from '@/app/actions'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -97,7 +95,6 @@ function AutoNext({ onNext }: { onNext: () => void }) {
 
 export default function SequencePage() {
   const { profile } = usePlayer()
-  const { show: showProtect, increment: incrementProtect, dismiss: dismissProtect } = useProtectPrompt(profile?.name)
   const router = useRouter()
   const [phase, setPhase] = useState<Phase>('intro')
   const [sequence, setSequence] = useState<number[]>([])
@@ -383,7 +380,6 @@ export default function SequencePage() {
           </div>
         )}
       </main>
-      {showProtect && <ProtectPrompt onDismiss={dismissProtect} />}
     </>
   )
 }

@@ -1,8 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import { useProtectPrompt } from '@/lib/useProtectPrompt'
-import ProtectPrompt from '@/components/ProtectPrompt'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -131,7 +129,6 @@ function shuffle<T>(arr: T[]): T[] {
 
 export default function VersusPage() {
   const { profile } = usePlayer()
-  const { show: showProtect, increment: incrementProtect, dismiss: dismissProtect } = useProtectPrompt(profile?.name)
   const [phase, setPhase] = useState<'idle' | 'playing' | 'result'>('idle')
   const [deck, setDeck] = useState<typeof COUNTRIES>([])
   const [current, setCurrent] = useState(0)
@@ -181,7 +178,7 @@ export default function VersusPage() {
         if (profile?.name && finalStreak > 0) {
           await supabase.from('higher_lower_scores').insert({ player_name: profile.name, level: finalStreak, category: 'area' })
         await updateStreak(profile.name)
-        await incrementProtect()
+        window.dispatchEvent(new Event('game_completed'))
           const { count } = await supabase.from('higher_lower_scores')
             .select('*', { count: 'exact', head: true })
             .eq('category', 'area').gt('level', finalStreak)
@@ -326,7 +323,6 @@ export default function VersusPage() {
           </div>
         )}
       </div>
-      {showProtect && <ProtectPrompt onDismiss={dismissProtect} />}
     </main>
   )
 }

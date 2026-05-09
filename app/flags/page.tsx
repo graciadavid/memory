@@ -3,8 +3,6 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 import { usePlayer } from '@/lib/usePlayer'
-import { useProtectPrompt } from '@/lib/useProtectPrompt'
-import ProtectPrompt from '@/components/ProtectPrompt'
 import { revalidateRanking } from '@/app/actions'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -132,7 +130,6 @@ function getOptions(correct: typeof COUNTRIES[0]) {
 
 export default function FlagsPage() {
   const { profile } = usePlayer()
-  const { show: showProtect, increment: incrementProtect, dismiss: dismissProtect } = useProtectPrompt(profile?.name)
   const router = useRouter()
   const [phase, setPhase] = useState<Phase>('intro')
   const [level, setLevel] = useState(0)
@@ -192,7 +189,7 @@ export default function FlagsPage() {
         if (profile?.name) {
           await supabase.from('flag_scores').insert({ player_name: profile.name, level })
       await updateStreak(profile.name)
-      await incrementProtect()
+      window.dispatchEvent(new Event('game_completed'))
           revalidateRanking('flags')
           const { data } = await supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
           if (data) {
@@ -431,7 +428,6 @@ export default function FlagsPage() {
           </div>
         )}
       </main>
-      {showProtect && <ProtectPrompt onDismiss={dismissProtect} />}
     </>
   )
 }

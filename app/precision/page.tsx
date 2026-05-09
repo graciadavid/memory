@@ -1,8 +1,6 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import { useProtectPrompt } from '@/lib/useProtectPrompt'
-import ProtectPrompt from '@/components/ProtectPrompt'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 import { useRouter } from 'next/navigation'
@@ -15,7 +13,6 @@ const TARGET = 5000 // 5 seconds in ms
 
 export default function PrecisionPage() {
   const { profile } = usePlayer()
-  const { show: showProtect, increment: incrementProtect, dismiss: dismissProtect } = useProtectPrompt(profile?.name)
   const router = useRouter()
   const [phase, setPhase] = useState<'idle' | 'running' | 'result'>('idle')
   const [elapsed, setElapsed] = useState(0)
@@ -71,7 +68,7 @@ export default function PrecisionPage() {
 
     if (profile?.name) {
       await updateStreak(profile.name)
-      await incrementProtect()
+      window.dispatchEvent(new Event('game_completed'))
       await supabase.from('precision_scores').insert({
         player_name: profile.name,
         difference_ms: Math.abs(diff),
