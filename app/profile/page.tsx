@@ -383,8 +383,7 @@ https://memgenius.com/digits` },
 https://memgenius.com/sequence` },
             { key: 'flags', label: 'Flags', color: '#00796B', icon: '/icons/flags.webp', score: flagsRank.level, rank: flagsRank.rank, unit: 'Flags', share: `🚩 ${flagsRank.level} flags! #${flagsRank.rank}
 https://memgenius.com/flags` },
-            { key: 'precision', label: 'Precision', color: '#4A148C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', emoji: null, score: precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s` : null, rank: precRank.rank, unit: 'Best', share: `⏱ #${precRank.rank} in Precision!
-https://memgenius.com/precision` },
+
           ].map(g => (
             <div key={g.key} style={{ background: '#fff', borderRadius: 20, padding: '14px', boxShadow: `0 2px 12px ${BROWN}08` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
