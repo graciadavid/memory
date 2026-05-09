@@ -288,6 +288,23 @@ export default function ProfilePage() {
 
 
         {/* GROUPS */}
+        {/* Streak banner */}
+        {profileStreak.current > 0 && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, background: '#fff', borderRadius: 20, padding: '16px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 64, height: 64, objectFit: 'contain' }} />
+            <div>
+              <div style={{ fontSize: 48, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{profileStreak.current}</div>
+              <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>day streak</div>
+            </div>
+            {profileStreak.longest > profileStreak.current && (
+              <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
+                <div style={{ fontSize: 20, fontWeight: 900, color: `${BROWN}40` }}>{profileStreak.longest}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}30`, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>best</div>
+              </div>
+            )}
+          </div>
+        )}
+
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <div style={{ fontSize: 13, fontWeight: 900, color: BROWN }}>My Groups</div>
