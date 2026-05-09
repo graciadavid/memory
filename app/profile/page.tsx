@@ -246,15 +246,7 @@ export default function ProfilePage() {
               </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
-                  {profileStreak.current > 0 && (
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{profileStreak.current}</div>
-                      <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>days</div>
-                    </div>
-                  )}
-                </div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
                 <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
               </div>
             )}
