@@ -13,7 +13,7 @@ const TABS = [
   { key: 'flags', label: 'Flags', color: '#00796B' },
   { key: 'precision', label: 'Precision', color: '#4A148C' },
   { key: 'versus', label: 'Versus', color: '#C62828' },
-  { key: 'versus', label: 'Versus', color: '#C62828' },
+  
 ]
 
 function fmt(ms: number) {

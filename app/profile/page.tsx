@@ -412,8 +412,7 @@ export default function ProfilePage() {
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ fontSize: 22 }}>⏱</div>
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#4A148C' }}>Precision</div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: '#4A148C' }}>⏱ Precision</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ textAlign: 'center' }}>
@@ -437,8 +436,7 @@ https://memgenius.com/precision`)}
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ fontSize: 24 }}>⚔️</div>
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#C62828' }}>Versus</div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: '#C62828' }}>⚔️ Versus</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ textAlign: 'center' }}>
