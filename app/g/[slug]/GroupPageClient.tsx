@@ -12,6 +12,8 @@ const TABS = [
   { key: 'sequence', label: 'Sequence', color: '#6A1B9A' },
   { key: 'flags', label: 'Flags', color: '#00796B' },
   { key: 'precision', label: 'Precision', color: '#4A148C' },
+  { key: 'versus', label: 'Versus', color: '#C62828' },
+  { key: 'versus', label: 'Versus', color: '#C62828' },
 ]
 
 function fmt(ms: number) {
@@ -21,7 +23,7 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision }: any) {
+export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestVersus }: any) {
   const [tab, setTab] = useState('flags')
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
@@ -81,6 +83,16 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
           .filter((n: string) => bestPrecision[n] !== undefined)
           .map((n: string) => ({ name: n, score: `${(bestPrecision[n]/1000).toFixed(3)}s`, raw: bestPrecision[n] }))
           .sort((a: any, b: any) => a.raw - b.raw)
+      case 'versus':
+        return memberNames
+          .filter((n: string) => bestVersus[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestVersus[n]} correct`, raw: bestVersus[n] }))
+          .sort((a: any, b: any) => b.raw - a.raw)
+      case 'versus':
+        return memberNames
+          .filter((n: string) => bestVersus[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestVersus[n]} correct`, raw: bestVersus[n] }))
+          .sort((a: any, b: any) => b.raw - a.raw)
       default: return []
     }
   }

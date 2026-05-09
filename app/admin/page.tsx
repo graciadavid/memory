@@ -19,8 +19,8 @@ export default function AdminPage() {
   const [period, setPeriod] = useState<Period>('today')
   const [stats, setStats] = useState<any>(null)
   const [players, setPlayers] = useState<any>({})
-  const [gameFilter, setGameFilter] = useState<'memory' | 'digits' | 'sequence' | 'flags' | 'precision'>('memory')
-  const [topFilter, setTopFilter] = useState<'topMemory' | 'topDigits' | 'topSequence' | 'topFlags' | 'topPrecision'>('topMemory')
+  const [gameFilter, setGameFilter] = useState<'memory' | 'digits' | 'sequence' | 'flags' | 'precision' | 'versus'>('memory')
+  const [topFilter, setTopFilter] = useState<'topMemory' | 'topDigits' | 'topSequence' | 'topFlags' | 'topPrecision' | 'topVersus'>('topMemory')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -189,6 +189,7 @@ export default function AdminPage() {
     const seqMap = buildMap(seq, 'level')
     const flagMap = buildMap(flag, 'level')
     const precMap = buildMap(prec, 'level')
+    const vsMap = buildMap(vs, 'level')
 
     const toList = (map: Record<string, any>) =>
       Object.entries(map).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
@@ -209,11 +210,13 @@ export default function AdminPage() {
       sequence: toList(seqMap).slice(0, 5),
       flags: toList(flagMap).slice(0, 5),
       precision: toList(precMap).slice(0, 5),
+      versus: toList(vsMap).slice(0, 5),
       topMemory: topOf(memMap),
       topDigits: topOf(digMap),
       topSequence: topOf(seqMap),
       topFlags: topOf(flagMap),
       topPrecision: topOf(precMap),
+      topVersus: topOf(vsMap),
     })
     setLoading(false)
   }
@@ -386,6 +389,7 @@ export default function AdminPage() {
               { key: 'topSequence', label: 'Sequence', color: '#6A1B9A' },
               { key: 'topFlags', label: 'Flags', color: '#00796B' },
               { key: 'topPrecision', label: '⏱', color: '#4A148C' },
+              { key: 'topVersus', label: '⚔️', color: '#C62828' },
             ].map(g => (
               <button key={g.key} onClick={() => setTopFilter(g.key as any)} style={{
                 flex: 1, padding: '7px 4px', borderRadius: 10, border: 'none',
@@ -414,6 +418,7 @@ export default function AdminPage() {
               { key: 'sequence', label: 'Sequence', color: '#6A1B9A' },
               { key: 'flags', label: 'Flags', color: '#00796B' },
               { key: 'precision', label: '⏱', color: '#4A148C' },
+              { key: 'versus', label: '⚔️', color: '#C62828' },
             ].map(g => (
               <button key={g.key} onClick={() => setGameFilter(g.key as any)} style={{
                 flex: 1, padding: '7px 4px', borderRadius: 10, border: 'none',
