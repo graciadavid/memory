@@ -16,7 +16,7 @@ const GAMES = [
   { key: 'sequence', href: '/sequence', icon: '/icons/sequence.webp', label: 'Sequence', sub: 'Repeat the pattern', bg: '#6A1B9A', shadow: '#4A148C60' },
   { key: 'flags', href: '/flags', icon: '/icons/flags.webp', label: 'Flags', sub: 'How many flags in a row?', bg: '#00796B', shadow: '#00695160' },
   { key: 'precision', href: '/precision', icon: '⏱', label: 'Precision', sub: 'Stop at exactly 5 seconds', bg: '#4A148C', shadow: '#4A148C60', emoji: true },
-  { key: 'versus', href: '/versus', icon: '⚔️', label: 'Versus', sub: 'Higher or Lower · Population', bg: '#C62828', shadow: '#C6282860', emoji: true },
+  { key: 'versus', href: '/versus/population', icon: '⚔️', label: 'Versus', sub: 'Higher or Lower · Population', bg: '#C62828', shadow: '#C6282860', emoji: true },
 ]
 
 export default function LandingPage() {
