@@ -225,11 +225,7 @@ export default function LandingPage() {
                   {(game as any).emoji ? (
                     <div style={{ fontSize: 40, flexShrink: 0, width: 52, textAlign: 'center' }}>{game.icon}</div>
                   ) : (
-                    {(game as any).emoji ? (
-                    <div style={{ fontSize: 40, flexShrink: 0, width: 52, textAlign: 'center' }}>{game.icon}</div>
-                  ) : (
                     <img src={game.icon} alt="" style={{ width: 52, height: 52, objectFit: 'contain', flexShrink: 0 }} />
-                  )}
                   )}
                   <div>
                     <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{game.label}</div>
