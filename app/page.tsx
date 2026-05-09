@@ -15,6 +15,7 @@ const GAMES = [
   { key: 'digits', href: '/digits', icon: '/icons/digits.webp', label: 'Digits', sub: 'How many digits can you remember?', bg: '#1565C0', shadow: '#0D47A160' },
   { key: 'sequence', href: '/sequence', icon: '/icons/sequence.webp', label: 'Sequence', sub: 'Repeat the pattern', bg: '#6A1B9A', shadow: '#4A148C60' },
   { key: 'flags', href: '/flags', icon: '/icons/flags.webp', label: 'Flags', sub: 'How many flags in a row?', bg: '#00796B', shadow: '#00695160' },
+  { key: 'precision', href: '/precision', icon: '⏱', label: 'Precision', sub: 'Stop at exactly 5 seconds', bg: '#4A148C', shadow: '#4A148C60', emoji: true },
 ]
 
 export default function LandingPage() {
@@ -29,11 +30,12 @@ export default function LandingPage() {
 
   useEffect(() => {
     const fetchRecords = async () => {
-      const [mem, dig, seq, flag] = await Promise.all([
+      const [mem, dig, seq, flag, prec] = await Promise.all([
         supabase.from('scores').select('player_name, time_ms').order('time_ms', { ascending: true }).limit(1),
         supabase.from('number_scores').select('player_name, level').order('level', { ascending: false }).limit(1),
         supabase.from('sequence_scores').select('player_name, level').order('level', { ascending: false }).limit(1),
         supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(1),
+        supabase.from('precision_scores').select('player_name, difference_ms').order('difference_ms', { ascending: true }).limit(1),
       ])
       const fmt = (ms: number) => {
         const m = Math.floor(ms / 60000)
@@ -46,6 +48,7 @@ export default function LandingPage() {
         digits: dig.data?.[0] ? { value: `Level ${dig.data[0].level}`, by: dig.data[0].player_name } : { value: '', by: '' },
         sequence: seq.data?.[0] ? { value: `Level ${seq.data[0].level}`, by: seq.data[0].player_name } : { value: '', by: '' },
         flags: flag.data?.[0] ? { value: `${flag.data[0].level} flags`, by: flag.data[0].player_name } : { value: '', by: '' },
+        precision: prec.data?.[0] ? { value: `${(prec.data[0].difference_ms / 1000).toFixed(3)}s off`, by: prec.data[0].player_name } : { value: '', by: '' },
       })
     }
     fetchRecords()
@@ -219,7 +222,15 @@ export default function LandingPage() {
                   display: 'flex', alignItems: 'center', gap: 14,
                   cursor: 'pointer', boxSizing: 'border-box',
                 }}>
-                  <img src={game.icon} alt="" style={{ width: 52, height: 52, objectFit: 'contain', flexShrink: 0 }} />
+                  {(game as any).emoji ? (
+                    <div style={{ fontSize: 40, flexShrink: 0, width: 52, textAlign: 'center' }}>{game.icon}</div>
+                  ) : (
+                    {(game as any).emoji ? (
+                    <div style={{ fontSize: 40, flexShrink: 0, width: 52, textAlign: 'center' }}>{game.icon}</div>
+                  ) : (
+                    <img src={game.icon} alt="" style={{ width: 52, height: 52, objectFit: 'contain', flexShrink: 0 }} />
+                  )}
+                  )}
                   <div>
                     <div style={{ fontSize: 19, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{game.label}</div>
                     {records[game.key]?.value && (

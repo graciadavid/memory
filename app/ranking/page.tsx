@@ -61,6 +61,16 @@ export default function RankingHubPage() {
           </div>
         </a>
 
+        <a href="/precision/ranking" style={{ textDecoration: 'none' }}>
+          <div style={{ width: '100%', borderRadius: 20, padding: '20px 24px', background: '#4A148C', boxShadow: '0 8px 0 #4A148C60', display: 'flex', alignItems: 'center', gap: 16, boxSizing: 'border-box' }}>
+            <div style={{ fontSize: 40 }}>⏱</div>
+            <div>
+              <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>Precision</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 2 }}>Stop at 5 seconds ranking</div>
+            </div>
+          </div>
+        </a>
+
         <a href="/ranking/hall-of-fame" style={{ textDecoration: 'none' }}>
           <div style={{ width: '100%', borderRadius: 20, padding: '20px 24px', background: 'linear-gradient(135deg, #B8860B, #FFD700, #B8860B)', boxShadow: '0 8px 0 #B8860B60', display: 'flex', alignItems: 'center', gap: 16, boxSizing: 'border-box' }}>
             <img src="/icons/nav-trophy.webp" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
