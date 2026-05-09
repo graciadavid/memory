@@ -387,7 +387,7 @@ https://memgenius.com/flags` },
           ].map(g => (
             <div key={g.key} style={{ background: '#fff', borderRadius: 20, padding: '14px', boxShadow: `0 2px 12px ${BROWN}08` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                {g.icon ? <img src={g.icon} alt="" style={{ width: 22, height: 22, objectFit: 'contain' }} /> : <span style={{ fontSize: 18 }}>{g.emoji}</span>}
+                {g.icon && <img src={g.icon} alt="" style={{ width: 22, height: 22, objectFit: 'contain' }} />}
                 <div style={{ fontSize: 12, fontWeight: 900, color: g.color }}>{g.label}</div>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
