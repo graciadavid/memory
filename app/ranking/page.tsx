@@ -71,6 +71,26 @@ export default function RankingHubPage() {
           </div>
         </a>
 
+        <a href="/versus/ranking" style={{ textDecoration: 'none' }}>
+          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: '#C62828', boxShadow: '0 6px 0 #C6282860', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
+            <div style={{ fontSize: 36 }}>⚔️</div>
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Versus</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 1 }}>Population ranking</div>
+            </div>
+          </div>
+        </a>
+
+        <a href="/versus/ranking" style={{ textDecoration: 'none' }}>
+          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: '#C62828', boxShadow: '0 6px 0 #C6282860', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
+            <div style={{ fontSize: 36 }}>⚔️</div>
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Versus</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 1 }}>Population ranking</div>
+            </div>
+          </div>
+        </a>
+
         <a href="/precision/ranking" style={{ textDecoration: 'none' }}>
           <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: '#4A148C', boxShadow: '0 8px 0 #4A148C60', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
             <div style={{ fontSize: 32 }}>⏱</div>

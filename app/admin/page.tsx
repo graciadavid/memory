@@ -87,12 +87,13 @@ export default function AdminPage() {
     const { count: groupsCount } = await supabase.from('groups').select('*', { count: 'exact', head: true })
     const { count: membersCount } = await supabase.from('group_members').select('*', { count: 'exact', head: true })
 
-    const [memAll, digAll, seqAll, flagAll, precAll] = await Promise.all([
+    const [memAll, digAll, seqAll, flagAll, precAll, vsAll] = await Promise.all([
       supabase.from('scores').select('player_name, time_ms, created_at, packs(difficulty)').neq('player_name', 'David').order('created_at', { ascending: false }),
       supabase.from('number_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
       supabase.from('sequence_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
       supabase.from('flag_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
       supabase.from('precision_scores').select('player_name, difference_ms, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
+      supabase.from('higher_lower_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
     ])
 
     const mem = memAll.data || []
@@ -100,6 +101,7 @@ export default function AdminPage() {
     const seq = seqAll.data || []
     const flag = flagAll.data || []
     const prec = precAll.data || []
+    const vs = vsAll?.data || []
 
     const inPeriod = (arr: any[]) => arr.filter(s => s.created_at >= periodStart)
     const inPrev = (arr: any[]) => arr.filter(s => s.created_at >= prevStart && s.created_at < periodStart)
@@ -112,26 +114,29 @@ export default function AdminPage() {
     const seqP = inPeriod(seq).length
     const flagP = inPeriod(flag).length
     const precP = inPeriod(prec).length
+    const vsP = inPeriod(vs).length
     const memPrev = inPrev(mem).length
     const digPrev = inPrev(dig).length
     const seqPrev = inPrev(seq).length
     const flagPrev = inPrev(flag).length
     const precPrev = inPrev(prec).length
+    const vsPrev = inPrev(vs).length
 
     const memU = uniq(inPeriod(mem))
     const digU = uniq(inPeriod(dig))
     const seqU = uniq(inPeriod(seq))
     const flagU = uniq(inPeriod(flag))
     const precU = uniq(inPeriod(prec))
+    const vsU = uniq(inPeriod(vs))
 
     // All players
-    const allPlayers = new Set([...mem, ...dig, ...seq, ...flag, ...prec].map(s => s.player_name))
+    const allPlayers = new Set([...mem, ...dig, ...seq, ...flag, ...prec, ...vs].map(s => s.player_name))
     const periodPlayers = new Set([...inPeriod(mem), ...inPeriod(dig), ...inPeriod(seq), ...inPeriod(flag), ...inPeriod(prec)].map(s => s.player_name))
     const prevPlayers = new Set([...inPrev(mem), ...inPrev(dig), ...inPrev(seq), ...inPrev(flag), ...inPrev(prec)].map(s => s.player_name))
 
     // New players in period (first game ever in period)
     const firstGame: Record<string, string> = {}
-    ;[...mem, ...dig, ...seq, ...flag, ...prec].forEach(s => {
+    ;[...mem, ...dig, ...seq, ...flag, ...prec, ...vs].forEach(s => {
       if (!firstGame[s.player_name] || s.created_at < firstGame[s.player_name]) firstGame[s.player_name] = s.created_at
     })
     const newInPeriod = Object.values(firstGame).filter(d => d >= periodStart).length
@@ -139,7 +144,7 @@ export default function AdminPage() {
 
     // Retention
     const playerDays2: Record<string, Set<string>> = {}
-    ;[...mem, ...dig, ...seq, ...flag, ...prec].forEach(s => {
+    ;[...mem, ...dig, ...seq, ...flag, ...prec, ...vs].forEach(s => {
       const day = s.created_at?.split('T')[0]
       if (!day) return
       if (!playerDays2[s.player_name]) playerDays2[s.player_name] = new Set()
@@ -161,6 +166,7 @@ export default function AdminPage() {
         { label: 'Sequence', curr: seqP, pct: pct(seqP, seqPrev), color: '#6A1B9A', users: seqU, avg: seqU > 0 ? (seqP / seqU).toFixed(1) : '0' },
         { label: 'Flags', curr: flagP, pct: pct(flagP, flagPrev), color: '#00796B', users: flagU, avg: flagU > 0 ? (flagP / flagU).toFixed(1) : '0' },
           { label: 'Precision', curr: precP, pct: pct(precP, precPrev), color: '#4A148C', users: precU, avg: precU > 0 ? (precP / precU).toFixed(1) : '0' },
+          { label: 'Versus', curr: vsP, pct: pct(vsP, vsPrev), color: '#C62828', users: vsU, avg: vsU > 0 ? (vsP / vsU).toFixed(1) : '0' },
       ],
       players: { total: allPlayers.size, period: periodPlayers.size, pctPlayers: pct(periodPlayers.size, prevPlayers.size), newPeriod: newInPeriod, pctNew: pct(newInPeriod, newInPrev) },
     })

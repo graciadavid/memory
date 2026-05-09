@@ -58,6 +58,13 @@ export default async function HallOfFamePage() {
     .order('difference_ms', { ascending: true })
     .limit(1)
 
+  const { data: versusData } = await supabase
+    .from('higher_lower_scores')
+    .select('player_name, level, created_at')
+    .eq('category', 'population')
+    .order('level', { ascending: false })
+    .limit(1)
+
   const champions = {
     memoryEasy: memEasy,
     memoryMedium: memMed,
@@ -66,6 +73,7 @@ export default async function HallOfFamePage() {
     sequence: seqData?.[0] || null,
     flags: flagData?.[0] || null,
     precision: precData?.[0] || null,
+    versus: versusData?.[0] || null,
   }
 
   return <HallOfFameClient champions={champions} />

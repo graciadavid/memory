@@ -55,6 +55,7 @@ export default function ProfilePage() {
   const [seqRank, setSeqRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [flagsRank, setFlagsRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [precRank, setPrecRank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
+  const [versusRank, setVersusRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [myGroups, setMyGroups] = useState<any[]>([])
   const [hasPassword, setHasPassword] = useState(false)
 
@@ -101,6 +102,16 @@ export default function ProfilePage() {
       const myDiff = best[profile.name]
       if (!myDiff && myDiff !== 0) return
       setPrecRank({ diff: myDiff, rank: Object.values(best).filter(d => d < myDiff).length + 1 })
+    })
+
+    // Fetch versus
+    supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').order('level', { ascending: false }).limit(500).then(({ data }) => {
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+      const myLevel = best[profile.name]
+      if (!myLevel) return
+      setVersusRank({ level: myLevel, rank: Object.values(best).filter(l => l > myLevel).length + 1 })
     })
 
     fetchAllRanks(profile.name).then(({ memoryRanks, digitsRank, seqRank }) => {
@@ -394,6 +405,31 @@ export default function ProfilePage() {
         </div>
 
       </div>
+
+        {/* Versus */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontSize: 22 }}>⚔️</div>
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#C62828' }}>Versus</div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{versusRank.level ?? '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Best</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{versusRank.rank ? `#${versusRank.rank}` : '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+              </div>
+              {versusRank.level && (
+                <button onClick={() => shareScore(`⚔️ I'm #${versusRank.rank} in MemGenius Versus with ${versusRank.level} correct!
+https://memgenius.com/versus`)}
+                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#C62828', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Precision */}
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
