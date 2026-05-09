@@ -21,12 +21,13 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
 
   const memberNames = members?.map((m: any) => m.player_name) || []
 
-  const [memScores, digScores, seqScores, flagScores, precScores] = await Promise.all([
+  const [memScores, digScores, seqScores, flagScores, precScores, vsScores] = await Promise.all([
     supabase.from('scores').select('player_name, time_ms').in('player_name', memberNames).order('time_ms', { ascending: true }),
     supabase.from('number_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('sequence_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('flag_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('precision_scores').select('player_name, difference_ms').in('player_name', memberNames).order('difference_ms', { ascending: true }),
+    supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').in('player_name', memberNames).order('level', { ascending: false }),
   ])
 
   const bestMemory: Record<string, number> = {}
@@ -41,6 +42,9 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
   const bestPrecision: Record<string, number> = {}
   precScores.data?.forEach((s: any) => { if (!bestPrecision[s.player_name] || s.difference_ms < bestPrecision[s.player_name]) bestPrecision[s.player_name] = s.difference_ms })
 
+  const bestVersus: Record<string, number> = {}
+  vsScores.data?.forEach((s: any) => { if (!bestVersus[s.player_name] || s.level > bestVersus[s.player_name]) bestVersus[s.player_name] = s.level })
+
   return (
     <GroupPageClient
       group={group}
@@ -51,6 +55,7 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
       bestSeq={bestLevel(seqScores.data || [])}
       bestFlags={bestLevel(flagScores.data || [])}
       bestPrecision={bestPrecision}
+      bestVersus={bestVersus}
     />
   )
 }
