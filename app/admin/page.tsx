@@ -327,8 +327,8 @@ const memP = inPeriod(mem).length
                 const totalPrevCalc = stats.games.reduce((a: number, g: any) => a + (g.pct !== null ? Math.round(g.curr / (1 + g.pct / 100)) : g.curr), 0)
                 const totalPct = totalPrevCalc === 0 ? null : Math.round(((totalCurr - totalPrevCalc) / totalPrevCalc) * 100)
                 return totalPct !== 0 ? (
-                  <div style={{ fontSize: 12, fontWeight: 800, color: totalPct >= 0 ? '#81C784' : '#EF9A9A', marginBottom: 6 }}>
-                    {totalPct >= 0 ? '↑' : '↓'}{Math.abs(totalPct)}%
+                  <div style={{ fontSize: 12, fontWeight: 800, color: (totalPct ?? 0) >= 0 ? '#81C784' : '#EF9A9A', marginBottom: 6 }}>
+                    {totalPct ?? 0) >= 0 ? '↑' : '↓'}{Math.abs(totalPct ?? 0)}%
                   </div>
                 ) : null
               })()}
