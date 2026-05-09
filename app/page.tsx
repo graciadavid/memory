@@ -214,7 +214,7 @@ export default function LandingPage() {
         /* REGISTERED */
         <>
           {/* Logo */}
-          <img src={LOGO} alt="MemGenius" style={{ height: 72, objectFit: 'contain', marginBottom: 4 }} />
+          <img src={LOGO} alt="MemGenius" style={{ height: 90, objectFit: 'contain', marginBottom: 4 }} />
 
           {/* Greeting + Streak */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 2 }}>
@@ -222,7 +222,7 @@ export default function LandingPage() {
             {streak.current > 0 && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#FFF8E1', borderRadius: 10, padding: '4px 10px', border: '1.5px solid #F9A82540' }}>
                 <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 20, height: 20, objectFit: 'contain' }} />
-                <span style={{ fontSize: 15, fontWeight: 900, color: '#E65100' }}>{streak.current}</span>
+                <span style={{ fontSize: 13, fontWeight: 900, color: '#E65100' }}>{streak.current} day{streak.current !== 1 ? 's' : ''}</span>
               </div>
             )}
           </div>
@@ -239,16 +239,16 @@ export default function LandingPage() {
                 <div style={{
                   background: game.bg,
                   borderRadius: 20,
-                  padding: '20px 12px 16px',
+                  padding: '14px 12px',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  gap: 8,
+                  gap: 6,
                   boxShadow: `0 6px 0 ${game.shadow}`,
-                  aspectRatio: '1',
+                  aspectRatio: '4/3',
                 }}>
                   {(game as any).emoji ? (
-                    <div style={{ fontSize: 44 }}>{game.icon}</div>
+                    <div style={{ fontSize: 52 }}>{game.icon}</div>
                   ) : (
-                    <img src={game.icon} alt="" style={{ width: 64, height: 64, objectFit: 'contain' }} />
+                    <img src={game.icon} alt="" style={{ width: 72, height: 72, objectFit: 'contain' }} />
                   )}
                   <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', textAlign: 'center', letterSpacing: -0.3 }}>{game.label}</div>
                 </div>
