@@ -221,58 +221,62 @@ export default function VersusPage() {
         )}
 
         {phase === 'playing' && next && (
-          <>
-            {/* Revealed cards */}
-            {revealed.map((c, i) => (
-              <div key={c.code} style={{
-                background: '#fff', borderRadius: 16, padding: '12px 14px',
-                display: 'flex', alignItems: 'center', gap: 10,
-                boxShadow: `0 2px 8px ${BROWN}08`,
-                border: `1px solid ${i === revealed.length - 1 ? COLOR + '40' : BROWN + '08'}`,
-                opacity: i < revealed.length - 1 ? 0.6 : 1,
-              }}>
-                <img src={`${FLAG_CDN}/${c.code}.png`} alt="" style={{ width: 52, height: 35, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
-                <div style={{ flex: 1, fontWeight: 900, color: BROWN, fontSize: 16 }}>{c.name}</div>
-                <div style={{ fontWeight: 900, color: COLOR, fontSize: 15 }}>{fmt(c.population)}</div>
-              </div>
-            ))}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            {/* Scrolling chain — only show last 2 revealed */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 8, overflow: 'hidden', paddingBottom: 8 }}>
+              {revealed.slice(-2).map((c, i, arr) => (
+                <div key={c.code} style={{
+                  background: '#fff', borderRadius: 16, padding: '12px 14px',
+                  display: 'flex', alignItems: 'center', gap: 10,
+                  boxShadow: `0 2px 8px ${BROWN}08`,
+                  border: `1px solid ${i === arr.length - 1 ? COLOR + '50' : BROWN + '08'}`,
+                  opacity: i < arr.length - 1 ? 0.5 : 1,
+                  transition: 'all 0.3s',
+                }}>
+                  <img src={`${FLAG_CDN}/${c.code}.png`} alt="" style={{ width: 52, height: 35, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
+                  <div style={{ flex: 1, fontWeight: 900, color: BROWN, fontSize: 16 }}>{c.name}</div>
+                  <div style={{ fontWeight: 900, color: COLOR, fontSize: 15 }}>{fmt(c.population)}</div>
+                </div>
+              ))}
 
-            {/* Next card — hidden */}
-            <div style={{
-              background: answered === false ? '#FFEBEE' : answered === true ? '#E8F5E9' : `${COLOR}08`,
-              borderRadius: 16, padding: '12px 14px',
-              display: 'flex', alignItems: 'center', gap: 10,
-              border: `2px solid ${answered === false ? '#B71C1C' : answered === true ? '#2E7D32' : COLOR}40`,
-            }}>
-              <img src={`${FLAG_CDN}/${next.code}.png`} alt="" style={{ width: 52, height: 35, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
-              <div style={{ flex: 1, fontWeight: 900, color: BROWN, fontSize: 16 }}>{next.name}</div>
-              <div style={{ fontWeight: 900, fontSize: 15, color: answered !== null ? (answered ? '#2E7D32' : '#B71C1C') : `${BROWN}20` }}>
-                {answered !== null ? fmt(next.population) : '???'}
+              {/* Next card — hidden */}
+              <div style={{
+                background: answered === false ? '#FFEBEE' : answered === true ? '#E8F5E9' : `${COLOR}08`,
+                borderRadius: 16, padding: '12px 14px',
+                display: 'flex', alignItems: 'center', gap: 10,
+                border: `2px solid ${answered === false ? '#B71C1C50' : answered === true ? '#2E7D3250' : COLOR + '40'}`,
+                transition: 'all 0.3s',
+              }}>
+                <img src={`${FLAG_CDN}/${next.code}.png`} alt="" style={{ width: 52, height: 35, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
+                <div style={{ flex: 1, fontWeight: 900, color: BROWN, fontSize: 16 }}>{next.name}</div>
+                <div style={{ fontWeight: 900, fontSize: 15, color: answered !== null ? (answered ? '#2E7D32' : '#B71C1C') : `${BROWN}20` }}>
+                  {answered !== null ? fmt(next.population) : '???'}
+                </div>
               </div>
             </div>
 
-            {/* Buttons */}
-            {answered === null && (
-              <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                <button onClick={() => answer(true)} style={{
-                  flex: 1, padding: '18px', borderRadius: 16, border: 'none',
-                  background: '#2E7D32', color: '#fff', fontSize: 18, fontWeight: 900,
-                  fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #1B5E2060',
-                }}>↑ Higher</button>
-                <button onClick={() => answer(false)} style={{
-                  flex: 1, padding: '18px', borderRadius: 16, border: 'none',
-                  background: COLOR, color: '#fff', fontSize: 18, fontWeight: 900,
-                  fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${COLOR}60`,
-                }}>↓ Lower</button>
-              </div>
-            )}
-
-            {answered !== null && (
-              <div style={{ fontSize: 18, fontWeight: 900, color: answered ? '#2E7D32' : '#B71C1C', textAlign: 'center', padding: '8px' }}>
-                {answered ? '✓ Correct!' : '✗ Wrong!'}
-              </div>
-            )}
-          </>
+            {/* Fixed buttons at bottom */}
+            <div style={{ paddingTop: 8 }}>
+              {answered === null ? (
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button onClick={() => answer(true)} style={{
+                    flex: 1, padding: '18px', borderRadius: 16, border: 'none',
+                    background: '#2E7D32', color: '#fff', fontSize: 18, fontWeight: 900,
+                    fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #1B5E2060',
+                  }}>↑ Higher</button>
+                  <button onClick={() => answer(false)} style={{
+                    flex: 1, padding: '18px', borderRadius: 16, border: 'none',
+                    background: COLOR, color: '#fff', fontSize: 18, fontWeight: 900,
+                    fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${COLOR}60`,
+                  }}>↓ Lower</button>
+                </div>
+              ) : (
+                <div style={{ fontSize: 20, fontWeight: 900, color: answered ? '#2E7D32' : '#B71C1C', textAlign: 'center', padding: '16px' }}>
+                  {answered ? '✓ Correct!' : '✗ Wrong!'}
+                </div>
+              )}
+            </div>
+          </div>
         )}
 
         {phase === 'result' && (
