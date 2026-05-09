@@ -408,6 +408,37 @@ https://memgenius.com/flags` },
           ))}
         </div>
 
+        {/* Precision */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '14px 16px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png" alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+            <div style={{ fontSize: 13, fontWeight: 900, color: '#4A148C' }}>Precision</div>
+          </div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {[
+              { label: 'Stop', data: precRank, fmt: (d: number) => `${(d/1000).toFixed(3)}s`, color: '#4A148C', share: `⏱ I'm #${precRank.rank} in Precision Stop!\nhttps://memgenius.com/precision/stopwatch` },
+              { label: 'F1', data: f1Rank, fmt: (d: number) => `${d}ms`, color: '#E8002D', share: `🏎️ I'm #${f1Rank.rank} in F1 with ${f1Rank.diff}ms!\nhttps://memgenius.com/precision/formula1` },
+            ].map(v => {
+              const hasResult = v.data.diff !== null
+              return (
+                <div key={v.label} style={{ flex: 1, textAlign: 'center', background: `${v.color}08`, border: `1px solid ${v.color}20`, borderRadius: 12, padding: '8px 4px' }}>
+                  <div style={{ fontSize: 8, fontWeight: 900, color: v.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{v.label}</div>
+                  <div style={{ fontSize: 16, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20` }}>
+                    {loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}
+                  </div>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20` }}>
+                    {hasResult ? v.fmt(v.data.diff!) : ''}
+                  </div>
+                  {hasResult && (
+                    <button onClick={() => shareScore(v.share)}
+                      style={{ marginTop: 4, padding: '3px 8px', borderRadius: 6, border: 'none', background: v.color, color: '#fff', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
         {/* Versus */}
         <div style={{ background: '#fff', borderRadius: 20, padding: '14px 16px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
