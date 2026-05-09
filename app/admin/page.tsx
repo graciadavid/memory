@@ -88,10 +88,10 @@ export default function AdminPage() {
     const { count: membersCount } = await supabase.from('group_members').select('*', { count: 'exact', head: true })
 
     const [memAll, digAll, seqAll, flagAll] = await Promise.all([
-      supabase.from('scores').select('player_name, time_ms, created_at, packs(difficulty)').order('created_at', { ascending: false }),
-      supabase.from('number_scores').select('player_name, level, created_at').order('created_at', { ascending: false }),
-      supabase.from('sequence_scores').select('player_name, level, created_at').order('created_at', { ascending: false }),
-      supabase.from('flag_scores').select('player_name, level, created_at').order('created_at', { ascending: false }),
+      supabase.from('scores').select('player_name, time_ms, created_at, packs(difficulty)').neq('player_name', 'David').order('created_at', { ascending: false }),
+      supabase.from('number_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
+      supabase.from('sequence_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
+      supabase.from('flag_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
     ])
 
     const mem = memAll.data || []
