@@ -60,13 +60,13 @@ export default function ProtectPromptGlobal() {
           Protect your results!
         </div>
         <div style={{ fontSize: 14, color: `${BROWN}70`, fontWeight: 600, lineHeight: 1.6, marginBottom: 24 }}>
-          Set a better name and a PIN so you never lose your scores and rankings.
+          Set a better name and a PASSWORD so you never lose your scores and rankings.
         </div>
         <button onClick={() => { dismiss(); router.push('/profile') }} style={{
           width: '100%', padding: '16px', borderRadius: 14, border: 'none',
-          background: BROWN, color: '#fff', fontSize: 16, fontWeight: 900,
+          background: '#2E7D32', color: '#fff', fontSize: 16, fontWeight: 900,
           fontFamily: 'inherit', cursor: 'pointer',
-          boxShadow: `0 6px 0 ${BROWN}60`, marginBottom: 10,
+          boxShadow: '0 6px 0 #1B5E2060', marginBottom: 10,
         }}>Set up now →</button>
         <button onClick={dismiss} style={{
           width: '100%', padding: '12px', borderRadius: 14, border: 'none',
