@@ -135,7 +135,7 @@ export default function LandingPage() {
       height: '100dvh',
       background: `radial-gradient(ellipse at 50% 0%, #fff8ee 0%, ${CREAM} 40%, #EDE5D8 100%)`,
       display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center',
+      alignItems: 'center', justifyContent: 'flex-start', paddingTop: '12px',
       fontFamily: 'var(--font-nunito), sans-serif',
       maxWidth: 430, margin: '0 auto',
       padding: '0 20px',
@@ -216,7 +216,7 @@ export default function LandingPage() {
         /* REGISTERED */
         <>
           {/* Logo */}
-          <img src={LOGO} alt="MemGenius" style={{ height: 100, objectFit: 'contain', marginBottom: 2 }} />
+          <img src={LOGO} alt="MemGenius" style={{ height: 110, objectFit: 'contain', marginBottom: 2 }} />
 
           {/* Greeting + Streak */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 2 }}>
@@ -242,7 +242,7 @@ export default function LandingPage() {
                   background: game.bg,
                   borderRadius: 20,
                   padding: '6px 12px 6px',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: '12px',
                   gap: 4,
                   boxShadow: `0 6px 0 ${game.shadow}`,
                   aspectRatio: '5/2.5',
