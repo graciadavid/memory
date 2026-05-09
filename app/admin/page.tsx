@@ -64,7 +64,7 @@ export default function AdminPage() {
     const offset = getSpainOffset()
     if (p === '1h') return new Date(now.getTime() - 3600000).toISOString()
     if (p === 'today') return new Date(new Date(getSpainToday() + 'T00:00:00.000Z').getTime() - offset * 3600000).toISOString()
-    if (p === '7d') return new Date(now.getTime() - 7 * 86400000).toISOString()
+    if (p === '7d') { const y = new Date(now); y.setDate(y.getDate()-1); y.setHours(0,0,0,0); return y.toISOString() }
     if (p === '30d') return new Date(now.getTime() - 30 * 86400000).toISOString()
     return '2026-01-01T00:00:00.000Z'
   }
@@ -74,7 +74,7 @@ export default function AdminPage() {
     const offset = getSpainOffset()
     if (p === '1h') return new Date(now.getTime() - 7200000).toISOString()
     if (p === 'today') return new Date(new Date(getSpainToday() + 'T00:00:00.000Z').getTime() - offset * 3600000 - 86400000).toISOString()
-    if (p === '7d') return new Date(now.getTime() - 14 * 86400000).toISOString()
+    if (p === '7d') { const y = new Date(now); y.setDate(y.getDate()-2); y.setHours(0,0,0,0); return y.toISOString() }
     if (p === '30d') return new Date(now.getTime() - 60 * 86400000).toISOString()
     return '2025-01-01T00:00:00.000Z'
   }
@@ -269,7 +269,7 @@ export default function AdminPage() {
             color: period === p ? '#fff' : `${BROWN}60`,
             fontSize: 11, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
             boxShadow: period === p ? `0 4px 0 ${BROWN}50` : `0 2px 6px ${BROWN}08`,
-          }}>{p === '1h' ? '1h' : p === 'today' ? 'Today' : p === '7d' ? '7d' : p === '30d' ? '30d' : '2026'}</button>
+          }}>{p === '1h' ? '1h' : p === 'today' ? 'Today' : p === '7d' ? 'Yesterday' : p === '30d' ? '30d' : '2026'}</button>
         ))}
       </div>
 
