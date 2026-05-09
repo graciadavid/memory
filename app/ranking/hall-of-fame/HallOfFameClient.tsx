@@ -20,7 +20,7 @@ function getColor(name: string) {
   return colors[Math.abs(hash) % colors.length]
 }
 
-function Avatar({ name, avatar, size = 56 }: { name: string, avatar?: string, size?: number }) {
+function Avatar({ name, avatar, size = 52 }: { name: string, avatar?: string, size?: number }) {
   const color = getColor(name)
   if (avatar) return (
     <img src={avatar} alt={name} style={{ width: size, height: size, borderRadius: size * 0.3, objectFit: 'cover', boxShadow: `0 4px 16px ${GOLD}40` }} />
@@ -37,30 +37,14 @@ function Avatar({ name, avatar, size = 56 }: { name: string, avatar?: string, si
 }
 
 const CARDS = [
-  { key: 'memoryEasy', label: 'Memory Easy', phrase: 'The best in the world at Memory Easy is', color: '#2E7D32', bg: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', border: '#2E7D3240', icon: '/icons/memory.webp', result: (c: any) => fmt(c.time_ms), unit: 'time', share: (c: any) => `🧠 ${c?.player_name} is the world champion in Memory Easy!\n⏱ ${fmt(c?.time_ms)}\nhttps://memgenius.com/ranking/memory` },
-  { key: 'memoryMedium', label: 'Memory Medium', phrase: 'The best in the world at Memory Medium is', color: '#E65100', bg: 'linear-gradient(135deg, #FBE9E7, #FFCCBC)', border: '#E6510040', icon: '/icons/memory.webp', result: (c: any) => fmt(c.time_ms), unit: 'time', share: (c: any) => `🧠 ${c?.player_name} is the world champion in Memory Medium!\n⏱ ${fmt(c?.time_ms)}\nhttps://memgenius.com/ranking/memory` },
-  { key: 'memoryHard', label: 'Memory Hard', phrase: 'The best in the world at Memory Hard is', color: '#B71C1C', bg: 'linear-gradient(135deg, #FFEBEE, #FFCDD2)', border: '#B71C1C40', icon: '/icons/memory.webp', result: (c: any) => fmt(c.time_ms), unit: 'time', share: (c: any) => `🧠 ${c?.player_name} is the world champion in Memory Hard!\n⏱ ${fmt(c?.time_ms)}\nhttps://memgenius.com/ranking/memory` },
-  { key: 'digits', label: 'Digits', phrase: 'The best in the world at Digits is', color: '#1565C0', bg: 'linear-gradient(135deg, #E3F2FD, #BBDEFB)', border: '#1565C040', icon: '/icons/digits.webp', result: (c: any) => `${c.level} digits`, unit: 'digits', share: (c: any) => `🔢 ${c?.player_name} is the world champion in Digits!\n🏆 Level ${c?.level}\nhttps://memgenius.com/digits` },
-  { key: 'sequence', label: 'Sequence', phrase: 'The best in the world at Sequence is', color: '#6A1B9A', bg: 'linear-gradient(135deg, #F3E5F5, #E1BEE7)', border: '#6A1B9A40', icon: '/icons/sequence.webp', result: (c: any) => `Level ${c.level}`, unit: 'sequence', share: (c: any) => `🎵 ${c?.player_name} is the world champion in Sequence!\n🏆 Level ${c?.level}\nhttps://memgenius.com/sequence` },
-  { key: 'flags', label: 'Flags', phrase: 'The best in the world at Flags is', color: '#00796B', bg: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)', border: '#00796B40', icon: '/icons/flags.webp', result: (c: any) => `${c.level} flags`, unit: 'flags', share: (c: any) => `🚩 ${c?.player_name} is the world champion in Flags!\n🏆 ${c?.level} flags\nhttps://memgenius.com/flags` },
+  { key: 'memoryEasy', label: 'Memory Easy', phrase: 'The best in the world at Memory Easy is', color: '#2E7D32', bg: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', border: '#2E7D3240', icon: '/icons/memory.webp', result: (c: any) => fmt(c.time_ms) },
+  { key: 'memoryMedium', label: 'Memory Medium', phrase: 'The best in the world at Memory Medium is', color: '#E65100', bg: 'linear-gradient(135deg, #FBE9E7, #FFCCBC)', border: '#E6510040', icon: '/icons/memory.webp', result: (c: any) => fmt(c.time_ms) },
+  { key: 'memoryHard', label: 'Memory Hard', phrase: 'The best in the world at Memory Hard is', color: '#B71C1C', bg: 'linear-gradient(135deg, #FFEBEE, #FFCDD2)', border: '#B71C1C40', icon: '/icons/memory.webp', result: (c: any) => fmt(c.time_ms) },
+  { key: 'digits', label: 'Digits', phrase: 'The best in the world at Digits is', color: '#1565C0', bg: 'linear-gradient(135deg, #E3F2FD, #BBDEFB)', border: '#1565C040', icon: '/icons/digits.webp', result: (c: any) => `${c.level} digits` },
+  { key: 'sequence', label: 'Sequence', phrase: 'The best in the world at Sequence is', color: '#6A1B9A', bg: 'linear-gradient(135deg, #F3E5F5, #E1BEE7)', border: '#6A1B9A40', icon: '/icons/sequence.webp', result: (c: any) => `Level ${c.level}` },
+  { key: 'flags', label: 'Flags', phrase: 'The best in the world at Flags is', color: '#00796B', bg: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)', border: '#00796B40', icon: '/icons/flags.webp', result: (c: any) => `${c.level} flags` },
+  { key: 'precision', label: 'Precision', phrase: 'The most precise player in the world is', color: '#4A148C', bg: 'linear-gradient(135deg, #EDE7F6, #D1C4E9)', border: '#4A148C40', icon: '⏱', result: (c: any) => `${(c.difference_ms/1000).toFixed(3)}s off` },
 ]
-
-function LeaderBadge({ since }: { since?: string }) {
-  const days = since ? Math.max(0, Math.floor((Date.now() - new Date(since.replace(' ', 'T')).getTime()) / 86400000)) : 0
-  return (
-    <div style={{
-      background: `linear-gradient(135deg, #C8960C, #FFD700)`,
-      borderRadius: 12, padding: '8px 12px',
-      textAlign: 'center',
-      boxShadow: `0 4px 12px #C8960C50`,
-      flexShrink: 0,
-    }}>
-      <div style={{ fontSize: 9, fontWeight: 900, color: '#fff', letterSpacing: 1, textTransform: 'uppercase' }}>Leader</div>
-      <div style={{ fontSize: 16, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{days}</div>
-      <div style={{ fontSize: 8, fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}>days</div>
-    </div>
-  )
-}
 
 export default function HallOfFameClient({ champions }: { champions: Record<string, any> }) {
   const [avatars, setAvatars] = useState<Record<string, string>>({})
@@ -68,16 +52,12 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
   useEffect(() => {
     const names = [...new Set(Object.values(champions).filter(Boolean).map((c: any) => c.player_name))]
     if (!names.length) return
-
-    // Check localStorage first for current user
     const stored = localStorage.getItem('memgenius_profile')
     const localMap: Record<string, string> = {}
     if (stored) {
       const p = JSON.parse(stored)
       if (p.name && p.avatar) localMap[p.name] = p.avatar
     }
-
-    // Then load from Supabase for all champions
     supabase.from('profiles').select('player_name, avatar_url').in('player_name', names).then(({ data }) => {
       const map: Record<string, string> = { ...localMap }
       if (data) data.forEach(p => { if (p.avatar_url) map[p.player_name] = p.avatar_url })
@@ -85,24 +65,12 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
     })
   }, [])
 
-  const shareChampion = async (card: typeof CARDS[0]) => {
-    const c = champions[card.key]
-    if (!c) return
-    const text = card.share(c)
-    if (navigator.share) await navigator.share({ text })
-    else { await navigator.clipboard.writeText(text); alert('Copied!') }
-  }
-
   return (
     <>
       <style>{`
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(16px); }
           to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes shimmerGold {
-          0% { background-position: -200% center; }
-          100% { background-position: 200% center; }
         }
       `}</style>
 
@@ -113,7 +81,6 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
         maxWidth: 430, margin: '0 auto',
         padding: '0 0 100px',
       }}>
-
         {/* Header */}
         <div style={{ padding: '28px 20px 20px', textAlign: 'center', position: 'relative' }}>
           <a href="/ranking" style={{
@@ -122,24 +89,10 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
             background: `${BROWN}15`, borderRadius: 10,
             padding: '6px 12px', fontSize: 12, fontWeight: 800, color: `${BROWN}60`,
           }}>Back ✕</a>
-
-          {/* Trophy image */}
           <img src="/icons/nav-trophy.webp" alt="" style={{ width: 64, height: 64, objectFit: 'contain', marginBottom: 8, filter: 'drop-shadow(0 4px 12px #C8960C60)' }} />
-
-          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 4, textTransform: 'uppercase', marginBottom: 6 }}>
-            All Time Records
-          </div>
-          <div style={{
-            fontSize: 34, fontWeight: 900, letterSpacing: -1, color: BROWN,
-            marginBottom: 4,
-          }}>
-            Hall of Fame
-          </div>
-          <div style={{ fontSize: 13, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
-            The greatest MemGenius players ever
-          </div>
-
-          {/* Gold divider */}
+          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 4, textTransform: 'uppercase', marginBottom: 6 }}>All Time Records</div>
+          <div style={{ fontSize: 34, fontWeight: 900, letterSpacing: -1, color: BROWN, marginBottom: 4 }}>Hall of Fame</div>
+          <div style={{ fontSize: 13, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>The greatest MemGenius players ever</div>
           <div style={{ height: 2, background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`, margin: '16px 0 0' }} />
         </div>
 
@@ -149,17 +102,20 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
             const c = champions[card.key]
             return (
               <div key={card.key} style={{
-                borderRadius: 24,
-                background: card.bg,
+                borderRadius: 24, background: card.bg,
                 border: `1.5px solid ${card.border}`,
                 overflow: 'hidden',
                 animation: `fadeUp 0.4s ease ${idx * 0.07}s both`,
                 boxShadow: `0 6px 24px ${card.color}15`,
               }}>
                 <div style={{ padding: '20px' }}>
-                  {/* Game icon + label */}
+                  {/* Game label */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-                    <img src={card.icon} alt="" style={{ width: 48, height: 48, objectFit: 'contain', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.1))' }} />
+                    {card.icon.startsWith('/') ? (
+                      <img src={card.icon} alt="" style={{ width: 48, height: 48, objectFit: 'contain', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.1))' }} />
+                    ) : (
+                      <div style={{ fontSize: 40 }}>{card.icon}</div>
+                    )}
                     <div>
                       <div style={{ fontSize: 16, fontWeight: 900, color: card.color }}>{card.label}</div>
                       <div style={{ fontSize: 11, color: `${BROWN}50`, fontWeight: 700, marginTop: 1 }}>{card.phrase}</div>
@@ -167,40 +123,30 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
                   </div>
 
                   {c ? (
-                    <>
-                      {/* Champion row */}
-                      <div style={{
-                        background: '#fff',
-                        borderRadius: 16, padding: '14px 16px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        boxShadow: `0 4px 16px ${card.color}15`,
-                        border: `1px solid ${card.color}20`,
-                        marginBottom: 10,
-                      }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <Avatar name={c.player_name} avatar={avatars[c.player_name]} size={52} />
-                          <div>
-                            <div style={{ fontSize: 16, fontWeight: 900, color: BROWN }}>{c.player_name}</div>
-                            <div style={{ fontSize: 20, fontWeight: 900, color: card.color, lineHeight: 1.2 }}>{card.result(c)}</div>
-                          </div>
-                        </div>
-
-                      </div>
-
-                      {/* Share button */}
-                      <button onClick={() => shareChampion(card)} style={{
-                        width: '100%', padding: '12px', borderRadius: 14, border: 'none',
-                        background: card.color,
-                        color: '#fff', fontSize: 14, fontWeight: 900,
-                        cursor: 'pointer', fontFamily: 'inherit',
-                        boxShadow: `0 5px 0 ${card.color}60`,
-                      }}>Share</button>
-                    </>
-                  ) : (
                     <div style={{
-                      background: '#fff', borderRadius: 16, padding: '20px',
-                      textAlign: 'center', border: `1px dashed ${card.color}30`,
+                      background: '#fff', borderRadius: 16, padding: '14px 16px',
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      boxShadow: `0 4px 16px ${card.color}15`,
+                      border: `1px solid ${card.color}20`,
                     }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <Avatar name={c.player_name} avatar={avatars[c.player_name]} size={52} />
+                        <div>
+                          <div style={{ fontSize: 17, fontWeight: 900, color: BROWN }}>{c.player_name}</div>
+                          <div style={{ fontSize: 22, fontWeight: 900, color: card.color, lineHeight: 1.2 }}>{card.result(c)}</div>
+                        </div>
+                      </div>
+                      <div style={{
+                        background: `linear-gradient(135deg, ${GOLD}, #FFD700)`,
+                        borderRadius: 10, padding: '8px 12px',
+                        textAlign: 'center', boxShadow: `0 4px 12px ${GOLD}50`,
+                      }}>
+                        <div style={{ fontSize: 18 }}>👑</div>
+                        <div style={{ fontSize: 8, fontWeight: 900, color: '#fff', letterSpacing: 0.5 }}>#1</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ background: '#fff', borderRadius: 16, padding: '20px', textAlign: 'center', border: `1px dashed ${card.color}30` }}>
                       <img src="/icons/nav-trophy.webp" alt="" style={{ width: 36, height: 36, objectFit: 'contain', marginBottom: 4, opacity: 0.3 }} />
                       <div style={{ fontSize: 13, color: `${BROWN}40`, fontWeight: 700 }}>No record yet</div>
                       <div style={{ fontSize: 11, color: `${BROWN}30`, marginTop: 2 }}>Be the first champion!</div>
