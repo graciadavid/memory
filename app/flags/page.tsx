@@ -159,6 +159,8 @@ export default function FlagsPage() {
     setSelected(null)
     setImgLoaded(false)
     setProgress(100)
+    // Force show image after 2s even if not loaded
+    setTimeout(() => setImgLoaded(true), 2000)
     // Preload next flag
     const next = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)]
     const img = new Image()

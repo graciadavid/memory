@@ -108,8 +108,8 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
           </div>
 
           <div style={{
-            fontSize: 48, fontWeight: 900, color: BROWN,
-            fontFamily: 'monospace', letterSpacing: 1, lineHeight: 1,
+            fontSize: 36, fontWeight: 900, color: BROWN,
+            fontFamily: 'var(--font-nunito), sans-serif', letterSpacing: -1, lineHeight: 1,
             marginBottom: 6,
           }}>
             {fmt(ms)}
