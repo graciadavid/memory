@@ -107,9 +107,9 @@ const COUNTRIES = [
 ]
 
 function fmt(n: number) {
-  if (n >= 1000000000) return `${(n / 1000000000).toFixed(1)}B`
-  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
-  return `${(n / 1000).toFixed(0)}K`
+  if (n >= 1000000000) return `${(n / 1000000000).toFixed(2)}B`
+  if (n >= 1000000) return `${(n / 1000000).toFixed(2)}M`
+  return `${(n / 1000).toFixed(2)}K`
 }
 
 function getPair(used: Set<number>) {
