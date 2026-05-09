@@ -408,11 +408,11 @@ export default function ProfilePage() {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s` : '—'}</div>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s` : '—'}</div>
                 <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Best</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : precRank.rank ? `#${precRank.rank}` : '—'}</div>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{precRank.rank ? `#${precRank.rank}` : '—'}</div>
                 <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
               </div>
               {precRank.diff !== null && (
