@@ -107,9 +107,15 @@ const COUNTRIES = [
 ]
 
 function fmt(n: number) {
-  if (n >= 1000000000) return `${(n / 1000000000).toFixed(2)}B`
-  if (n >= 1000000) return `${(n / 1000000).toFixed(2)}M`
-  return `${(n / 1000).toFixed(2)}K`
+  if (n >= 1000000000) {
+    const v = n / 1000000000
+    return `${v % 1 === 0 ? v.toFixed(0) : v.toFixed(2)}B`
+  }
+  if (n >= 1000000) {
+    const v = n / 1000000
+    return `${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}M`
+  }
+  return `${Math.round(n / 1000)}K`
 }
 
 function getPair(used: Set<number>) {
@@ -198,9 +204,9 @@ export default function VersusPage() {
     }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
-        <img src={`${BASE}/higher.png`} alt="" style={{ height: 60, objectFit: 'contain', flexShrink: 0 }} onError={e => { (e.target as any).style.display='none' }} />
+        <div style={{ fontSize: 48, flexShrink: 0 }}>⚔️</div>
         <div>
-          <div style={{ fontSize: 26, fontWeight: 900, color: COLOR, letterSpacing: -0.5 }}>Higher or Lower</div>
+          <div style={{ fontSize: 26, fontWeight: 900, color: COLOR, letterSpacing: -0.5 }}>Versus</div>
           <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Which country has more people?</div>
         </div>
       </div>
