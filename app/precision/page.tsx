@@ -98,7 +98,7 @@ export default function PrecisionPage() {
       display: 'flex', flexDirection: 'column',
       fontFamily: 'var(--font-nunito), sans-serif',
       maxWidth: 430, margin: '0 auto',
-      overflow: 'hidden',
+      overflow: 'hidden', paddingBottom: 80,
     }}>
 
       {/* Header */}
@@ -168,14 +168,14 @@ export default function PrecisionPage() {
 
         {phase === 'result' && (
           <>
-            <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '28px 24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
+            <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '18px 20px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
               <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>You stopped at</div>
-              <div style={{ fontSize: 48, fontWeight: 900, color: BROWN, letterSpacing: -2, marginBottom: 4 }}>{fmt(elapsed)}</div>
-              <div style={{ fontSize: 11, color: `${BROWN}40`, marginBottom: 20 }}>Target was 5.00</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: BROWN, letterSpacing: -2, marginBottom: 2 }}>{fmt(elapsed)}</div>
+              <div style={{ marginBottom: 12 }} />
 
-              <div style={{ background: Math.abs(difference) < 100 ? '#E8F5E9' : Math.abs(difference) < 500 ? '#FFF8E1' : '#FFEBEE', borderRadius: 16, padding: '16px', marginBottom: 16 }}>
+              <div style={{ background: Math.abs(difference) < 100 ? '#E8F5E9' : Math.abs(difference) < 500 ? '#FFF8E1' : '#FFEBEE', borderRadius: 16, padding: '10px 16px', marginBottom: 10 }}>
                 <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Difference</div>
-                <div style={{ fontSize: 36, fontWeight: 900, color: Math.abs(difference) < 100 ? '#2E7D32' : Math.abs(difference) < 500 ? GOLD : '#B71C1C' }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: Math.abs(difference) < 100 ? '#2E7D32' : Math.abs(difference) < 500 ? GOLD : '#B71C1C' }}>
                   {difference === 0 ? '🎯 PERFECT!' : `${difference > 0 ? '+' : ''}${(difference / 1000).toFixed(3)}s`}
                 </div>
                 <div style={{ fontSize: 12, color: `${BROWN}50`, marginTop: 4 }}>
