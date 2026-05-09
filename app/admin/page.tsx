@@ -195,12 +195,12 @@ const memP = inPeriod(mem).length
 
     setStats({ retentionData: retentionData2, groupsCount: groupsCount ?? 0, membersCount: membersCount ?? 0,
       games: [
-        { label: 'Memory', curr: memP, pct: pct(memP, memPrev), color: BROWN, users: memU, avg: memU > 0 ? (memP / memU).toFixed(1) : '0' },
-        { label: 'Digits', curr: digP, pct: pct(digP, digPrev), color: BLUE, users: digU, avg: digU > 0 ? (digP / digU).toFixed(1) : '0' },
-        { label: 'Sequence', curr: seqP, pct: pct(seqP, seqPrev), color: '#6A1B9A', users: seqU, avg: seqU > 0 ? (seqP / seqU).toFixed(1) : '0' },
-        { label: 'Flags', curr: flagP, pct: pct(flagP, flagPrev), color: '#00796B', users: flagU, avg: flagU > 0 ? (flagP / flagU).toFixed(1) : '0' },
-          { label: 'Precision', curr: precP, pct: pct(precP, precPrev), color: '#4A148C', users: precU, avg: precU > 0 ? (precP / precU).toFixed(1) : '0' },
-          { label: 'Versus', curr: vsP, pct: pct(vsP, vsPrev), color: '#C62828', users: vsU, avg: vsU > 0 ? (vsP / vsU).toFixed(1) : '0' },
+        { label: 'Memory', curr: memP, prev: memPrev, pct: pct(memP, memPrev), color: BROWN, users: memU, avg: memU > 0 ? (memP / memU).toFixed(1) : '0' },
+        { label: 'Digits', curr: digP, prev: digPrev, pct: pct(digP, digPrev), color: BLUE, users: digU, avg: digU > 0 ? (digP / digU).toFixed(1) : '0' },
+        { label: 'Sequence', curr: seqP, prev: seqPrev, pct: pct(seqP, seqPrev), color: '#6A1B9A', users: seqU, avg: seqU > 0 ? (seqP / seqU).toFixed(1) : '0' },
+        { label: 'Flags', curr: flagP, prev: flagPrev, pct: pct(flagP, flagPrev), color: '#00796B', users: flagU, avg: flagU > 0 ? (flagP / flagU).toFixed(1) : '0' },
+          { label: 'Precision', curr: precP, prev: precPrev, pct: pct(precP, precPrev), color: '#4A148C', users: precU, avg: precU > 0 ? (precP / precU).toFixed(1) : '0' },
+          { label: 'Versus', curr: vsP, prev: vsPrev, pct: pct(vsP, vsPrev), color: '#C62828', users: vsU, avg: vsU > 0 ? (vsP / vsU).toFixed(1) : '0' },
       ],
       players: { total: allPlayers.size, period: periodPlayers.size, pctPlayers: pct(periodPlayers.size, prevPlayers.size), newPeriod: newInPeriod, pctNew: pct(newInPeriod, newInPrev) },
     })
@@ -324,7 +324,7 @@ const memP = inPeriod(mem).length
               </div>
               {(() => {
                 const totalCurr = stats.games.reduce((a: number, g: any) => a + g.curr, 0)
-                const totalPrevCalc = stats.games.reduce((a: number, g: any) => a + (g.pct !== null ? Math.round(g.curr / (1 + g.pct / 100)) : g.curr), 0)
+                const totalPrevCalc = stats.games.reduce((a: number, g: any) => a + (g.prev ?? 0), 0)
                 const totalPct = totalPrevCalc === 0 ? null : Math.round(((totalCurr - totalPrevCalc) / totalPrevCalc) * 100)
                 return totalPct !== 0 ? (
                   <div style={{ fontSize: 12, fontWeight: 800, color: (totalPct ?? 0) >= 0 ? '#81C784' : '#EF9A9A', marginBottom: 6 }}>
