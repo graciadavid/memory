@@ -227,7 +227,7 @@ export default function LandingPage() {
               border: `1.5px solid ${streak.playedToday ? '#2E7D3240' : '#F9A82540'}`,
               borderRadius: 14, padding: '8px 16px', marginBottom: 16,
             }}>
-              <span style={{ fontSize: 22 }}>🔥</span>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 36, height: 36, objectFit: 'contain' }} />
               <div>
                 <div style={{ fontSize: 16, fontWeight: 900, color: streak.playedToday ? '#2E7D32' : '#E65100' }}>
                   {streak.current} day{streak.current !== 1 ? 's' : ''} streak
