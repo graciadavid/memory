@@ -1,99 +1,78 @@
+import Link from 'next/link'
+
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
-export default function RankingHubPage() {
+const GAMES = [
+  { key: 'memory', href: '/ranking/memory', icon: `${BASE}/memory.webp`, label: 'Memory', bg: '#4A2C0A', shadow: '#4A2C0A60', emoji: false },
+  { key: 'digits', href: '/digits/ranking', icon: `${BASE}/digits.webp`, label: 'Digits', bg: '#1565C0', shadow: '#1565C060', emoji: false },
+  { key: 'sequence', href: '/sequence/ranking', icon: `${BASE}/sequence.webp`, label: 'Sequence', bg: '#6A1B9A', shadow: '#6A1B9A60', emoji: false },
+  { key: 'flags', href: '/flags/ranking', icon: `${BASE}/flags.webp`, label: 'Flags', bg: '#00796B', shadow: '#00796B60', emoji: false },
+  { key: 'precision', href: '/precision/ranking', icon: '', label: 'Precision', bg: '#4A148C', shadow: '#4A148C60', emoji: true, emojiIcon: '⏱' },
+  { key: 'versus', href: '/versus/ranking', icon: '', label: 'Versus', bg: '#C62828', shadow: '#C6282860', emoji: true, emojiIcon: '⚔️' },
+]
+
+export default function RankingPage() {
   return (
-    <main style={{
-      minHeight: '100dvh',
-      background: `linear-gradient(180deg, ${CREAM} 0%, #F0EBE1 100%)`,
-      fontFamily: 'var(--font-nunito), sans-serif',
-      maxWidth: 430, margin: '0 auto',
-      padding: '32px 20px 100px',
-    }}>
-      <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6, textAlign: 'center' }}>
-        Leaderboard
-      </div>
-      <div style={{ fontSize: 32, fontWeight: 900, color: BROWN, letterSpacing: -1, textAlign: 'center', marginBottom: 24 }}>
-        World Ranking
-      </div>
+    <>
+      <style>{`@keyframes fadeUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }`}</style>
+      <main style={{
+        minHeight: '100dvh',
+        background: `linear-gradient(180deg, #FFF8E1 0%, ${CREAM} 100%)`,
+        fontFamily: 'var(--font-nunito), sans-serif',
+        maxWidth: 430, margin: '0 auto',
+        padding: '24px 16px 100px',
+      }}>
+        {/* Header */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>Compete</div>
+          <div style={{ fontSize: 30, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>Rankings</div>
+        </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-
-        <a href="/ranking/hall-of-fame" style={{ textDecoration: 'none' }}>
-          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: 'linear-gradient(135deg, #B8860B, #FFD700, #B8860B)', boxShadow: '0 8px 0 #B8860B60', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
-            <img src="/icons/nav-trophy.webp" alt="" style={{ width: 48, height: 48, objectFit: "contain" }} />
+        {/* Hall of Fame */}
+        <Link href="/ranking/hall-of-fame" style={{ textDecoration: 'none', display: 'block', marginBottom: 20 }}>
+          <div style={{
+            background: `linear-gradient(135deg, ${BROWN}, #7A4C1A)`,
+            borderRadius: 20, padding: '18px 20px',
+            display: 'flex', alignItems: 'center', gap: 14,
+            boxShadow: `0 8px 0 ${BROWN}60`,
+          }}>
+            <img src={`/icons/nav-trophy.webp`} alt="" style={{ width: 52, height: 52, objectFit: 'contain' }} />
             <div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>Hall of Fame</div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 700, marginTop: 2 }}>All time world records</div>
+              <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>All time records</div>
+              <div style={{ fontSize: 20, fontWeight: 900, color: '#fff' }}>Hall of Fame</div>
             </div>
           </div>
-        </a>
+        </Link>
 
-        <a href="/ranking/memory" style={{ textDecoration: 'none' }}>
-          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: BROWN, boxShadow: `0 8px 0 ${BROWN}60`, display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
-            <img src="/icons/memory.webp" alt="" style={{ width: 44, height: 44, objectFit: 'contain' }} />
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Memory</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 1 }}>Match pairs ranking</div>
-            </div>
-          </div>
-        </a>
-
-        <a href="/digits/ranking" style={{ textDecoration: 'none' }}>
-          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: '#1565C0', boxShadow: '0 8px 0 #0D47A160', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
-            <img src="/icons/digits.webp" alt="" style={{ width: 44, height: 44, objectFit: 'contain' }} />
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Digits</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 1 }}>Number memory ranking</div>
-            </div>
-          </div>
-        </a>
-
-        <a href="/sequence/ranking" style={{ textDecoration: 'none' }}>
-          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: '#6A1B9A', boxShadow: '0 8px 0 #4A148C60', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
-            <img src="/icons/sequence.webp" alt="" style={{ width: 44, height: 44, objectFit: 'contain' }} />
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Sequence</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 1 }}>Pattern memory ranking</div>
-            </div>
-          </div>
-        </a>
-
-        <a href="/flags/ranking" style={{ textDecoration: 'none' }}>
-          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: '#00796B', boxShadow: '0 8px 0 #00695160', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
-            <img src="/icons/flags.webp" alt="" style={{ width: 44, height: 44, objectFit: 'contain' }} />
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Flags</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 1 }}>Flag quiz ranking</div>
-            </div>
-          </div>
-        </a>
-
-        <a href="/versus/ranking" style={{ textDecoration: 'none' }}>
-          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: '#C62828', boxShadow: '0 6px 0 #C6282860', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
-            <div style={{ fontSize: 36 }}>⚔️</div>
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Versus</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 1 }}>Population ranking</div>
-            </div>
-          </div>
-        </a>
-
-        <a href="/precision/ranking" style={{ textDecoration: 'none' }}>
-          <div style={{ width: '100%', borderRadius: 20, padding: '14px 18px', background: '#4A148C', boxShadow: '0 8px 0 #4A148C60', display: 'flex', alignItems: 'center', gap: 12, boxSizing: 'border-box' }}>
-            <div style={{ fontSize: 32 }}>⏱</div>
-            <div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Precision</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 1 }}>Stop at 5 seconds ranking</div>
-            </div>
-          </div>
-        </a>
-
-
-
-      </div>
-    </main>
+        {/* Games grid */}
+        <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>By game</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          {GAMES.map((game, i) => (
+            <Link key={game.key} href={game.href} style={{ textDecoration: 'none' }}>
+              <div style={{
+                background: game.bg,
+                borderRadius: 20,
+                padding: '10px 12px 8px',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start',
+                gap: 4, paddingTop: 10,
+                boxShadow: `0 6px 0 ${game.shadow}`,
+                aspectRatio: '5/2.5',
+                animation: `fadeUp 0.3s ease ${i * 0.05}s both`,
+              }}>
+                {game.emoji ? (
+                  <div style={{ fontSize: 44 }}>{(game as any).emojiIcon}</div>
+                ) : (
+                  <img src={game.icon} alt="" style={{ width: 64, height: 64, objectFit: 'contain' }} />
+                )}
+                <div style={{ fontSize: 13, fontWeight: 900, color: '#fff', textAlign: 'center' }}>{game.label}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </main>
+    </>
   )
 }
