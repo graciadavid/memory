@@ -7,8 +7,8 @@ const PURPLE = '#4A148C'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
 const TOPICS = [
-  { href: '/precision/stopwatch', img: `${BASE}/precision.png`, label: 'Stop at 5s', sub: 'Stop exactly at 5 seconds' },
-  { href: '/precision/formula1', emoji: '🏎️', label: 'Formula 1', sub: 'React when the lights go out' },
+  { href: '/precision/stopwatch', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', label: 'Stop', sub: 'Stop exactly at 5 seconds' },
+  { href: '/precision/formula1', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/f1.png', label: 'Formula 1', sub: 'React when the lights go out' },
 ]
 
 export default function PrecisionPage() {
@@ -38,11 +38,7 @@ export default function PrecisionPage() {
               display: 'flex', alignItems: 'center', gap: 14,
               boxShadow: `0 8px 0 ${PURPLE}60`,
             }}>
-              {(t as any).img ? (
-                <img src={(t as any).img} alt="" style={{ width: 52, height: 52, objectFit: 'contain' }} />
-              ) : (
-                <div style={{ fontSize: 44 }}>{(t as any).emoji}</div>
-              )}
+              <img src={(t as any).img} alt="" style={{ width: 52, height: 52, objectFit: 'contain' }} />
               <div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: '#fff' }}>{t.label}</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>{t.sub}</div>
