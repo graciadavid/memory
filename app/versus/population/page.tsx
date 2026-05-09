@@ -185,7 +185,7 @@ export default function VersusPage() {
     }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px 0', gap: 12, flexShrink: 0 }}>
-        <div style={{ fontSize: 40 }}>⚔️</div>
+        <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png" alt="" style={{ height: 52, objectFit: 'contain', flexShrink: 0 }} />
         <div>
           <div style={{ fontSize: 24, fontWeight: 900, color: COLOR, letterSpacing: -0.5 }}>Versus</div>
 
