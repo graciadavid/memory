@@ -358,11 +358,7 @@ export default function DigitsPage() {
                 background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
               }}>Play again</button>
-              <button onClick={() => router.push('/')} style={{
-                flex: 1, padding: '16px', borderRadius: 16, border: 'none',
-                background: '#4CAF50', color: '#fff', fontSize: 13, fontWeight: 800,
-                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #2E7D3260',
-              }}>Home</button>
+
             </div>
           </div>
         )}
