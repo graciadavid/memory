@@ -384,7 +384,7 @@ https://memgenius.com/precision` },
         <div style={{ background: '#fff', borderRadius: 20, padding: '14px 16px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higher.png" alt="" style={{ width: 22, height: 22, objectFit: 'contain' }} />
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png" alt="" style={{ width: 22, height: 22, objectFit: 'contain' }} />
               <div style={{ fontSize: 13, fontWeight: 900, color: '#C62828' }}>Versus</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
