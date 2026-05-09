@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { getStreak } from '@/lib/streak'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const LOGO = `${BASE}/logomemgenius.webp`
@@ -25,6 +26,7 @@ export default function LandingPage() {
   const [checking, setChecking] = useState(false)
   const [error, setError] = useState('')
   const [records, setRecords] = useState<Record<string, { value: string, by: string }>>({})
+  const [streak, setStreak] = useState<{ current: number, longest: number, playedToday: boolean }>({ current: 0, longest: 0, playedToday: false })
   const [nameExists, setNameExists] = useState(false)
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -56,6 +58,11 @@ export default function LandingPage() {
     }
     fetchRecords()
   }, [])
+
+  useEffect(() => {
+    if (!profile?.name) return
+    getStreak(profile.name).then(setStreak)
+  }, [profile?.name])
 
   const handleSave = async () => {
     if (!name.trim()) return
@@ -210,9 +217,27 @@ export default function LandingPage() {
           <div style={{ fontSize: 14, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 16, letterSpacing: 0.3 }}>
             Your daily brain workout
           </div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, marginBottom: 16 }}>
+          <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, marginBottom: 8 }}>
             Hey, {profile.name}!
           </div>
+          {streak.current > 0 && (
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              background: streak.playedToday ? '#E8F5E9' : '#FFF8E1',
+              border: `1.5px solid ${streak.playedToday ? '#2E7D3240' : '#F9A82540'}`,
+              borderRadius: 14, padding: '8px 16px', marginBottom: 16,
+            }}>
+              <span style={{ fontSize: 22 }}>🔥</span>
+              <div>
+                <div style={{ fontSize: 16, fontWeight: 900, color: streak.playedToday ? '#2E7D32' : '#E65100' }}>
+                  {streak.current} day{streak.current !== 1 ? 's' : ''} streak
+                </div>
+                <div style={{ fontSize: 10, color: streak.playedToday ? '#2E7D3280' : '#E6510080', fontWeight: 700 }}>
+                  {streak.playedToday ? '✓ Done for today' : 'Play to keep it alive!'}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
             {GAMES.map(game => (
