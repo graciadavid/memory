@@ -11,6 +11,7 @@ const TABS = [
   { key: 'digits', label: 'Digits', color: '#1565C0' },
   { key: 'sequence', label: 'Sequence', color: '#6A1B9A' },
   { key: 'flags', label: 'Flags', color: '#00796B' },
+  { key: 'precision', label: '⏱', color: '#4A148C' },
 ]
 
 function fmt(ms: number) {
@@ -20,7 +21,7 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags }: any) {
+export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision }: any) {
   const [tab, setTab] = useState('flags')
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
@@ -75,6 +76,11 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
           .filter((n: string) => bestFlags[n])
           .map((n: string) => ({ name: n, score: `${bestFlags[n]} flags`, raw: bestFlags[n] }))
           .sort((a: any, b: any) => b.raw - a.raw)
+      case 'precision':
+        return memberNames
+          .filter((n: string) => bestPrecision[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${(bestPrecision[n]/1000).toFixed(3)}s`, raw: bestPrecision[n] }))
+          .sort((a: any, b: any) => a.raw - b.raw)
       default: return []
     }
   }

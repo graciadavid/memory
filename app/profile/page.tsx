@@ -270,30 +270,6 @@ export default function ProfilePage() {
 
       <div style={{ padding: '16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
 
-        {/* Precision */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ fontSize: 28 }}>⏱</div>
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#4A148C' }}>Precision</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s` : '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Best</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : precRank.rank ? `#${precRank.rank}` : '—'}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
-              </div>
-              {precRank.diff !== null && (
-                <button onClick={() => shareScore(`⏱ I'm #${precRank.rank} in MemGenius Precision with ${(precRank.diff!/1000).toFixed(3)}s off!
-https://memgenius.com/precision`)}
-                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#4A148C', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* GROUPS */}
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
@@ -422,3 +398,29 @@ https://memgenius.com/precision`)}
     </main>
   )
 }
+
+        {/* Precision */}
+        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontSize: 28 }}>⏱</div>
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#4A148C' }}>Precision</div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s` : '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>Best</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>{loadingRanks ? '...' : precRank.rank ? `#${precRank.rank}` : '—'}</div>
+                <div style={{ fontSize: 9, color: `${BROWN}50`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+              </div>
+              {precRank.diff !== null && (
+                <button onClick={() => shareScore(`⏱ I'm #${precRank.rank} in MemGenius Precision with ${(precRank.diff!/1000).toFixed(3)}s off!
+https://memgenius.com/precision`)}
+                  style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#4A148C', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+              )}
+            </div>
+          </div>
+        </div>
+
