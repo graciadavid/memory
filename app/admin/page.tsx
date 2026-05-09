@@ -19,8 +19,8 @@ export default function AdminPage() {
   const [period, setPeriod] = useState<Period>('today')
   const [stats, setStats] = useState<any>(null)
   const [players, setPlayers] = useState<any>({})
-  const [gameFilter, setGameFilter] = useState<'memory' | 'digits' | 'sequence' | 'flags'>('memory')
-  const [topFilter, setTopFilter] = useState<'topMemory' | 'topDigits' | 'topSequence' | 'topFlags'>('topMemory')
+  const [gameFilter, setGameFilter] = useState<'memory' | 'digits' | 'sequence' | 'flags' | 'precision'>('memory')
+  const [topFilter, setTopFilter] = useState<'topMemory' | 'topDigits' | 'topSequence' | 'topFlags' | 'topPrecision'>('topMemory')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -87,17 +87,19 @@ export default function AdminPage() {
     const { count: groupsCount } = await supabase.from('groups').select('*', { count: 'exact', head: true })
     const { count: membersCount } = await supabase.from('group_members').select('*', { count: 'exact', head: true })
 
-    const [memAll, digAll, seqAll, flagAll] = await Promise.all([
+    const [memAll, digAll, seqAll, flagAll, precAll] = await Promise.all([
       supabase.from('scores').select('player_name, time_ms, created_at, packs(difficulty)').neq('player_name', 'David').order('created_at', { ascending: false }),
       supabase.from('number_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
       supabase.from('sequence_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
       supabase.from('flag_scores').select('player_name, level, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
+      supabase.from('precision_scores').select('player_name, difference_ms, created_at').neq('player_name', 'David').order('created_at', { ascending: false }),
     ])
 
     const mem = memAll.data || []
     const dig = digAll.data || []
     const seq = seqAll.data || []
     const flag = flagAll.data || []
+    const prec = precAll.data || []
 
     const inPeriod = (arr: any[]) => arr.filter(s => s.created_at >= periodStart)
     const inPrev = (arr: any[]) => arr.filter(s => s.created_at >= prevStart && s.created_at < periodStart)
@@ -109,24 +111,27 @@ export default function AdminPage() {
     const digP = inPeriod(dig).length
     const seqP = inPeriod(seq).length
     const flagP = inPeriod(flag).length
+    const precP = inPeriod(prec).length
     const memPrev = inPrev(mem).length
     const digPrev = inPrev(dig).length
     const seqPrev = inPrev(seq).length
     const flagPrev = inPrev(flag).length
+    const precPrev = inPrev(prec).length
 
     const memU = uniq(inPeriod(mem))
     const digU = uniq(inPeriod(dig))
     const seqU = uniq(inPeriod(seq))
     const flagU = uniq(inPeriod(flag))
+    const precU = uniq(inPeriod(prec))
 
     // All players
-    const allPlayers = new Set([...mem, ...dig, ...seq, ...flag].map(s => s.player_name))
-    const periodPlayers = new Set([...inPeriod(mem), ...inPeriod(dig), ...inPeriod(seq), ...inPeriod(flag)].map(s => s.player_name))
-    const prevPlayers = new Set([...inPrev(mem), ...inPrev(dig), ...inPrev(seq), ...inPrev(flag)].map(s => s.player_name))
+    const allPlayers = new Set([...mem, ...dig, ...seq, ...flag, ...prec].map(s => s.player_name))
+    const periodPlayers = new Set([...inPeriod(mem), ...inPeriod(dig), ...inPeriod(seq), ...inPeriod(flag), ...inPeriod(prec)].map(s => s.player_name))
+    const prevPlayers = new Set([...inPrev(mem), ...inPrev(dig), ...inPrev(seq), ...inPrev(flag), ...inPrev(prec)].map(s => s.player_name))
 
     // New players in period (first game ever in period)
     const firstGame: Record<string, string> = {}
-    ;[...mem, ...dig, ...seq, ...flag].forEach(s => {
+    ;[...mem, ...dig, ...seq, ...flag, ...prec].forEach(s => {
       if (!firstGame[s.player_name] || s.created_at < firstGame[s.player_name]) firstGame[s.player_name] = s.created_at
     })
     const newInPeriod = Object.values(firstGame).filter(d => d >= periodStart).length
@@ -134,7 +139,7 @@ export default function AdminPage() {
 
     // Retention
     const playerDays2: Record<string, Set<string>> = {}
-    ;[...mem, ...dig, ...seq, ...flag].forEach(s => {
+    ;[...mem, ...dig, ...seq, ...flag, ...prec].forEach(s => {
       const day = s.created_at?.split('T')[0]
       if (!day) return
       if (!playerDays2[s.player_name]) playerDays2[s.player_name] = new Set()
@@ -176,6 +181,7 @@ export default function AdminPage() {
     const digMap = buildMap(dig, 'level')
     const seqMap = buildMap(seq, 'level')
     const flagMap = buildMap(flag, 'level')
+    const precMap = buildMap(prec, 'level')
 
     const toList = (map: Record<string, any>) =>
       Object.entries(map).map(([name, d]) => ({ name, ...d })).sort((a, b) => b.lastGame.localeCompare(a.lastGame))
@@ -195,10 +201,12 @@ export default function AdminPage() {
       digits: toList(digMap).slice(0, 5),
       sequence: toList(seqMap).slice(0, 5),
       flags: toList(flagMap).slice(0, 5),
+      precision: toList(precMap).slice(0, 5),
       topMemory: topOf(memMap),
       topDigits: topOf(digMap),
       topSequence: topOf(seqMap),
       topFlags: topOf(flagMap),
+      topPrecision: topOf(precMap),
     })
     setLoading(false)
   }
@@ -370,6 +378,7 @@ export default function AdminPage() {
               { key: 'topDigits', label: 'Digits', color: BLUE },
               { key: 'topSequence', label: 'Sequence', color: '#6A1B9A' },
               { key: 'topFlags', label: 'Flags', color: '#00796B' },
+              { key: 'topPrecision', label: '⏱', color: '#4A148C' },
             ].map(g => (
               <button key={g.key} onClick={() => setTopFilter(g.key as any)} style={{
                 flex: 1, padding: '7px 4px', borderRadius: 10, border: 'none',
@@ -397,6 +406,7 @@ export default function AdminPage() {
               { key: 'digits', label: 'Digits', color: BLUE },
               { key: 'sequence', label: 'Sequence', color: '#6A1B9A' },
               { key: 'flags', label: 'Flags', color: '#00796B' },
+              { key: 'precision', label: '⏱', color: '#4A148C' },
             ].map(g => (
               <button key={g.key} onClick={() => setGameFilter(g.key as any)} style={{
                 flex: 1, padding: '7px 4px', borderRadius: 10, border: 'none',
