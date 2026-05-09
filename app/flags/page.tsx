@@ -401,15 +401,16 @@ export default function FlagsPage() {
             <button onClick={() => {
               (window as any).gtag?.('event', 'challenge_shared', { game: 'flags' })
               const url = `${window.location.origin}/challenge?game=flags&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-              if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${profile?.name} got ${level} flags. Can you beat them?`, url })
-              else navigator.clipboard.writeText(url).then(() => alert('Challenge link copied!'))
+              const text = `🚩 ${profile?.name} got ${level} flags in a row on MemGenius! Can you beat them? ${url}`
+              window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
             }} style={{
               width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-              background: '#C62828',
+              background: '#25D366',
               color: '#fff', fontSize: 16, fontWeight: 900,
               fontFamily: 'inherit', cursor: 'pointer',
-              boxShadow: '0 6px 0 #00695160',
-            }}>Challenge a friend</button>
+              boxShadow: '0 6px 0 #128C7E60',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
 
             <div style={{ display: 'flex', gap: 10, width: '100%' }}>
               <button onClick={startGame} style={{
