@@ -33,9 +33,7 @@ function getColor(name: string) {
 function Avatar({ name, photo, size = 80 }: { name: string, photo?: string, size?: number }) {
   if (photo) return <img src={photo} alt="avatar" style={{ width: size, height: size, borderRadius: size * 0.28, objectFit: 'cover', border: `3px solid ${GOLD}`, flexShrink: 0 }} />
   const color = getColor(name)
-  return (<>
-    <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }`}</style>
-    <>
+  return (
     <div style={{
       width: size, height: size, borderRadius: size * 0.28,
       background: `linear-gradient(135deg, ${color}, ${color}AA)`,
@@ -207,6 +205,8 @@ export default function ProfilePage() {
   }
 
   return (
+    <>
+    <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }`}</style>
     <main style={{
       minHeight: '100dvh',
       background: `linear-gradient(180deg, ${CREAM} 0%, #F0EBE1 100%)`,
@@ -418,6 +418,7 @@ https://memgenius.com/precision` },
       </div>
       </div>
     </main>
+    </>
   )
 }
 
