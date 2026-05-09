@@ -202,7 +202,7 @@ const memP = inPeriod(mem).length
           { label: 'Precision', curr: precP, prev: precPrev, pct: pct(precP, precPrev), color: '#4A148C', users: precU, avg: precU > 0 ? (precP / precU).toFixed(1) : '0' },
           { label: 'Versus', curr: vsP, prev: vsPrev, pct: pct(vsP, vsPrev), color: '#C62828', users: vsU, avg: vsU > 0 ? (vsP / vsU).toFixed(1) : '0' },
       ],
-      players: { total: allPlayers.size, period: periodPlayers.size, pctPlayers: pct(periodPlayers.size, prevPlayers.size), newPeriod: newInPeriod, pctNew: pct(newInPeriod, newInPrev) },
+      players: { total: allPlayers.size, period: periodPlayers.size, prevPeriod: prevPlayers.size, pctPlayers: pct(periodPlayers.size, prevPlayers.size), newPeriod: newInPeriod, prevNew: newInPrev, pctNew: pct(newInPeriod, newInPrev) },
     })
 
     // Build player maps with best scores
@@ -363,8 +363,8 @@ const memP = inPeriod(mem).length
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 20 }}>
             {[
               { label: 'Total', value: stats.players.total, pct: null },
-              { label: 'Active', value: stats.players.period, pct: stats.players.pctPlayers },
-              { label: 'New', value: stats.players.newPeriod, pct: stats.players.pctNew, highlight: true },
+              { label: 'Active', value: stats.players.period, prev: stats.players.prevPeriod, pct: stats.players.pctPlayers },
+              { label: 'New', value: stats.players.newPeriod, prev: stats.players.prevNew, pct: stats.players.pctNew, highlight: true },
             ].map(s => (
               <div key={s.label} style={{ background: s.highlight ? `${GOLD}15` : '#fff', border: `1px solid ${s.highlight ? GOLD + '40' : BROWN + '08'}`, borderRadius: 14, padding: '14px 10px', boxShadow: `0 2px 8px ${BROWN}06` }}>
                 <div style={{ fontSize: 10, fontWeight: 800, color: s.highlight ? GOLD : `${BROWN}50`, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{s.label}</div>
