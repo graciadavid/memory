@@ -143,6 +143,11 @@ export default function AdminPage() {
     const pct = (curr: number, prev: number) => prev === 0 ? null : Math.round(((curr - prev) / prev) * 100)
     const uniq = (arr: any[]) => new Set(arr.map(s => s.player_name)).size
 
+    console.log('periodStart:', periodStart, 'periodEnd:', periodEnd)
+    console.log('prevStart:', prevStart)
+    console.log('total all games:', mem.length + dig.length + seq.length + flag.length + prec.length + vs.length)
+    console.log('inPeriod total:', inPeriod([...mem,...dig,...seq,...flag,...prec,...vs]).length)
+    console.log('inPrev total:', inPrev([...mem,...dig,...seq,...flag,...prec,...vs]).length)
     const memP = inPeriod(mem).length
     const digP = inPeriod(dig).length
     const seqP = inPeriod(seq).length
