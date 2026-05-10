@@ -5,10 +5,13 @@ import { supabase } from '@/lib/supabase'
 const BROWN = '#4A2C0A'
 
 export default function CreateGroupBanner({ playerName }: { playerName: string }) {
-  const [hasGroup, setHasGroup] = useState(true) // assume true to avoid flash
+  const [hasGroup, setHasGroup] = useState(true)
 
   useEffect(() => {
-    if (!playerName) return
+    if (!playerName) {
+      setHasGroup(false) // no name = show banner
+      return
+    }
     supabase.from('group_members')
       .select('id')
       .eq('player_name', playerName)
