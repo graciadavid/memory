@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { updateStreak } from '@/lib/streak'
 import { useRouter } from 'next/navigation'
 
