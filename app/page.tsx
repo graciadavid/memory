@@ -137,12 +137,6 @@ export default function LandingPage() {
       setChecking(false)
       return
     }
-    if (pin !== confirmPin) {
-      setError('PINs do not match')
-      setChecking(false)
-      return
-    }
-
     // Save profile with PIN as password
     await supabase.from('profiles').upsert({
       player_name: name.trim(),
@@ -238,34 +232,7 @@ export default function LandingPage() {
                 style={{ opacity: 0, position: 'absolute', width: 1, height: 1 }}
                 autoFocus
               />
-              {pin.length === 4 && (
-                <>
-                  <div style={{ fontSize: 12, color: `${BROWN}60`, marginBottom: 8, fontWeight: 700 }}>Confirm PIN</div>
-                  <div style={{ display: 'flex', gap: 12, marginBottom: 16, justifyContent: 'center' }}
-                    onClick={() => (document.getElementById('confirm-pin-input') as HTMLInputElement)?.focus()}>
-                    {[0,1,2,3].map(i => (
-                      <div key={i} style={{
-                        width: 52, height: 64, borderRadius: 14,
-                        border: `2px solid ${confirmPin.length > i ? BROWN : `${BROWN}20`}`,
-                        background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 28, fontWeight: 900, color: BROWN,
-                      }}>{confirmPin[i] ? '•' : ''}</div>
-                    ))}
-                  </div>
-                  <input
-                    id="confirm-pin-input"
-                    type="tel"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    value={confirmPin}
-                    maxLength={4}
-                    onChange={e => { setConfirmPin(e.target.value.replace(/\D/g,'').slice(0,4)); setError('') }}
-                    onKeyDown={e => e.key === 'Enter' && handleSave()}
-                    style={{ opacity: 0, position: 'absolute', width: 1, height: 1 }}
-                    autoFocus
-                  />
-                </>
-              )}
+
               <button onClick={handleSave} disabled={pin.length < 4 || checking} style={{
                 width: '100%', padding: '14px', borderRadius: 14, border: 'none',
                 background: pin.length === 4 ? '#2E7D32' : '#e0d9cf',
