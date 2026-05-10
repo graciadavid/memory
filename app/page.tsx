@@ -33,9 +33,6 @@ export default function LandingPage() {
   const [pin, setPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
   const [needsNewPin, setNeedsNewPin] = useState(false)
-  const [pin, setPin] = useState('')
-  const [confirmPin, setConfirmPin] = useState('')
-  const [needsNewPin, setNeedsNewPin] = useState(false)
 
   useEffect(() => {
     const fetchRecords = async () => {
