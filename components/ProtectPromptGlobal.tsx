@@ -58,12 +58,12 @@ export default function ProtectPromptGlobal() {
       }}>
         <div style={{ fontSize: 48, marginBottom: 12 }}>🏆</div>
         <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, marginBottom: 8, letterSpacing: -0.5 }}>
-          Protect your results!
+          Play with friends!
         </div>
         <div style={{ fontSize: 14, color: `${BROWN}70`, fontWeight: 600, lineHeight: 1.6, marginBottom: 24 }}>
-          Set a better name and a PASSWORD so you never lose your scores and rankings.
+          Create a group and compete with friends or family. See who's the best!
         </div>
-        <button onClick={() => { track('protect_profile_clicked'); dismiss(); router.push('/profile') }} style={{
+        <button onClick={() => { track('protect_profile_clicked'); dismiss(); router.push('/create-group') }} style={{
           width: '100%', padding: '16px', borderRadius: 14, border: 'none',
           background: '#2E7D32', color: '#fff', fontSize: 16, fontWeight: 900,
           fontFamily: 'inherit', cursor: 'pointer',
