@@ -357,15 +357,14 @@ export default function DigitsPage() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}>{<span style={{ fontSize: 20 }}>📲</span>} Send to WhatsApp</button>
 
+            <CreateGroupBanner playerName={profile?.name || ''} />
+
             <div style={{ display: 'flex', gap: 10, width: '100%' }}>
               <button onClick={startGame} style={{
                 flex: 1, padding: '16px', borderRadius: 16, border: 'none',
                 background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
-              }>Play again</button>
-
-            <CreateGroupBanner playerName={profile?.name || ''} />
-
+              }}>Play again</button>
             </div>
           </div>
         )}
