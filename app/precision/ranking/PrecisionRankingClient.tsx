@@ -12,12 +12,12 @@ function RankingList({ scores, myName, isF1 }: { scores: any[], myName: string, 
   const myScore = myIndex >= 0 ? scores[myIndex] : null
   const color = isF1 ? RED : PURPLE
 
-  const fmt = (diff: number) => isF1 ? `${diff}ms` : `${(diff/1000).toFixed(3)}s`
+  const fmt = (diff: number) => isF1 ? `${diff}ms` : `${(diff/1000).toFixed(4)}s`
 
   const share = async (position: number, diff: number) => {
     const text = isF1
       ? `🏎️ I'm #${position} in MemGenius F1 with ${diff}ms reaction!\nhttps://memgenius.com/precision/formula1`
-      : `⏱ I'm #${position} in MemGenius Precision with ${(diff/1000).toFixed(3)}s off!\nhttps://memgenius.com/precision/stopwatch`
+      : `⏱ I'm #${position} in MemGenius Precision with ${(diff/1000).toFixed(4)}s off!\nhttps://memgenius.com/precision/stopwatch`
     if (navigator.share) await navigator.share({ text })
     else { await navigator.clipboard.writeText(text); alert('Copied!') }
   }
