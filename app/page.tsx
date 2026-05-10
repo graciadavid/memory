@@ -216,7 +216,8 @@ export default function LandingPage() {
             <>
               <div style={{ fontSize: 18, fontWeight: 900, color: BROWN, textAlign: 'center', marginBottom: 4 }}>Hi, {name}!</div>
               <div style={{ fontSize: 13, color: `${BROWN}60`, textAlign: 'center', marginBottom: 20, lineHeight: 1.5 }}>Create a 4-digit PIN to protect your account</div>
-              <div style={{ display: 'flex', gap: 12, marginBottom: 12, justifyContent: 'center' }}>
+              <div style={{ display: 'flex', gap: 12, marginBottom: 12, justifyContent: 'center' }}
+                onClick={() => (document.getElementById('pin-input') as HTMLInputElement)?.focus()}>
                 {[0,1,2,3].map(i => (
                   <div key={i} style={{
                     width: 52, height: 64, borderRadius: 14,
@@ -227,18 +228,21 @@ export default function LandingPage() {
                 ))}
               </div>
               <input
-                type="number"
-                placeholder=""
+                id="pin-input"
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={pin}
                 maxLength={4}
-                onChange={e => { setPin(e.target.value.slice(0,4)); setError('') }}
-                style={{ position: 'absolute', opacity: 0, width: 1, height: 1 }}
+                onChange={e => { setPin(e.target.value.replace(/\D/g,'').slice(0,4)); setError('') }}
+                style={{ opacity: 0, position: 'absolute', width: 1, height: 1 }}
                 autoFocus
               />
               {pin.length === 4 && (
                 <>
                   <div style={{ fontSize: 12, color: `${BROWN}60`, marginBottom: 8, fontWeight: 700 }}>Confirm PIN</div>
-                  <div style={{ display: 'flex', gap: 12, marginBottom: 16, justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', gap: 12, marginBottom: 16, justifyContent: 'center' }}
+                    onClick={() => (document.getElementById('confirm-pin-input') as HTMLInputElement)?.focus()}>
                     {[0,1,2,3].map(i => (
                       <div key={i} style={{
                         width: 52, height: 64, borderRadius: 14,
@@ -249,12 +253,15 @@ export default function LandingPage() {
                     ))}
                   </div>
                   <input
-                    type="number"
+                    id="confirm-pin-input"
+                    type="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={confirmPin}
                     maxLength={4}
-                    onChange={e => { setConfirmPin(e.target.value.slice(0,4)); setError('') }}
+                    onChange={e => { setConfirmPin(e.target.value.replace(/\D/g,'').slice(0,4)); setError('') }}
                     onKeyDown={e => e.key === 'Enter' && handleSave()}
-                    style={{ position: 'absolute', opacity: 0, width: 1, height: 1 }}
+                    style={{ opacity: 0, position: 'absolute', width: 1, height: 1 }}
                     autoFocus
                   />
                 </>
