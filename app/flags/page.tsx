@@ -405,7 +405,10 @@ export default function FlagsPage() {
               )}
             </div>
 
-            <button onClick={() => {
+            <CreateGroupBanner playerName={profile?.name || ''} />
+
+            <div style={{ display: 'flex', gap: 10, width: '100%' }}>
+              <button onClick={() => {
               (window as any).gtag?.('event', 'challenge_shared', { game: 'flags' })
               const url = `${window.location.origin}/challenge?game=flags&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               const text = `🚩 ${profile?.name} got ${level} flags in a row on MemGenius! Can you beat them? ${url}`
@@ -418,16 +421,11 @@ export default function FlagsPage() {
               boxShadow: '0 6px 0 #128C7E60',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
-
-            <CreateGroupBanner playerName={profile?.name || ''} />
-
-            <div style={{ display: 'flex', gap: 10, width: '100%' }}>
               <button onClick={startGame} style={{
                 flex: 1, padding: '16px', borderRadius: 16, border: 'none',
                 background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
               }}>Play again</button>
-
             </div>
           </div>
         )}
