@@ -343,7 +343,10 @@ export default function DigitsPage() {
               )}
             </div>
 
-            <button onClick={() => {
+            <CreateGroupBanner playerName={profile?.name || ''} />
+
+            <div style={{ display: 'flex', gap: 10, width: '100%' }}>
+              <button onClick={() => {
               (window as any).gtag?.('event', 'challenge_shared', { game: 'digits' })
               const url = `${window.location.origin}/challenge?game=digits&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               const text = `🔢 ${profile?.name} remembered ${level} digits on MemGenius! Can you beat them? ${url}`
@@ -356,14 +359,12 @@ export default function DigitsPage() {
               boxShadow: '0 6px 0 #128C7E60',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}>{<span style={{ fontSize: 20 }}>📲</span>} Send to WhatsApp</button>
-
-            <CreateGroupBanner playerName={profile?.name || ''} />
-
-            <button onClick={startGame} style={{
-              width: '100%', padding: '14px', borderRadius: 14, border: 'none',
-              background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
-            }}>Play again</button>
+              <button onClick={startGame} style={{
+                flex: 1, padding: '14px', borderRadius: 14, border: 'none',
+                background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
+                fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
+              }}>Play again</button>
+            </div>
           </div>
         )}
       </main>

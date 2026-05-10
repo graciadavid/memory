@@ -34,7 +34,6 @@ export default function CreateGroupBanner({ playerName }: { playerName: string }
           <div style={{ fontSize: 14, fontWeight: 900, color: '#fff' }}>Create a group with friends or family</div>
           
         </div>
-        <div style={{ marginLeft: 'auto', fontSize: 18, color: 'rgba(255,255,255,0.5)' }}>→</div>
       </div>
     </a>
   )
