@@ -33,11 +33,11 @@ export const metadata: Metadata = {
     canonical: 'https://memgenius.com',
   },
 }
-import Analytics from './analytics'
+import GAAnalytics from './analytics'
 import { Nunito } from 'next/font/google'
 import './globals.css'
 import BottomNav from '@/components/BottomNav'
-import { Analytics } from '@vercel/analytics/next'
+import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
 import ProtectPromptGlobal from '@/components/ProtectPromptGlobal'
 
 const nunito = Nunito({
@@ -68,11 +68,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       `}} />
       <link rel="preconnect" href="https://flagcdn.com" />
       <body className={`${nunito.variable} font-nunito`} style={{ background: '#f2f2f2', margin: 0 }}>
-        <Analytics />
+        <GAAnalytics />
+        <VercelAnalytics />
         {children}
         <BottomNav />
         <ProtectPromptGlobal />
-        <Analytics />
+        <GAAnalytics />
+        <VercelAnalytics />
       </body>
     </html>
   )
