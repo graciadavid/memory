@@ -180,7 +180,7 @@ export default function PrecisionPage() {
               <div style={{ background: Math.abs(difference) < 100 ? '#E8F5E9' : Math.abs(difference) < 500 ? '#FFF8E1' : '#FFEBEE', borderRadius: 16, padding: '10px 16px', marginBottom: 10 }}>
                 <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Difference</div>
                 <div style={{ fontSize: 28, fontWeight: 900, color: Math.abs(difference) < 100 ? '#2E7D32' : Math.abs(difference) < 500 ? GOLD : '#B71C1C' }}>
-                  {difference === 0 ? '🎯 PERFECT!' : `${difference > 0 ? '+' : ''}${(difference / 1000).toFixed(4)}s`}
+                  {difference === 0 ? '🎯 PERFECT!' : `${difference > 0 ? '+' : ''}${(difference / 1000).toFixed(3)}s`}
                 </div>
                 <div style={{ fontSize: 12, color: `${BROWN}50`, marginTop: 4 }}>
                   {difference > 0 ? 'Too slow' : difference < 0 ? 'Too fast' : 'Perfect!'}
@@ -196,7 +196,7 @@ export default function PrecisionPage() {
 
             <button onClick={() => {
               const url = `${window.location.origin}/challenge?game=precision&score=${Math.abs(difference)}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-              const text = `⏱ ${profile?.name} stopped at ${(difference / 1000).toFixed(4)}s off on MemGenius Precision! Can you be more precise? ${url}`
+              const text = `⏱ ${profile?.name} stopped at ${(difference / 1000).toFixed(3)}s off on MemGenius Precision! Can you be more precise? ${url}`
               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
             }} style={{
               width: '100%', padding: '16px', borderRadius: 16, border: 'none',

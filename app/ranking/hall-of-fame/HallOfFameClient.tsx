@@ -43,7 +43,7 @@ const CARDS = [
   { key: 'digits', label: 'Digits', phrase: 'The best in the world at Digits is', color: '#1565C0', bg: 'linear-gradient(135deg, #E3F2FD, #BBDEFB)', border: '#1565C040', icon: '/icons/digits.webp', result: (c: any) => `${c.level} digits` },
   { key: 'sequence', label: 'Sequence', phrase: 'The best in the world at Sequence is', color: '#6A1B9A', bg: 'linear-gradient(135deg, #F3E5F5, #E1BEE7)', border: '#6A1B9A40', icon: '/icons/sequence.webp', result: (c: any) => `Level ${c.level}` },
   { key: 'flags', label: 'Flags', phrase: 'The best in the world at Flags is', color: '#00796B', bg: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)', border: '#00796B40', icon: '/icons/flags.webp', result: (c: any) => `${c.level} flags` },
-  { key: 'precision', label: 'Precision', phrase: 'The most precise player in the world is', color: '#4A148C', bg: 'linear-gradient(135deg, #EDE7F6, #D1C4E9)', border: '#4A148C40', icon: '⏱', result: (c: any) => `${(c.difference_ms/1000).toFixed(4)}s off` },
+  { key: 'precision', label: 'Precision', phrase: 'The most precise player in the world is', color: '#4A148C', bg: 'linear-gradient(135deg, #EDE7F6, #D1C4E9)', border: '#4A148C40', icon: '⏱', result: (c: any) => `${(c.difference_ms/1000).toFixed(3)}s off` },
   { key: 'versus', label: 'Versus', phrase: 'The best Versus player in the world is', color: '#C62828', bg: 'linear-gradient(135deg, #FFEBEE, #FFCDD2)', border: '#C6282840', icon: '⚔️', result: (c: any) => `${c.level} correct` },
 ]
 

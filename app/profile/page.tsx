@@ -416,7 +416,7 @@ https://memgenius.com/flags` },
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             {[
-              { label: 'Stop', data: precRank, fmt: (d: number) => `${(d/1000).toFixed(4)}s`, color: '#4A148C', share: `⏱ I'm #${precRank.rank} in Precision Stop!\nhttps://memgenius.com/precision/stopwatch` },
+              { label: 'Stop', data: precRank, fmt: (d: number) => `${(d/1000).toFixed(3)}s`, color: '#4A148C', share: `⏱ I'm #${precRank.rank} in Precision Stop!\nhttps://memgenius.com/precision/stopwatch` },
               { label: 'F1', data: f1Rank, fmt: (d: number) => `${d}ms`, color: '#E8002D', share: `🏎️ I'm #${f1Rank.rank} in F1 with ${f1Rank.diff}ms!\nhttps://memgenius.com/precision/formula1` },
             ].map(v => {
               const hasResult = v.data.diff !== null
