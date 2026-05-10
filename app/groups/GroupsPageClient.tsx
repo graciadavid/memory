@@ -1,19 +1,33 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
+import { supabase } from '@/lib/supabase'
 
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
-export default function GroupsPageClient({ publicGroups, memberCounts }: { publicGroups: any[], memberCounts: Record<string, number> }) {
+export default function GroupsPageClient() {
   const { profile, loaded } = usePlayer()
+  const [myGroups, setMyGroups] = useState<any[]>([])
 
   useEffect(() => {
     if (loaded && !profile?.name) window.location.href = '/'
   }, [loaded, profile?.name])
 
+  useEffect(() => {
+    if (!profile?.name) return
+    supabase.from('group_members')
+      .select('group_id, groups(id, name, slug)')
+      .eq('player_name', profile.name)
+      .then(({ data }) => {
+        if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean))
+      })
+  }, [profile?.name])
+
   if (!loaded || !profile?.name) return null
+
   return (
     <main style={{
       minHeight: '100dvh',
@@ -26,7 +40,7 @@ export default function GroupsPageClient({ publicGroups, memberCounts }: { publi
       <div style={{ marginBottom: 24 }}>
         <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6 }}>Community</div>
         <div style={{ fontSize: 30, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>Groups</div>
-        <div style={{ fontSize: 13, color: `${BROWN}55`, marginTop: 4 }}>Compete with friends or join a public group</div>
+        <div style={{ fontSize: 13, color: `${BROWN}55`, marginTop: 4 }}>Compete with friends or family</div>
       </div>
 
       {/* Create group button */}
@@ -37,7 +51,7 @@ export default function GroupsPageClient({ publicGroups, memberCounts }: { publi
           display: 'flex', alignItems: 'center', gap: 14,
           boxShadow: '0 8px 0 #0D47A160',
         }}>
-          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/groups.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
+          <img src={`${BASE}/groups.png`} alt="" style={{ width: 48, height: 48, objectFit: 'contain' }} />
           <div>
             <div style={{ fontSize: 17, fontWeight: 900, color: '#fff' }}>Create a group</div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>Invite friends via link</div>
@@ -45,42 +59,33 @@ export default function GroupsPageClient({ publicGroups, memberCounts }: { publi
         </div>
       </a>
 
-      {/* Public groups */}
-      <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>Join a group</div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {publicGroups.map(group => (
-          <a key={group.id} href={`/g/${group.id}`} style={{ textDecoration: 'none' }}>
-            <div style={{
-              background: '#fff', borderRadius: 18, padding: '16px 18px',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              boxShadow: `0 4px 16px ${BROWN}08`,
-              border: `1px solid ${BROWN}08`,
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                {group.icon === 'flags' ? (
-                  <img src="/icons/flags.webp" alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
-                ) : (
-                  <div style={{ fontSize: 32 }}>{group.icon}</div>
-                )}
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 900, color: BROWN }}>{group.name}</div>
-                  <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700, marginTop: 2 }}>
-                    {memberCounts[group.id] || 0} members
-                  </div>
+      {/* My Groups */}
+      {myGroups.length > 0 && (
+        <>
+          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>My Groups</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {myGroups.map((g: any) => (
+              <a key={g.id} href={`/g/${g.id}`} style={{ textDecoration: 'none' }}>
+                <div style={{
+                  background: 'linear-gradient(135deg, #1A3A5C, #1565C0)',
+                  borderRadius: 16, padding: '14px 18px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  boxShadow: '0 4px 0 #0D47A160',
+                }}>
+                  <div style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>{g.name}</div>
+                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>→</div>
                 </div>
-              </div>
-              <div style={{ padding: '8px 16px', borderRadius: 10, background: '#2E7D32', color: '#fff', fontSize: 12, fontWeight: 900, boxShadow: '0 3px 0 #1B5E2060' }}>Join</div>
-            </div>
-          </a>
-        ))}
-
-        {publicGroups.length === 0 && (
-          <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, padding: '40px 0' }}>
-            No public groups yet
+              </a>
+            ))}
           </div>
-        )}
-      </div>
+        </>
+      )}
+
+      {myGroups.length === 0 && (
+        <div style={{ textAlign: 'center', color: `${BROWN}40`, fontSize: 14, fontWeight: 700, padding: '40px 0', lineHeight: 1.8 }}>
+          You're not in any group yet.<br />Create one and invite your friends!
+        </div>
+      )}
     </main>
   )
 }
