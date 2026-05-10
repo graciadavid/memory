@@ -17,13 +17,13 @@ export default function ProtectPromptGlobal() {
     if (!profile?.name) return
 
     const handler = async () => {
-      const { data } = await supabase
-        .from('profiles')
-        .select('password_hash')
+      // Check if user already has a group
+      const { count } = await supabase
+        .from('group_members')
+        .select('*', { count: 'exact', head: true })
         .eq('player_name', profile.name)
-        .maybeSingle()
 
-      if (data?.password_hash) return
+      if ((count ?? 0) > 0) return // already in a group
 
       const key = `protect_count_${profile.name}`
       const current = parseInt(sessionStorage.getItem(key) || '0') + 1
