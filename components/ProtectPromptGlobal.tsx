@@ -56,7 +56,7 @@ export default function ProtectPromptGlobal() {
         maxWidth: 380, width: '100%', textAlign: 'center',
         boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
       }}>
-        <div style={{ fontSize: 48, marginBottom: 12 }}>🏆</div>
+        <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/groups.png" alt="" style={{ width: 72, height: 72, objectFit: 'contain', marginBottom: 12 }} />
         <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, marginBottom: 8, letterSpacing: -0.5 }}>
           Play with friends!
         </div>
@@ -65,10 +65,10 @@ export default function ProtectPromptGlobal() {
         </div>
         <button onClick={() => { track('protect_profile_clicked'); dismiss(); router.push('/create-group') }} style={{
           width: '100%', padding: '16px', borderRadius: 14, border: 'none',
-          background: '#2E7D32', color: '#fff', fontSize: 16, fontWeight: 900,
+          background: 'linear-gradient(135deg, #1A3A5C, #1565C0)', color: '#fff', fontSize: 16, fontWeight: 900,
           fontFamily: 'inherit', cursor: 'pointer',
-          boxShadow: '0 6px 0 #1B5E2060', marginBottom: 10,
-        }}>Set up now →</button>
+          boxShadow: '0 6px 0 #0D47A160', marginBottom: 10,
+        }}>Create Group Now →</button>
         <button onClick={dismiss} style={{
           width: '100%', padding: '12px', borderRadius: 14, border: 'none',
           background: `${BROWN}10`, color: `${BROWN}60`, fontSize: 14, fontWeight: 800,
