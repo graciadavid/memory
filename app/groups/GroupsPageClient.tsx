@@ -18,11 +18,20 @@ export default function GroupsPageClient() {
 
   useEffect(() => {
     if (!profile?.name) return
+    const cacheKey = `groups_${profile.name}`
+    const cached = sessionStorage.getItem(cacheKey)
+    if (cached) {
+      setMyGroups(JSON.parse(cached))
+    }
     supabase.from('group_members')
       .select('group_id, groups(id, name, slug)')
       .eq('player_name', profile.name)
       .then(({ data }) => {
-        if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean))
+        if (data) {
+          const groups = data.map((d: any) => d.groups).filter(Boolean)
+          setMyGroups(groups)
+          sessionStorage.setItem(cacheKey, JSON.stringify(groups))
+        }
       })
   }, [profile?.name])
 
