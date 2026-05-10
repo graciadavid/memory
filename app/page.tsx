@@ -274,87 +274,40 @@ export default function LandingPage() {
                 cursor: pin.length === 4 ? 'pointer' : 'default',
                 boxShadow: pin.length === 4 ? '0 6px 0 #1B5E2060' : 'none',
               }}>{checking ? '...' : 'Create account'}</button>
-              <button onClick={() => { setNeedsNewPin(false); setPin(''); setConfirmPin(''); setError('') }} style={{
-                marginTop: 8, background: 'none', border: 'none', color: `${BROWN}50`,
-                fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
-              }}>← Back</button>
+
             </>
           ) : (
             <>
-              <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, textAlign: 'center', marginBottom: 4 }}>Welcome back, {name}!</div>
-              <div style={{ fontSize: 12, color: `${BROWN}60`, textAlign: 'center', marginBottom: 16 }}>Enter your password to continue</div>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Your password"
-                  value={password}
-                  onChange={e => { setPassword(e.target.value); setError('') }}
-                  onKeyDown={e => e.key === 'Enter' && handleSave()}
-                  autoFocus
-                  style={{
-                    flex: 1, padding: '12px 14px', borderRadius: 14,
-                    border: error ? '2px solid #B71C1C' : `2px solid ${BROWN}18`,
-                    background: '#fff', color: BROWN,
-                    fontSize: 16, fontWeight: 800,
-                    fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box',
-                  }}
-                />
-                <button onClick={() => setShowPassword(!showPassword)} style={{ padding: '12px', borderRadius: 14, border: `1px solid ${BROWN}20`, background: '#fff', fontSize: 16, cursor: 'pointer', flexShrink: 0 }}>{showPassword ? '🙈' : '👁'}</button>
-                <button onClick={handleSave} disabled={checking} style={{ padding: '12px 18px', borderRadius: 14, border: 'none', background: BROWN, color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${BROWN}50`, flexShrink: 0 }}>{checking ? '...' : 'Enter'}</button>
+              <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, textAlign: 'center', margi              <div style={{ fontSize: 18, fontWeight: 900, color: BROWN, textAlign: 'center', marginBottom: 4 }}>Welcome back, {name}!</div>
+              <div style={{ fontSize: 13, color: `${BROWN}60`, textAlign: 'center', marginBottom: 20 }}>Enter your PIN</div>
+              <div style={{ display: 'flex', gap: 12, marginBottom: 16, justifyContent: 'center' }}
+                onClick={() => (document.getElementById('login-pin-input') as HTMLInputElement)?.focus()}>
+                {[0,1,2,3].map(i => (
+                  <div key={i} style={{
+                    width: 52, height: 64, borderRadius: 14,
+                    border: `2px solid ${password.length > i ? BROWN : `${BROWN}20`}`,
+                    background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 28, fontWeight: 900, color: BROWN,
+                  }}>{password[i] ? '•' : ''}</div>
+                ))}
               </div>
-              <button onClick={() => { setNameExists(false); setPassword(''); setError('') }} style={{ background: 'none', border: 'none', color: `${BROWN}50`, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', width: '100%', textAlign: 'center', padding: '4px' }}>← Use a different name</button>
-            </>
-          )}
-          {error && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700, marginTop: 6, textAlign: 'center' }}>{error}</div>}
-        </div>
-      ) : (
-        /* REGISTERED */
-        <>
-          {/* Logo */}
-          <img src={LOGO} alt="MemGenius" style={{ height: 110, objectFit: 'contain', marginBottom: 2 }} />
-
-          {/* Greeting + Streak */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 2 }}>
-            <div style={{ fontSize: 20, fontWeight: 900, color: BROWN }}>Hey, {profile.name}!</div>
-            {streak.current > 0 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#E8F5E9', borderRadius: 10, padding: '4px 10px', border: '1.5px solid #2E7D32' }}>
-                <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 20, height: 20, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite' }} />
-                <span style={{ fontSize: 13, fontWeight: 900, color: '#2E7D32' }}>{streak.current} day{streak.current !== 1 ? 's' : ''}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Claim */}
-          <div style={{ fontSize: 12, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 16, letterSpacing: 0.3 }}>
-            Your daily brain workout
-          </div>
-
-          {/* Game grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, width: '100%' }}>
-            {GAMES.map(game => (
-              <a key={game.key} href={game.href} style={{ textDecoration: 'none' }}>
-                <div style={{
-                  background: game.bg,
-                  borderRadius: 20,
-                  padding: '6px 12px 6px',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: '12px',
-                  gap: 4,
-                  boxShadow: `0 6px 0 ${game.shadow}`,
-                  aspectRatio: '5/2.5',
-                }}>
-                  {(game as any).emoji ? (
-                    <div style={{ fontSize: 58 }}>{game.icon}</div>
-                  ) : (
-                    <img src={game.icon} alt="" style={{ width: 80, height: 80, objectFit: 'contain' }} />
-                  )}
-                  <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', textAlign: 'center', letterSpacing: -0.3 }}>{game.label}</div>
-                </div>
-              </a>
-            ))}
-          </div>
-        </>
-      )}
-    </main>
-    </>
-  )
-}
+              <input
+                id="login-pin-input"
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={password}
+                maxLength={4}
+                onChange={e => { setPassword(e.target.value.replace(/\D/g,'').slice(0,4)); setError('') }}
+                onKeyDown={e => e.key === 'Enter' && handleSave()}
+                style={{ opacity: 0, position: 'absolute', width: 1, height: 1 }}
+                autoFocus
+              />
+              <button onClick={handleSave} disabled={password.length < 4 || checking} style={{
+                width: '100%', padding: '14px', borderRadius: 14, border: 'none',
+                background: password.length === 4 ? BROWN : '#e0d9cf',
+                color: password.length === 4 ? '#fff' : '#aaa',
+                fontSize: 16, fontWeight: 900, fontFamily: 'inherit',
+                cursor: password.length === 4 ? 'pointer' : 'default',
+                boxShadow: password.length === 4 ? `0 6px 0 ${BROWN}50` : 'none',
+              }}>{checking ? '...' : "Let's Play!"}</button>
