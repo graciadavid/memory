@@ -321,7 +321,7 @@ export default function VersusPage() {
               width: '100%', padding: '16px', borderRadius: 16, border: 'none',
               background: COLOR, color: '#fff', fontSize: 16, fontWeight: 900,
               fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${COLOR}60`,
-            }>Play again</button>
+            }}>Play again</button>
 
             <CreateGroupBanner playerName={profile?.name || ''} />
           </div>
