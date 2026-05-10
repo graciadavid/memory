@@ -30,6 +30,12 @@ export default function LandingPage() {
   const [nameExists, setNameExists] = useState(false)
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [pin, setPin] = useState('')
+  const [confirmPin, setConfirmPin] = useState('')
+  const [needsNewPin, setNeedsNewPin] = useState(false)
+  const [pin, setPin] = useState('')
+  const [confirmPin, setConfirmPin] = useState('')
+  const [needsNewPin, setNeedsNewPin] = useState(false)
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -74,54 +80,79 @@ export default function LandingPage() {
       .from('profiles')
       .select('player_name, password_hash')
       .eq('player_name', name.trim())
-      .single()
+      .maybeSingle()
 
     if (existingProfile) {
-      // Name exists — ask for password
-      if (!nameExists) {
-        setNameExists(true)
+      // Name exists in profiles
+      if (existingProfile.password_hash) {
+        // Has password — ask for it
+        if (!nameExists) {
+          setNameExists(true)
+          setChecking(false)
+          return
+        }
+        if (!password.trim()) {
+          setError('Please enter your password')
+          setChecking(false)
+          return
+        }
+        if (existingProfile.password_hash !== password.trim()) {
+          setError('Wrong password')
+          setPassword('')
+          setChecking(false)
+          return
+        }
+        // Correct password — enter
+        createProfile(name.trim())
+        setChecking(false)
+        return
+      } else {
+        // Legacy user with no password — let them in
+        createProfile(name.trim())
         setChecking(false)
         return
       }
-      // Validate password
-      if (!password.trim()) {
-        setError('Please enter your password')
-        setChecking(false)
-        return
-      }
-      if (existingProfile.password_hash && existingProfile.password_hash !== password.trim()) {
-        setError('Wrong password')
-        setNameExists(false)
-        setPassword('')
-        setChecking(false)
-        return
-      }
-      // Correct password or no password set — enter
-      createProfile(name.trim())
-      setChecking(false)
-      return
     }
 
-    // Check scores tables for legacy users without profile entry
+    // Check if name exists in scores (legacy user without profile entry)
     const { count } = await supabase.from('scores').select('*', { count: 'exact', head: true }).eq('player_name', name.trim())
     const { count: count2 } = await supabase.from('number_scores').select('*', { count: 'exact', head: true }).eq('player_name', name.trim())
     const { count: count3 } = await supabase.from('flag_scores').select('*', { count: 'exact', head: true }).eq('player_name', name.trim())
     const { count: count4 } = await supabase.from('sequence_scores').select('*', { count: 'exact', head: true }).eq('player_name', name.trim())
 
     if ((count ?? 0) + (count2 ?? 0) + (count3 ?? 0) + (count4 ?? 0) > 0) {
-      // Legacy user — ask for password
-      if (!nameExists) {
-        setNameExists(true)
-        setChecking(false)
-        return
-      }
-      // No password set for legacy user — let them in
+      // Legacy user — let them in directly
       createProfile(name.trim())
       setChecking(false)
       return
     }
 
-    // New user
+    // Brand new user — ask for PIN
+    if (!needsNewPin) {
+      setNeedsNewPin(true)
+      setChecking(false)
+      return
+    }
+
+    // Validate PIN
+    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+      setError('PIN must be 4 digits')
+      setChecking(false)
+      return
+    }
+    if (pin !== confirmPin) {
+      setError('PINs do not match')
+      setChecking(false)
+      return
+    }
+
+    // Save profile with PIN as password
+    await supabase.from('profiles').upsert({
+      player_name: name.trim(),
+      password_hash: pin,
+      updated_at: new Date().toISOString(),
+    })
+
     createProfile(name.trim())
     setChecking(false)
   }
