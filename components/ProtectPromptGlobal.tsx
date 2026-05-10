@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
+import { track } from '@vercel/analytics'
 
 const BROWN = '#4A2C0A'
 const THRESHOLD = 5
@@ -62,7 +63,7 @@ export default function ProtectPromptGlobal() {
         <div style={{ fontSize: 14, color: `${BROWN}70`, fontWeight: 600, lineHeight: 1.6, marginBottom: 24 }}>
           Set a better name and a PASSWORD so you never lose your scores and rankings.
         </div>
-        <button onClick={() => { dismiss(); router.push('/profile') }} style={{
+        <button onClick={() => { track('protect_profile_clicked'); dismiss(); router.push('/profile') }} style={{
           width: '100%', padding: '16px', borderRadius: 14, border: 'none',
           background: '#2E7D32', color: '#fff', fontSize: 16, fontWeight: 900,
           fontFamily: 'inherit', cursor: 'pointer',

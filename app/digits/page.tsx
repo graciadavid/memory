@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { track } from '@vercel/analytics'
 import { updateStreak } from '@/lib/streak'
 import { usePlayer } from '@/lib/usePlayer'
 import { revalidateRanking } from '@/app/actions'
@@ -345,7 +346,7 @@ export default function DigitsPage() {
               (window as any).gtag?.('event', 'challenge_shared', { game: 'digits' })
               const url = `${window.location.origin}/challenge?game=digits&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               const text = `🔢 ${profile?.name} remembered ${level} digits on MemGenius! Can you beat them? ${url}`
-              window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
+              track('challenge_shared'); window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
             }} style={{
               width: '100%', padding: '16px', borderRadius: 16, border: 'none',
               background: '#25D366',
