@@ -179,7 +179,7 @@ export default function LandingPage() {
           <div style={{ fontSize: 14, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 28, letterSpacing: 0.3 }}>
             Your daily brain workout
           </div>
-          {!nameExists ? (
+          {!nameExists && !needsNewPin ? (
             <>
               <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' }}>
                 Your name
@@ -211,6 +211,66 @@ export default function LandingPage() {
                   flexShrink: 0,
                 }}>{checking ? '...' : 'Next'}</button>
               </div>
+            </>
+          ) : needsNewPin ? (
+            <>
+              <div style={{ fontSize: 18, fontWeight: 900, color: BROWN, textAlign: 'center', marginBottom: 4 }}>Hi, {name}!</div>
+              <div style={{ fontSize: 13, color: `${BROWN}60`, textAlign: 'center', marginBottom: 20, lineHeight: 1.5 }}>Create a 4-digit PIN to protect your account</div>
+              <div style={{ display: 'flex', gap: 12, marginBottom: 12, justifyContent: 'center' }}>
+                {[0,1,2,3].map(i => (
+                  <div key={i} style={{
+                    width: 52, height: 64, borderRadius: 14,
+                    border: `2px solid ${pin.length > i ? BROWN : `${BROWN}20`}`,
+                    background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 28, fontWeight: 900, color: BROWN,
+                  }}>{pin[i] ? '•' : ''}</div>
+                ))}
+              </div>
+              <input
+                type="number"
+                placeholder=""
+                value={pin}
+                maxLength={4}
+                onChange={e => { setPin(e.target.value.slice(0,4)); setError('') }}
+                style={{ position: 'absolute', opacity: 0, width: 1, height: 1 }}
+                autoFocus
+              />
+              {pin.length === 4 && (
+                <>
+                  <div style={{ fontSize: 12, color: `${BROWN}60`, marginBottom: 8, fontWeight: 700 }}>Confirm PIN</div>
+                  <div style={{ display: 'flex', gap: 12, marginBottom: 16, justifyContent: 'center' }}>
+                    {[0,1,2,3].map(i => (
+                      <div key={i} style={{
+                        width: 52, height: 64, borderRadius: 14,
+                        border: `2px solid ${confirmPin.length > i ? BROWN : `${BROWN}20`}`,
+                        background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 28, fontWeight: 900, color: BROWN,
+                      }}>{confirmPin[i] ? '•' : ''}</div>
+                    ))}
+                  </div>
+                  <input
+                    type="number"
+                    value={confirmPin}
+                    maxLength={4}
+                    onChange={e => { setConfirmPin(e.target.value.slice(0,4)); setError('') }}
+                    onKeyDown={e => e.key === 'Enter' && handleSave()}
+                    style={{ position: 'absolute', opacity: 0, width: 1, height: 1 }}
+                    autoFocus
+                  />
+                </>
+              )}
+              <button onClick={handleSave} disabled={pin.length < 4 || checking} style={{
+                width: '100%', padding: '14px', borderRadius: 14, border: 'none',
+                background: pin.length === 4 ? '#2E7D32' : '#e0d9cf',
+                color: pin.length === 4 ? '#fff' : '#aaa',
+                fontSize: 16, fontWeight: 900, fontFamily: 'inherit',
+                cursor: pin.length === 4 ? 'pointer' : 'default',
+                boxShadow: pin.length === 4 ? '0 6px 0 #1B5E2060' : 'none',
+              }}>{checking ? '...' : 'Create account'}</button>
+              <button onClick={() => { setNeedsNewPin(false); setPin(''); setConfirmPin(''); setError('') }} style={{
+                marginTop: 8, background: 'none', border: 'none', color: `${BROWN}50`,
+                fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              }}>← Back</button>
             </>
           ) : (
             <>
