@@ -37,6 +37,7 @@ import Analytics from './analytics'
 import { Nunito } from 'next/font/google'
 import './globals.css'
 import BottomNav from '@/components/BottomNav'
+import { Analytics } from '@vercel/analytics/next'
 import ProtectPromptGlobal from '@/components/ProtectPromptGlobal'
 
 const nunito = Nunito({
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <BottomNav />
         <ProtectPromptGlobal />
+        <Analytics />
       </body>
     </html>
   )
