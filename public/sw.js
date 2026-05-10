@@ -9,3 +9,4 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return
   e.respondWith(fetch(e.request).catch(() => caches.match(e.request)))
 })
+// sw update domingo, 10 de mayo de 2026, 15:41:00 CEST
