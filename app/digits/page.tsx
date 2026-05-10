@@ -359,13 +359,11 @@ export default function DigitsPage() {
 
             <CreateGroupBanner playerName={profile?.name || ''} />
 
-            <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-              <button onClick={startGame} style={{
-                flex: 1, padding: '16px', borderRadius: 16, border: 'none',
-                background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
-                fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
-              }}>Play again</button>
-            </div>
+            <button onClick={startGame} style={{
+              width: '100%', padding: '14px', borderRadius: 14, border: 'none',
+              background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
+              fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
+            }}>Play again</button>
           </div>
         )}
       </main>

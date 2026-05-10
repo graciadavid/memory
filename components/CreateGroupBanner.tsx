@@ -31,8 +31,8 @@ export default function CreateGroupBanner({ playerName }: { playerName: string }
       }}>
         <div style={{ fontSize: 28 }}>👥</div>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 900, color: '#fff' }}>Challenge your friends!</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', marginTop: 1 }}>Create a group and beat each other</div>
+          <div style={{ fontSize: 14, fontWeight: 900, color: '#fff' }}>Create a group with friends or family</div>
+          
         </div>
         <div style={{ marginLeft: 'auto', fontSize: 18, color: 'rgba(255,255,255,0.5)' }}>→</div>
       </div>
