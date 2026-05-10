@@ -419,6 +419,8 @@ export default function FlagsPage() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
 
+            <CreateGroupBanner playerName={profile?.name || ''} />
+
             <div style={{ display: 'flex', gap: 10, width: '100%' }}>
               <button onClick={startGame} style={{
                 flex: 1, padding: '16px', borderRadius: 16, border: 'none',

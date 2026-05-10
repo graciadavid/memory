@@ -376,7 +376,9 @@ export default function SequencePage() {
                 flex: 1, padding: '16px', borderRadius: 16, border: 'none',
                 background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
-              }}>Play again</button>
+              }>Play again</button>
+
+            <CreateGroupBanner playerName={profile?.name || ''} />
 
             </div>
           </div>
