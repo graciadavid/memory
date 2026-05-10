@@ -278,7 +278,7 @@ export default function LandingPage() {
             </>
           ) : (
             <>
-              <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, textAlign: 'center', margi              <div style={{ fontSize: 18, fontWeight: 900, color: BROWN, textAlign: 'center', marginBottom: 4 }}>Welcome back, {name}!</div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: BROWN, textAlign: 'center', marginBottom: 4 }}>Welcome back, {name}!</div>
               <div style={{ fontSize: 13, color: `${BROWN}60`, textAlign: 'center', marginBottom: 20 }}>Enter your PIN</div>
               <div style={{ display: 'flex', gap: 12, marginBottom: 16, justifyContent: 'center' }}
                 onClick={() => (document.getElementById('login-pin-input') as HTMLInputElement)?.focus()}>
