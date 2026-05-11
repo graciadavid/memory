@@ -131,6 +131,50 @@ export default function HomeClient({ easy, medium, hard }: Props) {
 
         </div>
       </main>
+
+    {/* SEO Content */}
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        Memory — Card Matching Brain Game
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        Memory is a card matching game with a twist — the pairs are not identical, they are connected. The Eiffel Tower matches with Paris. A guitar matches with music. To win you need to think associatively, not just visually. Choose your difficulty, flip the cards, and find all the pairs as fast as possible.
+      </p>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
+        Unlike traditional memory games, MemGenius Memory trains semantic memory — the part of your brain that stores knowledge and meaning. Connecting concepts rather than matching identical images is a more powerful cognitive workout. Play daily across different categories to keep your brain sharp.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'How does Memory work?', a: 'Cards are laid face down. Flip two at a time to find connected pairs — not identical ones. The Eiffel Tower pairs with Paris, a piano pairs with music. Find all pairs to complete the board.' },
+          { q: 'What are the difficulty levels?', a: 'Easy, Medium, and Hard. Higher difficulties have more cards on the board and more complex associations between pairs, requiring deeper knowledge and sharper memory.' },
+          { q: 'What categories are available?', a: 'Memory includes dozens of categories covering geography, science, food, history, sports, and more. New packs are added regularly so there is always something new to discover.' },
+          { q: 'Does Memory help with brain training?', a: 'Yes. Associative memory — linking related concepts — is one of the most important cognitive skills. Memory specifically trains this by requiring you to connect meanings rather than match images.' },
+          { q: 'Is Memory free to play?', a: 'Completely free, no login required. Play any category at any difficulty and track your time on the world ranking.' },
+        ].map((item, i) => (
+          <details key={i} style={{
+            background: '#fff', borderRadius: 14,
+            border: '1px solid #4A2C0A15',
+            padding: '14px 18px',
+          }}>
+            <summary style={{
+              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
+              cursor: 'pointer', listStyle: 'none',
+            }}>
+              {item.q}
+            </summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
     </>
   )
 }
