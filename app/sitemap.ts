@@ -2,15 +2,55 @@ import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
+    // Home
     { url: 'https://memgenius.com', lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
+
+    // Juegos principales
     { url: 'https://memgenius.com/memory', lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
-    { url: 'https://memgenius.com/digits', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
-    { url: 'https://memgenius.com/sequence', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
-    { url: 'https://memgenius.com/flags', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
-    { url: 'https://memgenius.com/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
-    { url: 'https://memgenius.com/higherlower', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: 'https://memgenius.com/digits', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: 'https://memgenius.com/sequence', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: 'https://memgenius.com/flags', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+
+    // Precision
     { url: 'https://memgenius.com/precision', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
-    { url: 'https://memgenius.com/how-to-play', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: 'https://memgenius.com/precision/stopwatch', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: 'https://memgenius.com/precision/formula1', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+
+    // Versus
+    { url: 'https://memgenius.com/versus', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: 'https://memgenius.com/versus/population', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: 'https://memgenius.com/versus/area', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+
+    // Rankings
+    { url: 'https://memgenius.com/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
+    { url: 'https://memgenius.com/ranking/memory', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+    { url: 'https://memgenius.com/digits/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+    { url: 'https://memgenius.com/flags/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+    { url: 'https://memgenius.com/sequence/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+    { url: 'https://memgenius.com/precision/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+    { url: 'https://memgenius.com/versus/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+    { url: 'https://memgenius.com/ranking/hall-of-fame', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+
+    // Memory packs
+    { url: 'https://memgenius.com/play/memgenius-colors', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/play/monuments-countries', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/play/cities-skylines', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/play/skyscrapers-cities', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/play/phenomena-locations', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/play/civilizations-landmarks', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/play/inventions-inventors', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/play/instruments-genres', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/play/foods-monuments', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/play/animals-habitats', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/play/objects-uses', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+
+    // Grupos y social
+    { url: 'https://memgenius.com/groups', lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
+    { url: 'https://memgenius.com/categories', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
+    { url: 'https://memgenius.com/streak', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
+
+    // Info
+    { url: 'https://memgenius.com/how-to-play', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
     { url: 'https://memgenius.com/about', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
     { url: 'https://memgenius.com/terms', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
     { url: 'https://memgenius.com/privacy', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
