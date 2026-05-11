@@ -73,6 +73,50 @@ export default function RankingPage() {
           ))}
         </div>
       </main>
+
+    {/* SEO Content */}
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        World Rankings — Compete Globally
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        Every game on MemGenius has its own world ranking. Play any game and your score is automatically submitted — no account needed. See where you stand against players from around the world and track your improvement over time.
+      </p>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
+        Rankings are updated in real time. Whether you are chasing the top spot in Digits, trying to beat the fastest F1 reaction time, or building the longest Flags streak, the leaderboard is always live and always competitive.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'How does the world ranking work?', a: 'After each game your score is automatically submitted to the global leaderboard. No login or account required — just play and your result appears instantly.' },
+          { q: 'Which games have a world ranking?', a: 'All games have their own leaderboard — Memory, Digits, Sequence, Flags, Precision Stop, F1 Reaction, Versus Area, and Versus Population.' },
+          { q: 'Can I see my rank during the game?', a: 'Yes. Your world ranking position is shown on the game over screen immediately after each session.' },
+          { q: 'Is the ranking updated in real time?', a: 'Yes. Scores are submitted instantly and the leaderboard reflects the latest results from all players worldwide.' },
+          { q: 'Do I need an account to appear on the ranking?', a: 'No account needed. Just enter a player name the first time you play and your scores are tracked automatically across sessions.' },
+        ].map((item, i) => (
+          <details key={i} style={{
+            background: '#fff', borderRadius: 14,
+            border: '1px solid #4A2C0A15',
+            padding: '14px 18px',
+          }}>
+            <summary style={{
+              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
+              cursor: 'pointer', listStyle: 'none',
+            }}>
+              {item.q}
+            </summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
     </>
   )
 }
