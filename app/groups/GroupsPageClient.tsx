@@ -38,6 +38,7 @@ export default function GroupsPageClient() {
   if (!loaded || !profile?.name) return null
 
   return (
+    <>
     <main style={{
       minHeight: '100dvh',
       background: `linear-gradient(180deg, #FFF8E1 0%, ${CREAM} 100%)`,
@@ -139,5 +140,6 @@ export default function GroupsPageClient() {
       </div>
     </section>
 
+    </>
   )
 }
