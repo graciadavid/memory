@@ -232,7 +232,7 @@ export default function GameBoard({ pack }: { pack: any }) {
       background: 'linear-gradient(180deg, #FAF7F2 0%, #F0EBE1 100%)',
       display: 'flex', flexDirection: 'column',
       maxWidth: 430, margin: '0 auto',
-      overflow: 'hidden', fontFamily: 'var(--font-nunito), sans-serif',
+      overflow: 'auto', fontFamily: 'var(--font-nunito), sans-serif',
       touchAction: 'none', paddingBottom: 70,
     }}>
 
