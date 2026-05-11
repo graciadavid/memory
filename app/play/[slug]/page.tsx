@@ -37,7 +37,7 @@ export default async function PlayPage({ params }: { params: Promise<{ slug: str
     },
     'monuments-countries': {
       title: 'Monuments & Countries — Match Landmarks to Nations',
-      desc1: 'Can you match the Colosseum to Italy, Machu Picchu to Peru, or Angkor Wat to Cambodia? This pack pairs the world's most iconic monuments with their home countries.',
+      desc1: 'Can you match the Colosseum to Italy, Machu Picchu to Peru, or Angkor Wat to Cambodia? This pack pairs the world’s most iconic monuments with their home countries.',
       desc2: 'Monuments are among the most powerful memory anchors in geography. Learning which landmark belongs to which country builds a vivid mental map of the world — far more effective than memorizing facts alone.',
       faqs: [
         { q: 'Which monuments are included?', a: 'The pack covers iconic landmarks from all continents — from the Eiffel Tower to the Taj Mahal, Petra, the Colosseum, and many more.' },
@@ -46,8 +46,8 @@ export default async function PlayPage({ params }: { params: Promise<{ slug: str
       ]
     },
     'cities-skylines': {
-      title: 'Cities & Skylines — Recognize the World's Great Cities',
-      desc1: 'Match famous city skylines to their names. From the Manhattan skyline to the Dubai marina, test how well you know the world's most recognizable urban landscapes.',
+      title: 'Cities & Skylines — Recognize the World’s Great Cities',
+      desc1: 'Match famous city skylines to their names. From the Manhattan skyline to the Dubai marina, test how well you know the world’s most recognizable urban landscapes.',
       desc2: 'City skylines are among the most visually distinctive images in geography. This pack trains visual memory and global awareness simultaneously — every correct match is a new city locked into your memory.',
       faqs: [
         { q: 'Which cities are in this pack?', a: 'The pack includes major global cities across all continents, from New York and London to Tokyo, Sydney, and beyond.' },
@@ -56,11 +56,11 @@ export default async function PlayPage({ params }: { params: Promise<{ slug: str
       ]
     },
     'skyscrapers-cities': {
-      title: 'Skyscrapers & Cities — Match the World's Tallest Buildings',
-      desc1: 'Do you know which city the Burj Khalifa is in? What about the Shanghai Tower or the One World Trade Center? Match the world's most famous skyscrapers to their cities.',
-      desc2: 'Skyscrapers are symbols of ambition and identity. This pack combines architecture, geography, and visual memory into one challenging game. Every match teaches you something real about the world's great cities.',
+      title: 'Skyscrapers & Cities — Match the World’s Tallest Buildings',
+      desc1: 'Do you know which city the Burj Khalifa is in? What about the Shanghai Tower or the One World Trade Center? Match the world’s most famous skyscrapers to their cities.',
+      desc2: 'Skyscrapers are symbols of ambition and identity. This pack combines architecture, geography, and visual memory into one challenging game. Every match teaches you something real about the world’s great cities.',
       faqs: [
-        { q: 'Which skyscrapers are included?', a: 'The pack covers the world's most iconic tall buildings — Burj Khalifa, Taipei 101, Empire State Building, CN Tower, and many more.' },
+        { q: 'Which skyscrapers are included?', a: 'The pack covers the world’s most iconic tall buildings — Burj Khalifa, Taipei 101, Empire State Building, CN Tower, and many more.' },
         { q: 'Do I need to know architecture to play?', a: 'Not at all. The game teaches you as you play — each match reinforces the connection between building and city.' },
         { q: 'Is this pack harder than Cities Skylines?', a: 'Different rather than harder. You match individual buildings to cities rather than full skylines to city names.' },
       ]
@@ -87,7 +87,7 @@ export default async function PlayPage({ params }: { params: Promise<{ slug: str
     },
     'inventions-inventors': {
       title: 'Inventions & Inventors — Who Invented What?',
-      desc1: 'Match history's greatest inventions to the people who created them. Did you know the telephone was invented by Alexander Graham Bell? What about the light bulb, the printing press, or penicillin?',
+      desc1: 'Match history’s greatest inventions to the people who created them. Did you know the telephone was invented by Alexander Graham Bell? What about the light bulb, the printing press, or penicillin?',
       desc2: 'Behind every invention is a human story. This pack makes history personal by connecting breakthrough technologies to the brilliant minds behind them — a perfect blend of science and human achievement.',
       faqs: [
         { q: 'Which inventions are included?', a: 'The pack covers major inventions across centuries — from ancient tools to modern technology, spanning science, medicine, communication, and engineering.' },
@@ -118,7 +118,7 @@ export default async function PlayPage({ params }: { params: Promise<{ slug: str
     'animals-habitats': {
       title: 'Animals & Habitats — Match Wildlife to Their Ecosystems',
       desc1: 'Match animals to the natural habitats where they live. A polar bear to the Arctic, a jaguar to the Amazon rainforest, a camel to the Sahara desert. How well do you know the natural world?',
-      desc2: 'Understanding where animals live is the foundation of ecology and conservation. This pack teaches environmental science through play — every match builds awareness of the planet's incredible biodiversity.',
+      desc2: 'Understanding where animals live is the foundation of ecology and conservation. This pack teaches environmental science through play — every match builds awareness of the planet’s incredible biodiversity.',
       faqs: [
         { q: 'Which animals are featured?', a: 'The pack includes mammals, birds, reptiles, and marine animals from ecosystems across all continents and oceans.' },
         { q: 'Is this educational for children?', a: 'Highly. Animals and Habitats is one of the most educational packs on MemGenius and perfect for school-age children.' },
