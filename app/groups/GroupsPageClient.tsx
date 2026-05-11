@@ -96,5 +96,48 @@ export default function GroupsPageClient() {
         </div>
       )}
     </main>
+
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        Private Groups — Play With Friends
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        Groups let you create a private space to compete with friends, family, or colleagues. Create a group, share the invite, and everyone plays the same MemGenius games — but now you have your own leaderboard. See who has the best memory, the fastest reaction time, or the longest streak in your circle.
+      </p>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
+        Groups are completely free and require no login. Just create one, share the link, and start competing. Perfect for families, friend groups, classrooms, or office challenges. Every game on MemGenius is available inside your group.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'How do I create a group?', a: 'Tap the Create Group button, choose a name, and share the link with whoever you want to invite. Anyone with the link can join instantly — no account needed.' },
+          { q: 'Is it free to create a group?', a: 'Yes, completely free. There is no limit on the number of groups you can create or join, and no premium features required.' },
+          { q: 'Which games can I play in a group?', a: 'All MemGenius games are available inside groups — Memory, Digits, Sequence, Flags, Precision Stop, F1 Reaction, Versus Area, and Versus Population.' },
+          { q: 'How does the group ranking work?', a: 'Each member plays individually and their best scores are shown on the group leaderboard. You can see how you rank against everyone in your group across all games.' },
+          { q: 'Can I be in multiple groups?', a: 'Yes, you can join or create as many groups as you like. Switch between them freely from the Groups page.' },
+        ].map((item, i) => (
+          <details key={i} style={{
+            background: '#fff', borderRadius: 14,
+            border: '1px solid #4A2C0A15',
+            padding: '14px 18px',
+          }}>
+            <summary style={{
+              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
+              cursor: 'pointer', listStyle: 'none',
+            }}>
+              {item.q}
+            </summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
   )
 }
