@@ -307,26 +307,46 @@ export default function ProfilePage() {
       <div style={{ padding: '16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
 
 
-        {/* GROUPS */}
         {/* Streak banner */}
-        {profileStreak.current > 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, background: '#fff', borderRadius: 20, padding: '16px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 56, height: 56, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite' }} />
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-              <div style={{ fontSize: 52, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{profileStreak.current}</div>
-              <div style={{ fontSize: 14, color: `${BROWN}60`, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>day streak</div>
-            </div>
-            <Link href="/streak" style={{ textDecoration: 'none', marginLeft: 'auto' }}>
-              <div style={{ background: GOLD, color: '#fff', fontSize: 11, fontWeight: 900, padding: '6px 12px', borderRadius: 10, boxShadow: `0 3px 0 ${GOLD}60` }}>Learn more →</div>
-            </Link>
-            {profileStreak.longest > profileStreak.current && (
-              <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
-                <div style={{ fontSize: 20, fontWeight: 900, color: `${BROWN}40` }}>{profileStreak.longest}</div>
-                <div style={{ fontSize: 9, color: `${BROWN}30`, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>best</div>
+        {profileStreak.current > 0 && (() => {
+          const MILESTONES = [
+            { min: 1,  max: 4,   img: 'seed.png',        color: '#2E7D32', msg: 'Your brain is warming up.', next: 'Reach 5 days to start forming a habit.' },
+            { min: 5,  max: 9,   img: 'streak.png',      color: '#E65100', msg: 'Habit forming. Working memory improving.', next: 'Reach 10 days for reaction time gains.' },
+            { min: 10, max: 29,  img: 'ray.png',         color: '#F57F17', msg: 'Reaction time is improving.', next: 'Reach 30 days for measurable memory gains.' },
+            { min: 30, max: 49,  img: 'brain-logo.webp', color: '#1565C0', msg: 'Measurable memory gains. Science backs this.', next: 'Reach 50 days — top 5% of players.' },
+            { min: 50, max: 99,  img: 'nav-trophy.webp', color: '#6A1B9A', msg: 'Top 5% of MemGenius players.', next: 'Reach 100 days — cognitive athlete level.' },
+            { min: 100, max: 9999, img: 'target.png',    color: '#B71C1C', msg: 'Cognitive athlete. Among the best.', next: 'Keep going. There is no ceiling.' },
+          ]
+          const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+          const m = MILESTONES.find(x => profileStreak.current >= x.min && profileStreak.current <= x.max)
+          return (
+            <Link href="/streak" style={{ textDecoration: 'none' }}>
+              <div style={{
+                background: `linear-gradient(135deg, ${m?.color}22, ${m?.color}08)`,
+                border: `2px solid ${m?.color}40`,
+                borderRadius: 24, padding: '20px',
+                boxShadow: `0 4px 20px ${m?.color}20`,
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 14 }}>
+                  <img src={`${BASE}/${m?.img}`} alt="" style={{ width: 64, height: 64, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite', flexShrink: 0 }} />
+                  <div>
+                    <div style={{ fontSize: 64, fontWeight: 900, color: m?.color, lineHeight: 1 }}>{profileStreak.current}</div>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: `${m?.color}80`, textTransform: 'uppercase', letterSpacing: 2 }}>day streak</div>
+                  </div>
+                  {profileStreak.longest > profileStreak.current && (
+                    <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
+                      <div style={{ fontSize: 22, fontWeight: 900, color: `${m?.color}50` }}>{profileStreak.longest}</div>
+                      <div style={{ fontSize: 9, color: `${m?.color}40`, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>best</div>
+                    </div>
+                  )}
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 900, color: m?.color, marginBottom: 4 }}>{m?.msg}</div>
+                <div style={{ fontSize: 12, color: `${m?.color}70`, fontWeight: 700, marginBottom: 12 }}>{m?.next}</div>
+                <div style={{ fontSize: 11, fontWeight: 800, color: m?.color, opacity: 0.6, textAlign: 'right' }}>Learn more about your streak →</div>
               </div>
-            )}
-          </div>
-        )}
+            </Link>
+          )
+        })()}
 
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
