@@ -289,5 +289,49 @@ export default function Formula1Page() {
 
       <style>{`@keyframes pulse { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:0.8; transform:scale(1.05) } }`}</style>
     </main>
+
+    {/* SEO Content */}
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        F1 Reaction — Formula 1 Reaction Time Test
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        F1 Reaction simulates the most iconic moment in motorsport — the starting lights. Five red lights illuminate one by one, just like a real Formula 1 race start. When they go out, hit the accelerator as fast as you can. Your reaction time is measured in milliseconds. How close to an F1 driver can you get?
+      </p>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
+        Professional F1 drivers react in around 200ms. The average human reaction time is 250ms. With practice, you can train your nervous system to respond faster. F1 Reaction is one of the most addictive games on MemGenius precisely because every millisecond counts and improvement is always visible.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'How does F1 Reaction work?', a: 'Five red lights appear one by one like a real F1 start. When all lights go out, tap the screen as fast as possible. Your reaction time in milliseconds is your score.' },
+          { q: 'What is a good reaction time?', a: 'Under 200ms is exceptional — that is F1 driver territory. Under 250ms is very good. The average human reaction time is around 250-300ms. Anything under 150ms may be flagged as a false start.' },
+          { q: 'Can reaction time be improved with practice?', a: 'Yes. Regular reaction time training has been shown to produce measurable improvements. Your nervous system adapts and the signal between eye and hand becomes faster with repetition.' },
+          { q: 'Is F1 Reaction free?', a: 'Completely free with no login required. Your fastest reaction time is saved to the world ranking automatically.' },
+          { q: 'Does it work on mobile?', a: 'Yes, F1 Reaction is fully optimized for mobile. Tap anywhere on screen when the lights go out.' },
+        ].map((item, i) => (
+          <details key={i} style={{
+            background: '#fff', borderRadius: 14,
+            border: '1px solid #4A2C0A15',
+            padding: '14px 18px',
+          }}>
+            <summary style={{
+              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
+              cursor: 'pointer', listStyle: 'none',
+            }}>
+              {item.q}
+            </summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
   )
 }

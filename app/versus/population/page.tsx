@@ -312,5 +312,49 @@ export default function VersusPage() {
         )}
       </div>
     </main>
+
+    {/* SEO Content */}
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        Versus Population — Which Country Has More People?
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        Versus Population puts your knowledge of world demographics to the test. Two countries appear and you must decide which one has the larger population. Build the longest correct streak you can. From the most populated nations on Earth to tiny territories, every comparison will challenge your assumptions.
+      </p>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
+        Population comparisons are full of surprises. Did you know Bangladesh has more people than Russia despite being 115 times smaller? Or that Nigeria is on track to become the third most populated country in the world? Versus Population turns these fascinating facts into a competitive global game.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'How does Versus Population work?', a: 'Two country names appear on screen. Tap the one with the larger population. Get it right and the next pair appears. One wrong answer ends your streak.' },
+          { q: 'Are the population figures up to date?', a: 'The game uses current population estimates for all countries. Figures are periodically updated to reflect the latest global data.' },
+          { q: 'Is this a good way to learn world demographics?', a: 'Yes. Seeing countries compared side by side repeatedly is one of the fastest ways to internalize population facts. Most players are surprised by how much they learn within a few sessions.' },
+          { q: 'Is Versus Population free?', a: 'Completely free with no login required. Your best streak is automatically submitted to the world ranking.' },
+          { q: 'Can I play on mobile?', a: 'Yes, fully optimized for mobile. Tap the country name to make your choice — no typing required.' },
+        ].map((item, i) => (
+          <details key={i} style={{
+            background: '#fff', borderRadius: 14,
+            border: '1px solid #4A2C0A15',
+            padding: '14px 18px',
+          }}>
+            <summary style={{
+              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
+              cursor: 'pointer', listStyle: 'none',
+            }}>
+              {item.q}
+            </summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
   )
 }

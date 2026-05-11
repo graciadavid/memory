@@ -328,5 +328,49 @@ export default function VersusPage() {
         )}
       </div>
     </main>
+
+    {/* SEO Content */}
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        Versus Area — Which Country is Bigger?
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        Versus Area is a geography challenge where two countries appear on screen and you must decide which one has the larger surface area in km². Get it right and the next pair appears. Build the longest streak you can. From tiny island nations to vast continental countries, every comparison is a new test of your geography knowledge.
+      </p>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
+        This game is deceptively hard. Many countries surprise even geography enthusiasts — did you know France is nearly twice the size of Germany? Or that Kazakhstan is the world's largest landlocked country? Versus Area teaches real geography through addictive gameplay and a competitive world ranking.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'How does Versus Area work?', a: 'Two country names appear on screen. Tap the one with the larger surface area in km². Get it right and continue your streak. One wrong answer ends the game.' },
+          { q: 'How many countries are in the game?', a: 'The game draws from nearly 200 countries worldwide, so each session presents different combinations. You will rarely see the same matchup twice.' },
+          { q: 'Is this a good way to learn geography?', a: 'Yes. Comparative learning is one of the most effective ways to retain facts. By repeatedly judging which country is larger, you naturally build an accurate mental map of world geography.' },
+          { q: 'Is Versus Area free?', a: 'Completely free, no login required. Your streak is submitted to the world ranking automatically when the game ends.' },
+          { q: 'Can I play on mobile?', a: 'Yes, Versus Area is fully optimized for mobile with large tap targets and instant loading.' },
+        ].map((item, i) => (
+          <details key={i} style={{
+            background: '#fff', borderRadius: 14,
+            border: '1px solid #4A2C0A15',
+            padding: '14px 18px',
+          }}>
+            <summary style={{
+              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
+              cursor: 'pointer', listStyle: 'none',
+            }}>
+              {item.q}
+            </summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
   )
 }

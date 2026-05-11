@@ -382,6 +382,50 @@ export default function SequencePage() {
           </div>
         )}
       </main>
+
+    {/* SEO Content */}
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        Sequence — Simon Says Memory Game
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        Sequence is a classic Simon Says challenge reimagined for your brain. A pattern of colored buttons lights up — watch carefully, then repeat it in the exact same order. Each round adds one more step to the sequence. Miss a single one and the game is over. How long a sequence can you remember?
+      </p>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
+        Sequence trains visual memory and pattern recognition simultaneously. Unlike number or word memorization, this game forces your brain to encode both color and order — a powerful combination for improving short-term memory. Players who practice daily consistently reach longer sequences over time.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'How do you play Sequence?', a: 'Watch the colored buttons light up in a specific order, then tap them in the same sequence. Each correct round adds one more step. One wrong tap and the game ends.' },
+          { q: 'Is this the same as Simon Says?', a: 'Yes, Sequence is inspired by the classic Simon Says game. It follows the same core mechanic — repeat the pattern — but with a modern design and global world ranking.' },
+          { q: 'What does Sequence train in the brain?', a: 'It trains visual working memory and sequential pattern recognition. Your brain must hold and replay a growing chain of visual stimuli, which strengthens short-term memory pathways.' },
+          { q: 'Is there a limit to how many levels there are?', a: 'No limit. The sequence grows indefinitely until you make a mistake. Top players on the world ranking reach sequences of 20 or more steps.' },
+          { q: 'Is Sequence free to play?', a: 'Yes, completely free with no login required. Your score is submitted to the world ranking automatically when the game ends.' },
+        ].map((item, i) => (
+          <details key={i} style={{
+            background: '#fff', borderRadius: 14,
+            border: '1px solid #4A2C0A15',
+            padding: '14px 18px',
+          }}>
+            <summary style={{
+              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
+              cursor: 'pointer', listStyle: 'none',
+            }}>
+              {item.q}
+            </summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
     </>
   )
 }

@@ -430,6 +430,50 @@ export default function FlagsPage() {
           </div>
         )}
       </main>
+
+    {/* SEO Content */}
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        Flags — World Flag Quiz Game
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        Flags challenges you to identify the world's country flags as fast as possible. A flag appears on screen and you must name the correct country from multiple options. The more you get right in a row, the higher you climb on the world ranking. With nearly 200 countries in the pool, every game is different.
+      </p>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
+        Beyond being a fun geography quiz, Flags is a genuine brain trainer. Recognizing visual symbols and linking them to names exercises associative memory — the same cognitive system used when learning languages or faces. Play daily and you will be surprised how quickly you learn every flag on the planet.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'How does the Flags game work?', a: 'A country flag appears on screen along with several answer options. Tap the correct country name. Get it right and the next flag appears. One wrong answer ends your streak.' },
+          { q: 'How many flags are in the game?', a: 'The game includes flags from nearly 200 countries and territories worldwide. The selection is randomized each game so you will encounter different flags every time you play.' },
+          { q: 'Is Flags good for learning geography?', a: 'Yes. Repeated exposure to flags and their corresponding countries builds long-term visual memory. Most players report learning dozens of new flags within their first week of daily play.' },
+          { q: 'Can I play Flags on mobile?', a: 'Absolutely. Flags is fully optimized for mobile with large tap targets and fast loading flags. It works on any modern smartphone or tablet.' },
+          { q: 'Is Flags free to play?', a: 'Completely free, no account needed. Your streak score is submitted to the world ranking automatically at the end of each game.' },
+        ].map((item, i) => (
+          <details key={i} style={{
+            background: '#fff', borderRadius: 14,
+            border: '1px solid #4A2C0A15',
+            padding: '14px 18px',
+          }}>
+            <summary style={{
+              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
+              cursor: 'pointer', listStyle: 'none',
+            }}>
+              {item.q}
+            </summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
     </>
   )
 }

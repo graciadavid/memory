@@ -216,5 +216,49 @@ export default function PrecisionPage() {
         )}
       </div>
     </main>
+
+    {/* SEO Content */}
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        Stop — Precision Timing Game
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        Stop is a pure precision challenge. A timer starts running and your goal is to stop it at exactly 5 seconds — no more, no less. Your score is measured by deviation in milliseconds. The closer you are to 5.000 seconds, the higher you rank on the world leaderboard. Sounds simple. It is not.
+      </p>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
+        Stop trains your internal sense of time — a surprisingly trainable cognitive skill. Studies show that people who regularly practice timing tasks develop a more accurate internal clock. Top players on the world ranking consistently stop within 10 milliseconds of the target. Can you join them?
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'How does Stop work?', a: 'Press start and a timer begins counting. Press stop when you think exactly 5 seconds have passed. Your deviation from 5.000s is your score — lower is better.' },
+          { q: 'How is the score calculated?', a: 'Your score is the absolute difference between when you stopped and the 5 second target, measured in milliseconds. A score of 0ms would be a perfect stop.' },
+          { q: 'Can you actually improve at this?', a: 'Yes. Your internal sense of time is trainable. With regular practice most players see their average deviation drop significantly within a few weeks.' },
+          { q: 'Is Stop free to play?', a: 'Completely free, no login required. Your best score is submitted to the world ranking automatically.' },
+          { q: 'Can I play on mobile?', a: 'Yes, Stop works perfectly on mobile. Just tap the screen to start and stop the timer.' },
+        ].map((item, i) => (
+          <details key={i} style={{
+            background: '#fff', borderRadius: 14,
+            border: '1px solid #4A2C0A15',
+            padding: '14px 18px',
+          }}>
+            <summary style={{
+              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
+              cursor: 'pointer', listStyle: 'none',
+            }}>
+              {item.q}
+            </summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
   )
 }
