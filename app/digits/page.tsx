@@ -368,6 +368,50 @@ export default function DigitsPage() {
           </div>
         )}
       </main>
+
+    {/* SEO Content */}
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        Digits — Number Memory Game
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        Digits is a progressive number memory challenge. Each round, a new number appears on screen for a few seconds — your job is to memorize it and type it back exactly. Start with a single digit and advance level by level, adding one more digit each time. The further you go, the harder it gets. How many digits can your brain hold?
+      </p>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
+        Unlike random memorization games, Digits trains your working memory systematically. Regular practice improves your ability to retain number sequences, which has real benefits for everyday tasks like remembering phone numbers, PINs, and mental arithmetic. Play daily to track your progress on the world ranking.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'How does Digits work?', a: 'A number is shown on screen for 4 seconds. When it disappears, type it back exactly. Each correct answer advances you one level, adding an extra digit to the sequence.' },
+          { q: 'How many levels are there?', a: 'There is no limit. The game keeps adding digits until you make a mistake. The world record holders reach 15+ digits.' },
+          { q: 'Does it help with memory training?', a: 'Yes. Digits specifically targets working memory — the system your brain uses to temporarily hold and manipulate information. Daily practice shows measurable improvement over time.' },
+          { q: 'Is Digits free to play?', a: 'Completely free, no login required. Your score is automatically submitted to the world ranking when you finish.' },
+          { q: 'Can I play on mobile?', a: 'Yes, Digits is fully optimized for mobile. The number pad appears automatically on your phone keyboard when it is time to type your answer.' },
+        ].map((item, i) => (
+          <details key={i} style={{
+            background: '#fff', borderRadius: 14,
+            border: '1px solid #4A2C0A15',
+            padding: '14px 18px',
+          }}>
+            <summary style={{
+              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
+              cursor: 'pointer', listStyle: 'none',
+            }}>
+              {item.q}
+            </summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
+              {item.a}
+            </p>
+          </details>
+        ))}
+      </div>
+    </section>
+
     </>
   )
 }
