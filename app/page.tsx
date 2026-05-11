@@ -67,10 +67,8 @@ export default function LandingPage() {
     if (!profile?.name) return
     getStreak(profile.name).then(s => {
       setStreak(s)
-      if (s.current > 0) {
-        setShowStreak(true)
-        setTimeout(() => setShowStreak(false), 2500)
-      }
+      setShowStreak(true)
+      setTimeout(() => setShowStreak(false), 2500)
     })
   }, [profile?.name])
 
@@ -158,6 +156,7 @@ export default function LandingPage() {
   if (!loaded) return null
 
   const MILESTONES = [
+    { min: 0,   max: 0,   emoji: '🌱', msg: 'Welcome! Play your first game today.', next: 'Start your streak and come back tomorrow.' },
     { min: 1,   max: 4,   emoji: '🌱', msg: 'Your brain is warming up.', next: 'Reach 5 days to start forming a habit.' },
     { min: 5,   max: 9,   emoji: '🔥', msg: 'Habit forming. Working memory starts improving.', next: 'Reach 10 days for reaction time gains.' },
     { min: 10,  max: 29,  emoji: '⚡', msg: 'Reaction time is improving.', next: 'Reach 30 days for measurable memory gains.' },
