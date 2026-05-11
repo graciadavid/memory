@@ -33,6 +33,7 @@ export default function LandingPage() {
   const [pin, setPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
   const [needsNewPin, setNeedsNewPin] = useState(false)
+  const [showStreak, setShowStreak] = useState(false)
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -64,7 +65,13 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (!profile?.name) return
-    getStreak(profile.name).then(setStreak)
+    getStreak(profile.name).then(s => {
+      setStreak(s)
+      if (s.current > 0) {
+        setShowStreak(true)
+        setTimeout(() => setShowStreak(false), 2500)
+      }
+    })
   }, [profile?.name])
 
   const handleSave = async () => {
@@ -149,6 +156,16 @@ export default function LandingPage() {
   }
 
   if (!loaded) return null
+
+  const MILESTONES = [
+    { min: 1,   max: 4,   emoji: '🌱', msg: 'Your brain is warming up.', next: 'Reach 5 days to start forming a habit.' },
+    { min: 5,   max: 9,   emoji: '🔥', msg: 'Habit forming. Working memory starts improving.', next: 'Reach 10 days for reaction time gains.' },
+    { min: 10,  max: 29,  emoji: '⚡', msg: 'Reaction time is improving.', next: 'Reach 30 days for measurable memory gains.' },
+    { min: 30,  max: 49,  emoji: '🧠', msg: 'Measurable memory gains. Science backs this.', next: 'Reach 50 days — top 5% of players.' },
+    { min: 50,  max: 99,  emoji: '🏆', msg: 'You are in the top 5% of MemGenius players.', next: 'Reach 100 days — cognitive athlete level.' },
+    { min: 100, max: 9999, emoji: '🎯', msg: 'Cognitive athlete. You are among the best.', next: 'Keep going. There is no ceiling.' },
+  ]
+  const milestone = MILESTONES.find(m => streak.current >= m.min && streak.current <= m.max)
 
   return (
     <>
@@ -281,6 +298,19 @@ export default function LandingPage() {
             </>
           )}
           {error && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700, marginTop: 6, textAlign: 'center' }}>{error}</div>}
+        </div>
+      ) : showStreak ? (
+        /* STREAK SCREEN */
+        <div style={{
+          flex: 1, display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          width: '100%', gap: 8, padding: '0 24px',
+        }}>
+          <div style={{ fontSize: 80 }}>{milestone?.emoji}</div>
+          <div style={{ fontSize: 72, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{streak.current}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase' }}>day streak</div>
+          <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, textAlign: 'center', marginTop: 12 }}>{milestone?.msg}</div>
+          <div style={{ fontSize: 13, color: `${BROWN}50`, textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>{milestone?.next}</div>
         </div>
       ) : (
         /* REGISTERED */
