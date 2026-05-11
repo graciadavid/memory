@@ -316,6 +316,9 @@ export default function ProfilePage() {
               <div style={{ fontSize: 52, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{profileStreak.current}</div>
               <div style={{ fontSize: 14, color: `${BROWN}60`, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>day streak</div>
             </div>
+            <Link href="/streak" style={{ textDecoration: 'none', marginLeft: 'auto' }}>
+              <div style={{ background: GOLD, color: '#fff', fontSize: 11, fontWeight: 900, padding: '6px 12px', borderRadius: 10, boxShadow: `0 3px 0 ${GOLD}60` }}>Learn more →</div>
+            </Link>
             {profileStreak.longest > profileStreak.current && (
               <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
                 <div style={{ fontSize: 20, fontWeight: 900, color: `${BROWN}40` }}>{profileStreak.longest}</div>
