@@ -70,7 +70,7 @@ export default function LandingPage() {
         getStreak(profile.name).then(s => {
           setStreak(s)
           setShowStreak(true)
-          setTimeout(() => setShowStreak(false), 2500)
+          setTimeout(() => setShowStreak(false), 3000)
         })
       })
     })
@@ -160,19 +160,19 @@ export default function LandingPage() {
   if (!loaded) return null
 
   const MILESTONES = [
-    { min: 0,   max: 0,   emoji: '🌱', msg: 'Welcome! Play your first game today.', next: 'Start your streak and come back tomorrow.' },
-    { min: 1,   max: 4,   emoji: '🌱', msg: 'Your brain is warming up.', next: 'Reach 5 days to start forming a habit.' },
-    { min: 5,   max: 9,   emoji: '🔥', msg: 'Habit forming. Working memory starts improving.', next: 'Reach 10 days for reaction time gains.' },
-    { min: 10,  max: 29,  emoji: '⚡', msg: 'Reaction time is improving.', next: 'Reach 30 days for measurable memory gains.' },
-    { min: 30,  max: 49,  emoji: '🧠', msg: 'Measurable memory gains. Science backs this.', next: 'Reach 50 days — top 5% of players.' },
-    { min: 50,  max: 99,  emoji: '🏆', msg: 'You are in the top 5% of MemGenius players.', next: 'Reach 100 days — cognitive athlete level.' },
-    { min: 100, max: 9999, emoji: '🎯', msg: 'Cognitive athlete. You are among the best.', next: 'Keep going. There is no ceiling.' },
+    { min: 0,   max: 0,   img: 'seed.png',         msg: 'Welcome! Play your first game today.', next: 'Start your streak and come back tomorrow.' },
+    { min: 1,   max: 4,   img: 'seed.png',         msg: 'Your brain is warming up.', next: 'Reach 5 days to start forming a habit.' },
+    { min: 5,   max: 9,   img: 'streak.png',       msg: 'Habit forming. Working memory starts improving.', next: 'Reach 10 days for reaction time gains.' },
+    { min: 10,  max: 29,  img: 'ray.png',          msg: 'Reaction time is improving.', next: 'Reach 30 days for measurable memory gains.' },
+    { min: 30,  max: 49,  img: 'brain-logo.webp',  msg: 'Measurable memory gains. Science backs this.', next: 'Reach 50 days — top 5% of players.' },
+    { min: 50,  max: 99,  img: 'nav-trophy.webp',  msg: 'You are in the top 5% of MemGenius players.', next: 'Reach 100 days — cognitive athlete level.' },
+    { min: 100, max: 9999, img: 'target.png',      msg: 'Cognitive athlete. You are among the best.', next: 'Keep going. There is no ceiling.' },
   ]
   const milestone = MILESTONES.find(m => streak.current >= m.min && streak.current <= m.max)
 
   return (
     <>
-    <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }`}</style>
+    <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } } @keyframes progressBar { from { width: 0% } to { width: 100% } }`}</style>
     <main style={{
       height: '100dvh',
       background: `radial-gradient(ellipse at 50% 0%, #fff8ee 0%, ${CREAM} 40%, #EDE5D8 100%)`,
@@ -309,11 +309,22 @@ export default function LandingPage() {
           alignItems: 'center', justifyContent: 'center',
           width: '100%', gap: 8, padding: '0 24px',
         }}>
-          <div style={{ fontSize: 80 }}>{milestone?.emoji}</div>
+          <img
+            src={`${BASE}/${milestone?.img}`}
+            alt=""
+            style={{ width: 100, height: 100, objectFit: 'contain', marginBottom: 8 }}
+          />
           <div style={{ fontSize: 72, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{streak.current}</div>
           <div style={{ fontSize: 13, fontWeight: 700, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase' }}>day streak</div>
           <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, textAlign: 'center', marginTop: 12 }}>{milestone?.msg}</div>
           <div style={{ fontSize: 13, color: `${BROWN}50`, textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>{milestone?.next}</div>
+          <div style={{ width: '100%', height: 6, background: `${BROWN}15`, borderRadius: 4, overflow: 'hidden', marginTop: 24 }}>
+            <div style={{
+              height: '100%', borderRadius: 4,
+              background: GOLD,
+              animation: 'progressBar 3s linear forwards',
+            }} />
+          </div>
         </div>
       ) : (
         /* REGISTERED */
