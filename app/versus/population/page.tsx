@@ -179,6 +179,7 @@ export default function VersusPage() {
   const next = deck[current]
 
   return (
+    <>
     <main style={{
       height: '100dvh',
       background: `radial-gradient(ellipse at 50% 0%, #FFEBEE 0%, ${CREAM} 50%)`,
@@ -356,5 +357,6 @@ export default function VersusPage() {
       </div>
     </section>
 
+    </>
   )
 }

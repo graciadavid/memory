@@ -96,6 +96,7 @@ export default function PrecisionPage() {
   }
 
   return (
+    <>
     <main style={{
       height: '100dvh',
       background: `radial-gradient(ellipse at 50% 0%, #EDE7F6 0%, ${CREAM} 50%, #F5EDD8 100%)`,
@@ -260,5 +261,6 @@ export default function PrecisionPage() {
       </div>
     </section>
 
+    </>
   )
 }

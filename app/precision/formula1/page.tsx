@@ -154,6 +154,7 @@ export default function Formula1Page() {
   )
 
   return (
+    <>
     <main style={{
       height: '100dvh',
       background: phase === 'go' ? '#0a0a0a' : `radial-gradient(ellipse at 50% 0%, #fff5f5 0%, ${CREAM} 50%)`,
@@ -333,5 +334,6 @@ export default function Formula1Page() {
       </div>
     </section>
 
+    </>
   )
 }
