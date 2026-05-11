@@ -140,8 +140,7 @@ export default async function PlayPage({ params }: { params: Promise<{ slug: str
   const seo = seoContent[slug]
 
   return (
-    <div style={{ overflowY: "auto", height: "100dvh" }}>
-      <GameBoard pack={{ ...pack, isDaily }} />
+    <GameBoard pack={{ ...pack, isDaily }} />
       {seo && (
         <section style={{
           maxWidth: 430, margin: '0 auto',
@@ -179,6 +178,5 @@ export default async function PlayPage({ params }: { params: Promise<{ slug: str
           </div>
         </section>
       )}
-    </div>
   )
 }
