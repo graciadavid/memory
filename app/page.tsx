@@ -65,10 +65,14 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (!profile?.name) return
-    getStreak(profile.name).then(s => {
-      setStreak(s)
-      setShowStreak(true)
-      setTimeout(() => setShowStreak(false), 2500)
+    import('@/lib/streak').then(({ updateStreak, getStreak }) => {
+      updateStreak(profile.name).then(() => {
+        getStreak(profile.name).then(s => {
+          setStreak(s)
+          setShowStreak(true)
+          setTimeout(() => setShowStreak(false), 2500)
+        })
+      })
     })
   }, [profile?.name])
 
