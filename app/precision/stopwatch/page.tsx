@@ -103,7 +103,7 @@ export default function PrecisionPage() {
       display: 'flex', flexDirection: 'column',
       fontFamily: 'var(--font-nunito), sans-serif',
       maxWidth: 430, margin: '0 auto',
-      overflow: 'hidden', paddingBottom: 80,
+      overflow: 'auto', paddingBottom: 80,
     }}>
 
       {/* Header */}
