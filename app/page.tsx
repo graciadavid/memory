@@ -70,7 +70,7 @@ export default function LandingPage() {
         getStreak(profile.name).then(s => {
           setStreak(s)
           setShowStreak(true)
-          setTimeout(() => setShowStreak(false), 3000)
+          setTimeout(() => setShowStreak(false), 3500)
         })
       })
     })
@@ -322,7 +322,7 @@ export default function LandingPage() {
             <div style={{
               height: '100%', borderRadius: 4,
               background: GOLD,
-              animation: 'progressBar 3s linear forwards',
+              animation: 'progressBar 3.5s linear forwards',
             }} />
           </div>
         </div>
