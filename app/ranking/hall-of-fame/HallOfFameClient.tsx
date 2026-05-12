@@ -115,7 +115,7 @@ export default function HallOfFameClient({ champions }: { champions: Record<stri
                 <div style={{ padding: '20px' }}>
                   {/* Game label */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-                    {card.icon.startsWith('/') ? (
+                    {card.icon.startsWith('/') || card.icon.startsWith('http') ? (
                       <img src={card.icon} alt="" style={{ width: 48, height: 48, objectFit: 'contain', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.1))' }} />
                     ) : (
                       <div style={{ fontSize: 40 }}>{card.icon}</div>
