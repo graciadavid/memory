@@ -248,9 +248,7 @@ export default function PendulumPage() {
               <div style={{ fontSize: 48, fontWeight: 900, color: deviation < 50 ? '#2E7D32' : deviation < 150 ? GOLD : '#B71C1C', lineHeight: 1 }}>
                 {deviation}ms
               </div>
-              <div style={{ fontSize: 14, color: `${BROWN}60`, fontWeight: 700, marginTop: 4 }}>
-                {deviation < 20 ? '🎯 Perfect!' : deviation < 50 ? '⚡ Excellent!' : deviation < 100 ? '👍 Good' : 'Keep practicing'}
-              </div>
+
               {worldRank && (
                 <div style={{ marginTop: 8, fontSize: 18, fontWeight: 900, color: PURPLE }}>#{worldRank} World</div>
               )}
@@ -273,14 +271,14 @@ export default function PendulumPage() {
               <div style={{ display: 'flex', gap: 10, width: '100%' }}>
                 <button onClick={() => {
                   const url = `${window.location.origin}/challenge?game=pendulum&score=${deviation}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-                  const text = `⏱ ${profile?.name} stopped the pendulum at ${deviation}ms on MemGenius! Can you beat them? ${url}`
+                  const text = `${profile?.name} stopped the pendulum at ${deviation}ms on MemGenius! Can you beat them? ${url}`
                   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
                 }} style={{
                   flex: 2, padding: '16px', borderRadius: 16, border: 'none',
                   background: '#25D366', color: '#fff',
                   fontSize: 15, fontWeight: 900, fontFamily: 'inherit',
                   cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
-                }}>📲 Share</button>
+                }}>Share</button>
                 <button onClick={reset} style={{
                   flex: 1, padding: '14px', borderRadius: 14, border: 'none',
                   background: GOLD, color: '#fff',
