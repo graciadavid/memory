@@ -21,6 +21,9 @@ export default async function GroupPage({ searchParams }: { searchParams: Promis
     .order('joined_at', { ascending: true })
 
   const memberNames = members?.map(m => m.player_name) || []
+  if (memberNames.length === 0) return (
+    <GroupPageClient group={group} members={[]} bestMemory={{}} bestDigits={{}} bestSeq={{}} bestFlags={{}} bestPrecision={{}} bestF1={{}} bestVersusPop={{}} bestVersusArea={{}} />
+  )
 
   // Get best scores for each member
   const [memScores, digScores, seqScores, flagScores, precScores, f1Scores, vsPopScores, vsAreaScores] = await Promise.all([

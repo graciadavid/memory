@@ -81,23 +81,23 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
           .sort((a: any, b: any) => b.raw - a.raw)
       case 'stop':
         return memberNames
-          .filter((n: string) => bestPrecision[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${(bestPrecision[n]/1000).toFixed(3)}s`, raw: bestPrecision[n] }))
+          .filter((n: string) => bestPrecision?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${(bestPrecision?.[n]/1000).toFixed(3)}s`, raw: bestPrecision?.[n] }))
           .sort((a: any, b: any) => a.raw - b.raw)
       case 'f1':
         return memberNames
-          .filter((n: string) => bestF1[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestF1[n]}ms`, raw: bestF1[n] }))
+          .filter((n: string) => bestF1?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestF1?.[n]}ms`, raw: bestF1?.[n] }))
           .sort((a: any, b: any) => a.raw - b.raw)
       case 'population':
         return memberNames
-          .filter((n: string) => bestVersusPop[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestVersusPop[n]} correct`, raw: bestVersusPop[n] }))
+          .filter((n: string) => bestVersusPop?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestVersusPop?.[n]} correct`, raw: bestVersusPop?.[n] }))
           .sort((a: any, b: any) => b.raw - a.raw)
       case 'area':
         return memberNames
-          .filter((n: string) => bestVersusArea[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestVersusArea[n]} correct`, raw: bestVersusArea[n] }))
+          .filter((n: string) => bestVersusArea?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestVersusArea?.[n]} correct`, raw: bestVersusArea?.[n] }))
           .sort((a: any, b: any) => b.raw - a.raw)
       default: return []
     }
