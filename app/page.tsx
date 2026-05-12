@@ -20,6 +20,45 @@ const GAMES = [
   { key: 'versus', href: '/versus', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', label: 'Versus', sub: 'Higher or Lower · Population', bg: '#C62828', shadow: '#C6282860', emoji: false },
 ]
 
+function SplashDots({ current, color }: { current: number, color: string }) {
+  const SEGMENTS = [
+    { min: 1,  max: 4,   steps: 4,  base: 0 },
+    { min: 5,  max: 9,   steps: 5,  base: 5 },
+    { min: 10, max: 29,  steps: 20, base: 10 },
+    { min: 30, max: 49,  steps: 20, base: 30 },
+    { min: 50, max: 99,  steps: 50, base: 50 },
+    { min: 100, max: 9999, steps: 1, base: 100 },
+  ]
+  const seg = SEGMENTS.find(s => current >= s.min && current <= s.max)
+  if (!seg) return null
+  const progress = current - seg.base
+  const stepsPerDot = seg.steps / 5
+  const daysToNext = seg.max === 9999 ? 0 : seg.max - current + 1
+  return (
+    <div style={{ marginTop: 16 }}>
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 6 }}>
+        {[0,1,2,3,4].map(i => {
+          const filled = progress >= (i + 1) * stepsPerDot || seg.min === 100
+          const partial = !filled && progress > i * stepsPerDot
+          return (
+            <div key={i} style={{
+              width: 16, height: 16, borderRadius: 8,
+              background: filled ? color : partial ? `${color}50` : `${color}20`,
+              border: `2px solid ${filled || partial ? color : `${color}30`}`,
+              boxShadow: filled ? `0 2px 6px ${color}40` : 'none',
+            }} />
+          )
+        })}
+      </div>
+      {daysToNext > 0 && (
+        <div style={{ fontSize: 11, fontWeight: 700, color: `${color}80`, textAlign: 'center' }}>
+          {daysToNext} day{daysToNext !== 1 ? 's' : ''} to next milestone
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function LandingPage() {
   const { profile, loaded, createProfile } = usePlayer()
   const [name, setName] = useState('')
@@ -160,13 +199,13 @@ export default function LandingPage() {
   if (!loaded) return null
 
   const MILESTONES = [
-    { min: 0,   max: 0,   img: 'seed.png',         msg: 'Welcome! Play your first game today.', next: 'Start your streak and come back tomorrow.' },
-    { min: 1,   max: 4,   img: 'seed.png',         msg: 'Your brain is warming up.', next: 'Reach 5 days to start forming a habit.' },
-    { min: 5,   max: 9,   img: 'streak.png',       msg: 'Habit forming. Working memory starts improving.', next: 'Reach 10 days for reaction time gains.' },
-    { min: 10,  max: 29,  img: 'ray.png',          msg: 'Reaction time is improving.', next: 'Reach 30 days for measurable memory gains.' },
-    { min: 30,  max: 49,  img: 'brain-logo.webp',  msg: 'Measurable memory gains. Science backs this.', next: 'Reach 50 days — top 5% of players.' },
-    { min: 50,  max: 99,  img: 'nav-trophy.webp',  msg: 'You are in the top 5% of MemGenius players.', next: 'Reach 100 days — cognitive athlete level.' },
-    { min: 100, max: 9999, img: 'target.png',      msg: 'Cognitive athlete. You are among the best.', next: 'Keep going. There is no ceiling.' },
+    { min: 0,   max: 0,   img: 'seed.png',         color: '#2E7D32', msg: 'Welcome! Play your first game today.', next: 'Start your streak and come back tomorrow.' },
+    { min: 1,   max: 4,   img: 'seed.png',         color: '#2E7D32', msg: 'Your brain is warming up.', next: 'Reach 5 days to start forming a habit.' },
+    { min: 5,   max: 9,   img: 'streak.png',       color: '#E65100', msg: 'Habit forming. Working memory starts improving.', next: 'Reach 10 days for reaction time gains.' },
+    { min: 10,  max: 29,  img: 'ray.png',          color: '#F57F17', msg: 'Reaction time is improving.', next: 'Reach 30 days for measurable memory gains.' },
+    { min: 30,  max: 49,  img: 'brain-logo.webp',  color: '#1565C0', msg: 'Measurable memory gains. Science backs this.', next: 'Reach 50 days — top 5% of players.' },
+    { min: 50,  max: 99,  img: 'nav-trophy.webp',  color: '#6A1B9A', msg: 'You are in the top 5% of MemGenius players.', next: 'Reach 100 days — cognitive athlete level.' },
+    { min: 100, max: 9999, img: 'target.png',      color: '#B71C1C', msg: 'Cognitive athlete. You are among the best.', next: 'Keep going. There is no ceiling.' },
   ]
   const milestone = MILESTONES.find(m => streak.current >= m.min && streak.current <= m.max)
 
@@ -335,33 +374,7 @@ export default function LandingPage() {
           <div style={{ fontSize: 13, fontWeight: 700, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase' }}>day streak</div>
           <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, textAlign: 'center', marginTop: 12 }}>{milestone?.msg}</div>
           <div style={{ fontSize: 13, color: `${BROWN}50`, textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>{milestone?.next}</div>
-          {(() => {
-            const d = getStreakDots(streak.current, milestone?.color || GOLD)
-            if (!d) return null
-            return (
-              <div style={{ marginTop: 16 }}>
-                <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 6 }}>
-                  {[0,1,2,3,4].map(i => {
-                    const filled = d.progress >= (i + 1) * d.stepsPerDot || d.seg.min === 100
-                    const partial = !filled && d.progress > i * d.stepsPerDot
-                    return (
-                      <div key={i} style={{
-                        width: 16, height: 16, borderRadius: 8,
-                        background: filled ? (milestone?.color || GOLD) : partial ? `${milestone?.color || GOLD}50` : `${milestone?.color || GOLD}20`,
-                        border: `2px solid ${filled || partial ? (milestone?.color || GOLD) : `${milestone?.color || GOLD}30`}`,
-                        boxShadow: filled ? `0 2px 6px ${milestone?.color || GOLD}40` : 'none',
-                      }} />
-                    )
-                  })}
-                </div>
-                {d.daysToNext > 0 && (
-                  <div style={{ fontSize: 11, fontWeight: 700, color: `${milestone?.color || GOLD}80`, textAlign: 'center' }}>
-                    {d.daysToNext} day{d.daysToNext !== 1 ? 's' : ''} to next milestone
-                  </div>
-                )}
-              </div>
-            )
-          })()}
+          <SplashDots current={streak.current} color={milestone?.color || GOLD} />
           <div style={{ width: '100%', height: 6, background: `${BROWN}15`, borderRadius: 4, overflow: 'hidden', marginTop: 16 }}>
             <div style={{
               height: '100%', borderRadius: 4,
