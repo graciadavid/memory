@@ -4,7 +4,7 @@ import PrecisionRankingClient from './PrecisionRankingClient'
 export const revalidate = 60
 
 export default async function PrecisionRankingPage() {
-  const [stopData, f1Data] = await Promise.all([
+  const [stopData, f1Data, pendulumData] = await Promise.all([
     supabase.from('precision_scores').select('player_name, difference_ms, created_at')
       .is('game_type', null)
       .order('difference_ms', { ascending: true })
@@ -12,6 +12,11 @@ export default async function PrecisionRankingPage() {
       .limit(500),
     supabase.from('precision_scores').select('player_name, difference_ms, created_at')
       .eq('game_type', 'formula1')
+      .order('difference_ms', { ascending: true })
+      .order('created_at', { ascending: true })
+      .limit(500),
+    supabase.from('precision_scores').select('player_name, difference_ms, created_at')
+      .eq('game_type', 'pendulum')
       .order('difference_ms', { ascending: true })
       .order('created_at', { ascending: true })
       .limit(500),
@@ -46,7 +51,7 @@ export default async function PrecisionRankingPage() {
           <div style={{ background: '#fff', border: '1px solid #4A2C0A15', borderRadius: 10, padding: '6px 12px', fontSize: 12, fontWeight: 800, color: '#4A2C0A60' }}>Back ✕</div>
         </a>
       </div>
-      <PrecisionRankingClient stopScores={getBest(stopData.data || [])} f1Scores={getBest(f1Data.data || [])} />
+      <PrecisionRankingClient stopScores={getBest(stopData.data || [])} f1Scores={getBest(f1Data.data || [])} pendulumScores={getBest(pendulumData.data || [])} />
     </main>
   )
 }

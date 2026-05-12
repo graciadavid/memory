@@ -74,9 +74,9 @@ function RankingList({ scores, myName, isF1 }: { scores: any[], myName: string, 
   )
 }
 
-export default function PrecisionRankingClient({ stopScores, f1Scores }: { stopScores: any[], f1Scores: any[] }) {
+export default function PrecisionRankingClient({ stopScores, f1Scores, pendulumScores }: { stopScores: any[], f1Scores: any[], pendulumScores: any[] }) {
   const [myName, setMyName] = useState('')
-  const [tab, setTab] = useState<'stop' | 'f1'>('stop')
+  const [tab, setTab] = useState<'stop' | 'f1' | 'pendulum'>('stop')
 
   useEffect(() => {
     const stored = localStorage.getItem('memgenius_profile')
@@ -91,6 +91,7 @@ export default function PrecisionRankingClient({ stopScores, f1Scores }: { stopS
         {[
           { key: 'stop', label: 'Stop', img: `${BASE}/precision.png`, color: '#4A148C' },
           { key: 'f1', label: 'Formula 1', img: `${BASE}/f1.png`, color: '#E8002D' },
+          { key: 'pendulum', label: 'Pendulum', img: `${BASE}/pendulum.png`, color: '#4A148C' },
         ].map(t => (
           <button key={t.key} onClick={() => setTab(t.key as any)} style={{
             flex: 1, padding: '10px', borderRadius: 12, border: 'none',
@@ -107,6 +108,7 @@ export default function PrecisionRankingClient({ stopScores, f1Scores }: { stopS
       </div>
       {tab === 'stop' && <RankingList scores={stopScores} myName={myName} isF1={false} />}
       {tab === 'f1' && <RankingList scores={f1Scores} myName={myName} isF1={true} />}
+      {tab === 'pendulum' && <RankingList scores={pendulumScores} myName={myName} isF1={false} />}
     </div>
   )
 }
