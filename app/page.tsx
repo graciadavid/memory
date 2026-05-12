@@ -38,8 +38,8 @@ function SplashDots({ current, color }: { current: number, color: string }) {
     <div style={{ marginTop: 16 }}>
       <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 6 }}>
         {[0,1,2,3,4].map(i => {
-          const filled = progress >= (i + 1) * stepsPerDot || seg.min === 100
-          const partial = !filled && progress > i * stepsPerDot
+          const filled = (i < Math.floor(progress / stepsPerDot)) || seg.min === 100
+          const partial = !filled && progress >= i * stepsPerDot && progress < (i + 1) * stepsPerDot
           return (
             <div key={i} style={{
               width: 16, height: 16, borderRadius: 8,

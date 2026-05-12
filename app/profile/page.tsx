@@ -322,21 +322,21 @@ export default function ProfilePage() {
           return (
             <Link href="/streak" style={{ textDecoration: 'none' }}>
               <div style={{
-                background: `linear-gradient(135deg, ${m?.color}22, ${m?.color}08)`,
-                border: `2px solid ${m?.color}40`,
+                background: 'linear-gradient(135deg, #0D2B5E, #1565C0)',
+                border: '2px solid #1976D2',
                 borderRadius: 24, padding: '20px',
-                boxShadow: `0 4px 20px ${m?.color}20`,
+                boxShadow: '0 8px 32px #0D2B5E60',
               }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 14, gap: 4 }}>
                   <img src={`${BASE}/${m?.img}`} alt="" style={{ width: 64, height: 64, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite' }} />
-                  <div style={{ fontSize: 64, fontWeight: 900, color: m?.color, lineHeight: 1 }}>{profileStreak.current}</div>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: `${m?.color}80`, textTransform: 'uppercase', letterSpacing: 2 }}>day streak</div>
+                  <div style={{ fontSize: 64, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{profileStreak.current}</div>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 2 }}>day streak</div>
                   {profileStreak.longest > profileStreak.current && (
-                    <div style={{ fontSize: 11, color: `${m?.color}40`, fontWeight: 700 }}>Best: {profileStreak.longest}</div>
+                    <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: 700 }}>Best: {profileStreak.longest}</div>
                   )}
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 900, color: m?.color, marginBottom: 4, textAlign: 'center' }}>{m?.msg}</div>
-                <div style={{ fontSize: 12, color: `${m?.color}70`, fontWeight: 700, marginBottom: 12, textAlign: 'center' }}>{m?.next}</div>
+                <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', marginBottom: 4, textAlign: 'center' }}>{m?.msg}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 700, marginBottom: 12, textAlign: 'center' }}>{m?.next}</div>
                 {(() => {
                   const SEGMENTS = [
                     { min: 1,  max: 4,   steps: 4,  base: 0 },
@@ -355,20 +355,20 @@ export default function ProfilePage() {
                     <div style={{ marginTop: 12 }}>
                       <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 6 }}>
                         {[0,1,2,3,4].map(i => {
-                          const filled = progress >= (i + 1) * stepsPerDot || seg.min === 100
-                          const partial = !filled && progress > i * stepsPerDot
+                          const filled = (i < Math.floor(progress / stepsPerDot)) || seg.min === 100
+                          const partial = !filled && progress >= i * stepsPerDot && progress < (i + 1) * stepsPerDot
                           return (
                             <div key={i} style={{
                               width: 18, height: 18, borderRadius: 9,
-                              background: filled ? m?.color : partial ? `${m?.color}25` : 'transparent',
-                              border: `2px solid ${filled || partial ? m?.color : `${m?.color}40`}`,
+                              background: filled ? '#fff' : partial ? 'rgba(255,255,255,0.2)' : 'transparent',
+                              border: `2px solid ${filled || partial ? '#fff' : 'rgba(255,255,255,0.3)'}`,
                               boxShadow: filled ? `0 2px 6px ${m?.color}40` : 'none',
                             }} />
                           )
                         })}
                       </div>
                       {daysToNext > 0 && (
-                        <div style={{ fontSize: 11, fontWeight: 700, color: `${m?.color}80`, textAlign: 'center' }}>
+                        <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.6)', textAlign: 'center' }}>
                           {daysToNext} day{daysToNext !== 1 ? 's' : ''} to next milestone
                         </div>
                       )}
