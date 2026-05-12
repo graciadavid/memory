@@ -73,7 +73,6 @@ export default function LandingPage() {
   const [confirmPin, setConfirmPin] = useState('')
   const [needsNewPin, setNeedsNewPin] = useState(false)
   const [showStreak, setShowStreak] = useState(false)
-  const [splashReady, setSplashReady] = useState(false)
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -359,7 +358,7 @@ export default function LandingPage() {
           )}
           {error && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700, marginTop: 6, textAlign: 'center' }}>{error}</div>}
         </div>
-      ) : !splashReady ? null : showStreak ? (
+      ) : showStreak ? (
         /* STREAK SCREEN */
         <div style={{
           flex: 1, display: 'flex', flexDirection: 'column',
