@@ -81,8 +81,8 @@ export default function VersusRankingClient({ popScores, areaScores }: { popScor
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 8, padding: '0 16px 12px', flexShrink: 0 }}>
         {[
-          { key: 'population', label: 'Population' },
-          { key: 'area', label: 'Area km²' },
+          { key: 'population', label: 'Population', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png' },
+          { key: 'area', label: 'Area km²', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png' },
         ].map(t => (
           <button key={t.key} onClick={() => setTab(t.key as any)} style={{
             flex: 1, padding: '10px', borderRadius: 12, border: 'none',

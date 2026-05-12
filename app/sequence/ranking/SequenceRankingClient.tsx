@@ -17,7 +17,7 @@ export default function SequenceRankingClient({ scores }: { scores: { name: stri
   const myScore = myIndex >= 0 ? scores[myIndex] : null
 
   const share = async (position: number, level: number) => {
-    const text = `🎵 I'm #${position} in MemGenius Sequence with level ${level}!\nCan you beat me? 👉 https://memgenius.com/sequence`
+    const text = `🎵 I'm #${position} in MemGenius Simon Says with level ${level}!\nCan you beat me? 👉 https://memgenius.com/sequence`
     if (navigator.share) await navigator.share({ text })
     else { await navigator.clipboard.writeText(text); alert('Copied!') }
   }
