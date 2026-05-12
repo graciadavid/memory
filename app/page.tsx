@@ -74,15 +74,8 @@ export default function LandingPage() {
   const [pin, setPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
   const [needsNewPin, setNeedsNewPin] = useState(false)
-  const [showStreak, setShowStreak] = useState(() => {
-    if (typeof window === 'undefined') return false
-    const stored = localStorage.getItem('memgenius_profile')
-    if (!stored) return false
-    try {
-      const p = JSON.parse(stored)
-      return !!p?.name
-    } catch { return false }
-  })
+  const [showStreak, setShowStreak] = useState(false)
+  const [showLoading, setShowLoading] = useState(false)
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -116,10 +109,16 @@ export default function LandingPage() {
     if (!profile?.name) return
     if (!_splashShownForSession) {
       _splashShownForSession = true
-      setShowStreak(true)
-      setTimeout(() => setShowStreak(false), 3500)
+      setShowLoading(true)
+      getStreak(profile.name).then(s => {
+        setStreak(s)
+        setTimeout(() => {
+          setShowLoading(false)
+          setShowStreak(true)
+          setTimeout(() => setShowStreak(false), 3500)
+        }, 1000)
+      })
     }
-    getStreak(profile.name).then(s => setStreak(s))
   }, [profile?.name])
 
   const handleSave = async () => {
@@ -364,6 +363,21 @@ export default function LandingPage() {
             </>
           )}
           {error && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700, marginTop: 6, textAlign: 'center' }}>{error}</div>}
+        </div>
+      ) : showLoading ? (
+        <div style={{
+          flex: 1, display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          width: '100%', padding: '0 24px', gap: 16,
+        }}>
+          <img src={LOGO} alt="MemGenius" style={{ height: 80, objectFit: 'contain' }} />
+          <div style={{ width: '100%', height: 6, background: `${BROWN}15`, borderRadius: 4, overflow: 'hidden' }}>
+            <div style={{
+              height: '100%', borderRadius: 4,
+              background: '#2E7D32',
+              animation: 'progressBar 1s linear forwards',
+            }} />
+          </div>
         </div>
       ) : showStreak ? (
         /* STREAK SCREEN */
