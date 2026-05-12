@@ -43,7 +43,7 @@ function SplashDots({ current, color }: { current: number, color: string }) {
           return (
             <div key={i} style={{
               width: 16, height: 16, borderRadius: 8,
-              background: filled ? color : 'transparent',
+              background: filled ? color : partial ? `${color}25` : 'transparent',
               border: `2px solid ${filled || partial ? color : `${color}40`}`,
               boxShadow: filled ? `0 2px 6px ${color}40` : 'none',
             }} />
@@ -364,6 +364,7 @@ export default function LandingPage() {
           flex: 1, display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
           width: '100%', gap: 8, padding: '0 24px',
+          textAlign: 'center',
         }}>
           <img
             src={`${BASE}/${milestone?.img}`}

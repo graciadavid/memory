@@ -327,22 +327,16 @@ export default function ProfilePage() {
                 borderRadius: 24, padding: '20px',
                 boxShadow: `0 4px 20px ${m?.color}20`,
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 14 }}>
-                  <img src={`${BASE}/${m?.img}`} alt="" style={{ width: 64, height: 64, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite', flexShrink: 0 }} />
-                  <div>
-                    <div style={{ fontSize: 64, fontWeight: 900, color: m?.color, lineHeight: 1 }}>{profileStreak.current}</div>
-                    <div style={{ fontSize: 12, fontWeight: 800, color: `${m?.color}80`, textTransform: 'uppercase', letterSpacing: 2 }}>day streak</div>
-                  </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 14, gap: 4 }}>
+                  <img src={`${BASE}/${m?.img}`} alt="" style={{ width: 64, height: 64, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite' }} />
+                  <div style={{ fontSize: 64, fontWeight: 900, color: m?.color, lineHeight: 1 }}>{profileStreak.current}</div>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: `${m?.color}80`, textTransform: 'uppercase', letterSpacing: 2 }}>day streak</div>
                   {profileStreak.longest > profileStreak.current && (
-                    <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
-                      <div style={{ fontSize: 22, fontWeight: 900, color: `${m?.color}50` }}>{profileStreak.longest}</div>
-                      <div style={{ fontSize: 9, color: `${m?.color}40`, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>best</div>
-                    </div>
+                    <div style={{ fontSize: 11, color: `${m?.color}40`, fontWeight: 700 }}>Best: {profileStreak.longest}</div>
                   )}
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 900, color: m?.color, marginBottom: 4 }}>{m?.msg}</div>
-                <div style={{ fontSize: 12, color: `${m?.color}70`, fontWeight: 700, marginBottom: 12 }}>{m?.next}</div>
-                <div style={{ fontSize: 11, fontWeight: 800, color: m?.color, opacity: 0.6, textAlign: 'right' }}>Learn more about your streak →</div>
+                <div style={{ fontSize: 14, fontWeight: 900, color: m?.color, marginBottom: 4, textAlign: 'center' }}>{m?.msg}</div>
+                <div style={{ fontSize: 12, color: `${m?.color}70`, fontWeight: 700, marginBottom: 12, textAlign: 'center' }}>{m?.next}</div>
                 {(() => {
                   const SEGMENTS = [
                     { min: 1,  max: 4,   steps: 4,  base: 0 },
@@ -366,7 +360,7 @@ export default function ProfilePage() {
                           return (
                             <div key={i} style={{
                               width: 18, height: 18, borderRadius: 9,
-                              background: filled ? m?.color : 'transparent',
+                              background: filled ? m?.color : partial ? `${m?.color}25` : 'transparent',
                               border: `2px solid ${filled || partial ? m?.color : `${m?.color}40`}`,
                               boxShadow: filled ? `0 2px 6px ${m?.color}40` : 'none',
                             }} />
@@ -381,44 +375,7 @@ export default function ProfilePage() {
                     </div>
                   )
                 })()}
-                {(() => {
-                  const SEGMENTS = [
-                    { min: 1,  max: 4,   steps: 4,  base: 0 },
-                    { min: 5,  max: 9,   steps: 5,  base: 5 },
-                    { min: 10, max: 29,  steps: 20, base: 10 },
-                    { min: 30, max: 49,  steps: 20, base: 30 },
-                    { min: 50, max: 99,  steps: 50, base: 50 },
-                    { min: 100, max: 9999, steps: 1, base: 100 },
-                  ]
-                  const seg = SEGMENTS.find(s => profileStreak.current >= s.min && profileStreak.current <= s.max)
-                  if (!seg) return null
-                  const progress = profileStreak.current - seg.base
-                  const stepsPerDot = seg.steps / 5
-                  const daysToNext = seg.max === 9999 ? 0 : seg.max - profileStreak.current + 1
-                  return (
-                    <div style={{ marginTop: 12 }}>
-                      <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 6 }}>
-                        {[0,1,2,3,4].map(i => {
-                          const filled = progress >= (i + 1) * stepsPerDot || seg.min === 100
-                          const partial = !filled && progress > i * stepsPerDot
-                          return (
-                            <div key={i} style={{
-                              width: 18, height: 18, borderRadius: 9,
-                              background: filled ? m?.color : 'transparent',
-                              border: `2px solid ${filled || partial ? m?.color : `${m?.color}40`}`,
-                              boxShadow: filled ? `0 2px 6px ${m?.color}40` : 'none',
-                            }} />
-                          )
-                        })}
-                      </div>
-                      {daysToNext > 0 && (
-                        <div style={{ fontSize: 11, fontWeight: 700, color: `${m?.color}80`, textAlign: 'center' }}>
-                          {daysToNext} day{daysToNext !== 1 ? 's' : ''} to next milestone
-                        </div>
-                      )}
-                    </div>
-                  )
-                })()}
+
               </div>
             </Link>
           )
