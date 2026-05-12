@@ -72,7 +72,7 @@ export default function LandingPage() {
   const [pin, setPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
   const [needsNewPin, setNeedsNewPin] = useState(false)
-  const [showStreak, setShowStreak] = useState(false)
+  const [showStreak, setShowStreak] = useState(true)
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -394,10 +394,12 @@ export default function LandingPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 2 }}>
             <div style={{ fontSize: 20, fontWeight: 900, color: BROWN }}>Hey, {profile.name}!</div>
             {streak.current > 0 && (
+              <a href="/profile" style={{ textDecoration: 'none' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#E8F5E9', borderRadius: 10, padding: '4px 10px', border: '1.5px solid #2E7D32' }}>
                 <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 20, height: 20, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite' }} />
                 <span style={{ fontSize: 13, fontWeight: 900, color: '#2E7D32' }}>{streak.current} day{streak.current !== 1 ? 's' : ''}</span>
               </div>
+              </a>
             )}
           </div>
 

@@ -236,9 +236,9 @@ export default function ProfilePage() {
       {/* HEADER */}
       <div style={{ padding: '16px 16px 0' }}>
       <div style={{
-        background: 'linear-gradient(135deg, #C8960C, #F5D062, #B8860B)',
+        background: 'linear-gradient(135deg, #0A1628, #0D2B5E, #1565C0)',
         padding: '18px 24px', borderRadius: 24,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+        boxShadow: '0 8px 32px rgba(13,43,94,0.5)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
           <div style={{ position: 'relative' }}>

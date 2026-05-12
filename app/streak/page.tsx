@@ -137,7 +137,6 @@ export default function StreakPage() {
                   </div>
                 ))}
               </div>
-              <StreakDots current={level.min} color={level.color} />
             </div>
           ))}
         </div>
