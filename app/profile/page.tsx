@@ -284,21 +284,47 @@ export default function ProfilePage() {
 
         {/* Password editor */}
         {editingPassword && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
-            {passwordSaved && <div style={{ fontSize: 13, color: '#81C784', fontWeight: 800, textAlign: 'center' }}>✓ Password saved!</div>}
-            <div style={{ position: 'relative' }}>
-              <input type={showPwd ? 'text' : 'password'} placeholder={hasPassword ? 'New password' : 'Create password'} value={newPassword}
-                onChange={e => { setNewPassword(e.target.value); setPasswordError('') }}
-                style={{ width: '100%', padding: '12px 44px 12px 14px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 14, fontWeight: 800, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }} />
-              <button onClick={() => setShowPwd(!showPwd)} style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 16 }}>{showPwd ? '🙈' : '👁'}</button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
+            {passwordSaved && <div style={{ fontSize: 13, color: '#81C784', fontWeight: 800, textAlign: 'center' }}>✓ PIN saved!</div>}
+
+            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', textAlign: 'center', letterSpacing: 1, textTransform: 'uppercase' }}>New PIN</div>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}
+              onClick={() => (document.getElementById('profile-pin-new') as HTMLInputElement)?.focus()}>
+              {[0,1,2,3].map(i => (
+                <div key={i} style={{
+                  width: 52, height: 64, borderRadius: 14,
+                  border: `2px solid ${newPassword.length > i ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.2)'}`,
+                  background: 'rgba(255,255,255,0.1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 28, fontWeight: 900, color: '#fff',
+                }}>{newPassword[i] ? '•' : ''}</div>
+              ))}
             </div>
-            <input type={showPwd ? 'text' : 'password'} placeholder="Confirm password" value={confirmPassword}
-              onChange={e => { setConfirmPassword(e.target.value); setPasswordError('') }}
-              style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 14, fontWeight: 800, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }} />
-            {passwordError && <div style={{ fontSize: 11, color: '#FFB3B3', fontWeight: 700 }}>{passwordError}</div>}
+            <input id="profile-pin-new" type="tel" inputMode="numeric" pattern="[0-9]*" value={newPassword} maxLength={4}
+              onChange={e => { setNewPassword(e.target.value.replace(/\D/g,'').slice(0,4)); setPasswordError('') }}
+              style={{ opacity: 0, position: 'absolute', width: 1, height: 1 }} />
+
+            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', textAlign: 'center', letterSpacing: 1, textTransform: 'uppercase' }}>Confirm PIN</div>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}
+              onClick={() => (document.getElementById('profile-pin-confirm') as HTMLInputElement)?.focus()}>
+              {[0,1,2,3].map(i => (
+                <div key={i} style={{
+                  width: 52, height: 64, borderRadius: 14,
+                  border: `2px solid ${confirmPassword.length > i ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.2)'}`,
+                  background: 'rgba(255,255,255,0.1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 28, fontWeight: 900, color: '#fff',
+                }}>{confirmPassword[i] ? '•' : ''}</div>
+              ))}
+            </div>
+            <input id="profile-pin-confirm" type="tel" inputMode="numeric" pattern="[0-9]*" value={confirmPassword} maxLength={4}
+              onChange={e => { setConfirmPassword(e.target.value.replace(/\D/g,'').slice(0,4)); setPasswordError('') }}
+              style={{ opacity: 0, position: 'absolute', width: 1, height: 1 }} />
+
+            {passwordError && <div style={{ fontSize: 11, color: '#FFB3B3', fontWeight: 700, textAlign: 'center' }}>{passwordError}</div>}
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={savePassword} disabled={passwordSaving} style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: GOLD, color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>{passwordSaving ? '...' : 'Save password'}</button>
-              <button onClick={() => { setEditingPassword(false); setPasswordError('') }} style={{ padding: '12px 16px', borderRadius: 12, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 14, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
+              <button onClick={savePassword} disabled={passwordSaving || newPassword.length < 4 || confirmPassword.length < 4} style={{ flex: 1, padding: '12px', borderRadius: 12, border: 'none', background: newPassword.length === 4 && confirmPassword.length === 4 ? GOLD : 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>{passwordSaving ? '...' : 'Save PIN'}</button>
+              <button onClick={() => { setEditingPassword(false); setPasswordError(''); setNewPassword(''); setConfirmPassword('') }} style={{ padding: '12px 16px', borderRadius: 12, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 14, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
             </div>
           </div>
         )}

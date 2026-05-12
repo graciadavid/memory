@@ -51,7 +51,7 @@ function SplashDots({ current, color }: { current: number, color: string }) {
         })}
       </div>
       {daysToNext > 0 && (
-        <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.7)', textAlign: 'center' }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: BROWN, textAlign: 'center' }}>
           {daysToNext} day{daysToNext !== 1 ? 's' : ''} to next milestone
         </div>
       )}
@@ -72,7 +72,7 @@ export default function LandingPage() {
   const [pin, setPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
   const [needsNewPin, setNeedsNewPin] = useState(false)
-  const [showStreak, setShowStreak] = useState(true)
+  const [showStreak, setShowStreak] = useState(false)
 
   useEffect(() => {
     const fetchRecords = async () => {
