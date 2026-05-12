@@ -444,17 +444,23 @@ export default function ProfilePage() {
               const entry = liveRanks[d.key]
               const hasResult = entry?.rank != null
               return (
-                <div key={d.key} style={{ flex: 1, textAlign: 'center', background: `${d.color}08`, border: `1px solid ${d.color}20`, borderRadius: 12, padding: '8px 4px' }}>
-                  <div style={{ fontSize: 8, fontWeight: 900, color: d.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{d.label}</div>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20` }}>
-                    {loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}
-                  </div>
-                  <div style={{ fontSize: 9, fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20` }}>
-                    {loadingRanks ? '' : hasResult ? fmt(entry.time!) : ''}
+                <div key={d.key} style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 10 }}>
+                  <div style={{ background: `linear-gradient(135deg, ${d.color}, ${d.color}CC)`, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{d.label}</div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: 36, fontWeight: 900, color: '#fff', lineHeight: 1 }}>
+                        {loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}
+                      </div>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>
+                        {loadingRanks ? '' : hasResult ? fmt(entry.time!) : 'World'}
+                      </div>
+                    </div>
                   </div>
                   {hasResult && (
                     <button onClick={() => shareScore(`🧠 I'm #${entry.rank} in ${d.label} Memory!\nhttps://memgenius.com/memory`)}
-                      style={{ marginTop: 4, padding: '3px 8px', borderRadius: 6, border: 'none', background: d.color, color: '#fff', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+                      style={{ width: '100%', padding: '12px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
+                      Share my record
+                    </button>
                   )}
                 </div>
               )
@@ -462,7 +468,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Other games grid */}
+        {/* Other games */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           {[
             { key: 'digits', label: 'Digits', color: '#1565C0', icon: '/icons/digits.webp', score: digitsRank.level, rank: digitsRank.rank, unit: 'Level', share: `🔢 Level ${digitsRank.level} in Digits! #${digitsRank.rank}
@@ -523,7 +529,7 @@ https://memgenius.com/flags` },
                   {hasResult && (
                     <button onClick={() => shareScore(v.share)}
                       style={{ width: '100%', padding: '12px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-                      Share my record 📲
+                      Share my record
                     </button>
                   )}
                 </div>
@@ -559,7 +565,7 @@ https://memgenius.com/flags` },
                   {hasResult && (
                     <button onClick={() => shareScore(v.share)}
                       style={{ width: '100%', padding: '12px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-                      Share my record 📲
+                      Share my record
                     </button>
                   )}
                 </div>
