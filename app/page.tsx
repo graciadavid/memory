@@ -59,6 +59,8 @@ function SplashDots({ current, color }: { current: number, color: string }) {
   )
 }
 
+let _splashShownForSession = false
+
 export default function LandingPage() {
   const { profile, loaded, createProfile } = usePlayer()
   const [name, setName] = useState('')
@@ -104,15 +106,12 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (!profile?.name) return
-    import('@/lib/streak').then(({ updateStreak, getStreak }) => {
-      updateStreak(profile.name).then(() => {
-        getStreak(profile.name).then(s => {
-          setStreak(s)
-          setShowStreak(true)
-          setTimeout(() => setShowStreak(false), 3500)
-        })
-      })
-    })
+    if (!_splashShownForSession) {
+      _splashShownForSession = true
+      setShowStreak(true)
+      setTimeout(() => setShowStreak(false), 3500)
+    }
+    getStreak(profile.name).then(s => setStreak(s))
   }, [profile?.name])
 
   const handleSave = async () => {
