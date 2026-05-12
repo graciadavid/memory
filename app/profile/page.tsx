@@ -402,6 +402,12 @@ export default function ProfilePage() {
                   )
                 })()}
 
+                <div style={{ textAlign: 'center', marginTop: 16 }}>
+                  <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.4)', borderRadius: 20, padding: '8px 20px', fontSize: 12, fontWeight: 900, color: '#fff', letterSpacing: 0.5 }}>
+                    Learn more about your streak →
+                  </div>
+                </div>
+
               </div>
             </Link>
           )
