@@ -52,18 +52,13 @@ export default async function HallOfFamePage() {
     getBestMemory(hardIds),
   ])
 
-  const { data: precData } = await supabase
-    .from('precision_scores')
-    .select('player_name, difference_ms, created_at')
-    .order('difference_ms', { ascending: true })
-    .limit(1)
-
-  const { data: versusData } = await supabase
-    .from('higher_lower_scores')
-    .select('player_name, level, created_at')
-    .eq('category', 'population')
-    .order('level', { ascending: false })
-    .limit(1)
+  const [precData, f1Data, pendulumData, popData, areaData] = await Promise.all([
+    supabase.from('precision_scores').select('player_name, difference_ms').is('game_type', null).order('difference_ms', { ascending: true }).limit(1),
+    supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'formula1').order('difference_ms', { ascending: true }).limit(1),
+    supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'pendulum').order('difference_ms', { ascending: true }).limit(1),
+    supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').order('level', { ascending: false }).limit(1),
+    supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'area').order('level', { ascending: false }).limit(1),
+  ])
 
   const champions = {
     memoryEasy: memEasy,
@@ -72,8 +67,11 @@ export default async function HallOfFamePage() {
     digits: digitsData?.[0] || null,
     sequence: seqData?.[0] || null,
     flags: flagData?.[0] || null,
-    precision: precData?.[0] || null,
-    versus: versusData?.[0] || null,
+    precisionStop: precData.data?.[0] || null,
+    precisionF1: f1Data.data?.[0] || null,
+    precisionPendulum: pendulumData.data?.[0] || null,
+    versusPopulation: popData.data?.[0] || null,
+    versusArea: areaData.data?.[0] || null,
   }
 
   return <HallOfFameClient champions={champions} />
