@@ -509,49 +509,59 @@ https://memgenius.com/flags` },
             ].map(v => {
               const hasResult = v.data.diff !== null
               return (
-                <div key={v.label} style={{ flex: 1, textAlign: 'center', background: `${v.color}08`, border: `1px solid ${v.color}20`, borderRadius: 12, padding: '8px 4px' }}>
-                  <div style={{ fontSize: 8, fontWeight: 900, color: v.color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{v.label}</div>
-                  <div style={{ fontSize: 16, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20` }}>
-                    {loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}
+                <div key={v.label} style={{ background: '#fff', borderRadius: 20, padding: '16px 20px', boxShadow: `0 2px 12px ${BROWN}08`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 5, background: v.color, flexShrink: 0 }} />
+                    <div>
+                      <div style={{ fontSize: 15, fontWeight: 900, color: v.color }}>{v.label}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: `${BROWN}50` }}>{hasResult ? v.fmt(v.data.diff!) : '—'}</div>
+                    </div>
                   </div>
-                  <div style={{ fontSize: 9, fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20` }}>
-                    {hasResult ? v.fmt(v.data.diff!) : ''}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: 24, fontWeight: 900, color: hasResult ? GOLD : `${BROWN}20` }}>{loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}</div>
+                      <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+                    </div>
+                    {hasResult && (
+                      <button onClick={() => shareScore(v.share)}
+                        style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: v.color, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+                    )}
                   </div>
-                  {hasResult && (
-                    <button onClick={() => shareScore(v.share)}
-                      style={{ marginTop: 4, padding: '3px 8px', borderRadius: 6, border: 'none', background: v.color, color: '#fff', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-                  )}
                 </div>
               )
             })}
-          </div>
-        </div>
 
         {/* Versus */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '14px 16px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png" alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-            <div style={{ fontSize: 13, fontWeight: 900, color: '#C62828' }}>Versus</div>
+        <div style={{ background: '#fff', borderRadius: 20, padding: '20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png" alt="" style={{ width: 32, height: 32, objectFit: 'contain' }} />
+            <div style={{ fontSize: 16, fontWeight: 900, color: '#C62828' }}>Versus</div>
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {[
               { label: 'Population', data: versusPopRank, share: `🌍 I got ${versusPopRank.level} correct in Versus Population! #${versusPopRank.rank}\nhttps://memgenius.com/versus/population` },
               { label: 'Area km²', data: versusAreaRank, share: `🗺️ I got ${versusAreaRank.level} correct in Versus Area! #${versusAreaRank.rank}\nhttps://memgenius.com/versus/area` },
             ].map(v => {
               const hasResult = v.data.rank != null
               return (
-                <div key={v.label} style={{ flex: 1, textAlign: 'center', background: '#C6282808', border: '1px solid #C6282820', borderRadius: 12, padding: '8px 4px' }}>
-                  <div style={{ fontSize: 8, fontWeight: 900, color: '#C62828', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>{v.label}</div>
-                  <div style={{ fontSize: 18, fontWeight: 900, color: hasResult ? BROWN : `${BROWN}20` }}>
-                    {loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}
+                <div key={v.label} style={{ background: '#C6282808', border: '1.5px solid #C6282820', borderRadius: 16, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 5, background: '#C62828' }} />
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 800, color: '#C62828' }}>{v.label}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: `${BROWN}50` }}>{loadingRanks ? '' : hasResult ? `${v.data.level} correct` : '—'}</div>
+                    </div>
                   </div>
-                  <div style={{ fontSize: 9, fontWeight: 700, color: hasResult ? GOLD : `${BROWN}20` }}>
-                    {loadingRanks ? '' : hasResult ? `${v.data.level} correct` : ''}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: 24, fontWeight: 900, color: hasResult ? GOLD : `${BROWN}20` }}>{loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}</div>
+                      <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+                    </div>
+                    {hasResult && (
+                      <button onClick={() => shareScore(v.share)}
+                        style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#C62828', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
+                    )}
                   </div>
-                  {hasResult && (
-                    <button onClick={() => shareScore(v.share)}
-                      style={{ marginTop: 4, padding: '3px 8px', borderRadius: 6, border: 'none', background: '#C62828', color: '#fff', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-                  )}
                 </div>
               )
             })}
