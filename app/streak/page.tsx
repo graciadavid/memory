@@ -44,6 +44,56 @@ const LEVELS = [
   },
 ]
 
+function StreakDots({ current, color }: { current: number, color: string }) {
+  const SEGMENTS = [
+    { min: 1,  max: 4,   steps: 4,  base: 0 },
+    { min: 5,  max: 9,   steps: 5,  base: 5 },
+    { min: 10, max: 29,  steps: 20, base: 10 },
+    { min: 30, max: 49,  steps: 20, base: 30 },
+    { min: 50, max: 99,  steps: 50, base: 50 },
+    { min: 100, max: 9999, steps: 1, base: 100 },
+  ]
+
+  const seg = SEGMENTS.find(s => current >= s.min && current <= s.max)
+  if (!seg) return null
+
+  const progress = current - seg.base
+  const stepsPerDot = seg.steps / 5
+  const filledDots = seg.min === 100 ? 5 : Math.min(5, Math.floor(progress / stepsPerDot) + (progress % stepsPerDot > 0 ? 1 : 0))
+  const daysToNext = seg.max === 9999 ? 0 : seg.max - current + 1
+
+  return (
+    <div style={{ marginTop: 12 }}>
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 8 }}>
+        {[0,1,2,3,4].map(i => {
+          const dotProgress = Math.min(1, Math.max(0, (progress - i * stepsPerDot) / stepsPerDot))
+          const filled = progress >= (i + 1) * stepsPerDot || seg.min === 100
+          const partial = !filled && dotProgress > 0
+          return (
+            <div key={i} style={{
+              width: 20, height: 20, borderRadius: 10,
+              background: filled ? color : partial ? `${color}50` : `${color}15`,
+              border: `2px solid ${filled || partial ? color : `${color}30`}`,
+              transition: 'all 0.3s ease',
+              boxShadow: filled ? `0 2px 8px ${color}40` : 'none',
+            }} />
+          )
+        })}
+      </div>
+      {daysToNext > 0 && (
+        <div style={{ fontSize: 11, fontWeight: 700, color: `${color}70`, textAlign: 'center' }}>
+          {daysToNext} day{daysToNext !== 1 ? 's' : ''} to next milestone
+        </div>
+      )}
+      {daysToNext === 0 && (
+        <div style={{ fontSize: 11, fontWeight: 700, color, textAlign: 'center' }}>
+          🎯 Maximum level reached
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function StreakPage() {
   return (
     <main style={{
@@ -87,6 +137,7 @@ export default function StreakPage() {
                   </div>
                 ))}
               </div>
+              <StreakDots current={level.min} color={level.color} />
             </div>
           ))}
         </div>

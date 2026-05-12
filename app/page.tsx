@@ -170,6 +170,23 @@ export default function LandingPage() {
   ]
   const milestone = MILESTONES.find(m => streak.current >= m.min && streak.current <= m.max)
 
+  const getStreakDots = (current: number, color: string) => {
+    const SEGMENTS = [
+      { min: 1,  max: 4,   steps: 4,  base: 0 },
+      { min: 5,  max: 9,   steps: 5,  base: 5 },
+      { min: 10, max: 29,  steps: 20, base: 10 },
+      { min: 30, max: 49,  steps: 20, base: 30 },
+      { min: 50, max: 99,  steps: 50, base: 50 },
+      { min: 100, max: 9999, steps: 1, base: 100 },
+    ]
+    const seg = SEGMENTS.find(s => current >= s.min && current <= s.max)
+    if (!seg) return null
+    const progress = current - seg.base
+    const stepsPerDot = seg.steps / 5
+    const daysToNext = seg.max === 9999 ? 0 : seg.max - current + 1
+    return { seg, progress, stepsPerDot, daysToNext }
+  }
+
   return (
     <>
     <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } } @keyframes progressBar { from { width: 0% } to { width: 100% } }`}</style>
@@ -318,7 +335,34 @@ export default function LandingPage() {
           <div style={{ fontSize: 13, fontWeight: 700, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase' }}>day streak</div>
           <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, textAlign: 'center', marginTop: 12 }}>{milestone?.msg}</div>
           <div style={{ fontSize: 13, color: `${BROWN}50`, textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>{milestone?.next}</div>
-          <div style={{ width: '100%', height: 6, background: `${BROWN}15`, borderRadius: 4, overflow: 'hidden', marginTop: 24 }}>
+          {(() => {
+            const d = getStreakDots(streak.current, milestone?.color || GOLD)
+            if (!d) return null
+            return (
+              <div style={{ marginTop: 16 }}>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 6 }}>
+                  {[0,1,2,3,4].map(i => {
+                    const filled = d.progress >= (i + 1) * d.stepsPerDot || d.seg.min === 100
+                    const partial = !filled && d.progress > i * d.stepsPerDot
+                    return (
+                      <div key={i} style={{
+                        width: 16, height: 16, borderRadius: 8,
+                        background: filled ? (milestone?.color || GOLD) : partial ? `${milestone?.color || GOLD}50` : `${milestone?.color || GOLD}20`,
+                        border: `2px solid ${filled || partial ? (milestone?.color || GOLD) : `${milestone?.color || GOLD}30`}`,
+                        boxShadow: filled ? `0 2px 6px ${milestone?.color || GOLD}40` : 'none',
+                      }} />
+                    )
+                  })}
+                </div>
+                {d.daysToNext > 0 && (
+                  <div style={{ fontSize: 11, fontWeight: 700, color: `${milestone?.color || GOLD}80`, textAlign: 'center' }}>
+                    {d.daysToNext} day{d.daysToNext !== 1 ? 's' : ''} to next milestone
+                  </div>
+                )}
+              </div>
+            )
+          })()}
+          <div style={{ width: '100%', height: 6, background: `${BROWN}15`, borderRadius: 4, overflow: 'hidden', marginTop: 16 }}>
             <div style={{
               height: '100%', borderRadius: 4,
               background: GOLD,
