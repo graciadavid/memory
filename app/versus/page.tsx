@@ -23,7 +23,7 @@ export default function VersusPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
         <img src={`${BASE}/higuer.png`} alt="" style={{ height: 56, objectFit: 'contain' }} />
         <div>
-          <div style={{ fontSize: 28, fontWeight: 900, color: COLOR, letterSpacing: -0.5 }}>Versus</div>
+          <div style={{ fontSize: 28, fontWeight: 900, color: COLOR, letterSpacing: -0.5 }}>Higher or Lower</div>
           <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>Higher or Lower</div>
         </div>
       </div>

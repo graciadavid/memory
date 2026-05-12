@@ -11,7 +11,7 @@ const CREAM = '#FAF7F2'
 const GAME_CONFIG: Record<string, { label: string, icon: string, color: string, url: string, unit: string }> = {
   memory: { label: 'Memory', icon: '/icons/memory.webp', color: BROWN, url: '/memory', unit: 'time' },
   digits: { label: 'Digits', icon: '/icons/digits.webp', color: '#1565C0', url: '/digits', unit: 'digits' },
-  sequence: { label: 'Sequence', icon: '/icons/sequence.webp', color: '#6A1B9A', url: '/sequence', unit: 'level' },
+  sequence: { label: 'Simon Says', icon: '/icons/sequence.webp', color: '#6A1B9A', url: '/sequence', unit: 'level' },
   flags: { label: 'Flags', icon: '/icons/flags.webp', color: '#00796B', url: '/flags', unit: 'flags' },
 }
 

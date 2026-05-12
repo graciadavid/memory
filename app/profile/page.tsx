@@ -464,7 +464,7 @@ export default function ProfilePage() {
 
         {[
           { key: 'digits', label: 'Digits', color: '#1565C0', icon: '/icons/digits.webp', score: digitsRank.level, rank: digitsRank.rank, unit: 'Level', share: `🔢 Level ${digitsRank.level} in Digits! #${digitsRank.rank}\nhttps://memgenius.com/digits` },
-          { key: 'sequence', label: 'Sequence', color: '#6A1B9A', icon: '/icons/sequence.webp', score: seqRank.level, rank: seqRank.rank, unit: 'Level', share: `🎵 Level ${seqRank.level} in Sequence! #${seqRank.rank}\nhttps://memgenius.com/sequence` },
+          { key: 'sequence', label: 'Simon Says', color: '#6A1B9A', icon: '/icons/sequence.webp', score: seqRank.level, rank: seqRank.rank, unit: 'Level', share: `🎵 Level ${seqRank.level} in Simon Says! #${seqRank.rank}\nhttps://memgenius.com/sequence` },
           { key: 'flags', label: 'Flags', color: '#00796B', icon: '/icons/flags.webp', score: flagsRank.level, rank: flagsRank.rank, unit: 'Flags', share: `🚩 ${flagsRank.level} flags! #${flagsRank.rank}\nhttps://memgenius.com/flags` },
         ].map(g => (
           <div key={g.key} style={{ borderRadius: 20, overflow: 'hidden' }}>

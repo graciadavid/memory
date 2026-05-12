@@ -9,7 +9,7 @@ const CREAM = '#FAF7F2'
 const TABS = [
   { key: 'memory', label: 'Memory', color: BROWN },
   { key: 'digits', label: 'Digits', color: '#1565C0' },
-  { key: 'sequence', label: 'Sequence', color: '#6A1B9A' },
+  { key: 'sequence', label: 'Simon Says', color: '#6A1B9A' },
   { key: 'flags', label: 'Flags', color: '#00796B' },
   { key: 'stop', label: 'Stop', color: '#4A148C' },
   { key: 'f1', label: 'F1', color: '#E8002D' },
