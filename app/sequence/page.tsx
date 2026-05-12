@@ -257,7 +257,7 @@ export default function SequencePage() {
         <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', width: '100%', gap: 12 }}>
           <img src={LOGO} alt="MemGenius" style={{ height: 56, objectFit: 'contain', animation: 'floatLogo 3s ease-in-out infinite', flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: 26, fontWeight: 900, color: '#6A1B9A', letterSpacing: -0.5, lineHeight: 1 }}>Sequence</div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: '#6A1B9A', letterSpacing: -0.5, lineHeight: 1 }}>Simon Says</div>
             {phase === 'intro' && <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Repeat the pattern</div>}
           </div>
         </div>
