@@ -509,24 +509,23 @@ https://memgenius.com/flags` },
             ].map(v => {
               const hasResult = v.data.diff !== null
               return (
-                <div key={v.label} style={{ background: '#fff', borderRadius: 20, padding: '16px 20px', boxShadow: `0 2px 12px ${BROWN}08`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 10, height: 10, borderRadius: 5, background: v.color, flexShrink: 0 }} />
+                <div key={v.label} style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 10 }}>
+                  <div style={{ background: `linear-gradient(135deg, ${v.color}, ${v.color}CC)`, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 900, color: v.color }}>{v.label}</div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: `${BROWN}50` }}>{hasResult ? v.fmt(v.data.diff!) : '—'}</div>
+                      <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{v.label}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{hasResult ? v.fmt(v.data.diff!) : '—'}</div>
                     </div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: 24, fontWeight: 900, color: hasResult ? GOLD : `${BROWN}20` }}>{loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}</div>
-                      <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+                      <div style={{ fontSize: 36, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}</div>
+                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
                     </div>
-                    {hasResult && (
-                      <button onClick={() => shareScore(v.share)}
-                        style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: v.color, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-                    )}
                   </div>
+                  {hasResult && (
+                    <button onClick={() => shareScore(v.share)}
+                      style={{ width: '100%', padding: '12px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
+                      Share my record 📲
+                    </button>
+                  )}
                 </div>
               )
             })}
@@ -546,24 +545,23 @@ https://memgenius.com/flags` },
             ].map(v => {
               const hasResult = v.data.rank != null
               return (
-                <div key={v.label} style={{ background: '#C6282808', border: '1.5px solid #C6282820', borderRadius: 16, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <div style={{ width: 10, height: 10, borderRadius: 5, background: '#C62828' }} />
+                <div key={v.label} style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 10 }}>
+                  <div style={{ background: 'linear-gradient(135deg, #C62828, #E53935)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 800, color: '#C62828' }}>{v.label}</div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: `${BROWN}50` }}>{loadingRanks ? '' : hasResult ? `${v.data.level} correct` : '—'}</div>
+                      <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{v.label}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{loadingRanks ? '' : hasResult ? `${v.data.level} correct` : '—'}</div>
                     </div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: 24, fontWeight: 900, color: hasResult ? GOLD : `${BROWN}20` }}>{loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}</div>
-                      <div style={{ fontSize: 10, color: `${BROWN}40`, fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+                      <div style={{ fontSize: 36, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}</div>
+                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
                     </div>
-                    {hasResult && (
-                      <button onClick={() => shareScore(v.share)}
-                        style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#C62828', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-                    )}
                   </div>
+                  {hasResult && (
+                    <button onClick={() => shareScore(v.share)}
+                      style={{ width: '100%', padding: '12px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
+                      Share my record 📲
+                    </button>
+                  )}
                 </div>
               )
             })}
