@@ -43,8 +43,8 @@ function SplashDots({ current, color }: { current: number, color: string }) {
           return (
             <div key={i} style={{
               width: 16, height: 16, borderRadius: 8,
-              background: filled ? color : partial ? `${color}50` : `${color}20`,
-              border: `2px solid ${filled || partial ? color : `${color}30`}`,
+              background: filled ? color : 'transparent',
+              border: `2px solid ${filled || partial ? color : `${color}40`}`,
               boxShadow: filled ? `0 2px 6px ${color}40` : 'none',
             }} />
           )
@@ -378,8 +378,9 @@ export default function LandingPage() {
           <div style={{ width: '100%', height: 6, background: `${BROWN}15`, borderRadius: 4, overflow: 'hidden', marginTop: 16 }}>
             <div style={{
               height: '100%', borderRadius: 4,
-              background: GOLD,
+              background: '#2E7D32',
               animation: 'progressBar 3.5s linear forwards',
+            background: '#2E7D32',
             }} />
           </div>
         </div>

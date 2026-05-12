@@ -72,8 +72,8 @@ function StreakDots({ current, color }: { current: number, color: string }) {
           return (
             <div key={i} style={{
               width: 20, height: 20, borderRadius: 10,
-              background: filled ? color : partial ? `${color}50` : `${color}15`,
-              border: `2px solid ${filled || partial ? color : `${color}30`}`,
+              background: filled ? color : 'transparent',
+              border: `2px solid ${filled || partial ? color : `${color}40`}`,
               transition: 'all 0.3s ease',
               boxShadow: filled ? `0 2px 8px ${color}40` : 'none',
             }} />
