@@ -14,6 +14,7 @@ const TOPICS = [
 
 export default function PrecisionPage() {
   return (
+    <>
     <main style={{
       minHeight: '100dvh',
       background: `linear-gradient(180deg, #EDE7F6 0%, ${CREAM} 100%)`,
@@ -76,5 +77,6 @@ export default function PrecisionPage() {
       </div>
     </section>
 
+    </>
   )
 }
