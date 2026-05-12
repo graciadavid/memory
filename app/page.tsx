@@ -107,8 +107,9 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (!profile?.name) return
-    if (!_splashShownForSession) {
-      _splashShownForSession = true
+    const seen = sessionStorage.getItem('splash_done')
+    if (!seen) {
+      sessionStorage.setItem('splash_done', '1')
       setShowLoading(true)
       getStreak(profile.name).then(s => {
         setStreak(s)
@@ -118,6 +119,8 @@ export default function LandingPage() {
           setTimeout(() => setShowStreak(false), 3500)
         }, 1000)
       })
+    } else {
+      getStreak(profile.name).then(s => setStreak(s))
     }
   }, [profile?.name])
 
