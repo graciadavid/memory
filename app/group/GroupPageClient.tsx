@@ -11,6 +11,10 @@ const TABS = [
   { key: 'digits', label: 'Digits', color: '#1565C0' },
   { key: 'sequence', label: 'Sequence', color: '#6A1B9A' },
   { key: 'flags', label: 'Flags', color: '#00796B' },
+  { key: 'stop', label: 'Stop', color: '#4A148C' },
+  { key: 'f1', label: 'F1', color: '#E8002D' },
+  { key: 'population', label: 'Population', color: '#C62828' },
+  { key: 'area', label: 'Area km²', color: '#B71C1C' },
 ]
 
 function fmt(ms: number) {
@@ -20,7 +24,7 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, bestMemory, bestDigits, bestSeq, bestFlags }: any) {
+export default function GroupPageClient({ group, members, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestVersusPop, bestVersusArea }: any) {
   const [tab, setTab] = useState('flags')
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
@@ -74,6 +78,26 @@ export default function GroupPageClient({ group, members, bestMemory, bestDigits
         return memberNames
           .filter((n: string) => bestFlags[n])
           .map((n: string) => ({ name: n, score: `${bestFlags[n]} flags`, raw: bestFlags[n] }))
+          .sort((a: any, b: any) => b.raw - a.raw)
+      case 'stop':
+        return memberNames
+          .filter((n: string) => bestPrecision?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${(bestPrecision[n]/1000).toFixed(3)}s`, raw: bestPrecision[n] }))
+          .sort((a: any, b: any) => a.raw - b.raw)
+      case 'f1':
+        return memberNames
+          .filter((n: string) => bestF1?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestF1[n]}ms`, raw: bestF1[n] }))
+          .sort((a: any, b: any) => a.raw - b.raw)
+      case 'population':
+        return memberNames
+          .filter((n: string) => bestVersusPop?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestVersusPop[n]} correct`, raw: bestVersusPop[n] }))
+          .sort((a: any, b: any) => b.raw - a.raw)
+      case 'area':
+        return memberNames
+          .filter((n: string) => bestVersusArea?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestVersusArea[n]} correct`, raw: bestVersusArea[n] }))
           .sort((a: any, b: any) => b.raw - a.raw)
       default: return []
     }
@@ -135,7 +159,7 @@ export default function GroupPageClient({ group, members, bestMemory, bestDigits
 
         {/* Ranking tabs */}
         <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Ranking</div>
-        <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 6, marginBottom: 12 }}>
           {TABS.map(t => (
             <button key={t.key} onClick={() => setTab(t.key)} style={{
               flex: 1, padding: '8px 4px', borderRadius: 10, border: 'none',
