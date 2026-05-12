@@ -123,6 +123,13 @@ export default function ProfilePage() {
       setF1Rank({ diff: myDiff, rank: Object.values(best).filter(d => d < myDiff).length + 1 })
     })
 
+    // Fetch Pendulum
+    supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'pendulum').order('difference_ms', { ascending: true }).limit(500).then(({ data }) => {
+      const best: Record<string, number> = {}
+      const myDiff = best[profile.name]
+      setPendulumRank({ diff: myDiff, rank: Object.values(best).filter(d => d < myDiff).length + 1 })
+    })
+
     // Fetch versus by category
     supabase.from('higher_lower_scores').select('player_name, level, category').order('level', { ascending: false }).limit(1000).then(({ data }) => {
       if (!data) return
