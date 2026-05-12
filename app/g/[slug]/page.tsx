@@ -6,7 +6,6 @@ export const revalidate = 0
 export default async function GroupPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
 
-  // Try by slug first, then by id
   let { data: group } = await supabase.from('groups').select('*').eq('slug', slug).single()
   if (!group) {
     const res = await supabase.from('groups').select('*').eq('id', slug).single()
@@ -21,13 +20,15 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
 
   const memberNames = members?.map((m: any) => m.player_name) || []
 
-  const [memScores, digScores, seqScores, flagScores, precScores, vsScores] = await Promise.all([
+  const [memScores, digScores, seqScores, flagScores, precScores, f1Scores, vsPopScores, vsAreaScores] = await Promise.all([
     supabase.from('scores').select('player_name, time_ms').in('player_name', memberNames).order('time_ms', { ascending: true }),
     supabase.from('number_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('sequence_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('flag_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
-    supabase.from('precision_scores').select('player_name, difference_ms').in('player_name', memberNames).order('difference_ms', { ascending: true }),
+    supabase.from('precision_scores').select('player_name, difference_ms').is('game_type', null).in('player_name', memberNames).order('difference_ms', { ascending: true }),
+    supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'formula1').in('player_name', memberNames).order('difference_ms', { ascending: true }),
     supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').in('player_name', memberNames).order('level', { ascending: false }),
+    supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'area').in('player_name', memberNames).order('level', { ascending: false }),
   ])
 
   const bestMemory: Record<string, number> = {}
@@ -42,8 +43,14 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
   const bestPrecision: Record<string, number> = {}
   precScores.data?.forEach((s: any) => { if (!bestPrecision[s.player_name] || s.difference_ms < bestPrecision[s.player_name]) bestPrecision[s.player_name] = s.difference_ms })
 
-  const bestVersus: Record<string, number> = {}
-  vsScores.data?.forEach((s: any) => { if (!bestVersus[s.player_name] || s.level > bestVersus[s.player_name]) bestVersus[s.player_name] = s.level })
+  const bestF1: Record<string, number> = {}
+  f1Scores.data?.forEach((s: any) => { if (!bestF1[s.player_name] || s.difference_ms < bestF1[s.player_name]) bestF1[s.player_name] = s.difference_ms })
+
+  const bestVersusPop: Record<string, number> = {}
+  vsPopScores.data?.forEach((s: any) => { if (!bestVersusPop[s.player_name] || s.level > bestVersusPop[s.player_name]) bestVersusPop[s.player_name] = s.level })
+
+  const bestVersusArea: Record<string, number> = {}
+  vsAreaScores.data?.forEach((s: any) => { if (!bestVersusArea[s.player_name] || s.level > bestVersusArea[s.player_name]) bestVersusArea[s.player_name] = s.level })
 
   return (
     <GroupPageClient
@@ -55,7 +62,9 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
       bestSeq={bestLevel(seqScores.data || [])}
       bestFlags={bestLevel(flagScores.data || [])}
       bestPrecision={bestPrecision}
-      bestVersus={bestVersus}
+      bestF1={bestF1}
+      bestVersusPop={bestVersusPop}
+      bestVersusArea={bestVersusArea}
     />
   )
 }
