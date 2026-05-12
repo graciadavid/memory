@@ -9,7 +9,7 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 const TOPICS = [
   { href: '/precision/stopwatch', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', label: 'Stop', sub: 'Stop exactly at 5 seconds' },
   { href: '/precision/formula1', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/f1.png', label: 'Formula 1', sub: 'React when the lights go out' },
-  { href: '/precision/pendulum', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.webp', label: 'Pendulum', sub: 'Stop it at the center' },
+  { href: '/precision/pendulum', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.png', label: 'Pendulum', sub: 'Stop it at the center' },
 ]
 
 export default function PrecisionPage() {
