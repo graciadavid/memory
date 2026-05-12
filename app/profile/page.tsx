@@ -530,6 +530,8 @@ https://memgenius.com/flags` },
                 </div>
               )
             })}
+          </div>
+        </div>
 
         {/* Versus */}
         <div style={{ background: '#fff', borderRadius: 20, padding: '20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
