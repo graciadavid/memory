@@ -491,76 +491,34 @@ export default function ProfilePage() {
         ))}
 
                 {/* Precision */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '14px 16px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png" alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-            <div style={{ fontSize: 13, fontWeight: 900, color: '#4A148C' }}>Precision</div>
-          </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {[
-              { label: 'Stop', data: precRank, fmt: (d: number) => `${(d/1000).toFixed(3)}s`, color: '#4A148C', share: `⏱ I'm #${precRank.rank} in Precision Stop!\nhttps://memgenius.com/precision/stopwatch` },
-              { label: 'F1', data: f1Rank, fmt: (d: number) => `${d}ms`, color: '#E8002D', share: `🏎️ I'm #${f1Rank.rank} in F1 with ${f1Rank.diff}ms!\nhttps://memgenius.com/precision/formula1` },
-            ].map(v => {
-              const hasResult = v.data.diff !== null
-              return (
-                <div key={v.label} style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 10 }}>
-                  <div style={{ background: `linear-gradient(135deg, ${v.color}, ${v.color}CC)`, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div>
-                      <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{v.label}</div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{hasResult ? v.fmt(v.data.diff!) : '—'}</div>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: 36, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}</div>
-                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
-                    </div>
-                  </div>
-                  {hasResult && (
-                    <button onClick={() => shareScore(v.share)}
-                      style={{ width: '100%', padding: '12px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-                      Share my record
-                    </button>
-                  )}
+        {[
+          { label: 'Precision Stop', color: '#4A148C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', score: precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s off` : null, rank: precRank.rank, share: `⏱ I'm #${precRank.rank} in Precision Stop!\nhttps://memgenius.com/precision/stopwatch` },
+          { label: 'F1 Reaction', color: '#E8002D', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', score: f1Rank.diff !== null ? `${f1Rank.diff}ms` : null, rank: f1Rank.rank, share: `🏎️ I'm #${f1Rank.rank} in F1 with ${f1Rank.diff}ms!\nhttps://memgenius.com/precision/formula1` },
+          { label: 'Population', color: '#C62828', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', score: versusPopRank.rank !== null ? `${versusPopRank.level} correct` : null, rank: versusPopRank.rank, share: `🌍 I got ${versusPopRank.level} correct in Versus Population! #${versusPopRank.rank}\nhttps://memgenius.com/versus/population` },
+          { label: 'Area km²', color: '#B71C1C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', score: versusAreaRank.rank !== null ? `${versusAreaRank.level} correct` : null, rank: versusAreaRank.rank, share: `🗺️ I got ${versusAreaRank.level} correct in Versus Area! #${versusAreaRank.rank}\nhttps://memgenius.com/versus/area` },
+        ].map(g => (
+          <div key={g.label} style={{ borderRadius: 20, overflow: 'hidden' }}>
+            <div style={{ background: `linear-gradient(135deg, ${g.color}, ${g.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <img src={g.icon} alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
+                <div>
+                  <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{g.label}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{loadingRanks ? '...' : g.score ?? 'No record yet'}</div>
                 </div>
-              )
-            })}
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : g.rank ? `#${g.rank}` : '—'}</div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+              </div>
+            </div>
+            {g.score && (
+              <button onClick={() => shareScore(g.share)}
+                style={{ width: '100%', padding: '13px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
+                Share my record
+              </button>
+            )}
           </div>
-        </div>
-
-        {/* Versus */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png" alt="" style={{ width: 32, height: 32, objectFit: 'contain' }} />
-            <div style={{ fontSize: 16, fontWeight: 900, color: '#C62828' }}>Versus</div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {[
-              { label: 'Population', data: versusPopRank, share: `🌍 I got ${versusPopRank.level} correct in Versus Population! #${versusPopRank.rank}\nhttps://memgenius.com/versus/population` },
-              { label: 'Area km²', data: versusAreaRank, share: `🗺️ I got ${versusAreaRank.level} correct in Versus Area! #${versusAreaRank.rank}\nhttps://memgenius.com/versus/area` },
-            ].map(v => {
-              const hasResult = v.data.rank != null
-              return (
-                <div key={v.label} style={{ borderRadius: 16, overflow: 'hidden', marginBottom: 10 }}>
-                  <div style={{ background: 'linear-gradient(135deg, #C62828, #E53935)', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div>
-                      <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{v.label}</div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{loadingRanks ? '' : hasResult ? `${v.data.level} correct` : '—'}</div>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: 36, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : hasResult ? `#${v.data.rank}` : '—'}</div>
-                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
-                    </div>
-                  </div>
-                  {hasResult && (
-                    <button onClick={() => shareScore(v.share)}
-                      style={{ width: '100%', padding: '12px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-                      Share my record
-                    </button>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
+        ))}
 
       </div>
       </div>
