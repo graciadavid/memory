@@ -73,6 +73,7 @@ export default function LandingPage() {
   const [confirmPin, setConfirmPin] = useState('')
   const [needsNewPin, setNeedsNewPin] = useState(false)
   const [showStreak, setShowStreak] = useState(false)
+  const [streakLoading, setStreakLoading] = useState(true)
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -228,7 +229,7 @@ export default function LandingPage() {
 
   return (
     <>
-    <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } } @keyframes progressBar { from { width: 0% } to { width: 100% } }`}</style>
+    <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } } @keyframes spin { to { transform: rotate(360deg) } } @keyframes progressBar { from { width: 0% } to { width: 100% } }`}</style>
     <main style={{
       height: '100dvh',
       background: `radial-gradient(ellipse at 50% 0%, #fff8ee 0%, ${CREAM} 40%, #EDE5D8 100%)`,
@@ -357,6 +358,10 @@ export default function LandingPage() {
             </>
           )}
           {error && <div style={{ fontSize: 11, color: '#B71C1C', fontWeight: 700, marginTop: 6, textAlign: 'center' }}>{error}</div>}
+        </div>
+      ) : streakLoading ? (
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 40, height: 40, border: `3px solid ${BROWN}20`, borderTop: `3px solid ${BROWN}`, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         </div>
       ) : showStreak ? (
         /* STREAK SCREEN */
