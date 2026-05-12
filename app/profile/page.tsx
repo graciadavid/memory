@@ -322,10 +322,10 @@ export default function ProfilePage() {
           return (
             <Link href="/streak" style={{ textDecoration: 'none' }}>
               <div style={{
-                background: 'linear-gradient(135deg, #0D2B5E, #1565C0)',
-                border: '2px solid #1976D2',
+                background: 'linear-gradient(135deg, #1B5E20, #2E7D32)',
+                border: '2px solid #388E3C',
                 borderRadius: 24, padding: '20px',
-                boxShadow: '0 8px 32px #0D2B5E60',
+                boxShadow: '0 8px 32px #1B5E2060',
               }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 14, gap: 4 }}>
                   <img src={`${BASE}/${m?.img}`} alt="" style={{ width: 64, height: 64, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite' }} />
@@ -355,8 +355,8 @@ export default function ProfilePage() {
                     <div style={{ marginTop: 12 }}>
                       <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 6 }}>
                         {[0,1,2,3,4].map(i => {
-                          const filled = (i < Math.floor(progress / stepsPerDot)) || seg.min === 100
-                          const partial = !filled && progress >= i * stepsPerDot && progress < (i + 1) * stepsPerDot
+                          const filled = i < progress || seg.min === 100
+                          const partial = false
                           return (
                             <div key={i} style={{
                               width: 18, height: 18, borderRadius: 9,
