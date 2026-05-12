@@ -19,7 +19,14 @@ export default function CreateGroupBanner({ playerName }: { playerName: string }
       .then(({ data }) => setHasGroup(!!(data && data.length > 0)))
   }, [playerName])
 
-  if (hasGroup) return null
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 1000)
+    return () => clearTimeout(t)
+  }, [])
+
+  if (hasGroup || !visible) return null
 
   return (
     <a href="/create-group" style={{ textDecoration: 'none', width: '100%', display: 'block' }}>

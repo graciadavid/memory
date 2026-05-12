@@ -9,7 +9,6 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 const LOGO = `${BASE}/logomemgenius.webp`
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
-let _streakShown = false
 const CREAM = '#FAF7F2'
 
 const GAMES = [
