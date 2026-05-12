@@ -74,7 +74,15 @@ export default function LandingPage() {
   const [pin, setPin] = useState('')
   const [confirmPin, setConfirmPin] = useState('')
   const [needsNewPin, setNeedsNewPin] = useState(false)
-  const [showStreak, setShowStreak] = useState(false)
+  const [showStreak, setShowStreak] = useState(() => {
+    if (typeof window === 'undefined') return false
+    const stored = localStorage.getItem('memgenius_profile')
+    if (!stored) return false
+    try {
+      const p = JSON.parse(stored)
+      return !!p?.name
+    } catch { return false }
+  })
 
   useEffect(() => {
     const fetchRecords = async () => {
