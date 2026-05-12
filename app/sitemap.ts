@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://memgenius.com/precision', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: 'https://memgenius.com/precision/stopwatch', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: 'https://memgenius.com/precision/formula1', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: 'https://memgenius.com/precision/pendulum', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
 
     // Versus
     { url: 'https://memgenius.com/versus', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },

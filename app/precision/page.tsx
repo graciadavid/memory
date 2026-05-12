@@ -49,5 +49,32 @@ export default function PrecisionPage() {
         ))}
       </div>
     </main>
+
+    <section style={{
+      maxWidth: 430, margin: '0 auto',
+      padding: '48px 24px 120px',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      background: '#FAF7F2',
+    }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
+        Precision — Timing & Reaction Games
+      </h2>
+      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
+        Precision is a collection of three timing challenges that test different aspects of your temporal awareness. Stop the clock at exactly 5 seconds, react to F1 starting lights, or stop a swinging pendulum at its center. Each game measures your performance in milliseconds.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {[
+          { q: 'What games are in Precision?', a: 'Three games: Stop (stop a timer at exactly 5 seconds), F1 Reaction (react when lights go out), and Pendulum (stop a swinging pendulum at center).' },
+          { q: 'What does Precision train?', a: 'Each game trains a different skill — time estimation, reaction speed, and rhythmic timing. Together they give a complete picture of your temporal awareness.' },
+          { q: 'Are Precision games free?', a: 'Yes, all three games are completely free with no login required. Scores are submitted to world rankings automatically.' },
+        ].map((item, i) => (
+          <details key={i} style={{ background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A15', padding: '14px 18px' }}>
+            <summary style={{ fontSize: 14, fontWeight: 800, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none' }}>{item.q}</summary>
+            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
   )
 }

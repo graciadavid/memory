@@ -14,7 +14,7 @@ export default function AboutPage() {
       <h1 style={{ fontSize: 26, fontWeight: 900, marginBottom: 24 }}>About MemGenius</h1>
       <img src={`${BASE}/logomemgenius.webp`} alt="MemGenius" style={{ height: 80, objectFit: 'contain', marginBottom: 24, display: 'block' }} />
       {[
-        { title: 'What is MemGenius?', text: 'MemGenius is a free daily brain training platform with four games: Memory, Digits, Sequence and Flags. All games feature world rankings so you can compete globally.' },
+        { title: 'What is MemGenius?', text: 'MemGenius is a free daily brain training platform with 9 games: Memory, Digits, Simon Says, Flags, Precision Stop, F1 Reaction, Pendulum, Higher or Lower Population and Higher or Lower Area. All games feature world rankings so you can compete globally.' },
         { title: 'Our mission', text: 'We believe brain training should be fun, free and accessible to everyone. MemGenius gives you a quick mental workout in under 5 minutes a day.' },
         { title: 'Who made this?', text: 'MemGenius was created by a small independent team passionate about brain training and good design.' },
         { title: 'Is it really free?', text: 'Yes. Completely free, no login required, no ads, no in-app purchases.' },
@@ -25,13 +25,6 @@ export default function AboutPage() {
           <p style={{ fontSize: 13, lineHeight: 1.8, color: `${BROWN}75`, margin: 0 }}>{s.text}</p>
         </div>
       ))}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 15, fontWeight: 900, marginBottom: 6 }}>Cookie Policy</div>
-        <p style={{ fontSize: 13, lineHeight: 1.8, color: `${BROWN}75`, margin: 0 }}>
-          MemGenius uses only essential local storage to save your game profile and preferences on your device. We do not use tracking cookies or third-party advertising cookies. If we introduce advertising in the future, we will update this policy and request your consent where required by law.
-        </p>
-      </div>
-
       <div style={{ marginBottom: 24 }}>
         <div style={{ fontSize: 15, fontWeight: 900, marginBottom: 6 }}>Cookie Policy</div>
         <p style={{ fontSize: 13, lineHeight: 1.8, color: `${BROWN}75`, margin: 0 }}>

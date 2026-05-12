@@ -13,6 +13,11 @@ const GAME_CONFIG: Record<string, { label: string, icon: string, color: string, 
   digits: { label: 'Digits', icon: '/icons/digits.webp', color: '#1565C0', url: '/digits', unit: 'digits' },
   sequence: { label: 'Simon Says', icon: '/icons/sequence.webp', color: '#6A1B9A', url: '/sequence', unit: 'level' },
   flags: { label: 'Flags', icon: '/icons/flags.webp', color: '#00796B', url: '/flags', unit: 'flags' },
+  precision: { label: 'Precision Stop', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', color: '#4A148C', url: '/precision/stopwatch', unit: 'ms' },
+  formula1: { label: 'F1 Reaction', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/f1.png', color: '#E8002D', url: '/precision/formula1', unit: 'ms' },
+  pendulum: { label: 'Pendulum', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.png', color: '#4A148C', url: '/precision/pendulum', unit: 'ms' },
+  'versus-population': { label: 'Higher or Lower Pop', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', color: '#C62828', url: '/versus/population', unit: 'correct' },
+  'versus-area': { label: 'Higher or Lower Area', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', color: '#B71C1C', url: '/versus/area', unit: 'correct' },
 }
 
 function fmt(ms: number) {
