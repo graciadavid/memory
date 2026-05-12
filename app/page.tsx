@@ -380,7 +380,6 @@ export default function LandingPage() {
               height: '100%', borderRadius: 4,
               background: '#2E7D32',
               animation: 'progressBar 3.5s linear forwards',
-            background: '#2E7D32',
             }} />
           </div>
         </div>
