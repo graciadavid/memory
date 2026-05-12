@@ -13,6 +13,7 @@ const TABS = [
   { key: 'flags', label: 'Flags', color: '#00796B' },
   { key: 'stop', label: 'Stop', color: '#4A148C' },
   { key: 'f1', label: 'F1', color: '#E8002D' },
+  { key: 'pendulum', label: 'Pendulum', color: '#4A148C' },
   { key: 'population', label: 'Population', color: '#C62828' },
   { key: 'area', label: 'Area km²', color: '#B71C1C' },
 ]
@@ -24,7 +25,7 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestVersusPop, bestVersusArea }: any) {
+export default function GroupPageClient({ group, members, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea }: any) {
   const [tab, setTab] = useState('flags')
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
@@ -88,6 +89,11 @@ export default function GroupPageClient({ group, members, bestMemory, bestDigits
         return memberNames
           .filter((n: string) => bestF1?.[n] !== undefined)
           .map((n: string) => ({ name: n, score: `${bestF1[n]}ms`, raw: bestF1[n] }))
+          .sort((a: any, b: any) => a.raw - b.raw)
+      case 'pendulum':
+        return memberNames
+          .filter((n: string) => bestPendulum?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestPendulum?.[n]}ms`, raw: bestPendulum?.[n] }))
           .sort((a: any, b: any) => a.raw - b.raw)
       case 'population':
         return memberNames
