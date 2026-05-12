@@ -8,10 +8,10 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 const GAMES = [
   { key: 'memory', href: '/ranking/memory', icon: `${BASE}/memory.webp`, label: 'Memory', bg: '#4A2C0A', shadow: '#4A2C0A60', emoji: false },
   { key: 'digits', href: '/digits/ranking', icon: `${BASE}/digits.webp`, label: 'Digits', bg: '#1565C0', shadow: '#1565C060', emoji: false },
-  { key: 'sequence', href: '/sequence/ranking', icon: `${BASE}/sequence.webp`, label: 'Sequence', bg: '#6A1B9A', shadow: '#6A1B9A60', emoji: false },
+  { key: 'sequence', href: '/sequence/ranking', icon: `${BASE}/sequence.webp`, label: 'Simon Says', bg: '#6A1B9A', shadow: '#6A1B9A60', emoji: false },
   { key: 'flags', href: '/flags/ranking', icon: `${BASE}/flags.webp`, label: 'Flags', bg: '#00796B', shadow: '#00796B60', emoji: false },
   { key: 'precision', href: '/precision/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', label: 'Precision', bg: '#4A148C', shadow: '#4A148C60', emoji: false },
-  { key: 'versus', href: '/versus/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', label: 'Versus', bg: '#C62828', shadow: '#C6282860', emoji: false },
+  { key: 'versus', href: '/versus/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', label: 'Higher or Lower', bg: '#C62828', shadow: '#C6282860', emoji: false },
 ]
 
 export default function RankingPage() {
@@ -93,7 +93,7 @@ export default function RankingPage() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {[
           { q: 'How does the world ranking work?', a: 'After each game your score is automatically submitted to the global leaderboard. No login or account required — just play and your result appears instantly.' },
-          { q: 'Which games have a world ranking?', a: 'All games have their own leaderboard — Memory, Digits, Sequence, Flags, Precision Stop, F1 Reaction, Versus Area, and Versus Population.' },
+          { q: 'Which games have a world ranking?', a: 'All games have their own leaderboard — Memory, Digits, Simon Says, Flags, Precision Stop, F1 Reaction, Higher or Lower Area, and Higher or Lower Population.' },
           { q: 'Can I see my rank during the game?', a: 'Yes. Your world ranking position is shown on the game over screen immediately after each session.' },
           { q: 'Is the ranking updated in real time?', a: 'Yes. Scores are submitted instantly and the leaderboard reflects the latest results from all players worldwide.' },
           { q: 'Do I need an account to appear on the ranking?', a: 'No account needed. Just enter a player name the first time you play and your scores are tracked automatically across sessions.' },
