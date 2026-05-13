@@ -16,8 +16,9 @@ function askNotifications() {
   if (typeof window === 'undefined') return
   if (localStorage.getItem('notif_asked')) return
   localStorage.setItem('notif_asked', '1')
-  if (window.OneSignalDeferred) {
-    window.OneSignalDeferred.push(function(OneSignal: any) {
+  const w = window as any
+  if (w.OneSignalDeferred) {
+    w.OneSignalDeferred.push(function(OneSignal: any) {
       OneSignal.Slidedown.promptPush()
     })
   }
