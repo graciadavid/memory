@@ -12,6 +12,17 @@ const ITEMS = [
   { href: '/profile', img: `${BASE}/nav-profile.webp`, label: 'Profile' },
 ]
 
+function askNotifications() {
+  if (typeof window === 'undefined') return
+  if (localStorage.getItem('notif_asked')) return
+  localStorage.setItem('notif_asked', '1')
+  if (window.OneSignalDeferred) {
+    window.OneSignalDeferred.push(function(OneSignal: any) {
+      OneSignal.Slidedown.promptPush()
+    })
+  }
+}
+
 export default function BottomNav() {
   const path = usePathname()
   const [hasProfile] = useState(() => {
@@ -37,7 +48,7 @@ export default function BottomNav() {
       {ITEMS.map(item => {
         const isActive = path === item.href
         return (
-          <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
+          <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }} onClick={item.href === '/' ? askNotifications : undefined}>
             <div style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
             }}>
