@@ -54,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <link rel="manifest" href="/manifest.json" />
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724686954428374" crossOrigin="anonymous"></script>
       <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-      <script dangerouslySetInnerHTML={{ __html: `window.OneSignalDeferred = window.OneSignalDeferred || []; window.OneSignalDeferred.push(async function(OneSignal) { await OneSignal.init({ appId: 'e0b94021-a1f5-466f-a5bb-4802608ea5d0', notifyButton: { enable: false }, promptOptions: { slidedown: { prompts: [{ type: 'push', autoPrompt: false, text: { actionMessage: 'Get daily brain training reminders. Never miss your streak.', acceptButton: 'Allow', cancelButton: 'No thanks' }, delay: { pageViews: 2, timeDelay: 30 } }] } } }); }); ` }} />
+      <script dangerouslySetInnerHTML={{ __html: `window.OneSignalDeferred = window.OneSignalDeferred || []; window.OneSignalDeferred.push(async function(OneSignal) { await OneSignal.init({ appId: 'e0b94021-a1f5-466f-a5bb-4802608ea5d0' }); }); ` }} />
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
