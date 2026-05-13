@@ -54,6 +54,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://memgenius.com/how-to-play', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
     { url: 'https://memgenius.com/blog', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
     { url: 'https://memgenius.com/blog/brain-training-games-for-classrooms', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/blog/how-to-train-your-brain-daily', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
     { url: 'https://memgenius.com/teachers', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
     { url: 'https://memgenius.com/about', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
     { url: 'https://memgenius.com/terms', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
