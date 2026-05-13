@@ -63,12 +63,7 @@ export default function TeachersPage() {
 
         {/* CTAs */}
         <div style={{ display: 'flex', gap: 12, marginBottom: 48, flexWrap: 'wrap' }}>
-          <Link href="/memory" style={{ textDecoration: 'none' }}>
-            <div style={{ background: BROWN, borderRadius: 16, padding: '14px 24px', boxShadow: `0 6px 0 ${BROWN}60`, cursor: 'pointer' }}>
-              <div style={{ fontSize: 14, fontWeight: 900, color: '#fff' }}>Try a game</div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>Play as a student</div>
-            </div>
-          </Link>
+
           <Link href="/groups" style={{ textDecoration: 'none' }}>
             <div style={{ background: GREEN, borderRadius: 16, padding: '14px 24px', boxShadow: `0 6px 0 #1B5E2060`, cursor: 'pointer' }}>
               <div style={{ fontSize: 14, fontWeight: 900, color: '#fff' }}>Create a class group</div>
@@ -94,7 +89,7 @@ export default function TeachersPage() {
         </div>
 
         {/* Games */}
-        <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>All 9 games</div>
+        <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>The games</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 56 }}>
           {GAMES.map((g, i) => (
             <Link key={i} href={g.href} style={{ textDecoration: 'none' }}>
