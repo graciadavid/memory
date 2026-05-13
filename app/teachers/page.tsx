@@ -61,7 +61,7 @@ export default function TeachersPage() {
         <div style={{ fontSize: 13, fontWeight: 900, color: BROWN, marginBottom: 12, letterSpacing: 1, textTransform: 'uppercase' }}>Why teachers love it</div>
         {[
           { icon: '📱', text: 'Mobile-first — works instantly on any phone or tablet' },
-          { icon: '🆓', text: 'Completely free, forever. No accounts, no ads, no paywalls' },
+          { icon: '🆓', text: 'Completely free, forever. No login required.' },
           { icon: '🏆', text: 'Live class rankings — students compete in real time' },
           { icon: '⚡', text: 'One link to share — your whole class joins in seconds' },
           { icon: '🧠', text: 'Every game trains a different cognitive skill' },
