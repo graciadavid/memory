@@ -41,7 +41,7 @@ export default function TeachersPage() {
       minHeight: '100dvh',
       background: `linear-gradient(180deg, #E8F5E9 0%, ${CREAM} 40%)`,
       fontFamily: 'var(--font-nunito), sans-serif',
-      maxWidth: 430, margin: '0 auto',
+      maxWidth: 860, margin: '0 auto',
       padding: '32px 20px 120px',
       color: BROWN,
     }}>
