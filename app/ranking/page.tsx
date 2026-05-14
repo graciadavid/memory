@@ -1,122 +1,115 @@
+'use client'
 import Link from 'next/link'
+import { useState } from 'react'
 
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
-const GAMES = [
-  { key: 'memory', href: '/ranking/memory', icon: `${BASE}/memory.webp`, label: 'Memory', bg: '#4A2C0A', shadow: '#4A2C0A60', emoji: false },
-  { key: 'digits', href: '/digits/ranking', icon: `${BASE}/digits.webp`, label: 'Digits', bg: '#1565C0', shadow: '#1565C060', emoji: false },
-  { key: 'sequence', href: '/sequence/ranking', icon: `${BASE}/sequence.webp`, label: 'Simon Says', bg: '#6A1B9A', shadow: '#6A1B9A60', emoji: false },
-  { key: 'flags', href: '/flags/ranking', icon: `${BASE}/flags.webp`, label: 'Flags', bg: '#00796B', shadow: '#00796B60', emoji: false },
-  { key: 'precision', href: '/precision/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', label: 'Precision', bg: '#4A148C', shadow: '#4A148C60', emoji: false },
-  { key: 'versus', href: '/versus/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', label: 'Higher or Lower', bg: '#C62828', shadow: '#C6282860', emoji: false },
+const CATEGORIES = [
+  {
+    key: 'memory',
+    label: 'Memory',
+    color: '#E91E63',
+    games: [
+      { key: 'memory', href: '/ranking/memory', icon: '/icons/memory.webp', label: 'Memory', bg: '#2E7D32' },
+      { key: 'digits', href: '/digits/ranking', icon: '/icons/digits.webp', label: 'Digits', bg: '#1976D2' },
+      { key: 'simon', href: '/sequence/ranking', icon: '/icons/sequence.webp', label: 'Simon Says', bg: '#FF6F00' },
+    ]
+  },
+  {
+    key: 'agility',
+    label: 'Agility',
+    color: '#FF6F00',
+    games: [
+      { key: 'stop', href: '/precision/ranking', icon: `${BASE}/precision.png`, label: 'Stop', bg: '#388E3C' },
+      { key: 'f1', href: '/precision/ranking', icon: `${BASE}/f1.png`, label: 'F1 Reaction', bg: '#E8002D' },
+      { key: 'pendulum', href: '/precision/ranking', icon: `${BASE}/pendulum.png`, label: 'Pendulum', bg: '#1565C0' },
+    ]
+  },
+  {
+    key: 'knowledge',
+    label: 'Knowledge',
+    color: '#1565C0',
+    games: [
+      { key: 'flags', href: '/flags/ranking', icon: '/icons/flags.webp', label: 'Flags', bg: '#E65100' },
+      { key: 'versus', href: '/versus/ranking', icon: `${BASE}/higuer.png`, label: 'Higher or Lower', bg: '#546E7A' },
+    ]
+  },
+  {
+    key: 'logic',
+    label: 'Logic',
+    color: '#6A1B9A',
+    games: [
+      { key: 'sudoku', href: '/sudoku', icon: '/icons/digits.webp', label: 'Sudoku', bg: '#757575' },
+    ]
+  },
 ]
 
 export default function RankingPage() {
+  const [activeCategory, setActiveCategory] = useState('memory')
+
   return (
-    <>
-      <style>{`@keyframes fadeUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }`}</style>
-      <main style={{
-        minHeight: '100dvh',
-        background: `linear-gradient(180deg, #FFF8E1 0%, ${CREAM} 100%)`,
-        fontFamily: 'var(--font-nunito), sans-serif',
-        maxWidth: 430, margin: '0 auto',
-        padding: '24px 16px 100px',
-      }}>
-        {/* Header */}
-        <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>Compete</div>
-          <div style={{ fontSize: 30, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>Rankings</div>
-        </div>
+    <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #FFF8E1 0%, ${CREAM} 100%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', padding: '24px 16px 100px' }}>
+      
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>Compete</div>
+        <div style={{ fontSize: 30, fontWeight: 900, color: BROWN, letterSpacing: -1 }}>Rankings</div>
+      </div>
 
-        {/* Hall of Fame */}
-        <Link href="/ranking/hall-of-fame" style={{ textDecoration: 'none', display: 'block', marginBottom: 20 }}>
-          <div style={{
-            background: 'linear-gradient(135deg, #C8960C, #F5D062, #B8860B)',
-            borderRadius: 20, padding: '18px 20px',
-            display: 'flex', alignItems: 'center', gap: 14,
-            boxShadow: '0 8px 0 #C8960C60',
-          }}>
-            <img src={`/icons/nav-trophy.webp`} alt="" style={{ width: 52, height: 52, objectFit: 'contain' }} />
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>All time records</div>
-              <div style={{ fontSize: 20, fontWeight: 900, color: '#fff' }}>Hall of Fame</div>
-            </div>
-          </div>
-        </Link>
-
-        {/* Games grid */}
-        <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>By game</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-          {GAMES.map((game, i) => (
-            <Link key={game.key} href={game.href} style={{ textDecoration: 'none' }}>
-              <div style={{
-                background: game.bg,
-                borderRadius: 20,
-                padding: '10px 12px 8px',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start',
-                gap: 4, paddingTop: 10,
-                boxShadow: `0 6px 0 ${game.shadow}`,
-                aspectRatio: '5/2.5',
-                animation: `fadeUp 0.3s ease ${i * 0.05}s both`,
-              }}>
-                {game.emoji ? (
-                  <div style={{ fontSize: 44 }}>{(game as any).emojiIcon}</div>
-                ) : (
-                  <img src={game.icon} alt="" style={{ width: 64, height: 64, objectFit: 'contain' }} />
-                )}
-                <div style={{ fontSize: 13, fontWeight: 900, color: '#fff', textAlign: 'center' }}>{game.label}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </main>
-
-    {/* SEO Content */}
-    <section style={{
-      maxWidth: 430, margin: '0 auto',
-      padding: '48px 24px 120px',
-      fontFamily: 'var(--font-nunito), sans-serif',
-      background: '#FAF7F2',
-    }}>
-      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
-        World Rankings — Compete Globally
-      </h2>
-      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
-        Every game on MemGenius has its own world ranking. Play any game and your score is automatically submitted — no account needed. See where you stand against players from around the world and track your improvement over time.
-      </p>
-      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
-        Rankings are updated in real time. Whether you are chasing the top spot in Digits, trying to beat the fastest F1 reaction time, or building the longest Flags streak, the leaderboard is always live and always competitive.
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        {[
-          { q: 'How does the world ranking work?', a: 'After each game your score is automatically submitted to the global leaderboard. No login or account required — just play and your result appears instantly.' },
-          { q: 'Which games have a world ranking?', a: 'All games have their own leaderboard — Memory, Digits, Simon Says, Flags, Precision Stop, F1 Reaction, Higher or Lower Area, and Higher or Lower Population.' },
-          { q: 'Can I see my rank during the game?', a: 'Yes. Your world ranking position is shown on the game over screen immediately after each session.' },
-          { q: 'Is the ranking updated in real time?', a: 'Yes. Scores are submitted instantly and the leaderboard reflects the latest results from all players worldwide.' },
-          { q: 'Do I need an account to appear on the ranking?', a: 'No account needed. Just enter a player name the first time you play and your scores are tracked automatically across sessions.' },
-        ].map((item, i) => (
-          <details key={i} style={{
-            background: '#fff', borderRadius: 14,
-            border: '1px solid #4A2C0A15',
-            padding: '14px 18px',
-          }}>
-            <summary style={{
-              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
-              cursor: 'pointer', listStyle: 'none',
-            }}>
-              {item.q}
-            </summary>
-            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
-              {item.a}
-            </p>
-          </details>
+      {/* Rankings section */}
+      <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 10 }}>By game</div>
+      {/* Category tabs */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+        {CATEGORIES.map(cat => (
+          <button key={cat.key} onClick={() => setActiveCategory(cat.key)} style={{
+            flex: 1, padding: '8px 4px', borderRadius: 12, border: 'none',
+            background: activeCategory === cat.key ? cat.color : '#fff',
+            color: activeCategory === cat.key ? '#fff' : BROWN,
+            fontSize: 11, fontWeight: 900, fontFamily: 'inherit',
+            cursor: 'pointer',
+            boxShadow: activeCategory === cat.key ? `0 4px 0 ${cat.color}60` : '0 2px 0 #4A2C0A10',
+          }}>{cat.label}</button>
         ))}
       </div>
-    </section>
 
-    </>
+      {/* Game cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        {CATEGORIES.find(c => c.key === activeCategory)?.games.map(game => (
+          <Link key={game.key} href={game.href} style={{ textDecoration: 'none' }}>
+            <div style={{
+              background: game.bg, borderRadius: 20,
+              padding: '12px', display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'flex-start', gap: 4,
+              boxShadow: `0 6px 0 ${game.bg}60`, aspectRatio: '5/2.5',
+            }}>
+              <img src={game.icon} alt="" style={{ width: 64, height: 64, objectFit: 'contain' }} />
+              <div style={{ fontSize: 13, fontWeight: 900, color: '#fff', textAlign: 'center' }}>{game.label}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Hall of Fame section */}
+      <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', margin: '24px 0 10px' }}>Hall of Fame</div>
+      <Link href="/ranking/hall-of-fame" style={{ textDecoration: 'none', display: 'block' }}>
+        <div style={{
+          background: 'linear-gradient(135deg, #C8960C, #F5D062, #B8860B)',
+          borderRadius: 16, padding: '16px 20px',
+          boxShadow: '0 6px 0 #C8960C60',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img src="/icons/nav-trophy.webp" alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>Hall of Fame</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>All time world records</div>
+            </div>
+          </div>
+
+        </div>
+      </Link>
+    </main>
   )
 }

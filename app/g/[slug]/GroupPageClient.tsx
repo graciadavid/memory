@@ -6,17 +6,27 @@ const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 
-const TABS = [
-  { key: 'memory', label: 'Memory', color: BROWN },
-  { key: 'digits', label: 'Digits', color: '#1565C0' },
-  { key: 'sequence', label: 'Simon Says', color: '#6A1B9A' },
-  { key: 'flags', label: 'Flags', color: '#00796B' },
-  { key: 'stop', label: 'Stop', color: '#4A148C' },
-  { key: 'f1', label: 'F1', color: '#E8002D' },
-  { key: 'pendulum', label: 'Pendulum', color: '#4A148C' },
-  { key: 'population', label: 'Population', color: '#C62828' },
-  { key: 'area', label: 'Area km²', color: '#B71C1C' },
+const CATEGORIES = [
+  { key: 'memory', label: 'Memory', color: '#E91E63', tabs: [
+    { key: 'memory', label: 'Memory', color: '#2E7D32' },
+    { key: 'digits', label: 'Digits', color: '#1976D2' },
+    { key: 'sequence', label: 'Simon Says', color: '#FF6F00' },
+  ]},
+  { key: 'agility', label: 'Agility', color: '#FF6F00', tabs: [
+    { key: 'stop', label: 'Stop', color: '#388E3C' },
+    { key: 'f1', label: 'F1 Reaction', color: '#E8002D' },
+    { key: 'pendulum', label: 'Pendulum', color: '#1565C0' },
+  ]},
+  { key: 'knowledge', label: 'Knowledge', color: '#1565C0', tabs: [
+    { key: 'flags', label: 'Flags', color: '#E65100' },
+    { key: 'population', label: 'H or L Population', color: '#6A1B9A' },
+    { key: 'area', label: 'Higher or Lower Area', color: '#00695C' },
+  ]},
+  { key: 'logic', label: 'Logic', color: '#6A1B9A', tabs: [
+    { key: 'sudoku', label: 'Sudoku', color: '#757575' },
+  ]},
 ]
+const TABS = CATEGORIES.flatMap(c => c.tabs)
 
 function fmt(ms: number) {
   const m = Math.floor(ms / 60000)

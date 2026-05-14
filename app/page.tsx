@@ -11,13 +11,48 @@ const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 
-const GAMES = [
-  { key: 'memory', href: '/memory', icon: '/icons/memory.webp', label: 'Memory', sub: 'Match pairs by connection', bg: BROWN, shadow: `${BROWN}60` },
-  { key: 'digits', href: '/digits', icon: '/icons/digits.webp', label: 'Digits', sub: 'How many digits can you remember?', bg: '#1565C0', shadow: '#0D47A160' },
-  { key: 'sequence', href: '/sequence', icon: '/icons/sequence.webp', label: 'Simon Says', sub: 'Repeat the pattern', bg: '#6A1B9A', shadow: '#4A148C60' },
-  { key: 'flags', href: '/flags', icon: '/icons/flags.webp', label: 'Flags', sub: 'How many flags in a row?', bg: '#00796B', shadow: '#00695160' },
-  { key: 'precision', href: '/precision', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', label: 'Precision', sub: 'Stop at exactly 5 seconds', bg: '#4A148C', shadow: '#4A148C60', emoji: false },
-  { key: 'versus', href: '/versus', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', label: 'Higher or Lower', sub: 'Population · Area', bg: '#C62828', shadow: '#C6282860', emoji: false },
+const CATEGORIES = [
+  {
+    key: 'memory',
+    label: 'Memory',
+    color: '#E91E63',
+    desc: 'Train your ability to retain and recall information',
+    games: [
+      { key: 'memory', href: '/memory', icon: '/icons/memory.webp', label: 'Memory', sub: 'Match pairs by connection', bg: '#2E7D32' },
+      { key: 'digits', href: '/digits', icon: '/icons/digits.webp', label: 'Digits', sub: 'How many digits can you remember?', bg: '#1976D2' },
+      { key: 'simon-says', href: '/sequence', icon: '/icons/sequence.webp', label: 'Simon Says', sub: 'Repeat the pattern', bg: '#FF6F00' },
+    ]
+  },
+  {
+    key: 'agility',
+    label: 'Agility',
+    color: '#FF6F00',
+    desc: 'Sharpen your reaction speed and timing precision',
+    games: [
+      { key: 'stop', href: '/precision/stopwatch', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', label: 'Stop', sub: 'Stop at exactly 5 seconds', bg: '#388E3C' },
+      { key: 'f1', href: '/precision/formula1', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/f1.png', label: 'F1 Reaction', sub: 'React when lights go out', bg: '#E8002D' },
+      { key: 'pendulum', href: '/precision/pendulum', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.png', label: 'Pendulum', sub: 'Stop it at the center', bg: '#1565C0' },
+    ]
+  },
+  {
+    key: 'knowledge',
+    label: 'Knowledge',
+    color: '#1565C0',
+    desc: 'Test and expand your world knowledge',
+    games: [
+      { key: 'flags', href: '/flags', icon: '/icons/flags.webp', label: 'Flags', sub: 'How many flags in a row?', bg: '#E65100' },
+      { key: 'versus', href: '/versus', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', label: 'Higher or Lower', sub: 'Population · Area km²', bg: '#546E7A' },
+    ]
+  },
+  {
+    key: 'logic',
+    label: 'Logic',
+    color: '#6A1B9A',
+    desc: 'Challenge your reasoning and problem solving skills',
+    games: [
+      { key: 'sudoku', href: '/sudoku', icon: '/icons/digits.webp', label: 'Sudoku', sub: 'How fast can you solve it?', bg: '#757575' },
+    ]
+  },
 ]
 
 function SplashDots({ current, color }: { current: number, color: string }) {
@@ -75,6 +110,7 @@ export default function LandingPage() {
   const [confirmPin, setConfirmPin] = useState('')
   const [needsNewPin, setNeedsNewPin] = useState(false)
   const [showStreak, setShowStreak] = useState(false)
+  const [activeCategory, setActiveCategory] = useState('memory')
   const [showLoading, setShowLoading] = useState(false)
 
   useEffect(() => {
@@ -432,24 +468,40 @@ export default function LandingPage() {
             Your daily brain workout
           </div>
 
-          {/* Game grid */}
+          {/* Category tabs */}
+          <div style={{ display: 'flex', gap: 8, width: '100%', marginBottom: 16 }}>
+            {CATEGORIES.map(cat => (
+              <button key={cat.key} onClick={() => setActiveCategory(cat.key)} style={{
+                flex: 1, padding: '8px 4px', borderRadius: 12, border: 'none',
+                background: activeCategory === cat.key ? cat.color : '#fff',
+                color: activeCategory === cat.key ? '#fff' : BROWN,
+                fontSize: 11, fontWeight: 900, fontFamily: 'inherit',
+                cursor: 'pointer',
+                boxShadow: activeCategory === cat.key ? `0 4px 0 ${cat.color}60` : '0 2px 0 #4A2C0A10',
+                transition: 'all 0.2s',
+              }}>{cat.label}</button>
+            ))}
+          </div>
+
+          {/* Category description */}
+          <div style={{ fontSize: 12, color: `${BROWN}60`, fontStyle: 'italic', marginBottom: 12, textAlign: 'center', lineHeight: 1.5 }}>
+            {CATEGORIES.find(c => c.key === activeCategory)?.desc}
+          </div>
+
+          {/* Game cards */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, width: '100%' }}>
-            {GAMES.map(game => (
+            {CATEGORIES.find(c => c.key === activeCategory)?.games.map(game => (
               <a key={game.key} href={game.href} style={{ textDecoration: 'none' }}>
                 <div style={{
                   background: game.bg,
                   borderRadius: 20,
-                  padding: '6px 12px 6px',
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: '12px',
+                  padding: '12px',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start',
                   gap: 4,
-                  boxShadow: `0 6px 0 ${game.shadow}`,
+                  boxShadow: `0 6px 0 ${game.bg}60`,
                   aspectRatio: '5/2.5',
                 }}>
-                  {(game as any).emoji ? (
-                    <div style={{ fontSize: 58 }}>{game.icon}</div>
-                  ) : (
-                    <img src={game.icon} alt="" style={{ width: 80, height: 80, objectFit: 'contain' }} />
-                  )}
+                  <img src={game.icon} alt="" style={{ width: 80, height: 80, objectFit: 'contain' }} />
                   <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', textAlign: 'center', letterSpacing: -0.3 }}>{game.label}</div>
                 </div>
               </a>

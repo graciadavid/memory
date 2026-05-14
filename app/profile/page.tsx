@@ -62,6 +62,7 @@ export default function ProfilePage() {
   const [versusRank, setVersusRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusAreaRank, setVersusAreaRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
+  const [activeTab, setActiveTab] = useState('memory')
   const [myGroups, setMyGroups] = useState<any[]>([])
   const [hasPassword, setHasPassword] = useState(false)
 
@@ -441,93 +442,125 @@ export default function ProfilePage() {
         {/* RECORDS */}
         <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', paddingLeft: 4 }}>My Records</div>
 
-        {/* Memory */}
-        {DIFF_CONFIG.map(d => {
-          const entry = liveRanks[d.key]
-          const hasResult = entry?.rank != null
-          return (
-            <div key={d.key} style={{ borderRadius: 20, overflow: 'hidden' }}>
-              <div style={{ background: `linear-gradient(135deg, ${d.color}, ${d.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {/* Category tabs */}
+        <div style={{ display: 'flex', gap: 6, margin: '8px 0' }}>
+          {([{key:'memory',label:'Memory',color:'#E91E63'},{key:'agility',label:'Agility',color:'#FF6F00'},{key:'knowledge',label:'Knowledge',color:'#1565C0'},{key:'logic',label:'Logic',color:'#6A1B9A'}] as {key:string,label:string,color:string}[]).map(tab => (
+            <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{ flex: 1, padding: '8px 4px', borderRadius: 12, border: 'none', background: activeTab === tab.key ? tab.color : '#fff', color: activeTab === tab.key ? '#fff' : BROWN, fontSize: 10, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: activeTab === tab.key ? `0 4px 0 ${tab.color}60` : '0 2px 0 #4A2C0A10' }}>{tab.label}</button>
+          ))}
+        </div>
+
+        {activeTab === 'memory' && <>
+          {DIFF_CONFIG.map(d => {
+            const entry = liveRanks[d.key]
+            const hasResult = entry?.rank != null
+            return (
+              <div key={d.key} style={{ borderRadius: 20, overflow: 'hidden' }}>
+                <div style={{ background: `linear-gradient(135deg, ${d.color}, ${d.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <img src="/icons/memory.webp" alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
+                    <div>
+                      <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Memory</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{d.label}{hasResult ? ` · ${fmt(entry.time!)}` : ''}</div>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}</div>
+                    <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+          {([
+            { key: 'digits', label: 'Digits', color: '#1976D2', icon: '/icons/digits.webp', score: digitsRank.level, rank: digitsRank.rank, unit: 'Level', share: `Level ${digitsRank.level} in Digits! #${digitsRank.rank} https://memgenius.com/digits` },
+            { key: 'simon', label: 'Simon Says', color: '#FF6F00', icon: '/icons/sequence.webp', score: seqRank.level, rank: seqRank.rank, unit: 'Level', share: `Level ${seqRank.level} in Simon Says! #${seqRank.rank} https://memgenius.com/sequence` },
+          ] as any[]).map(g => (
+            <div key={g.key} style={{ borderRadius: 20, overflow: 'hidden' }}>
+              <div style={{ background: `linear-gradient(135deg, ${g.color}, ${g.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <img src="/icons/memory.webp" alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
+                  <img src={g.icon} alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
                   <div>
-                    <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Memory</div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{d.label}{hasResult ? ` · ${fmt(entry.time!)}` : ''}</div>
+                    <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{g.label}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{loadingRanks ? '...' : g.score ? `${g.score} ${g.unit}` : 'No record yet'}</div>
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}</div>
+                  <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : g.rank ? `#${g.rank}` : '—'}</div>
                   <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
                 </div>
               </div>
-              {hasResult && (
-                <button onClick={() => shareScore(`🧠 I'm #${entry.rank} in ${d.label} Memory!\nhttps://memgenius.com/memory`)}
-                  style={{ width: '100%', padding: '13px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-                  Share my record
-                </button>
-              )}
+              
             </div>
-          )
-        })}
+          ))}
+        </>}
 
-        {[
-          { key: 'digits', label: 'Digits', color: '#1565C0', icon: '/icons/digits.webp', score: digitsRank.level, rank: digitsRank.rank, unit: 'Level', share: `🔢 Level ${digitsRank.level} in Digits! #${digitsRank.rank}\nhttps://memgenius.com/digits` },
-          { key: 'sequence', label: 'Simon Says', color: '#6A1B9A', icon: '/icons/sequence.webp', score: seqRank.level, rank: seqRank.rank, unit: 'Level', share: `🎵 Level ${seqRank.level} in Simon Says! #${seqRank.rank}\nhttps://memgenius.com/sequence` },
-          { key: 'flags', label: 'Flags', color: '#00796B', icon: '/icons/flags.webp', score: flagsRank.level, rank: flagsRank.rank, unit: 'Flags', share: `🚩 ${flagsRank.level} flags! #${flagsRank.rank}\nhttps://memgenius.com/flags` },
-        ].map(g => (
-          <div key={g.key} style={{ borderRadius: 20, overflow: 'hidden' }}>
-            <div style={{ background: `linear-gradient(135deg, ${g.color}, ${g.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {activeTab === 'agility' && <>
+          {([
+            { label: 'Stop', color: '#388E3C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', score: precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s off` : null, rank: precRank.rank, share: `I am #${precRank.rank} in Stop! https://memgenius.com/precision/stopwatch` },
+            { label: 'F1 Reaction', color: '#E8002D', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/f1.png', score: f1Rank.diff !== null ? `${f1Rank.diff}ms` : null, rank: f1Rank.rank, share: `I am #${f1Rank.rank} in F1 with ${f1Rank.diff}ms! https://memgenius.com/precision/formula1` },
+            { label: 'Pendulum', color: '#1565C0', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.png', score: pendulumRank.diff !== null ? `${pendulumRank.diff}ms` : null, rank: pendulumRank.rank, share: `I am #${pendulumRank.rank} in Pendulum with ${pendulumRank.diff}ms! https://memgenius.com/precision/pendulum` },
+          ] as any[]).map(g => (
+            <div key={g.label} style={{ borderRadius: 20, overflow: 'hidden' }}>
+              <div style={{ background: `linear-gradient(135deg, ${g.color}, ${g.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <img src={g.icon} alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{g.label}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{loadingRanks ? '...' : g.score ?? 'No record yet'}</div>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : g.rank ? `#${g.rank}` : '—'}</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+                </div>
+              </div>
+              
+            </div>
+          ))}
+        </>}
+
+        {activeTab === 'knowledge' && <>
+          {([
+            { label: 'Flags', color: '#E65100', icon: '/icons/flags.webp', score: flagsRank.level, rank: flagsRank.rank, unit: 'Flags', share: `${flagsRank.level} flags! #${flagsRank.rank} https://memgenius.com/flags` },
+            { label: 'Population', color: '#6A1B9A', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', score: versusPopRank.rank !== null ? `${versusPopRank.level} correct` : null, rank: versusPopRank.rank, share: `I got ${versusPopRank.level} correct in Population! #${versusPopRank.rank} https://memgenius.com/versus/population` },
+            { label: 'Area km2', color: '#00695C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', score: versusAreaRank.rank !== null ? `${versusAreaRank.level} correct` : null, rank: versusAreaRank.rank, share: `I got ${versusAreaRank.level} correct in Area! #${versusAreaRank.rank} https://memgenius.com/versus/area` },
+          ] as any[]).map(g => (
+            <div key={g.label} style={{ borderRadius: 20, overflow: 'hidden' }}>
+              <div style={{ background: `linear-gradient(135deg, ${g.color}, ${g.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <img src={g.icon} alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{g.label}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{loadingRanks ? '...' : g.score ? `${g.score} ${g.unit ?? ''}` : 'No record yet'}</div>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : g.rank ? `#${g.rank}` : '—'}</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+                </div>
+              </div>
+              
+            </div>
+          ))}
+        </>}
+
+        {activeTab === 'logic' && (
+          <div style={{ borderRadius: 20, overflow: 'hidden' }}>
+            <div style={{ background: 'linear-gradient(135deg, #757575, #9E9E9E)', padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                {g.icon && <img src={g.icon} alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />}
+                <img src="/icons/digits.webp" alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
                 <div>
-                  <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{g.label}</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{loadingRanks ? '...' : g.score ? `${g.score} ${g.unit}` : 'No record yet'}</div>
+                  <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Sudoku</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>Coming soon</div>
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : g.rank ? `#${g.rank}` : '—'}</div>
+                <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>—</div>
                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
               </div>
             </div>
-            {g.score && (
-              <button onClick={() => shareScore(g.share)}
-                style={{ width: '100%', padding: '13px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-                Share my record
-              </button>
-            )}
           </div>
-        ))}
-
-                {/* Precision */}
-        {[
-          { label: 'Precision Stop', color: '#4A148C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', score: precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s off` : null, rank: precRank.rank, share: `⏱ I'm #${precRank.rank} in Precision Stop!\nhttps://memgenius.com/precision/stopwatch` },
-          { label: 'F1 Reaction', color: '#E8002D', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', score: f1Rank.diff !== null ? `${f1Rank.diff}ms` : null, rank: f1Rank.rank, share: `I'm #${f1Rank.rank} in F1 with ${f1Rank.diff}ms!\nhttps://memgenius.com/precision/formula1` },
-          { label: 'Pendulum', color: '#4A148C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.png', score: pendulumRank.diff !== null ? `${pendulumRank.diff}ms` : null, rank: pendulumRank.rank, share: `I'm #${pendulumRank.rank} in Pendulum with ${pendulumRank.diff}ms!\nhttps://memgenius.com/precision/pendulum` },
-          { label: 'Population', color: '#C62828', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', score: versusPopRank.rank !== null ? `${versusPopRank.level} correct` : null, rank: versusPopRank.rank, share: `🌍 I got ${versusPopRank.level} correct in Versus Population! #${versusPopRank.rank}\nhttps://memgenius.com/versus/population` },
-          { label: 'Area km²', color: '#B71C1C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', score: versusAreaRank.rank !== null ? `${versusAreaRank.level} correct` : null, rank: versusAreaRank.rank, share: `🗺️ I got ${versusAreaRank.level} correct in Versus Area! #${versusAreaRank.rank}\nhttps://memgenius.com/versus/area` },
-        ].map(g => (
-          <div key={g.label} style={{ borderRadius: 20, overflow: 'hidden' }}>
-            <div style={{ background: `linear-gradient(135deg, ${g.color}, ${g.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <img src={g.icon} alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{g.label}</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{loadingRanks ? '...' : g.score ?? 'No record yet'}</div>
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : g.rank ? `#${g.rank}` : '—'}</div>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
-              </div>
-            </div>
-            {g.score && (
-              <button onClick={() => shareScore(g.share)}
-                style={{ width: '100%', padding: '13px', border: 'none', background: '#2E7D32', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-                Share my record
-              </button>
-            )}
-          </div>
-        ))}
+        )}
 
       </div>
       </div>
