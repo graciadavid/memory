@@ -28,7 +28,6 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
     supabase.from('precision_scores').select('player_name, difference_ms').is('game_type', null).in('player_name', memberNames).order('difference_ms', { ascending: true }),
     supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'formula1').in('player_name', memberNames).order('difference_ms', { ascending: true }),
     supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'pendulum').in('player_name', memberNames).order('difference_ms', { ascending: true }),
-    supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'pendulum').in('player_name', memberNames).order('difference_ms', { ascending: true }),
     supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'area').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('sudoku_scores').select('player_name, time_ms').in('player_name', memberNames).order('time_ms', { ascending: true }),
