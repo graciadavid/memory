@@ -125,7 +125,7 @@ export default function SudokuPage() {
     }
   }
 
-  useEffect(() => () => if (timerRef.current) clearInterval(timerRef.current), [])
+  useEffect(() => () => { if (timerRef.current) clearInterval(timerRef.current) }, [])
 
   const COLORS = { easy: '#2E7D32', medium: GOLD, hard: '#C62828' }
 
