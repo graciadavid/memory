@@ -172,7 +172,7 @@ export default function SudokuPage() {
           {/* Board */}
           <div style={{
             display: 'grid', gridTemplateColumns: 'repeat(9, 1fr)',
-            gap: 2, background: PURPLE, padding: 2, borderRadius: 12,
+            gap: 2, background: '#E0E0E0', padding: 2, borderRadius: 12,
             marginBottom: 16,
           }}>
             {board.map((row, r) => row.map((val, c) => {
@@ -187,12 +187,12 @@ export default function SudokuPage() {
                 <div key={`${r}-${c}`} onClick={() => handleCell(r, c)} style={{
                   aspectRatio: '1',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: isSelected ? `${PURPLE}30` : isError ? '#FFEBEE' : '#fff',
+                  background: isSelected ? '#F3F0FF' : isError ? '#FFEBEE' : '#fff',
                   fontSize: 16, fontWeight: isFixed ? 900 : 700,
-                  color: isError ? '#C62828' : isFixed ? BROWN : PURPLE,
+                  color: isError ? '#C62828' : BROWN,
                   cursor: isFixed ? 'default' : 'pointer',
-                  borderRight: borderR ? `2px solid ${PURPLE}` : undefined,
-                  borderBottom: borderB ? `2px solid ${PURPLE}` : undefined,
+                  borderRight: borderR ? '2px solid #BDBDBD' : undefined,
+                  borderBottom: borderB ? '2px solid #BDBDBD' : undefined,
                   borderRadius: 4,
                   transition: 'background 0.1s',
                 }}>
