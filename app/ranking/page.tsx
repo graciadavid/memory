@@ -43,6 +43,8 @@ const CATEGORIES = [
     color: '#6A1B9A',
     games: [
       { key: 'sudoku', href: '/sudoku/ranking', icon: '/icons/digits.webp', label: 'Sudoku', bg: '#757575' },
+      { key: 'wordly', href: '/wordle/ranking', icon: '/icons/digits.webp', label: 'Wordly', bg: '#2E7D32' },
+      { key: 'mastermind', href: '/mastermind/ranking', icon: '/icons/digits.webp', label: 'Mastermind', bg: '#6A1B9A' },
     ]
   },
 ]

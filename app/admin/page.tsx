@@ -35,6 +35,8 @@ const CATEGORIES = [
   ]},
   { key: 'logic', label: 'Logic', color: '#6A1B9A', games: [
     { key: 'sudoku', label: 'Sudoku', table: 'sudoku_scores' },
+    { key: 'wordly', label: 'Wordly', table: 'wordle_scores' },
+    { key: 'mastermind', label: 'Mastermind', table: 'mastermind_scores' },
   ]},
 ]
 
