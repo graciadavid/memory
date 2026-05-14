@@ -20,7 +20,7 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
 
   const memberNames = members?.map((m: any) => m.player_name) || []
 
-  const [memScores, digScores, seqScores, flagScores, precScores, f1Scores, pendulumScores, vsPopScores, vsAreaScores] = await Promise.all([
+  const [memScores, digScores, seqScores, flagScores, precScores, f1Scores, pendulumScores, vsPopScores, vsAreaScores, sudokuScores] = await Promise.all([
     supabase.from('scores').select('player_name, time_ms').in('player_name', memberNames).order('time_ms', { ascending: true }),
     supabase.from('number_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('sequence_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
@@ -31,6 +31,7 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
     supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'pendulum').in('player_name', memberNames).order('difference_ms', { ascending: true }),
     supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'area').in('player_name', memberNames).order('level', { ascending: false }),
+    supabase.from('sudoku_scores').select('player_name, time_ms').in('player_name', memberNames).order('time_ms', { ascending: true }),
   ])
 
   const bestMemory: Record<string, number> = {}
@@ -47,6 +48,9 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
 
   const bestF1: Record<string, number> = {}
   f1Scores.data?.forEach((s: any) => { if (!bestF1[s.player_name] || s.difference_ms < bestF1[s.player_name]) bestF1[s.player_name] = s.difference_ms })
+
+  const bestSudoku: Record<string, number> = {}
+  sudokuScores.data?.forEach((s: any) => { if (!bestSudoku[s.player_name] || s.time_ms < bestSudoku[s.player_name]) bestSudoku[s.player_name] = s.time_ms })
 
   const bestPendulum: Record<string, number> = {}
   pendulumScores.data?.forEach((s: any) => { if (!bestPendulum[s.player_name] || s.difference_ms < bestPendulum[s.player_name]) bestPendulum[s.player_name] = s.difference_ms })
@@ -69,6 +73,7 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
       bestPrecision={bestPrecision}
       bestF1={bestF1}
       bestPendulum={bestPendulum}
+      bestSudoku={bestSudoku}
       bestVersusPop={bestVersusPop}
       bestVersusArea={bestVersusArea}
     />

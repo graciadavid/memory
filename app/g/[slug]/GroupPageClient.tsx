@@ -35,7 +35,7 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea }: any) {
+export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea, bestSudoku }: any) {
   const [tab, setTab] = useState('flags')
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
@@ -99,6 +99,11 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
         return memberNames
           .filter((n: string) => bestF1?.[n] !== undefined)
           .map((n: string) => ({ name: n, score: `${bestF1?.[n]}ms`, raw: bestF1?.[n] }))
+          .sort((a: any, b: any) => a.raw - b.raw)
+      case 'sudoku':
+        return memberNames
+          .filter((n: string) => bestSudoku?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${Math.floor(bestSudoku[n]/60000)}:${String(Math.floor((bestSudoku[n]%60000)/1000)).padStart(2,'0')}`, raw: bestSudoku[n] }))
           .sort((a: any, b: any) => a.raw - b.raw)
       case 'pendulum':
         return memberNames
