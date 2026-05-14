@@ -42,7 +42,7 @@ const CATEGORIES = [
     label: 'Logic',
     color: '#6A1B9A',
     games: [
-      { key: 'sudoku', href: '/sudoku', icon: '/icons/digits.webp', label: 'Sudoku', bg: '#757575' },
+      { key: 'sudoku', href: '/sudoku/ranking', icon: '/icons/digits.webp', label: 'Sudoku', bg: '#757575' },
     ]
   },
 ]
