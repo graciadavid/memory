@@ -35,6 +35,7 @@ const CATEGORIES = [
     games: [
       { key: 'flags', href: '/flags/ranking', icon: '/icons/flags.webp', label: 'Flags', bg: '#E65100' },
       { key: 'versus', href: '/versus/ranking', icon: `${BASE}/higuer.png`, label: 'Higher or Lower', bg: '#546E7A' },
+      { key: 'geoshape', href: '/geoshape/ranking', icon: `${BASE}/mapamundi.png`, label: 'GeoShape', bg: '#1565C0' },
     ]
   },
   {

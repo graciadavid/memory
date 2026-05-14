@@ -63,6 +63,7 @@ export default function ProfilePage() {
   const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusAreaRank, setVersusAreaRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [activeTab, setActiveTab] = useState('memory')
+  const [geoRank, setGeoRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [sudokuRank, setSudokuRank] = useState<{ time: number | null, rank: number | null, difficulty: string | null }>({ time: null, rank: null, difficulty: null })
   const [wordlyRank, setWordlyRank] = useState<{ time: number | null, rank: number | null, attempts: number | null }>({ time: null, rank: null, attempts: null })
   const [mastermindRank, setMastermindRank] = useState<{ time: number | null, rank: number | null, attempts: number | null }>({ time: null, rank: null, attempts: null })
@@ -142,6 +143,16 @@ export default function ProfilePage() {
       const myBest = best[profile.name]
       if (!myBest) return
       setSudokuRank({ time: myBest.time, difficulty: myBest.difficulty, rank: Object.values(best).filter(d => d.time < myBest.time).length + 1 })
+    })
+
+    // Fetch GeoShape
+    supabase.from('shape_scores').select('player_name, level').order('level', { ascending: false }).limit(500).then(({ data }) => {
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+      const myBest = best[profile.name]
+      if (!myBest) return
+      setGeoRank({ level: myBest, rank: Object.values(best).filter(l => l > myBest).length + 1 })
     })
 
     // Fetch Wordly
@@ -557,6 +568,7 @@ export default function ProfilePage() {
         {activeTab === 'knowledge' && <>
           {([
             { label: 'Flags', color: '#E65100', icon: '/icons/flags.webp', score: flagsRank.level, rank: flagsRank.rank, unit: 'Flags', share: `${flagsRank.level} flags! #${flagsRank.rank} https://memgenius.com/flags` },
+            { label: 'GeoShape', color: '#1565C0', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/mapamundi.png', score: geoRank.level, rank: geoRank.rank, unit: 'Countries', share: `${geoRank.level} countries in GeoShape! #${geoRank.rank} https://memgenius.com/geoshape` },
             { label: 'Population', color: '#6A1B9A', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', score: versusPopRank.rank !== null ? `${versusPopRank.level} correct` : null, rank: versusPopRank.rank, share: `I got ${versusPopRank.level} correct in Population! #${versusPopRank.rank} https://memgenius.com/versus/population` },
             { label: 'Area km2', color: '#00695C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', score: versusAreaRank.rank !== null ? `${versusAreaRank.level} correct` : null, rank: versusAreaRank.rank, share: `I got ${versusAreaRank.level} correct in Area! #${versusAreaRank.rank} https://memgenius.com/versus/area` },
           ] as any[]).map(g => (

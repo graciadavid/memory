@@ -42,6 +42,7 @@ const CATEGORIES = [
     games: [
       { key: 'flags', href: '/flags', icon: '/icons/flags.webp', label: 'Flags', sub: 'How many flags in a row?', bg: '#E65100' },
       { key: 'versus', href: '/versus', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', label: 'Higher or Lower', sub: 'Population · Area km²', bg: '#546E7A' },
+      { key: 'geoshape', href: '/geoshape', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/mapamundi.png', label: 'GeoShape', sub: 'Guess the country shape', bg: '#1565C0' },
     ]
   },
   {
