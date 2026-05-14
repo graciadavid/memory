@@ -188,7 +188,7 @@ export default function SudokuPage() {
                 <div key={`${r}-${c}`} onClick={() => handleCell(r, c)} style={{
                   aspectRatio: '1',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: isSelected ? `${PURPLE}30` : isError ? '#FFEBEE' : isSameNum ? `${PURPLE}15` : isHighlight ? `${PURPLE}08` : '#fff',
+                  background: isSelected ? `${PURPLE}30` : isError ? '#FFEBEE' : isSameNum ? `${PURPLE}15` : '#fff',
                   fontSize: 16, fontWeight: isFixed ? 900 : 700,
                   color: isError ? '#C62828' : isFixed ? BROWN : PURPLE,
                   cursor: isFixed ? 'default' : 'pointer',
