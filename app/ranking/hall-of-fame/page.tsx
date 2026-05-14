@@ -52,13 +52,15 @@ export default async function HallOfFamePage() {
     getBestMemory(hardIds),
   ])
 
-  const [precData, f1Data, pendulumData, popData, areaData, sudokuData] = await Promise.all([
+  const [precData, f1Data, pendulumData, popData, areaData, sudokuData, wordlyData, mastermindData] = await Promise.all([
     supabase.from('precision_scores').select('player_name, difference_ms').is('game_type', null).order('difference_ms', { ascending: true }).limit(1),
     supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'formula1').order('difference_ms', { ascending: true }).limit(1),
     supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'pendulum').order('difference_ms', { ascending: true }).limit(1),
     supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').order('level', { ascending: false }).limit(1),
     supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'area').order('level', { ascending: false }).limit(1),
     supabase.from('sudoku_scores').select('player_name, time_ms, difficulty').order('time_ms', { ascending: true }).limit(1),
+    supabase.from('wordle_scores').select('player_name, time_ms, attempts').order('time_ms', { ascending: true }).limit(1),
+    supabase.from('mastermind_scores').select('player_name, time_ms, attempts').order('time_ms', { ascending: true }).limit(1),
   ])
 
   const champions = {
@@ -74,6 +76,8 @@ export default async function HallOfFamePage() {
     versusPopulation: popData.data?.[0] || null,
     versusArea: areaData.data?.[0] || null,
     sudoku: sudokuData.data?.[0] || null,
+    wordly: wordlyData.data?.[0] || null,
+    mastermind: mastermindData.data?.[0] || null,
   }
 
   return <HallOfFameClient champions={champions} />

@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     // Logic
     { url: 'https://memgenius.com/sudoku', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: 'https://memgenius.com/wordle', lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
+    { url: 'https://memgenius.com/wordly', lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
     { url: 'https://memgenius.com/mastermind', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
 
     // Rankings
@@ -34,7 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://memgenius.com/precision/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/versus/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/sudoku/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
-    { url: 'https://memgenius.com/wordle/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+    { url: 'https://memgenius.com/wordly/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/mastermind/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/ranking/hall-of-fame', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
 

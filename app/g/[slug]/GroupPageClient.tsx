@@ -24,6 +24,8 @@ const CATEGORIES = [
   ]},
   { key: 'logic', label: 'Logic', color: '#6A1B9A', tabs: [
     { key: 'sudoku', label: 'Sudoku', color: '#757575' },
+    { key: 'wordly', label: 'Wordly', color: '#2E7D32' },
+    { key: 'mastermind', label: 'Mastermind', color: '#6A1B9A' },
   ]},
 ]
 const TABS = CATEGORIES.flatMap(c => c.tabs)
@@ -35,7 +37,7 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea, bestSudoku }: any) {
+export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea, bestSudoku, bestWordly, bestMastermind }: any) {
   const [tab, setTab] = useState('flags')
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
@@ -104,6 +106,16 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
         return memberNames
           .filter((n: string) => bestSudoku?.[n] !== undefined)
           .map((n: string) => ({ name: n, score: `${Math.floor(bestSudoku[n]/60000)}:${String(Math.floor((bestSudoku[n]%60000)/1000)).padStart(2,'0')}`, raw: bestSudoku[n] }))
+          .sort((a: any, b: any) => a.raw - b.raw)
+      case 'wordly':
+        return memberNames
+          .filter((n: string) => bestWordly?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${Math.floor(bestWordly[n]/60000)}:${String(Math.floor((bestWordly[n]%60000)/1000)).padStart(2,'0')}`, raw: bestWordly[n] }))
+          .sort((a: any, b: any) => a.raw - b.raw)
+      case 'mastermind':
+        return memberNames
+          .filter((n: string) => bestMastermind?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${Math.floor(bestMastermind[n]/60000)}:${String(Math.floor((bestMastermind[n]%60000)/1000)).padStart(2,'0')}`, raw: bestMastermind[n] }))
           .sort((a: any, b: any) => a.raw - b.raw)
       case 'pendulum':
         return memberNames

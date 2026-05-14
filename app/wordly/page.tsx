@@ -251,7 +251,7 @@ export default function WordlePage() {
           {worldRank && <div style={{ fontSize: 20, fontWeight: 900, color: GREEN, marginTop: 8 }}>#{worldRank} World Today</div>}
           {phase === 'won' && (
             <button onClick={() => {
-              const text = `I solved today's MemGenius Wordle in ${fmtTime(finalTime)} with ${guesses.length} tries! Can you beat me? memgenius.com/wordle`
+              const text = `I solved today's MemGenius Wordle in ${fmtTime(finalTime)} with ${guesses.length} tries! Can you beat me? memgenius.com/wordly`
               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
             }} style={{ marginTop: 16, padding: '14px 32px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
               Share
