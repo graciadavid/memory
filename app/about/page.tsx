@@ -8,7 +8,7 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 const CATEGORIES = [
   { label: 'Memory', color: '#E91E63', games: 'Memory · Digits · Simon Says', desc: 'Train your ability to retain and recall information.' },
   { label: 'Agility', color: '#FF6F00', games: 'Stop · F1 Reaction · Pendulum', desc: 'Sharpen your reaction speed and timing precision.' },
-  { label: 'Knowledge', color: '#1565C0', games: 'Flags · Higher or Lower', desc: 'Test and expand your world knowledge.' },
+  { label: 'Knowledge', color: '#1565C0', games: 'Flags · Higher or Lower · GeoShape', desc: 'Test and expand your world knowledge.' },
   { label: 'Logic', color: '#6A1B9A', games: 'Sudoku · Wordly · Mastermind', desc: 'Challenge your reasoning and problem solving skills.' },
 ]
 
@@ -28,7 +28,7 @@ export default function AboutPage() {
 
       <h1 style={{ fontSize: 26, fontWeight: 900, marginBottom: 8, letterSpacing: -0.5 }}>About MemGenius</h1>
       <p style={{ fontSize: 14, color: `${BROWN}70`, lineHeight: 1.8, marginBottom: 32 }}>
-        MemGenius is a free daily brain training platform built around one idea: Train Your Brain. 12 games across 4 categories, world rankings, group competitions and daily streaks. No login required, no ads, free forever.
+        MemGenius is a free daily brain training platform built around one idea: Train Your Brain. 13 games across 4 categories, world rankings, group competitions and daily streaks. No login required, no ads, free forever.
       </p>
 
       {/* Categories */}
