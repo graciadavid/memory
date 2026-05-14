@@ -64,6 +64,8 @@ export default function ProfilePage() {
   const [versusAreaRank, setVersusAreaRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [activeTab, setActiveTab] = useState('memory')
   const [sudokuRank, setSudokuRank] = useState<{ time: number | null, rank: number | null, difficulty: string | null }>({ time: null, rank: null, difficulty: null })
+  const [wordlyRank, setWordlyRank] = useState<{ time: number | null, rank: number | null, attempts: number | null }>({ time: null, rank: null, attempts: null })
+  const [mastermindRank, setMastermindRank] = useState<{ time: number | null, rank: number | null, attempts: number | null }>({ time: null, rank: null, attempts: null })
   const [myGroups, setMyGroups] = useState<any[]>([])
   const [hasPassword, setHasPassword] = useState(false)
 
@@ -140,6 +142,28 @@ export default function ProfilePage() {
       const myBest = best[profile.name]
       if (!myBest) return
       setSudokuRank({ time: myBest.time, difficulty: myBest.difficulty, rank: Object.values(best).filter(d => d.time < myBest.time).length + 1 })
+    })
+
+    // Fetch Wordly
+    supabase.from('wordle_scores').select('player_name, time_ms, attempts').order('time_ms', { ascending: true }).limit(500).then(({ data }) => {
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name]) best[s.player_name] = s.time_ms })
+      const myBest = best[profile.name]
+      if (!myBest) return
+      const myAttempts = data.find((s: any) => s.player_name === profile.name)?.attempts
+      setWordlyRank({ time: myBest, rank: Object.values(best).filter(t => t < myBest).length + 1, attempts: myAttempts })
+    })
+
+    // Fetch Mastermind
+    supabase.from('mastermind_scores').select('player_name, time_ms, attempts').order('time_ms', { ascending: true }).limit(500).then(({ data }) => {
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name]) best[s.player_name] = s.time_ms })
+      const myBest = best[profile.name]
+      if (!myBest) return
+      const myAttempts = data.find((s: any) => s.player_name === profile.name)?.attempts
+      setMastermindRank({ time: myBest, rank: Object.values(best).filter(t => t < myBest).length + 1, attempts: myAttempts })
     })
 
     // Fetch versus by category
@@ -555,23 +579,29 @@ export default function ProfilePage() {
           ))}
         </>}
 
-        {activeTab === 'logic' && (
-          <div style={{ borderRadius: 20, overflow: 'hidden' }}>
-            <div style={{ background: 'linear-gradient(135deg, #757575, #9E9E9E)', padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <img src="/icons/digits.webp" alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Sudoku</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{sudokuRank.time ? `${sudokuRank.difficulty} · ${Math.floor(sudokuRank.time/60000)}:${String(Math.floor((sudokuRank.time%60000)/1000)).padStart(2,'0')}` : 'No record yet'}</div>
+        {activeTab === 'logic' && <>
+          {([
+            { label: 'Sudoku', color: '#757575', icon: '/icons/digits.webp', score: sudokuRank.time ? `${sudokuRank.difficulty} · ${Math.floor(sudokuRank.time/60000)}:${String(Math.floor((sudokuRank.time%60000)/1000)).padStart(2,'0')}` : null, rank: sudokuRank.rank },
+            { label: 'Wordly', color: '#2E7D32', icon: '/icons/digits.webp', score: wordlyRank.time ? `${Math.floor(wordlyRank.time/60000)}:${String(Math.floor((wordlyRank.time%60000)/1000)).padStart(2,'0')} · ${wordlyRank.attempts} tries` : null, rank: wordlyRank.rank },
+            { label: 'Mastermind', color: '#6A1B9A', icon: '/icons/digits.webp', score: mastermindRank.time ? `${Math.floor(mastermindRank.time/60000)}:${String(Math.floor((mastermindRank.time%60000)/1000)).padStart(2,'0')} · ${mastermindRank.attempts} tries` : null, rank: mastermindRank.rank },
+          ] as any[]).map(g => (
+            <div key={g.label} style={{ borderRadius: 20, overflow: 'hidden' }}>
+              <div style={{ background: `linear-gradient(135deg, ${g.color}, ${g.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <img src={g.icon} alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{g.label}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{g.score ?? 'No record yet'}</div>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{g.rank ? `#${g.rank}` : '—'}</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
                 </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{sudokuRank.rank ? `#${sudokuRank.rank}` : '—'}</div>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
-              </div>
             </div>
-          </div>
-        )}
+          ))}
+        </>}
 
       </div>
       </div>
