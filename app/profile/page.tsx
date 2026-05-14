@@ -581,9 +581,9 @@ export default function ProfilePage() {
 
         {activeTab === 'logic' && <>
           {([
-            { label: 'Sudoku', color: '#757575', icon: '/icons/digits.webp', score: sudokuRank.time ? `${sudokuRank.difficulty} · ${Math.floor(sudokuRank.time/60000)}:${String(Math.floor((sudokuRank.time%60000)/1000)).padStart(2,'0')}` : null, rank: sudokuRank.rank },
-            { label: 'Wordly', color: '#2E7D32', icon: '/icons/digits.webp', score: wordlyRank.time ? `${Math.floor(wordlyRank.time/60000)}:${String(Math.floor((wordlyRank.time%60000)/1000)).padStart(2,'0')} · ${wordlyRank.attempts} tries` : null, rank: wordlyRank.rank },
-            { label: 'Mastermind', color: '#6A1B9A', icon: '/icons/digits.webp', score: mastermindRank.time ? `${Math.floor(mastermindRank.time/60000)}:${String(Math.floor((mastermindRank.time%60000)/1000)).padStart(2,'0')} · ${mastermindRank.attempts} tries` : null, rank: mastermindRank.rank },
+            { label: 'Sudoku', color: '#757575', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sudoku.png', score: sudokuRank.time ? `${sudokuRank.difficulty} · ${Math.floor(sudokuRank.time/60000)}:${String(Math.floor((sudokuRank.time%60000)/1000)).padStart(2,'0')}` : null, rank: sudokuRank.rank },
+            { label: 'Wordly', color: '#2E7D32', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/wordly.png', score: wordlyRank.time ? `${Math.floor(wordlyRank.time/60000)}:${String(Math.floor((wordlyRank.time%60000)/1000)).padStart(2,'0')} · ${wordlyRank.attempts} tries` : null, rank: wordlyRank.rank },
+            { label: 'Mastermind', color: '#6A1B9A', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/mastermind.png', score: mastermindRank.time ? `${Math.floor(mastermindRank.time/60000)}:${String(Math.floor((mastermindRank.time%60000)/1000)).padStart(2,'0')} · ${mastermindRank.attempts} tries` : null, rank: mastermindRank.rank },
           ] as any[]).map(g => (
             <div key={g.label} style={{ borderRadius: 20, overflow: 'hidden' }}>
               <div style={{ background: `linear-gradient(135deg, ${g.color}, ${g.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

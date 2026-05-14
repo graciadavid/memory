@@ -50,9 +50,9 @@ const CATEGORIES = [
     color: '#6A1B9A',
     desc: 'Challenge your reasoning and problem solving skills',
     games: [
-      { key: 'sudoku', href: '/sudoku', icon: '/icons/digits.webp', label: 'Sudoku', sub: 'How fast can you solve it?', bg: '#757575' },
-      { key: 'wordly', href: '/wordle', icon: '/icons/digits.webp', label: 'Wordly', sub: 'Guess the word of the day', bg: '#2E7D32' },
-      { key: 'mastermind', href: '/mastermind', icon: '/icons/digits.webp', label: 'Mastermind', sub: 'Crack the color code', bg: '#6A1B9A' },
+      { key: 'sudoku', href: '/sudoku', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sudoku.png', label: 'Sudoku', sub: 'How fast can you solve it?', bg: '#757575' },
+      { key: 'wordly', href: '/wordly', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/wordly.png', label: 'Wordly', sub: 'Guess the word of the day', bg: '#2E7D32' },
+      { key: 'mastermind', href: '/mastermind', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/mastermind.png', label: 'Mastermind', sub: 'Crack the color code', bg: '#6A1B9A' },
     ]
   },
 ]
