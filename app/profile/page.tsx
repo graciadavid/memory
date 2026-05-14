@@ -63,6 +63,7 @@ export default function ProfilePage() {
   const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusAreaRank, setVersusAreaRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [activeTab, setActiveTab] = useState('memory')
+  const [sudokuRank, setSudokuRank] = useState<{ time: number | null, rank: number | null, difficulty: string | null }>({ time: null, rank: null, difficulty: null })
   const [myGroups, setMyGroups] = useState<any[]>([])
   const [hasPassword, setHasPassword] = useState(false)
 
@@ -129,6 +130,16 @@ export default function ProfilePage() {
       const best: Record<string, number> = {}
       const myDiff = best[profile.name]
       setPendulumRank({ diff: myDiff, rank: Object.values(best).filter(d => d < myDiff).length + 1 })
+    })
+
+    // Fetch Sudoku
+    supabase.from('sudoku_scores').select('player_name, time_ms, difficulty').order('time_ms', { ascending: true }).limit(500).then(({ data }) => {
+      if (!data) return
+      const best: Record<string, {time: number, difficulty: string}> = {}
+      data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name].time) best[s.player_name] = {time: s.time_ms, difficulty: s.difficulty} })
+      const myBest = best[profile.name]
+      if (!myBest) return
+      setSudokuRank({ time: myBest.time, difficulty: myBest.difficulty, rank: Object.values(best).filter(d => d.time < myBest.time).length + 1 })
     })
 
     // Fetch versus by category
@@ -551,11 +562,11 @@ export default function ProfilePage() {
                 <img src="/icons/digits.webp" alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
                 <div>
                   <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Sudoku</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>Coming soon</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{sudokuRank.time ? `${sudokuRank.difficulty} · ${Math.floor(sudokuRank.time/60000)}:${String(Math.floor((sudokuRank.time%60000)/1000)).padStart(2,'0')}` : 'No record yet'}</div>
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>—</div>
+                <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{sudokuRank.rank ? `#${sudokuRank.rank}` : '—'}</div>
                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
               </div>
             </div>
