@@ -130,7 +130,7 @@ export default function SudokuPage() {
   const COLORS = { easy: '#2E7D32', medium: GOLD, hard: '#C62828' }
 
   return (
-    <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #EDE7F6 0%, ${CREAM} 50%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', padding: '0 0 80px', color: BROWN }}>
+    <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #EDE7F6 0%, ${CREAM} 50%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', padding: '0 0 140px', color: BROWN }}>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
@@ -179,7 +179,6 @@ export default function SudokuPage() {
               const isSelected = selected?.[0] === r && selected?.[1] === c
               const isFixed = fixed[r]?.[c]
               const isError = errors.has(`${r}-${c}`)
-              const isSameNum = selected && val !== 0 && board[selected[0]][selected[1]] === val
               const isHighlight = selected && (selected[0] === r || selected[1] === c || (Math.floor(selected[0]/3) === Math.floor(r/3) && Math.floor(selected[1]/3) === Math.floor(c/3)))
               const borderR = (c + 1) % 3 === 0 && c !== 8
               const borderB = (r + 1) % 3 === 0 && r !== 8
@@ -188,7 +187,7 @@ export default function SudokuPage() {
                 <div key={`${r}-${c}`} onClick={() => handleCell(r, c)} style={{
                   aspectRatio: '1',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: isSelected ? `${PURPLE}30` : isError ? '#FFEBEE' : isSameNum ? `${PURPLE}15` : '#fff',
+                  background: isSelected ? `${PURPLE}30` : isError ? '#FFEBEE' : '#fff',
                   fontSize: 16, fontWeight: isFixed ? 900 : 700,
                   color: isError ? '#C62828' : isFixed ? BROWN : PURPLE,
                   cursor: isFixed ? 'default' : 'pointer',
