@@ -35,7 +35,12 @@ const WORDS = [
   'SWEET','GREET','FLEET','SLEET','SHEET','STEEL','WHEEL','KNEEL','KEEL','FEEL',
 ]
 
-const getDailyWord = () => WORDS[Math.floor(Math.random() * WORDS.length)]
+const getDailyWord = () => {
+  const start = new Date("2026-01-01").getTime()
+  const today = new Date().toISOString().split("T")[0]
+  const diff = Math.floor((new Date(today).getTime() - start) / 86400000)
+  return WORDS[diff % WORDS.length]
+}
 
 const KEYBOARD = [
   ['Q','W','E','R','T','Y','U','I','O','P'],
@@ -88,10 +93,10 @@ export default function WordlePage() {
   const [alreadyPlayed, setAlreadyPlayed] = useState(false)
 
   useEffect(() => {
-    if (phase !== 'playing') return
+    if (phase !== 'playing' || alreadyPlayed) return
     const t = setInterval(() => setElapsed(Date.now() - startTime), 100)
     return () => clearInterval(t)
-  }, [phase, startTime])
+  }, [phase, startTime, alreadyPlayed])
 
   useEffect(() => {
     if (!profile?.name) return
