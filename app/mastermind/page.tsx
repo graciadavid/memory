@@ -9,7 +9,7 @@ const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const PURPLE = '#6A1B9A'
 
-const COLORS = ['#E53935', '#1E88E5', '#43A047', '#FDD835', '#FB8C00']
+const COLORS = ['#6A1B9A', '#1E88E5', '#43A047', '#FDD835', '#FB8C00']
 const EMPTY = '#E0E0E0'
 const MAX_ATTEMPTS = 7
 const CODE_LENGTH = 5
