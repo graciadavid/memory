@@ -6,6 +6,13 @@ const CREAM = "#FAF7F2"
 
 const POSTS = [
   {
+    slug: 'sudoku-game-online',
+    title: 'Sudoku Online — Why It Is the Best Brain Game for Adults Over 50',
+    desc: 'Science-backed benefits of daily Sudoku for cognitive health. Free online Sudoku with world ranking.',
+    date: 'May 2026',
+    tag: 'Brain Health',
+  },
+  {
     slug: "higher-or-lower-game",
     title: "Higher or Lower Game Online — Countries, Population and Area",
     desc: "Guess which country has more people or bigger area. Free, no login, world ranking. The geography game that breaks all your assumptions.",

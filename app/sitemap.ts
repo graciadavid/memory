@@ -61,6 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://memgenius.com/blog/how-to-train-your-brain-daily', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
     { url: 'https://memgenius.com/blog/simon-says-game-online', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
     { url: 'https://memgenius.com/blog/higher-or-lower-game', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: 'https://memgenius.com/blog/sudoku-game-online', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
 
     // Info
     { url: 'https://memgenius.com/teachers', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
