@@ -140,11 +140,11 @@ export default function MastermindPage() {
       {/* Legend */}
       <div style={{ margin: '12px 20px 0', display: 'flex', gap: 16, fontSize: 11, fontWeight: 800, color: `${BROWN}50` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: BROWN }} />
+          <div style={{ width: 10, height: 10, borderRadius: '50%', border: '3px solid #2E7D32' }} />
           Correct position
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#fff', border: `2px solid ${BROWN}40` }} />
+          <div style={{ width: 10, height: 10, borderRadius: '50%', border: '3px solid #E91E63' }} />
           Wrong position
         </div>
       </div>
@@ -161,6 +161,7 @@ export default function MastermindPage() {
             <div key={rowIdx} style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
               {row.map((col, j) => {
                 const isBlack = fb && j < fb.black
+                const isWhite = fb && !isBlack && j < fb.black + fb.white
                 return (
                   <div key={j} style={{
                     width: 48, height: 48, borderRadius: '50%',
