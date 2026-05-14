@@ -48,6 +48,7 @@ const CARDS = [
   { key: 'precisionPendulum', label: 'Pendulum', phrase: 'The best Pendulum player in the world is', color: '#4A148C', bg: 'linear-gradient(135deg, #EDE7F6, #D1C4E9)', border: '#4A148C40', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.png', result: (c: any) => `${c.difference_ms}ms off` },
   { key: 'versusPopulation', label: 'Population', phrase: 'The best Higher or Lower Population player is', color: '#C62828', bg: 'linear-gradient(135deg, #FFEBEE, #FFCDD2)', border: '#C6282840', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', result: (c: any) => `${c.level} correct` },
   { key: 'versusArea', label: 'Area km²', phrase: 'The best Higher or Lower Area player is', color: '#B71C1C', bg: 'linear-gradient(135deg, #FFEBEE, #FFCDD2)', border: '#B71C1C40', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/higuer.png', result: (c: any) => `${c.level} correct` },
+  { key: 'sudoku', label: 'Sudoku', phrase: 'The fastest Sudoku solver in the world is', color: '#6A1B9A', bg: 'linear-gradient(135deg, #EDE7F6, #D1C4E9)', border: '#6A1B9A40', icon: '/icons/digits.webp', result: (c: any) => `${c.difficulty} · ${String(Math.floor(c.time_ms/60000)).padStart(2,'0')}:${String(Math.floor((c.time_ms%60000)/1000)).padStart(2,'0')}` },
 ]
 
 export default function HallOfFameClient({ champions }: { champions: Record<string, any> }) {
