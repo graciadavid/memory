@@ -175,17 +175,21 @@ export default function MastermindPage() {
         {/* Past rows */}
         {guesses.map((guess, rowIdx) => {
           const fb = feedbacks[rowIdx]
-          const isLastRow = rowIdx === guesses.length - 1
           return (
             <div key={rowIdx} style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-              {guess.map((col, j) => (
-                <div key={j} style={{
-                  width: 52, height: 52, borderRadius: '50%',
-                  background: COLORS[col],
-                  boxShadow: `0 4px 0 ${COLORS[col]}50`,
-                  animation: isLastRow && blinking.includes(j) ? 'blink 0.5s ease 2' : undefined,
-                }} />
-              ))}
+              {guess.map((col, j) => {
+                const isCorrect = fb.correctPos.includes(j)
+                const isWrong = fb.wrongPos.includes(j)
+                return (
+                  <div key={j} style={{
+                    width: 52, height: 52, borderRadius: '50%',
+                    background: COLORS[col],
+                    boxShadow: `0 4px 0 ${COLORS[col]}50`,
+                    border: isCorrect ? '4px solid #2E7D32' : isWrong ? '4px solid #E91E63' : 'none',
+                    opacity: !isCorrect && !isWrong ? 0.4 : 1,
+                  }} />
+                )
+              })}
             </div>
           )
         })}
