@@ -17,16 +17,21 @@ const CODE_LENGTH = 5
 const generateCode = () => Array.from({ length: CODE_LENGTH }, () => Math.floor(Math.random() * COLORS.length))
 
 const getFeedback = (guess: number[], code: number[]) => {
-  let black = 0, white = 0
   const codeUsed = Array(CODE_LENGTH).fill(false)
   const guessUsed = Array(CODE_LENGTH).fill(false)
-  guess.forEach((g, i) => { if (g === code[i]) { black++; codeUsed[i] = true; guessUsed[i] = true } })
+  const correctPos: number[] = []
+  const wrongPos: number[] = []
+
+  guess.forEach((g, i) => {
+    if (g === code[i]) { correctPos.push(i); codeUsed[i] = true; guessUsed[i] = true }
+  })
   guess.forEach((g, i) => {
     if (guessUsed[i]) return
     const idx = code.findIndex((c, j) => c === g && !codeUsed[j])
-    if (idx !== -1) { white++; codeUsed[idx] = true }
+    if (idx !== -1) { wrongPos.push(i); codeUsed[idx] = true }
   })
-  return { black, white }
+
+  return { black: correctPos.length, white: wrongPos.length, correctPos, wrongPos }
 }
 
 function fmt(ms: number) {
@@ -40,7 +45,7 @@ export default function MastermindPage() {
   const { profile } = usePlayer()
   const [code] = useState(generateCode)
   const [guesses, setGuesses] = useState<number[][]>([])
-  const [feedbacks, setFeedbacks] = useState<{ black: number, white: number, whitePositions: number[] }[]>([])
+  const [feedbacks, setFeedbacks] = useState<{ black: number, white: number, correctPos: number[], wrongPos: number[] }[]>([])
   const [current, setCurrent] = useState<(number | null)[]>(Array(CODE_LENGTH).fill(null))
   const [phase, setPhase] = useState<'playing' | 'won' | 'lost'>('playing')
   const [startTime] = useState(Date.now())
@@ -50,6 +55,7 @@ export default function MastermindPage() {
   const [bestScore, setBestScore] = useState<{ time_ms: number, attempts: number } | null>(null)
   const [blinking, setBlinking] = useState<number[]>([])
   const [selectedPos, setSelectedPos] = useState<number>(0)
+  const [checking, setChecking] = useState(false)
 
   useEffect(() => {
     if (phase !== 'playing') return
@@ -63,51 +69,19 @@ export default function MastermindPage() {
       .then(({ data }) => { if (data?.[0]) setBestScore(data[0]) })
   }, [profile?.name])
 
-  // Build next row with fixed correct positions
-  const getFixedPositions = useCallback(() => {
-    if (guesses.length === 0) return Array(CODE_LENGTH).fill(null)
-    const lastGuess = guesses[guesses.length - 1]
-    const lastFb = feedbacks[feedbacks.length - 1]
-    return lastGuess.map((color, i) => {
-      if (i < lastFb.black) return color // correct position — pre-fill
-      return null
-    })
-  }, [guesses, feedbacks])
-
-  useEffect(() => {
-    if (phase !== 'playing') {
-      const fixed = getFixedPositions()
-      setCurrent(fixed)
-      setSelectedPos(fixed.findIndex(v => v === null) ?? 0)
-    }
-  }, [guesses.length])
-
   const submitGuess = useCallback(async () => {
-    if (current.some(v => v === null)) return
+    if (current.some(v => v === null) || checking) return
+    setChecking(true)
     const guess = current as number[]
     const fb = getFeedback(guess, code)
 
-    // Find white positions for blinking
-    const codeUsed = Array(CODE_LENGTH).fill(false)
-    const guessUsed = Array(CODE_LENGTH).fill(false)
-    const blackPos: number[] = []
-    const whitePos: number[] = []
-
-    guess.forEach((g, i) => { if (g === code[i]) { blackPos.push(i); codeUsed[i] = true; guessUsed[i] = true } })
-    guess.forEach((g, i) => {
-      if (guessUsed[i]) return
-      const idx = code.findIndex((c, j) => c === g && !codeUsed[j])
-      if (idx !== -1) { whitePos.push(i); codeUsed[idx] = true }
-    })
-
-    // Blink white positions
-    setBlinking(whitePos)
-    setTimeout(() => setBlinking([]), 1200)
-
-    const newGuesses = [...guesses, guess]
-    const newFeedbacks = [...feedbacks, { ...fb, whitePositions: whitePos }]
-
-    setTimeout(() => {
+    // Blink wrong positions
+    setBlinking(fb.wrongPos)
+    
+    setTimeout(async () => {
+      setBlinking([])
+      const newGuesses = [...guesses, guess]
+      const newFeedbacks = [...feedbacks, fb]
       setGuesses(newGuesses)
       setFeedbacks(newFeedbacks)
 
@@ -119,31 +93,31 @@ export default function MastermindPage() {
         setFinalTime(time)
         setPhase(won ? 'won' : 'lost')
         if (won && profile?.name) {
-          supabase.from('mastermind_scores').insert({ player_name: profile.name, attempts: newGuesses.length, time_ms: time })
-            .then(() => supabase.from('mastermind_scores').select('player_name, time_ms').order('time_ms', { ascending: true }).limit(500))
-            .then(({ data }) => {
-              if (data) {
-                const best: Record<string, number> = {}
-                data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name]) best[s.player_name] = s.time_ms })
-                setWorldRank(Object.values(best).filter(t => t < time).length + 1)
-              }
-            })
+          await supabase.from('mastermind_scores').insert({ player_name: profile.name, attempts: newGuesses.length, time_ms: time })
+          const { data } = await supabase.from('mastermind_scores').select('player_name, time_ms').order('time_ms', { ascending: true }).limit(500)
+          if (data) {
+            const best: Record<string, number> = {}
+            data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name]) best[s.player_name] = s.time_ms })
+            setWorldRank(Object.values(best).filter(t => t < time).length + 1)
+          }
         }
       } else {
         // Pre-fill next row with correct positions
-        const fixed = newGuesses[newGuesses.length - 1].map((color, i) => i < fb.black ? color : null)
+        const fixed: (number | null)[] = Array(CODE_LENGTH).fill(null)
+        fb.correctPos.forEach(i => { fixed[i] = guess[i] })
         setCurrent(fixed)
-        setSelectedPos(fixed.findIndex(v => v === null) ?? 0)
+        const firstEmpty = fixed.findIndex(v => v === null)
+        setSelectedPos(firstEmpty !== -1 ? firstEmpty : 0)
       }
-    }, 1200)
-  }, [current, guesses, feedbacks, code, startTime, profile?.name])
+      setChecking(false)
+    }, 1000)
+  }, [current, guesses, feedbacks, code, startTime, profile?.name, checking])
 
   const selectColor = (colorIdx: number) => {
-    if (phase !== 'playing') return
+    if (phase !== 'playing' || checking) return
     const next = [...current]
     next[selectedPos] = colorIdx
     setCurrent(next)
-    // Move to next empty position
     const nextEmpty = next.findIndex((v, i) => i > selectedPos && v === null)
     if (nextEmpty !== -1) setSelectedPos(nextEmpty)
     else {
@@ -153,26 +127,24 @@ export default function MastermindPage() {
   }
 
   const clearPos = (pos: number) => {
-    if (phase !== 'playing') return
+    if (phase !== 'playing' || checking) return
     const lastFb = feedbacks[feedbacks.length - 1]
-    if (lastFb && pos < lastFb.black) return // can't clear fixed positions
+    if (lastFb && lastFb.correctPos.includes(pos)) return
     const next = [...current]
     next[pos] = null
     setCurrent(next)
     setSelectedPos(pos)
   }
 
-  const playAgain = () => window.location.reload()
-
   const lastFb = feedbacks[feedbacks.length - 1]
-  const fixedCount = lastFb?.black ?? 0
-  const canSubmit = current.every(v => v !== null) && phase === 'playing'
+  const fixedPositions = lastFb?.correctPos ?? []
+  const canSubmit = current.every(v => v !== null) && phase === 'playing' && !checking
 
   return (
     <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #EDE7F6 0%, ${CREAM} 40%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', padding: '0 0 100px', color: BROWN }}>
 
       <style>{`
-        @keyframes blink { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:0.3; transform:scale(0.85) } }
+        @keyframes blink { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:0.4; transform:scale(0.8) } }
         @keyframes fadeUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
       `}</style>
 
@@ -197,39 +169,23 @@ export default function MastermindPage() {
         </div>
       )}
 
-      {/* Legend */}
-      <div style={{ margin: '12px 20px 0', display: 'flex', gap: 16, fontSize: 11, fontWeight: 800, color: `${BROWN}50` }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 10, height: 10, borderRadius: '50%', border: '3px solid #2E7D32' }} />
-          Correct position
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 10, height: 10, borderRadius: '50%', border: '3px solid #E91E63', animation: 'blink 0.6s ease infinite' }} />
-          Wrong position
-        </div>
-      </div>
-
-      {/* Board — past rows */}
+      {/* Board */}
       <div style={{ padding: '16px 20px 0', display: 'flex', flexDirection: 'column', gap: 8 }}>
+
+        {/* Past rows */}
         {guesses.map((guess, rowIdx) => {
           const fb = feedbacks[rowIdx]
+          const isLastRow = rowIdx === guesses.length - 1
           return (
             <div key={rowIdx} style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-              {guess.map((col, j) => {
-                const isCorrect = j < fb.black
-                const isWrong = fb.whitePositions.includes(j)
-                const isBlinking = rowIdx === guesses.length - 1 && blinking.includes(j)
-                return (
-                  <div key={j} style={{
-                    width: 50, height: 50, borderRadius: '50%',
-                    background: COLORS[col],
-                    border: isCorrect ? '4px solid #2E7D32' : isWrong ? '4px solid #E91E63' : '2px solid transparent',
-                    boxShadow: `0 4px 0 ${COLORS[col]}60`,
-                    animation: isBlinking ? 'blink 0.6s ease 2' : undefined,
-                    transition: 'border 0.3s',
-                  }} />
-                )
-              })}
+              {guess.map((col, j) => (
+                <div key={j} style={{
+                  width: 52, height: 52, borderRadius: '50%',
+                  background: COLORS[col],
+                  boxShadow: `0 4px 0 ${COLORS[col]}50`,
+                  animation: isLastRow && blinking.includes(j) ? 'blink 0.5s ease 2' : undefined,
+                }} />
+              ))}
             </div>
           )
         })}
@@ -238,15 +194,15 @@ export default function MastermindPage() {
         {phase === 'playing' && (
           <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
             {current.map((col, j) => {
-              const isFixed = j < fixedCount
+              const isFixed = fixedPositions.includes(j)
               return (
                 <div key={j} onClick={() => !isFixed && clearPos(j)} style={{
-                  width: 50, height: 50, borderRadius: '50%',
+                  width: 52, height: 52, borderRadius: '50%',
                   background: col !== null ? COLORS[col] : EMPTY,
-                  border: selectedPos === j && !isFixed ? `4px solid ${PURPLE}` : isFixed ? '4px solid #2E7D32' : '2px solid #E0E0E0',
-                  boxShadow: col !== null ? `0 4px 0 ${COLORS[col]}60` : 'none',
+                  boxShadow: col !== null ? `0 4px 0 ${COLORS[col]}50` : 'none',
+                  border: selectedPos === j && !isFixed ? `3px solid ${PURPLE}` : 'none',
                   cursor: isFixed ? 'default' : 'pointer',
-                  transition: 'border 0.2s',
+                  opacity: isFixed ? 0.8 : 1,
                 }} />
               )
             })}
@@ -255,9 +211,9 @@ export default function MastermindPage() {
 
         {/* Empty rows */}
         {phase === 'playing' && Array(MAX_ATTEMPTS - guesses.length - 1).fill(null).map((_, i) => (
-          <div key={i} style={{ display: 'flex', gap: 6, justifyContent: 'center', opacity: 0.3 }}>
+          <div key={i} style={{ display: 'flex', gap: 6, justifyContent: 'center', opacity: 0.2 }}>
             {Array(CODE_LENGTH).fill(null).map((_, j) => (
-              <div key={j} style={{ width: 50, height: 50, borderRadius: '50%', background: EMPTY, border: '2px solid #E0E0E0' }} />
+              <div key={j} style={{ width: 52, height: 52, borderRadius: '50%', background: EMPTY }} />
             ))}
           </div>
         ))}
@@ -270,8 +226,8 @@ export default function MastermindPage() {
             {phase === 'won' ? fmt(finalTime) : 'Game Over'}
           </div>
           {phase === 'lost' && (
-            <div style={{ display: 'flex', gap: 6, justifyContent: 'center', marginTop: 8 }}>
-              {code.map((c, i) => <div key={i} style={{ width: 36, height: 36, borderRadius: '50%', background: COLORS[c], boxShadow: `0 3px 0 ${COLORS[c]}60` }} />)}
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 12 }}>
+              {code.map((c, i) => <div key={i} style={{ width: 40, height: 40, borderRadius: '50%', background: COLORS[c], boxShadow: `0 3px 0 ${COLORS[c]}60` }} />)}
             </div>
           )}
           <div style={{ fontSize: 14, color: `${BROWN}60`, marginTop: 8 }}>
@@ -285,7 +241,7 @@ export default function MastermindPage() {
                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
               }} style={{ flex: 2, padding: '14px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
             )}
-            <button onClick={playAgain} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Play again</button>
+            <button onClick={() => window.location.reload()} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Play again</button>
           </div>
         </div>
       )}
@@ -296,10 +252,9 @@ export default function MastermindPage() {
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 12 }}>
             {COLORS.map((color, i) => (
               <button key={i} onClick={() => selectColor(i)} style={{
-                width: 50, height: 50, borderRadius: '50%', border: 'none',
+                width: 52, height: 52, borderRadius: '50%', border: 'none',
                 background: color, cursor: 'pointer',
                 boxShadow: `0 4px 0 ${color}60`,
-                transition: 'transform 0.1s',
               }} />
             ))}
           </div>
