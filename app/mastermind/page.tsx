@@ -158,34 +158,19 @@ export default function MastermindPage() {
           const row = isActive ? [...current, ...Array(CODE_LENGTH - current.length).fill(-1)] : guess || Array(CODE_LENGTH).fill(-2)
 
           return (
-            <div key={rowIdx} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              {/* Pegs */}
-              <div style={{ display: 'flex', gap: 6, flex: 1 }}>
-                {row.map((c, j) => (
+            <div key={rowIdx} style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
+              {row.map((col, j) => {
+                const isBlack = fb && j < fb.black
+                return (
                   <div key={j} style={{
-                    width: 44, height: 44, borderRadius: '50%',
-                    background: c >= 0 ? COLORS[c] : EMPTY,
-                    border: isActive && j === current.length ? `3px solid ${PURPLE}` : isActive ? `2px solid ${BROWN}15` : 'none',
-                    boxShadow: c >= 0 ? `0 4px 0 ${c >= 0 ? COLORS[c] : EMPTY}60` : 'none',
+                    width: 48, height: 48, borderRadius: '50%',
+                    background: col >= 0 ? COLORS[col] : EMPTY,
+                    border: isBlack ? '4px solid #2E7D32' : isWhite ? '4px solid #E91E63' : isActive && j === current.length ? `4px solid ${PURPLE}` : isActive ? '2px solid #E0E0E0' : '2px solid transparent',
+                    boxShadow: col >= 0 ? `0 4px 0 ${COLORS[col]}60` : 'none',
                     transition: 'background 0.2s',
                   }} />
-                ))}
-              </div>
-
-              {/* Feedback */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, width: 36 }}>
-                {Array(CODE_LENGTH).fill(null).map((_, k) => {
-                  const isBlack = fb && k < fb.black
-                  const isWhite = fb && k >= fb.black && k < fb.black + fb.white
-                  return (
-                    <div key={k} style={{
-                      width: 14, height: 14, borderRadius: '50%',
-                      background: EMPTY,
-                      border: isBlack ? '3px solid #2E7D32' : isWhite ? '3px solid #E91E63' : '2px solid #E0E0E0',
-                    }} />
-                  )
-                })}
-              </div>
+                )
+              })}
             </div>
           )
         })}
