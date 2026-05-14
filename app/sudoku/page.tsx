@@ -54,7 +54,7 @@ export default function SudokuPage() {
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const [bestScore, setBestScore] = useState<number | null>(null)
   const [errors, setErrors] = useState<Set<string>>(new Set())
-  const timerRef = useRef<NodeJS.Timeout>()
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startRef = useRef<number>(0)
 
   useEffect(() => {
@@ -104,7 +104,7 @@ export default function SudokuPage() {
     // Check win
     const complete = newBoard.every((row, ri) => row.every((v, ci) => v === solution[ri][ci]))
     if (complete) {
-      clearInterval(timerRef.current)
+      if (timerRef.current) clearInterval(timerRef.current)
       const finalTime = Date.now() - startRef.current
       setElapsed(finalTime)
       setPhase('result')
@@ -125,7 +125,7 @@ export default function SudokuPage() {
     }
   }
 
-  useEffect(() => () => clearInterval(timerRef.current), [])
+  useEffect(() => () => if (timerRef.current) clearInterval(timerRef.current), [])
 
   const COLORS = { easy: '#2E7D32', medium: GOLD, hard: '#C62828' }
 
