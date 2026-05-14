@@ -170,7 +170,7 @@ export default function MastermindPage() {
       )}
 
       {/* Board */}
-      <div style={{ padding: '16px 20px 0', display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ padding: '10px 20px 0', display: 'flex', flexDirection: 'column', gap: 6 }}>
 
         {/* Past rows */}
         {guesses.map((guess, rowIdx) => {
@@ -182,7 +182,7 @@ export default function MastermindPage() {
                 const isWrong = fb.wrongPos.includes(j)
                 return (
                   <div key={j} style={{
-                    width: 52, height: 52, borderRadius: '50%',
+                    width: 42, height: 42, borderRadius: '50%',
                     background: COLORS[col],
                     boxShadow: `0 4px 0 ${COLORS[col]}50`,
                     border: isCorrect ? '4px solid #2E7D32' : isWrong ? '4px solid #E91E63' : 'none',
@@ -201,7 +201,7 @@ export default function MastermindPage() {
               const isFixed = fixedPositions.includes(j)
               return (
                 <div key={j} onClick={() => !isFixed && clearPos(j)} style={{
-                  width: 52, height: 52, borderRadius: '50%',
+                  width: 42, height: 42, borderRadius: '50%',
                   background: col !== null ? COLORS[col] : EMPTY,
                   boxShadow: col !== null ? `0 4px 0 ${COLORS[col]}50` : 'none',
                   border: selectedPos === j && !isFixed ? `3px solid ${PURPLE}` : 'none',
@@ -217,7 +217,7 @@ export default function MastermindPage() {
         {phase === 'playing' && Array(MAX_ATTEMPTS - guesses.length - 1).fill(null).map((_, i) => (
           <div key={i} style={{ display: 'flex', gap: 6, justifyContent: 'center', opacity: 0.2 }}>
             {Array(CODE_LENGTH).fill(null).map((_, j) => (
-              <div key={j} style={{ width: 52, height: 52, borderRadius: '50%', background: EMPTY }} />
+              <div key={j} style={{ width: 42, height: 42, borderRadius: '50%', background: EMPTY }} />
             ))}
           </div>
         ))}
@@ -252,11 +252,11 @@ export default function MastermindPage() {
 
       {/* Color picker */}
       {phase === 'playing' && (
-        <div style={{ padding: '20px 20px 0' }}>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 12 }}>
+        <div style={{ padding: '12px 20px 0' }}>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 10 }}>
             {COLORS.map((color, i) => (
               <button key={i} onClick={() => selectColor(i)} style={{
-                width: 52, height: 52, borderRadius: '50%', border: 'none',
+                width: 44, height: 44, borderRadius: '50%', border: 'none',
                 background: color, cursor: 'pointer',
                 boxShadow: `0 4px 0 ${color}60`,
               }} />
@@ -264,10 +264,10 @@ export default function MastermindPage() {
           </div>
           <button onClick={submitGuess} disabled={!canSubmit} style={{
             width: '100%', padding: '14px', borderRadius: 16, border: 'none',
-            background: canSubmit ? PURPLE : `${PURPLE}40`,
+            background: canSubmit ? '#2E7D32' : '#2E7D3240',
             color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit',
             cursor: canSubmit ? 'pointer' : 'default',
-            boxShadow: canSubmit ? `0 4px 0 ${PURPLE}60` : 'none',
+            boxShadow: canSubmit ? '0 4px 0 #2E7D3260' : 'none',
           }}>Check →</button>
         </div>
       )}

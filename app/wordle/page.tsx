@@ -35,12 +35,7 @@ const WORDS = [
   'SWEET','GREET','FLEET','SLEET','SHEET','STEEL','WHEEL','KNEEL','KEEL','FEEL',
 ]
 
-const getDailyWord = () => {
-  const start = new Date('2026-01-01').getTime()
-  const today = new Date().toISOString().split('T')[0]
-  const diff = Math.floor((new Date(today).getTime() - start) / 86400000)
-  return WORDS[diff % WORDS.length]
-}
+const getDailyWord = () => WORDS[Math.floor(Math.random() * WORDS.length)]
 
 const KEYBOARD = [
   ['Q','W','E','R','T','Y','U','I','O','P'],
