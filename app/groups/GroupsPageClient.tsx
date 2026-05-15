@@ -35,7 +35,7 @@ export default function GroupsPageClient() {
       })
   }, [profile?.name])
 
-  if (!loaded || !profile?.name) return null
+  if (!loaded) return null
 
   return (
     <>
