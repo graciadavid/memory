@@ -116,13 +116,6 @@ export default function AcePage() {
     ctx.stroke()
 
     // Level number above target
-    ctx.font = 'bold 72px Arial'
-    ctx.fillStyle = '#4CAF50'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.fillText(String(levelRef.current), TARGET_X, TARGET_Y - TARGET_R - 60)
-
-    // Level number above target
     ctx.font = '900 72px sans-serif'
     ctx.fillStyle = '#4CAF50'
     ctx.textAlign = 'center'
