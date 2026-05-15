@@ -59,10 +59,13 @@ export default function GroupPageClient({ group, members, memberCount, scores }:
   const myName = profile?.name || ''
 
   const currentCategory = CATEGORIES.find(c => c.key === category)!
-
-  useEffect(() => {
-    setGame(currentCategory.games[0].key)
-  }, [category])
+  
+  // When category changes, reset game to first of that category
+  const handleCategoryChange = (cat: string) => {
+    const newCat = CATEGORIES.find(c => c.key === cat)!
+    setCategory(cat)
+    setGame(newCat.games[0].key)
+  }
 
   const getRanking = () => {
     const data = scores[game] || []
@@ -122,7 +125,7 @@ export default function GroupPageClient({ group, members, memberCount, scores }:
       {/* Category tabs */}
       <div style={{ display: 'flex', gap: 6, padding: '16px 16px 8px', overflowX: 'auto' }}>
         {CATEGORIES.map(c => (
-          <button key={c.key} onClick={() => setCategory(c.key)} style={{
+          <button key={c.key} onClick={() => handleCategoryChange(c.key)} style={{
             padding: '8px 16px', borderRadius: 20, border: 'none', flexShrink: 0,
             background: category === c.key ? c.color : '#fff',
             color: category === c.key ? '#fff' : `${BROWN}60`,
