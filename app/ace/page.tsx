@@ -37,9 +37,9 @@ function playTone(freq1: number, freq2: number, duration: number, type: Oscillat
     osc.start(); osc.stop(ctx.currentTime + duration)
   } catch(e) {}
 }
-function playCorrect() { playTone(523, 784, 0.25, 'sine', 0.3) }
+function playCorrect() { playTone(800, 400, 0.15, 'square', 0.15) }
 function playWrong() { playTone(200, 120, 0.4, 'sawtooth', 0.2) }
-function playPerfect() { playTone(784, 1047, 0.4, 'sine', 0.3) }
+function playPerfect() { playTone(900, 450, 0.18, 'square', 0.2) }
 
 type Phase = 'intro' | 'playing' | 'gameover'
 type HitResult = 'perfect' | 'good' | 'miss' | null
@@ -55,9 +55,12 @@ const TARGET_Y = CANVAS_H / 2 + 40
 function getBallPos(t: number): { x: number, y: number } {
   // t goes from 0 to 1
   const x = t * CANVAS_W
-  // Arc: parabola peaking in the middle
-  const arcHeight = 120
-  const y = TARGET_Y - arcHeight * Math.sin(t * Math.PI)
+  // Ball starts high left, comes down to target level at center, goes back up right
+  // At t=0.5 the ball is exactly at TARGET_Y
+  const startY = TARGET_Y - 140
+  const endY = TARGET_Y - 100
+  // Parabola that passes through TARGET_Y at t=0.5
+  const y = TARGET_Y - 140 * Math.sin(t * Math.PI) + (startY - TARGET_Y) * (1 - t) + (endY - TARGET_Y) * t
   return { x, y }
 }
 
