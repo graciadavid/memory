@@ -103,7 +103,19 @@ function SplashDots({ current, color }: { current: number, color: string }) {
 let _splashShownForSession = false
 
 export default function LandingPage() {
-  const { profile, loaded, createProfile } = usePlayer()
+  const { profile, loaded, createProfile: _createProfile } = usePlayer()
+
+  const createProfile = async (playerName: string) => {
+    _createProfile(playerName)
+    // Join pending group if any
+    const pendingGroup = sessionStorage.getItem('pending_group')
+    if (pendingGroup) {
+      sessionStorage.removeItem('pending_group')
+      await supabase.from('group_members').upsert({ group_id: pendingGroup, player_name: playerName }).catch(() => {})
+      // Redirect to group after short delay
+      setTimeout(() => { window.location.href = `/g/${pendingGroup}` }, 500)
+    }
+  }
   const [name, setName] = useState('')
   const [checking, setChecking] = useState(false)
   const [error, setError] = useState('')

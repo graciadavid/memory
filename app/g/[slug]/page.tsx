@@ -1,11 +1,13 @@
 import { supabase } from '@/lib/supabase'
 import GroupPageClient from './GroupPageClient'
+import GroupLandingClient from './GroupLandingClient'
 
 export const revalidate = 0
 
 export default async function GroupPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
 
+  // Try by slug first, then by id
   let { data: group } = await supabase.from('groups').select('*').eq('slug', slug).single()
   if (!group) {
     const res = await supabase.from('groups').select('*').eq('id', slug).single()
@@ -20,23 +22,13 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
 
   const memberNames = members?.map((m: any) => m.player_name) || []
 
-  const [memScores, digScores, seqScores, flagScores, precScores, f1Scores, pendulumScores, vsPopScores, vsAreaScores, sudokuScores, wordlyScores, mastermindScores, geoScores, aceScores, scores2048, nbackScores] = await Promise.all([
+  const [memScores, digScores, seqScores, flagScores, precScores, vsScores] = await Promise.all([
     supabase.from('scores').select('player_name, time_ms').in('player_name', memberNames).order('time_ms', { ascending: true }),
     supabase.from('number_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('sequence_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('flag_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
-    supabase.from('precision_scores').select('player_name, difference_ms').is('game_type', null).in('player_name', memberNames).order('difference_ms', { ascending: true }),
-    supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'formula1').in('player_name', memberNames).order('difference_ms', { ascending: true }),
-    supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'pendulum').in('player_name', memberNames).order('difference_ms', { ascending: true }),
+    supabase.from('precision_scores').select('player_name, difference_ms').in('player_name', memberNames).order('difference_ms', { ascending: true }),
     supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').in('player_name', memberNames).order('level', { ascending: false }),
-    supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'area').in('player_name', memberNames).order('level', { ascending: false }),
-    supabase.from('sudoku_scores').select('player_name, time_ms').in('player_name', memberNames).order('time_ms', { ascending: true }),
-    supabase.from('wordle_scores').select('player_name, time_ms, attempts').in('player_name', memberNames).order('time_ms', { ascending: true }),
-    supabase.from('mastermind_scores').select('player_name, time_ms, attempts').in('player_name', memberNames).order('time_ms', { ascending: true }),
-    supabase.from('shape_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
-    supabase.from('ace_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
-    supabase.from('game2048_scores').select('player_name, best_tile, time_ms').in('player_name', memberNames).order('best_tile', { ascending: false }).order('time_ms', { ascending: true }),
-    supabase.from('nback_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
   ])
 
   const bestMemory: Record<string, number> = {}
@@ -51,60 +43,23 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
   const bestPrecision: Record<string, number> = {}
   precScores.data?.forEach((s: any) => { if (!bestPrecision[s.player_name] || s.difference_ms < bestPrecision[s.player_name]) bestPrecision[s.player_name] = s.difference_ms })
 
-  const bestF1: Record<string, number> = {}
-  f1Scores.data?.forEach((s: any) => { if (!bestF1[s.player_name] || s.difference_ms < bestF1[s.player_name]) bestF1[s.player_name] = s.difference_ms })
-
-  const bestSudoku: Record<string, number> = {}
-  sudokuScores.data?.forEach((s: any) => { if (!bestSudoku[s.player_name] || s.time_ms < bestSudoku[s.player_name]) bestSudoku[s.player_name] = s.time_ms })
-
-  const bestWordly: Record<string, number> = {}
-  wordlyScores.data?.forEach((s: any) => { if (!bestWordly[s.player_name] || s.time_ms < bestWordly[s.player_name]) bestWordly[s.player_name] = s.time_ms })
-
-  const bestMastermind: Record<string, number> = {}
-  mastermindScores.data?.forEach((s: any) => { if (!bestMastermind[s.player_name] || s.time_ms < bestMastermind[s.player_name]) bestMastermind[s.player_name] = s.time_ms })
-
-  const bestGeo: Record<string, number> = {}
-  geoScores.data?.forEach((s: any) => { if (!bestGeo[s.player_name] || s.level > bestGeo[s.player_name]) bestGeo[s.player_name] = s.level })
-
-  const bestAce: Record<string, number> = {}
-  aceScores.data?.forEach((s: any) => { if (!bestAce[s.player_name] || s.level > bestAce[s.player_name]) bestAce[s.player_name] = s.level })
-
-  const bestNback: Record<string, number> = {}
-  nbackScores.data?.forEach((s: any) => { if (!bestNback[s.player_name] || s.level > bestNback[s.player_name]) bestNback[s.player_name] = s.level })
-
-  const best2048: Record<string, { tile: number, time: number }> = {}
-  scores2048.data?.forEach((s: any) => { if (!best2048[s.player_name] || s.best_tile > best2048[s.player_name].tile || (s.best_tile === best2048[s.player_name].tile && s.time_ms < best2048[s.player_name].time)) best2048[s.player_name] = { tile: s.best_tile, time: s.time_ms } })
-
-  const bestPendulum: Record<string, number> = {}
-  pendulumScores.data?.forEach((s: any) => { if (!bestPendulum[s.player_name] || s.difference_ms < bestPendulum[s.player_name]) bestPendulum[s.player_name] = s.difference_ms })
-
-  const bestVersusPop: Record<string, number> = {}
-  vsPopScores.data?.forEach((s: any) => { if (!bestVersusPop[s.player_name] || s.level > bestVersusPop[s.player_name]) bestVersusPop[s.player_name] = s.level })
-
-  const bestVersusArea: Record<string, number> = {}
-  vsAreaScores.data?.forEach((s: any) => { if (!bestVersusArea[s.player_name] || s.level > bestVersusArea[s.player_name]) bestVersusArea[s.player_name] = s.level })
+  const bestVersus: Record<string, number> = {}
+  vsScores.data?.forEach((s: any) => { if (!bestVersus[s.player_name] || s.level > bestVersus[s.player_name]) bestVersus[s.player_name] = s.level })
 
   return (
-    <GroupPageClient
-      group={group}
-      members={members || []}
-      memberCount={memberNames.length}
-      bestMemory={bestMemory}
-      bestDigits={bestLevel(digScores.data || [])}
-      bestSeq={bestLevel(seqScores.data || [])}
-      bestFlags={bestLevel(flagScores.data || [])}
-      bestPrecision={bestPrecision}
-      bestF1={bestF1}
-      bestPendulum={bestPendulum}
-      bestSudoku={bestSudoku}
-      bestWordly={bestWordly}
-      bestMastermind={bestMastermind}
-      bestGeo={bestGeo}
-      bestAce={bestAce}
-      best2048={best2048}
-      bestNback={bestNback}
-      bestVersusPop={bestVersusPop}
-      bestVersusArea={bestVersusArea}
-    />
+    <>
+      <GroupLandingClient group={group} memberCount={memberNames.length} />
+      <GroupPageClient
+        group={group}
+        members={members || []}
+        memberCount={memberNames.length}
+        bestMemory={bestMemory}
+        bestDigits={bestLevel(digScores.data || [])}
+        bestSeq={bestLevel(seqScores.data || [])}
+        bestFlags={bestLevel(flagScores.data || [])}
+        bestPrecision={bestPrecision}
+        bestVersus={bestVersus}
+      />
+    </>
   )
 }
