@@ -298,13 +298,7 @@ export default function ProfilePage() {
 
   if (!loaded) return null
 
-  if (!profile?.name) return (
-    <main style={{ height: '100dvh', background: '#FAF7F2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-nunito), sans-serif' }}>
-      <div style={{ textAlign: 'center', color: '#4A2C0A60', fontSize: 14, fontWeight: 700 }}>
-        Create your profile to see your records
-      </div>
-    </main>
-  )
+  if (!profile?.name) { if (typeof window !== 'undefined') window.location.href = '/'; return null }
 
   return (
     <>
