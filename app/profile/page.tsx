@@ -48,45 +48,6 @@ function Avatar({ name, photo, size = 80 }: { name: string, photo?: string, size
 }
 
 
-function EcgLine({ days }: { days: number }) {
-  const pulses = Math.min(days, 7)
-  const color = days >= 14 ? '#FF1744' : days >= 7 ? '#FF6D00' : days >= 3 ? '#FF9800' : '#64B5F6'
-  const W = 320
-  const H = 60
-  const mid = H / 2
-
-  // Build SVG path with N pulses
-  const segW = W / (pulses + 1)
-  let d = `M 0 ${mid}`
-  for (let i = 0; i < pulses; i++) {
-    const x = segW * (i + 0.5)
-    d += ` L ${x - 8} ${mid}`
-    d += ` L ${x - 4} ${mid + 18}`
-    d += ` L ${x} ${mid - 28}`
-    d += ` L ${x + 4} ${mid + 10}`
-    d += ` L ${x + 8} ${mid}`
-  }
-  d += ` L ${W} ${mid}`
-
-  return (
-    <div style={{ marginTop: 8, marginBottom: 4 }}>
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ overflow: 'visible' }}>
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <path d={d} fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth={2} />
-        <path d={d} fill="none" stroke={color} strokeWidth={2.5} filter="url(#glow)"
-          strokeDasharray="1000" strokeDashoffset="1000"
-          style={{ animation: 'ecgDraw 1.5s ease forwards' }} />
-      </svg>
-      <style>{`@keyframes ecgDraw { to { stroke-dashoffset: 0; } }`}</style>
-    </div>
-  )
-}
-
 export default function ProfilePage() {
   const { profile, loaded, save } = usePlayer()
   const fileRef = useRef<HTMLInputElement>(null)
@@ -492,7 +453,42 @@ export default function ProfilePage() {
                 </div>
                 <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', marginBottom: 4, textAlign: 'center' }}>{m?.msg}</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 700, marginBottom: 12, textAlign: 'center' }}>{m?.next}</div>
-                <EcgLine days={profileStreak.current} />
+                {(() => {
+                  const SEGMENTS = [
+                    { min: 1,  max: 4,   steps: 4,  base: 0 },
+                    { min: 5,  max: 9,   steps: 5,  base: 5 },
+                    { min: 10, max: 29,  steps: 20, base: 10 },
+                    { min: 30, max: 49,  steps: 20, base: 30 },
+                    { min: 50, max: 99,  steps: 50, base: 50 },
+                    { min: 100, max: 9999, steps: 1, base: 100 },
+                  ]
+                  const seg = SEGMENTS.find(s => profileStreak.current >= s.min && profileStreak.current <= s.max)
+                  if (!seg) return null
+                  const progress = profileStreak.current - seg.base
+                  const daysToNext = seg.max === 9999 ? 0 : seg.max - profileStreak.current + 1
+                  return (
+                    <div style={{ marginTop: 12 }}>
+                      <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 6 }}>
+                        {[0,1,2,3,4].map(i => {
+                          const filled = i < progress || seg.min === 100
+                          return (
+                            <div key={i} style={{
+                              width: 18, height: 18, borderRadius: 9,
+                              background: filled ? '#fff' : 'transparent',
+                              border: `2px solid ${filled ? '#fff' : 'rgba(255,255,255,0.3)'}`,
+                              boxShadow: filled ? `0 2px 6px ${m?.color}40` : 'none',
+                            }} />
+                          )
+                        })}
+                      </div>
+                      {daysToNext > 0 && (
+                        <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.6)', textAlign: 'center' }}>
+                          {daysToNext} day{daysToNext !== 1 ? 's' : ''} to next milestone
+                        </div>
+                      )}
+                    </div>
+                  )
+                })()}
 
                 <div style={{ textAlign: 'center', marginTop: 16 }}>
                   <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.4)', borderRadius: 20, padding: '8px 20px', fontSize: 12, fontWeight: 900, color: '#fff', letterSpacing: 0.5 }}>
