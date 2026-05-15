@@ -12,6 +12,7 @@ const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const TROPHY = `${BASE}/nav-trophy.webp`
+const LOGO = `${BASE}/nback.png`
 
 const COLORS = [
   { name: 'Red', bg: '#E53935', shadow: '#B71C1C' },
@@ -217,7 +218,8 @@ export default function NBackPage() {
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', width: '100%', gap: 12 }}>
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <img src={LOGO} alt='N-Back' style={{ height: 48, objectFit: 'contain', animation: 'floatLogo 3s ease-in-out infinite' }} />
             <div style={{ fontSize: 26, fontWeight: 900, color: '#6A1B9A', letterSpacing: -0.5, lineHeight: 1 }}>N-Back</div>
             <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Is this the same color as before?</div>
           </div>
