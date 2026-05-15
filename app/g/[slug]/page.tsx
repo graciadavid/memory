@@ -20,7 +20,7 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
 
   const memberNames = members?.map((m: any) => m.player_name) || []
 
-  const [memScores, digScores, seqScores, flagScores, precScores, f1Scores, pendulumScores, vsPopScores, vsAreaScores, sudokuScores, wordlyScores, mastermindScores, geoScores, aceScores, scores2048] = await Promise.all([
+  const [memScores, digScores, seqScores, flagScores, precScores, f1Scores, pendulumScores, vsPopScores, vsAreaScores, sudokuScores, wordlyScores, mastermindScores, geoScores, aceScores, scores2048, nbackScores] = await Promise.all([
     supabase.from('scores').select('player_name, time_ms').in('player_name', memberNames).order('time_ms', { ascending: true }),
     supabase.from('number_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('sequence_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
@@ -36,6 +36,7 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
     supabase.from('shape_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('ace_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
     supabase.from('game2048_scores').select('player_name, best_tile, time_ms').in('player_name', memberNames).order('best_tile', { ascending: false }).order('time_ms', { ascending: true }),
+    supabase.from('nback_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
   ])
 
   const bestMemory: Record<string, number> = {}
@@ -68,6 +69,9 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
   const bestAce: Record<string, number> = {}
   aceScores.data?.forEach((s: any) => { if (!bestAce[s.player_name] || s.level > bestAce[s.player_name]) bestAce[s.player_name] = s.level })
 
+  const bestNback: Record<string, number> = {}
+  nbackScores.data?.forEach((s: any) => { if (!bestNback[s.player_name] || s.level > bestNback[s.player_name]) bestNback[s.player_name] = s.level })
+
   const best2048: Record<string, { tile: number, time: number }> = {}
   scores2048.data?.forEach((s: any) => { if (!best2048[s.player_name] || s.best_tile > best2048[s.player_name].tile || (s.best_tile === best2048[s.player_name].tile && s.time_ms < best2048[s.player_name].time)) best2048[s.player_name] = { tile: s.best_tile, time: s.time_ms } })
 
@@ -98,6 +102,7 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
       bestGeo={bestGeo}
       bestAce={bestAce}
       best2048={best2048}
+      bestNback={bestNback}
       bestVersusPop={bestVersusPop}
       bestVersusArea={bestVersusArea}
     />

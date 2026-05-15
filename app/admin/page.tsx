@@ -22,6 +22,7 @@ const CATEGORIES = [
     { key: 'memory', label: 'Memory', table: 'scores' },
     { key: 'digits', label: 'Digits', table: 'number_scores' },
     { key: 'simon', label: 'Simon Says', table: 'sequence_scores' },
+    { key: 'nback', label: 'N-Back', table: 'nback_scores' },
   ]},
   { key: 'agility', label: 'Agility', color: '#FF6F00', games: [
     { key: 'stop', label: 'Stop', table: 'precision_scores', filter: { game_type: null } },

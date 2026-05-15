@@ -16,6 +16,7 @@ const CATEGORIES = [
       { key: 'memory', href: '/ranking/memory', icon: '/icons/memory.webp', label: 'Memory', bg: '#2E7D32' },
       { key: 'digits', href: '/digits/ranking', icon: '/icons/digits.webp', label: 'Digits', bg: '#1976D2' },
       { key: 'simon', href: '/sequence/ranking', icon: '/icons/sequence.webp', label: 'Simon Says', bg: '#FF6F00' },
+      { key: 'nback', href: '/nback/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nback.png', label: 'N-Back', bg: '#6A1B9A' },
     ]
   },
   {

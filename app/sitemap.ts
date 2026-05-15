@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://memgenius.com/memory', lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
     { url: 'https://memgenius.com/digits', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: 'https://memgenius.com/sequence', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: 'https://memgenius.com/nback', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
 
     // Agility
     { url: 'https://memgenius.com/precision/stopwatch', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
@@ -34,6 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://memgenius.com/digits/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/flags/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/sequence/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+    { url: 'https://memgenius.com/nback/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/precision/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/versus/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/geoshape/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },

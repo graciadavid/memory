@@ -21,6 +21,7 @@ const CATEGORIES = [
       { key: 'memory', href: '/memory', icon: '/icons/memory.webp', label: 'Memory', sub: 'Match pairs by connection', bg: '#2E7D32' },
       { key: 'digits', href: '/digits', icon: '/icons/digits.webp', label: 'Digits', sub: 'How many digits can you remember?', bg: '#1976D2' },
       { key: 'simon-says', href: '/sequence', icon: '/icons/sequence.webp', label: 'Simon Says', sub: 'Repeat the pattern', bg: '#FF6F00' },
+      { key: 'nback', href: '/nback', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nback.png', label: 'N-Back', sub: 'Is it the same color as before?', bg: '#6A1B9A' },
     ]
   },
   {

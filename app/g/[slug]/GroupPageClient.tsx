@@ -11,6 +11,7 @@ const CATEGORIES = [
     { key: 'memory', label: 'Memory', color: '#2E7D32' },
     { key: 'digits', label: 'Digits', color: '#1976D2' },
     { key: 'sequence', label: 'Simon Says', color: '#FF6F00' },
+    { key: 'nback', label: 'N-Back', color: '#6A1B9A' },
   ]},
   { key: 'agility', label: 'Agility', color: '#FF6F00', tabs: [
     { key: 'stop', label: 'Stop', color: '#388E3C' },
@@ -40,7 +41,7 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea, bestSudoku, bestWordly, bestMastermind, bestGeo, bestAce, best2048 }: any) {
+export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea, bestSudoku, bestWordly, bestMastermind, bestGeo, bestAce, best2048, bestNback }: any) {
   const [tab, setTab] = useState('flags')
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
@@ -124,6 +125,11 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
         return memberNames
           .filter((n: string) => bestGeo?.[n] !== undefined)
           .map((n: string) => ({ name: n, score: `${bestGeo[n]} countries`, raw: bestGeo[n] }))
+          .sort((a: any, b: any) => b.raw - a.raw)
+      case 'nback':
+        return memberNames
+          .filter((n: string) => bestNback?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestNback[n]} correct`, raw: bestNback[n] }))
           .sort((a: any, b: any) => b.raw - a.raw)
       case 'wordly':
         return memberNames

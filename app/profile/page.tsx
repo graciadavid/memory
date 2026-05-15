@@ -63,6 +63,7 @@ export default function ProfilePage() {
   const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusAreaRank, setVersusAreaRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [activeTab, setActiveTab] = useState('memory')
+  const [nbackRank, setNbackRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [rank2048, setRank2048] = useState<{ tile: number | null, time: number | null, rank: number | null }>({ tile: null, time: null, rank: null })
   const [aceRank, setAceRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [geoRank, setGeoRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
@@ -176,6 +177,16 @@ export default function ProfilePage() {
       const myBest = best[profile.name]
       if (!myBest) return
       setGeoRank({ level: myBest, rank: Object.values(best).filter(l => l > myBest).length + 1 })
+    })
+
+    // Fetch NBack
+    supabase.from('nback_scores').select('player_name, level').order('level', { ascending: false }).limit(500).then(({ data }) => {
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+      const myBest = best[profile.name]
+      if (!myBest) return
+      setNbackRank({ level: myBest, rank: Object.values(best).filter(l => l > myBest).length + 1 })
     })
 
     // Fetch Wordly
@@ -543,6 +554,7 @@ export default function ProfilePage() {
           {([
             { key: 'digits', label: 'Digits', color: '#1976D2', icon: '/icons/digits.webp', score: digitsRank.level, rank: digitsRank.rank, unit: 'Level', share: `Level ${digitsRank.level} in Digits! #${digitsRank.rank} https://memgenius.com/digits` },
             { key: 'simon', label: 'Simon Says', color: '#FF6F00', icon: '/icons/sequence.webp', score: seqRank.level, rank: seqRank.rank, unit: 'Level', share: `Level ${seqRank.level} in Simon Says! #${seqRank.rank} https://memgenius.com/sequence` },
+            { key: 'nback', label: 'N-Back', color: '#6A1B9A', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nback.png', score: nbackRank.level, rank: nbackRank.rank, unit: 'Correct', share: `I got ${nbackRank.level} correct in N-Back! #${nbackRank.rank} https://memgenius.com/nback` },
           ] as any[]).map(g => (
             <div key={g.key} style={{ borderRadius: 20, overflow: 'hidden' }}>
               <div style={{ background: `linear-gradient(135deg, ${g.color}, ${g.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
