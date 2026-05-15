@@ -118,7 +118,7 @@ export default function GroupPageClient({ group, members, memberCount, scores }:
             padding: '10px 16px', borderRadius: 12, border: 'none',
             background: '#25D366', color: '#fff', fontSize: 13, fontWeight: 800,
             fontFamily: 'inherit', cursor: 'pointer',
-          }}>Invite 📲</button>
+          }}>Invite</button>
         </div>
       </div>
 
