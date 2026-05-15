@@ -64,7 +64,7 @@ function getBallPos(t: number): { x: number, y: number } {
 export default function AcePage() {
   const { profile } = usePlayer()
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animRef = useRef<number>()
+  const animRef = useRef<number | null>(null)
   const startTimeRef = useRef<number>(0)
   const durationRef = useRef<number>(2000) // ms for ball to cross
   const [phase, setPhase] = useState<Phase>('intro')
