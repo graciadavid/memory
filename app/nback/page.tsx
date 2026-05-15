@@ -57,6 +57,7 @@ export default function NBackPage() {
   const [topScores, setTopScores] = useState<{ name: string, level: number }[]>([])
   const [bestLevel, setBestLevel] = useState<number | null>(null)
   const [showCard, setShowCard] = useState(false)
+  const [isFirstCard, setIsFirstCard] = useState(true)
   const levelRef = useRef(0)
   const previousRef = useRef<number | null>(null)
   const phaseRef = useRef<Phase>('intro')
@@ -120,17 +121,28 @@ export default function NBackPage() {
 
     timerRef.current = setTimeout(() => {
       setShowCard(false)
-      phaseRef.current = 'answer'
-      setPhase('answer')
+      setIsFirstCard(false)
+      // Show second card immediately
+      const second = Math.floor(Math.random() * COLORS.length)
+      setCurrent(second)
+      previousRef.current = first
+      setPrevious(first)
+      setShowCard(true)
+      phaseRef.current = 'show'
+      setPhase('show')
+      timerRef.current = setTimeout(() => {
+        setShowCard(false)
+        phaseRef.current = 'answer'
+        setPhase('answer')
+      }, showDuration(0))
     }, showDuration(0))
 
     return first
   }, [showDuration])
 
-  const firstCardRef = useRef<number>(0)
-
   const handleStart = () => {
-    firstCardRef.current = startGame()
+    setIsFirstCard(true)
+    startGame()
   }
 
   const handleAnswer = useCallback(async (same: boolean) => {
