@@ -60,7 +60,7 @@ export default function NBackPage() {
   const levelRef = useRef(0)
   const previousRef = useRef<number | null>(null)
   const phaseRef = useRef<Phase>('intro')
-  const timerRef = useRef<NodeJS.Timeout>()
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => { fetchTop() }, [])
 
