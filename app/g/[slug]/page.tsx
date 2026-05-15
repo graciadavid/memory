@@ -42,14 +42,14 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
     supabase.from('sequence_scores').select('player_name, level').in('player_name', memberNames),
     supabase.from('nback_scores').select('player_name, level').in('player_name', memberNames),
     supabase.from('precision_scores').select('player_name, difference_ms, game_type').in('player_name', memberNames),
-    supabase.from('ace_scores').select('player_name, score').in('player_name', memberNames),
+    supabase.from('ace_scores').select('player_name, level').in('player_name', memberNames),
     supabase.from('flag_scores').select('player_name, level').in('player_name', memberNames),
     supabase.from('higher_lower_scores').select('player_name, level, category').in('player_name', memberNames),
     supabase.from('shape_scores').select('player_name, level').in('player_name', memberNames),
     supabase.from('sudoku_scores').select('player_name, time_ms').in('player_name', memberNames),
-    supabase.from('wordle_scores').select('player_name, score').in('player_name', memberNames),
-    supabase.from('mastermind_scores').select('player_name, score').in('player_name', memberNames),
-    supabase.from('game2048_scores').select('player_name, score').in('player_name', memberNames),
+    supabase.from('wordle_scores').select('player_name, time_ms').in('player_name', memberNames),
+    supabase.from('mastermind_scores').select('player_name, time_ms').in('player_name', memberNames),
+    supabase.from('game2048_scores').select('player_name, best_tile').in('player_name', memberNames),
   ])
 
   const bestByPlayer = (data: any[], key: string, lower = false) => {
@@ -74,15 +74,15 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
     stopwatch: bestByPlayer((precS.data || []).filter((s: any) => !s.game_type), 'difference_ms', true),
     f1: bestByPlayer((precS.data || []).filter((s: any) => s.game_type === 'formula1'), 'difference_ms', true),
     pendulum: bestByPlayer((precS.data || []).filter((s: any) => s.game_type === 'pendulum'), 'difference_ms', true),
-    ace: bestByPlayer(aceS.data || [], 'score'),
+    ace: bestByPlayer(aceS.data || [], 'level'),
     flags: bestByPlayer(flagS.data || [], 'level'),
     population: bestByPlayer((hlS.data || []).filter((s: any) => s.category === 'population'), 'level'),
     area: bestByPlayer((hlS.data || []).filter((s: any) => s.category === 'area'), 'level'),
     geoshape: bestByPlayer(shapeS.data || [], 'level'),
     sudoku: bestByPlayer(sudS.data || [], 'time_ms', true),
-    wordly: bestByPlayer(wordS.data || [], 'score'),
-    mastermind: bestByPlayer(mmS.data || [], 'score'),
-    '2048': bestByPlayer(g2048S.data || [], 'score'),
+    wordly: bestByPlayer(wordS.data || [], 'time_ms', true),
+    mastermind: bestByPlayer(mmS.data || [], 'time_ms', true),
+    '2048': bestByPlayer(g2048S.data || [], 'best_tile'),
   }
 
   return (
