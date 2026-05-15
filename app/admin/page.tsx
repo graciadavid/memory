@@ -95,6 +95,20 @@ export default function AdminPage() {
     setLoading(true)
     const [start, end] = getPeriodRange(period)
 
+    // MGI — Minutes between plays today
+    const tables = ['scores','number_scores','sequence_scores','nback_scores','precision_scores','ace_scores','flag_scores','higher_lower_scores','shape_scores','sudoku_scores','wordle_scores','mastermind_scores','game2048_scores']
+    const allToday: string[] = []
+    for (const t of tables) {
+      const { data } = await supabase.from(t as any).select('created_at').gte('created_at', start).lte('created_at', end).order('created_at', { ascending: true })
+      if (data) data.forEach((s: any) => allToday.push(s.created_at))
+    }
+    allToday.sort()
+    let mgi = 0
+    if (allToday.length > 1) {
+      const gaps = allToday.slice(1).map((t, i) => (new Date(t).getTime() - new Date(allToday[i]).getTime()) / 60000)
+      mgi = Math.round(gaps.reduce((a, b) => a + b, 0) / gaps.length * 10) / 10
+    }
+
     // KPIs
     const [usersToday, streaks, groups] = await Promise.all([
       supabase.from('streaks').select('player_name', { count: 'exact', head: true }).gte('updated_at', start).lte('updated_at', end),
@@ -141,6 +155,7 @@ export default function AdminPage() {
     ].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 30)
 
     setKpis({
+      mgi,
       users: usersToday.count || 0,
       streaks: streaks.count || 0,
       groups: groups.count || 0,
@@ -206,12 +221,13 @@ export default function AdminPage() {
 
       {!loading && kpis && <>
         {/* KPIs */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 20 }}>
           {[
             { label: 'Players', value: kpis.users, color: '#1565C0' },
             { label: 'Plays', value: kpis.totalPlays, color: '#2E7D32' },
             { label: 'Streaks 2+', value: kpis.streaks, color: '#FF6F00' },
             { label: 'Groups', value: kpis.groups, color: '#6A1B9A' },
+            { label: 'MGI min', value: kpis.mgi, color: '#00796B' },
           ].map(k => (
             <div key={k.label} style={{ background: '#fff', borderRadius: 16, padding: '16px', border: `1px solid ${BROWN}10` }}>
               <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
