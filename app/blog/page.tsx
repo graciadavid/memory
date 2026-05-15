@@ -6,6 +6,48 @@ const CREAM = "#FAF7F2"
 
 const POSTS = [
   {
+    slug: 'sudoku-tips-tricks',
+    title: 'Sudoku Tips and Tricks — How to Solve Any Puzzle Faster',
+    desc: 'Master Sudoku with proven techniques from beginner elimination to advanced X-Wing patterns.',
+    date: 'May 2026',
+    tag: 'Sudoku',
+  },
+  {
+    slug: 'mastermind-game-online',
+    title: 'Mastermind Game Online — Free, No Download',
+    desc: 'Crack the color code in 7 attempts. The classic deduction game with a world ranking.',
+    date: 'May 2026',
+    tag: 'Logic Games',
+  },
+  {
+    slug: 'sudoku-tips-tricks',
+    title: 'Sudoku Tips and Tricks — How to Solve Any Puzzle Faster',
+    desc: 'Master Sudoku with proven techniques from beginner elimination to advanced X-Wing patterns.',
+    date: 'May 2026',
+    tag: 'Sudoku',
+  },
+  {
+    slug: 'mastermind-game-online',
+    title: 'Mastermind Game Online — Free, No Download',
+    desc: 'Crack the color code in 7 attempts. The classic deduction game with a world ranking.',
+    date: 'May 2026',
+    tag: 'Logic Games',
+  },
+  {
+    slug: 'sudoku-tips-tricks',
+    title: 'Sudoku Tips and Tricks — How to Solve Any Puzzle Faster',
+    desc: 'Master Sudoku with proven techniques from beginner elimination to advanced X-Wing patterns.',
+    date: 'May 2026',
+    tag: 'Sudoku',
+  },
+  {
+    slug: 'mastermind-game-online',
+    title: 'Mastermind Game Online — Free, No Download',
+    desc: 'Crack the color code in 7 attempts. The classic deduction game with a world ranking.',
+    date: 'May 2026',
+    tag: 'Logic Games',
+  },
+  {
     slug: 'sudoku-game-online',
     title: 'Sudoku Online — Why It Is the Best Brain Game for Adults Over 50',
     desc: 'Science-backed benefits of daily Sudoku for cognitive health. Free online Sudoku with world ranking.',
