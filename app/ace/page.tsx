@@ -116,11 +116,11 @@ export default function AcePage() {
     ctx.stroke()
 
     // Level number above target
-    ctx.font = '900 48px var(--font-nunito), sans-serif'
-    ctx.fillStyle = 'rgba(74,44,10,0.12)'
+    ctx.font = 'bold 72px Arial'
+    ctx.fillStyle = '#4CAF50'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText(String(levelRef.current), TARGET_X, TARGET_Y - TARGET_R - 36)
+    ctx.fillText(String(levelRef.current), TARGET_X, TARGET_Y - TARGET_R - 60)
 
     // Target zone
     const dist = Math.sqrt((x - TARGET_X) ** 2 + (y - TARGET_Y) ** 2)
