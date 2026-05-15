@@ -343,9 +343,14 @@ export default function AcePage() {
               </div>
             )}
 
-            <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700, marginTop: 8 }}>
-              Tap anywhere to hit
-            </div>
+            <button onClick={handleTap} style={{
+              marginTop: 16, width: '80%', padding: '18px',
+              borderRadius: 20, border: 'none',
+              background: TENNIS, color: '#fff',
+              fontSize: 22, fontWeight: 900, fontFamily: 'inherit',
+              cursor: 'pointer', boxShadow: `0 8px 0 ${TENNIS}60`,
+              letterSpacing: 1,
+            }}>SERVE!</button>
           </div>
         )}
 
