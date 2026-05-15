@@ -427,23 +427,28 @@ export default function LandingPage() {
       ) : showStreak ? (
         /* STREAK SCREEN */
         <div style={{
-          position: 'fixed', inset: 0,
-          background: '#0A1A0A',
-          display: 'flex', flexDirection: 'column',
+          flex: 1, display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
-          gap: 8, padding: '0 24px',
-          textAlign: 'center', zIndex: 100,
+          width: '100%', gap: 8, padding: '0 24px',
+          textAlign: 'center',
         }}>
           <img
             src={`${BASE}/${milestone?.img}`}
             alt=""
-            style={{ width: 80, height: 80, objectFit: 'contain', marginBottom: 8, opacity: 0.9 }}
+            style={{ width: 100, height: 100, objectFit: 'contain', marginBottom: 8 }}
           />
-          <div style={{ fontSize: 96, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{streak.current}</div>
-          <div style={{ fontSize: 13, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 3, textTransform: 'uppercase' }}>day streak</div>
-          <div style={{ fontSize: 15, fontWeight: 900, color: 'rgba(255,255,255,0.9)', textAlign: 'center', marginTop: 16 }}>{milestone?.msg}</div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>{milestone?.next}</div>
-          <SplashDots current={streak.current} color={'#fff'} />
+          <div style={{ fontSize: 72, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{streak.current}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase' }}>day streak</div>
+          <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, textAlign: 'center', marginTop: 12 }}>{milestone?.msg}</div>
+          <div style={{ fontSize: 13, color: `${BROWN}50`, textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>{milestone?.next}</div>
+          <SplashDots current={streak.current} color={milestone?.color || GOLD} />
+          <div style={{ width: '100%', height: 6, background: `${BROWN}15`, borderRadius: 4, overflow: 'hidden', marginTop: 16 }}>
+            <div style={{
+              height: '100%', borderRadius: 4,
+              background: '#2E7D32',
+              animation: 'progressBar 3.5s linear forwards',
+            }} />
+          </div>
         </div>
       ) : (
         /* REGISTERED */
