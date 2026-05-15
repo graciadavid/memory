@@ -230,7 +230,7 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
           border: '1px solid rgba(74,44,10,0.08)',
         }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>You are invited</div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>{group.created_by} challenges you to join {group.name}</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>You have been invited to join {group.name}</div>
           <div style={{ fontSize: 13, color: `${BROWN}60`, marginBottom: 16, lineHeight: 1.6 }}>
             {hasProfile ? 'Join this group to compete with its members.' : 'Create your profile to join this group and compete.'}
           </div>
@@ -279,7 +279,7 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
           border: '1px solid rgba(74,44,10,0.08)',
         }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>You are invited</div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>{group.created_by} challenges you to join {group.name}</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>You have been invited to join {group.name}</div>
           <div style={{ fontSize: 13, color: `${BROWN}60`, marginBottom: 16, lineHeight: 1.6 }}>
             {hasProfile ? 'Join this group to compete with its members.' : 'Create your profile to join this group and compete.'}
           </div>
