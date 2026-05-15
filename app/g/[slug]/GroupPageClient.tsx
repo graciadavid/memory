@@ -51,7 +51,7 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
   const [newPin, setNewPin] = useState('')
   const [joinError, setJoinError] = useState('')
   const [joinSaving, setJoinSaving] = useState(false)
-  const [showJoinCard, setShowJoinCard] = useState(false)
+  const [showJoinCard, setShowJoinCard] = useState(true)
 
   useEffect(() => {
     const stored = localStorage.getItem('memgenius_profile')
@@ -65,6 +65,8 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
     } else {
       setShowJoinCard(true)
     }
+    // Always show if not a member
+    // Always show if not a member
   }, [])
 
   const joinGroup = async () => {
@@ -221,14 +223,14 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
       </div>
 
       {/* Join Card */}
-      {showJoinCard && (
+      {showJoinCard && !joined && (
         <div style={{
           margin: '16px', background: '#fff', borderRadius: 20,
           padding: '24px', boxShadow: '0 8px 32px rgba(74,44,10,0.15)',
           border: '1px solid rgba(74,44,10,0.08)',
         }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>You are invited</div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>Join {group.name}</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>{group.created_by} challenges you to join {group.name}</div>
           <div style={{ fontSize: 13, color: `${BROWN}60`, marginBottom: 16, lineHeight: 1.6 }}>
             {hasProfile ? 'Join this group to compete with its members.' : 'Create your profile to join this group and compete.'}
           </div>
@@ -265,23 +267,19 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
             }}>{joining ? 'Joining...' : `Join as ${myName}`}</button>
           )}
 
-          <button onClick={() => setShowJoinCard(false)} style={{
-            width: '100%', padding: '10px', borderRadius: 12, border: 'none',
-            background: 'transparent', color: `${BROWN}50`,
-            fontSize: 13, fontWeight: 700, fontFamily: 'inherit', cursor: 'pointer',
-          }}>Maybe later</button>
+
         </div>
       )}
 
       {/* Join Card */}
-      {showJoinCard && (
+      {showJoinCard && !joined && (
         <div style={{
           margin: '16px', background: '#fff', borderRadius: 20,
           padding: '24px', boxShadow: '0 8px 32px rgba(74,44,10,0.15)',
           border: '1px solid rgba(74,44,10,0.08)',
         }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>You are invited</div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>Join {group.name}</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>{group.created_by} challenges you to join {group.name}</div>
           <div style={{ fontSize: 13, color: `${BROWN}60`, marginBottom: 16, lineHeight: 1.6 }}>
             {hasProfile ? 'Join this group to compete with its members.' : 'Create your profile to join this group and compete.'}
           </div>
@@ -318,11 +316,7 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
             }}>{joining ? 'Joining...' : `Join as ${myName}`}</button>
           )}
 
-          <button onClick={() => setShowJoinCard(false)} style={{
-            width: '100%', padding: '10px', borderRadius: 12, border: 'none',
-            background: 'transparent', color: `${BROWN}50`,
-            fontSize: 13, fontWeight: 700, fontFamily: 'inherit', cursor: 'pointer',
-          }}>Maybe later</button>
+
         </div>
       )}
 
