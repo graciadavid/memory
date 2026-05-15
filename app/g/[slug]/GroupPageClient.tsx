@@ -46,14 +46,24 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
   const [joining, setJoining] = useState(false)
+  const [hasProfile, setHasProfile] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [newPin, setNewPin] = useState('')
+  const [joinError, setJoinError] = useState('')
+  const [joinSaving, setJoinSaving] = useState(false)
+  const [showJoinCard, setShowJoinCard] = useState(false)
 
   useEffect(() => {
     const stored = localStorage.getItem('memgenius_profile')
     if (stored) {
       const p = JSON.parse(stored)
       setMyName(p.name || '')
+      setHasProfile(true)
       const isMember = members.some((m: any) => m.player_name === p.name)
       setJoined(isMember)
+      if (!isMember) setShowJoinCard(true)
+    } else {
+      setShowJoinCard(true)
     }
   }, [])
 
@@ -63,6 +73,37 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
     await supabase.from('group_members').upsert({ group_id: group.id, player_name: myName })
     setJoined(true)
     setJoining(false)
+    window.location.reload()
+  }
+
+  const handleJoinNew = async () => {
+    if (!newName.trim()) { setJoinError('Enter a name'); return }
+    if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) { setJoinError('PIN must be 4 digits'); return }
+    setJoinSaving(true)
+    setJoinError('')
+    const { data: existing } = await supabase.from('profiles').select('player_name').eq('player_name', newName.trim()).limit(1)
+    if (existing && existing.length > 0) {
+      setJoinError('Name taken — try another')
+      setJoinSaving(false)
+      return
+    }
+    await supabase.from('profiles').upsert({ player_name: newName.trim(), password_hash: newPin })
+    localStorage.setItem('memgenius_profile', JSON.stringify({ name: newName.trim(), pin: newPin }))
+    await supabase.from('group_members').upsert({ group_id: group.id, player_name: newName.trim() })
+    setMyName(newName.trim())
+    setHasProfile(true)
+    setJoined(true)
+    setShowJoinCard(false)
+    window.location.reload()
+  }
+
+  const handleJoinExisting = async () => {
+    if (!myName || joining) return
+    setJoining(true)
+    await supabase.from('group_members').upsert({ group_id: group.id, player_name: myName })
+    setJoined(true)
+    setJoining(false)
+    setShowJoinCard(false)
     window.location.reload()
   }
 
@@ -178,6 +219,112 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
         <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{group.name}</div>
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>{memberCount} member{memberCount !== 1 ? 's' : ''}</div>
       </div>
+
+      {/* Join Card */}
+      {showJoinCard && (
+        <div style={{
+          margin: '16px', background: '#fff', borderRadius: 20,
+          padding: '24px', boxShadow: '0 8px 32px rgba(74,44,10,0.15)',
+          border: '1px solid rgba(74,44,10,0.08)',
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>You are invited</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>Join {group.name}</div>
+          <div style={{ fontSize: 13, color: `${BROWN}60`, marginBottom: 16, lineHeight: 1.6 }}>
+            {hasProfile ? 'Join this group to compete with its members.' : 'Create your profile to join this group and compete.'}
+          </div>
+
+          {!hasProfile && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 12 }}>
+              <input
+                type="text" placeholder="Your name" value={newName}
+                onChange={e => setNewName(e.target.value)}
+                maxLength={20}
+                style={{ padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${BROWN}20`, background: '#FAF7F2', fontSize: 15, fontFamily: 'inherit', outline: 'none', color: BROWN, fontWeight: 700 }}
+              />
+              <input
+                type="number" placeholder="4-digit PIN" value={newPin}
+                onChange={e => setNewPin(e.target.value.slice(0, 4))}
+                style={{ padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${BROWN}20`, background: '#FAF7F2', fontSize: 15, fontFamily: 'inherit', outline: 'none', color: BROWN, fontWeight: 700 }}
+              />
+              {joinError && <div style={{ fontSize: 12, color: '#C62828', fontWeight: 700 }}>{joinError}</div>}
+              <button onClick={handleJoinNew} disabled={joinSaving} style={{
+                padding: '14px', borderRadius: 14, border: 'none',
+                background: BROWN, color: '#fff',
+                fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
+                boxShadow: `0 5px 0 ${BROWN}60`,
+              }}>{joinSaving ? 'Joining...' : `Join ${group.name}`}</button>
+            </div>
+          )}
+
+          {hasProfile && !joined && (
+            <button onClick={handleJoinExisting} disabled={joining} style={{
+              width: '100%', padding: '14px', borderRadius: 14, border: 'none',
+              background: BROWN, color: '#fff',
+              fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
+              boxShadow: `0 5px 0 ${BROWN}60`, marginBottom: 8,
+            }}>{joining ? 'Joining...' : `Join as ${myName}`}</button>
+          )}
+
+          <button onClick={() => setShowJoinCard(false)} style={{
+            width: '100%', padding: '10px', borderRadius: 12, border: 'none',
+            background: 'transparent', color: `${BROWN}50`,
+            fontSize: 13, fontWeight: 700, fontFamily: 'inherit', cursor: 'pointer',
+          }}>Maybe later</button>
+        </div>
+      )}
+
+      {/* Join Card */}
+      {showJoinCard && (
+        <div style={{
+          margin: '16px', background: '#fff', borderRadius: 20,
+          padding: '24px', boxShadow: '0 8px 32px rgba(74,44,10,0.15)',
+          border: '1px solid rgba(74,44,10,0.08)',
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>You are invited</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>Join {group.name}</div>
+          <div style={{ fontSize: 13, color: `${BROWN}60`, marginBottom: 16, lineHeight: 1.6 }}>
+            {hasProfile ? 'Join this group to compete with its members.' : 'Create your profile to join this group and compete.'}
+          </div>
+
+          {!hasProfile && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 12 }}>
+              <input
+                type="text" placeholder="Your name" value={newName}
+                onChange={e => setNewName(e.target.value)}
+                maxLength={20}
+                style={{ padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${BROWN}20`, background: '#FAF7F2', fontSize: 15, fontFamily: 'inherit', outline: 'none', color: BROWN, fontWeight: 700 }}
+              />
+              <input
+                type="number" placeholder="4-digit PIN" value={newPin}
+                onChange={e => setNewPin(e.target.value.slice(0, 4))}
+                style={{ padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${BROWN}20`, background: '#FAF7F2', fontSize: 15, fontFamily: 'inherit', outline: 'none', color: BROWN, fontWeight: 700 }}
+              />
+              {joinError && <div style={{ fontSize: 12, color: '#C62828', fontWeight: 700 }}>{joinError}</div>}
+              <button onClick={handleJoinNew} disabled={joinSaving} style={{
+                padding: '14px', borderRadius: 14, border: 'none',
+                background: BROWN, color: '#fff',
+                fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
+                boxShadow: `0 5px 0 ${BROWN}60`,
+              }}>{joinSaving ? 'Joining...' : `Join ${group.name}`}</button>
+            </div>
+          )}
+
+          {hasProfile && !joined && (
+            <button onClick={handleJoinExisting} disabled={joining} style={{
+              width: '100%', padding: '14px', borderRadius: 14, border: 'none',
+              background: BROWN, color: '#fff',
+              fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
+              boxShadow: `0 5px 0 ${BROWN}60`, marginBottom: 8,
+            }}>{joining ? 'Joining...' : `Join as ${myName}`}</button>
+          )}
+
+          <button onClick={() => setShowJoinCard(false)} style={{
+            width: '100%', padding: '10px', borderRadius: 12, border: 'none',
+            background: 'transparent', color: `${BROWN}50`,
+            fontSize: 13, fontWeight: 700, fontFamily: 'inherit', cursor: 'pointer',
+          }}>Maybe later</button>
+        </div>
+      )}
 
       <div style={{ padding: '16px' }}>
         {/* Action buttons */}
