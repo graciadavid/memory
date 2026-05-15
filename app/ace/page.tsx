@@ -115,6 +115,13 @@ export default function AcePage() {
     ctx.lineTo(CANVAS_W, TARGET_Y + TARGET_R + 10)
     ctx.stroke()
 
+    // Level number above target
+    ctx.font = '900 48px var(--font-nunito), sans-serif'
+    ctx.fillStyle = 'rgba(74,44,10,0.12)'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(String(levelRef.current), TARGET_X, TARGET_Y - TARGET_R - 36)
+
     // Target zone
     const dist = Math.sqrt((x - TARGET_X) ** 2 + (y - TARGET_Y) ** 2)
     const inTarget = dist < TARGET_R
@@ -258,9 +265,7 @@ export default function AcePage() {
             <div style={{ fontSize: 26, fontWeight: 900, color: TENNIS, letterSpacing: -0.5, lineHeight: 1 }}>Ace</div>
             {phase === 'intro' && <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Hit the ball at the perfect moment</div>}
           </div>
-          {phase === 'playing' && (
-            <div style={{ marginLeft: 'auto', fontSize: 22, fontWeight: 900, color: TENNIS }}>{level}</div>
-          )}
+
         </div>
 
         {/* INTRO */}
