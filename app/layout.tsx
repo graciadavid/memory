@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'MemGenius — Daily Brain Games',
-  description: 'Train your brain with Memory, Digits, Sequence and Flags. Free daily brain games with world rankings. No login required.',
+  description: 'Train your brain and challenge your friends. Create a group, share it on WhatsApp and see who wins. 16 free brain games. No login required.',
   keywords: ['memory game', 'brain training', 'daily game', 'flag quiz', 'number memory', 'simon says'],
   openGraph: {
     title: 'MemGenius — Daily Brain Games',
-    description: 'Train your brain with Memory, Digits, Sequence and Flags.',
+    description: 'Train your brain and challenge your friends on WhatsApp. 16 free brain games with world rankings.',
     url: 'https://memgenius.com',
     siteName: 'MemGenius',
     images: [
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'MemGenius — Daily Brain Games',
-    description: 'Train your brain with Memory, Digits, Sequence and Flags.',
+    description: 'Train your brain and challenge your friends on WhatsApp. 16 free brain games with world rankings.',
     images: ['/icons/logomemgenius.webp'],
   },
   robots: {
