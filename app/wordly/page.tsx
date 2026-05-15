@@ -227,9 +227,9 @@ export default function WordlePage() {
           <div key={i} style={{ display: 'flex', gap: 6, animation: shake && i === guesses.length ? 'shake 0.5s ease' : undefined }}>
             {row.map((cell, j) => (
               <div key={j} style={{
-                width: 52, height: 52, borderRadius: 10,
+                width: 44, height: 44, borderRadius: 8,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 22, fontWeight: 900, color: cell.state === 'empty' || cell.state === 'active' ? BROWN : '#fff',
+                fontSize: 18, fontWeight: 900, color: cell.state === 'empty' || cell.state === 'active' ? BROWN : '#fff',
                 background: CELL_COLORS[cell.state as LetterState],
                 border: cell.state === 'empty' ? `2px solid ${BROWN}15` : cell.state === 'active' ? `2px solid ${BROWN}40` : 'none',
                 transition: 'background 0.3s',
@@ -269,10 +269,10 @@ export default function WordlePage() {
               const isWide = k === 'ENTER' || k === '⌫'
               return (
                 <button key={k} onClick={() => handleKey(k)} style={{
-                  width: isWide ? 56 : 34, height: 46, borderRadius: 8, border: 'none',
+                  width: isWide ? 48 : 28, height: 38, borderRadius: 6, border: 'none',
                   background: state === 'correct' ? GREEN : state === 'present' ? YELLOW : state === 'absent' ? GRAY : '#fff',
                   color: state ? '#fff' : BROWN,
-                  fontSize: isWide ? 10 : 14, fontWeight: 900, fontFamily: 'inherit',
+                  fontSize: isWide ? 9 : 12, fontWeight: 900, fontFamily: 'inherit',
                   cursor: 'pointer', boxShadow: '0 2px 0 #4A2C0A20',
                 }}>{k}</button>
               )
