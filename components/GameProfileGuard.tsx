@@ -8,9 +8,12 @@ const GAME_PATHS = [
   '/mastermind', '/2048', '/nback', '/versus', '/play',
 ]
 
+const EXCLUDED_PATHS = ['/g/']
+
 export default function GameProfileGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isGame = GAME_PATHS.some(p => pathname.startsWith(p))
+  const isExcluded = EXCLUDED_PATHS.some(p => pathname.startsWith(p))
+  const isGame = !isExcluded && GAME_PATHS.some(p => pathname.startsWith(p))
   if (isGame) return <RequireProfile>{children}</RequireProfile>
   return <>{children}</>
 }
