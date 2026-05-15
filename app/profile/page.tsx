@@ -343,20 +343,29 @@ export default function ProfilePage() {
                 {nameError && <div style={{ fontSize: 10, color: '#FFB3B3', fontWeight: 700 }}>{nameError}</div>}
               </div>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
-                <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                    <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
+                    <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '2px 7px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
+                  </div>
+                  <button onClick={() => setEditingPassword(!editingPassword)} style={{
+                    padding: '4px 10px', borderRadius: 16, border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+                    background: hasPassword ? 'rgba(46,125,50,0.3)' : 'rgba(230,81,0,0.8)',
+                    color: '#fff', fontSize: 10, fontWeight: 800,
+                  }}>
+                    {hasPassword ? '🔒 Protected' : '⚠️ Protect'}
+                  </button>
+                </div>
+                {profileStreak.current > 0 && (
+                  <a href="/streak" style={{ textDecoration: 'none', textAlign: 'center' }}>
+                    <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
+                    <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{profileStreak.current}</div>
+                    <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>days</div>
+                  </a>
+                )}
               </div>
             )}
-
-            {/* Protect button */}
-            <button onClick={() => setEditingPassword(!editingPassword)} style={{
-              padding: '6px 14px', borderRadius: 20, border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-              background: hasPassword ? 'rgba(46,125,50,0.3)' : 'rgba(230,81,0,0.8)',
-              color: '#fff', fontSize: 11, fontWeight: 800,
-            }}>
-              {hasPassword ? '🔒 Protected' : '⚠️ Protect profile'}
-            </button>
           </div>
         </div>
 
@@ -411,83 +420,6 @@ export default function ProfilePage() {
       <div style={{ padding: '16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
 
 
-        {/* Streak banner */}
-        {profileStreak.current > 0 && (() => {
-          const MILESTONES = [
-            { min: 1,  max: 4,   img: 'seed.png',        color: '#2E7D32', msg: 'Your brain is warming up.', next: 'Reach 5 days to start forming a habit.' },
-            { min: 5,  max: 9,   img: 'streak.png',      color: '#E65100', msg: 'Habit forming. Working memory improving.', next: 'Reach 10 days for reaction time gains.' },
-            { min: 10, max: 29,  img: 'ray.png',         color: '#F57F17', msg: 'Reaction time is improving.', next: 'Reach 30 days for measurable memory gains.' },
-            { min: 30, max: 49,  img: 'brain-logo.webp', color: '#1565C0', msg: 'Measurable memory gains. Science backs this.', next: 'Reach 50 days — top 5% of players.' },
-            { min: 50, max: 99,  img: 'nav-trophy.webp', color: '#6A1B9A', msg: 'Top 5% of MemGenius players.', next: 'Reach 100 days — cognitive athlete level.' },
-            { min: 100, max: 9999, img: 'target.png',    color: '#B71C1C', msg: 'Cognitive athlete. Among the best.', next: 'Keep going. There is no ceiling.' },
-          ]
-          const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-          const m = MILESTONES.find(x => profileStreak.current >= x.min && profileStreak.current <= x.max)
-          return (
-            <Link href="/streak" style={{ textDecoration: 'none' }}>
-              <div style={{
-                background: 'linear-gradient(135deg, #1B5E20, #2E7D32)',
-                border: '2px solid #388E3C',
-                borderRadius: 24, padding: '20px',
-                boxShadow: '0 8px 32px #1B5E2060',
-              }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 14, gap: 4 }}>
-                  <img src={`${BASE}/${m?.img}`} alt="" style={{ width: 64, height: 64, objectFit: 'contain', animation: 'blink 1.2s ease-in-out infinite' }} />
-                  <div style={{ fontSize: 64, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{profileStreak.current}</div>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', letterSpacing: 2 }}>day streak</div>
-                  {profileStreak.longest > profileStreak.current && (
-                    <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: 700 }}>Best: {profileStreak.longest}</div>
-                  )}
-                </div>
-                <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', marginBottom: 4, textAlign: 'center' }}>{m?.msg}</div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 700, marginBottom: 12, textAlign: 'center' }}>{m?.next}</div>
-                {(() => {
-                  const SEGMENTS = [
-                    { min: 1,  max: 4,   steps: 4,  base: 0 },
-                    { min: 5,  max: 9,   steps: 5,  base: 5 },
-                    { min: 10, max: 29,  steps: 20, base: 10 },
-                    { min: 30, max: 49,  steps: 20, base: 30 },
-                    { min: 50, max: 99,  steps: 50, base: 50 },
-                    { min: 100, max: 9999, steps: 1, base: 100 },
-                  ]
-                  const seg = SEGMENTS.find(s => profileStreak.current >= s.min && profileStreak.current <= s.max)
-                  if (!seg) return null
-                  const progress = profileStreak.current - seg.base
-                  const daysToNext = seg.max === 9999 ? 0 : seg.max - profileStreak.current + 1
-                  return (
-                    <div style={{ marginTop: 12 }}>
-                      <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 6 }}>
-                        {[0,1,2,3,4].map(i => {
-                          const filled = i < progress || seg.min === 100
-                          return (
-                            <div key={i} style={{
-                              width: 18, height: 18, borderRadius: 9,
-                              background: filled ? '#fff' : 'transparent',
-                              border: `2px solid ${filled ? '#fff' : 'rgba(255,255,255,0.3)'}`,
-                              boxShadow: filled ? `0 2px 6px ${m?.color}40` : 'none',
-                            }} />
-                          )
-                        })}
-                      </div>
-                      {daysToNext > 0 && (
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.6)', textAlign: 'center' }}>
-                          {daysToNext} day{daysToNext !== 1 ? 's' : ''} to next milestone
-                        </div>
-                      )}
-                    </div>
-                  )
-                })()}
-
-                <div style={{ textAlign: 'center', marginTop: 16 }}>
-                  <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.15)', border: '1.5px solid rgba(255,255,255,0.4)', borderRadius: 20, padding: '8px 20px', fontSize: 12, fontWeight: 900, color: '#fff', letterSpacing: 0.5 }}>
-                    Learn more about your streak →
-                  </div>
-                </div>
-
-              </div>
-            </Link>
-          )
-        })()}
 
         <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
