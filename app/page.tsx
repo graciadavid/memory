@@ -111,9 +111,8 @@ export default function LandingPage() {
     const pendingGroup = sessionStorage.getItem('pending_group')
     if (pendingGroup) {
       sessionStorage.removeItem('pending_group')
-      supabase.from('group_members').upsert({ group_id: pendingGroup, player_name: playerName }).then(() => {
-        setTimeout(() => { window.location.href = `/g/${pendingGroup}` }, 500)
-      }).catch(() => {})
+      void supabase.from('group_members').upsert({ group_id: pendingGroup, player_name: playerName })
+      setTimeout(() => { window.location.href = `/g/${pendingGroup}` }, 500)
     }
   }
   const [name, setName] = useState('')
