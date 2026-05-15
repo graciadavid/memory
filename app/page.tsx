@@ -295,8 +295,8 @@ export default function LandingPage() {
       overflowY: 'auto',
     }}>
 
-      {!profile?.name ? (
-        /* NOT REGISTERED */
+      {false ? (
+        /* NOT REGISTERED - now handled by individual games */
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {/* Logo */}
           <img src={LOGO} alt="MemGenius" style={{ height: 110, objectFit: 'contain', marginBottom: 8 }} />
@@ -458,7 +458,7 @@ export default function LandingPage() {
 
           {/* Greeting + Streak */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 2 }}>
-            <div style={{ fontSize: 20, fontWeight: 900, color: BROWN }}>Hey, {profile.name}!</div>
+            <div style={{ fontSize: 20, fontWeight: 900, color: BROWN }}>{profile?.name ? `Hey, ${profile.name}!` : 'Train Your Brain'}</div>
             {streak.current > 0 && (
               <a href="/profile" style={{ textDecoration: 'none' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#E8F5E9', borderRadius: 10, padding: '4px 10px', border: '1.5px solid #2E7D32' }}>
