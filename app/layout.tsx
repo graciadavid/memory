@@ -39,6 +39,7 @@ import './globals.css'
 import BottomNav from '@/components/BottomNav'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
 import ProtectPromptGlobal from '@/components/ProtectPromptGlobal'
+import GameProfileGuard from '@/components/GameProfileGuard'
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -72,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${nunito.variable} font-nunito`} style={{ background: '#f2f2f2', margin: 0 }}>
         <GAAnalytics />
         <VercelAnalytics />
-        {children}
+        <GameProfileGuard>{children}</GameProfileGuard>
         <BottomNav />
         <ProtectPromptGlobal />
         <GAAnalytics />
