@@ -37,9 +37,9 @@ function playTone(freq1: number, freq2: number, duration: number, type: Oscillat
     osc.start(); osc.stop(ctx.currentTime + duration)
   } catch(e) {}
 }
-function playCorrect() { playTone(300, 150, 0.12, 'square', 0.25) }
-function playWrong() { playTone(150, 80, 0.3, 'sawtooth', 0.15) }
-function playPerfect() { playTone(350, 120, 0.15, 'square', 0.3) }
+function playCorrect() { playTone(440, 330, 0.2, 'sine', 0.12) }
+function playWrong() { playTone(220, 180, 0.3, 'sine', 0.1) }
+function playPerfect() { playTone(523, 440, 0.25, 'sine', 0.15) }
 
 type Phase = 'intro' | 'playing' | 'gameover'
 type HitResult = 'perfect' | 'good' | 'miss' | null
