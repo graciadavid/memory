@@ -223,7 +223,7 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
       </div>
 
       {/* Join Card */}
-      {showJoinCard && !joined && (
+      {!joined && (
         <div style={{
           margin: '16px', background: '#fff', borderRadius: 20,
           padding: '24px', boxShadow: '0 8px 32px rgba(74,44,10,0.15)',
@@ -272,7 +272,7 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
       )}
 
       {/* Join Card */}
-      {showJoinCard && !joined && (
+      {!joined && (
         <div style={{
           margin: '16px', background: '#fff', borderRadius: 20,
           padding: '24px', boxShadow: '0 8px 32px rgba(74,44,10,0.15)',
