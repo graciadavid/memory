@@ -298,19 +298,7 @@ export default function ProfilePage() {
 
   if (!loaded) return null
 
-  if (!profile?.name) {
-    return (
-      <main style={{ height: '100dvh', background: CREAM, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-nunito), sans-serif' }}>
-        <div style={{ textAlign: 'center', color: `${BROWN}60`, fontSize: 14, fontWeight: 700 }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>👤</div>
-          No profile yet.<br />Play a game first!
-          <div style={{ marginTop: 20 }}>
-            <Link href="/" style={{ textDecoration: 'none', background: BROWN, color: 'white', padding: '12px 24px', borderRadius: 12, fontWeight: 800, fontSize: 14 }}>Play now</Link>
-          </div>
-        </div>
-      </main>
-    )
-  }
+  if (!profile?.name) return null
 
   return (
     <>
