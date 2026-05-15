@@ -295,8 +295,8 @@ export default function LandingPage() {
       overflowY: 'auto',
     }}>
 
-      {!profile?.name ? (
-        /* NOT REGISTERED */
+      {false ? (
+        /* NOT REGISTERED - disabled */
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {/* Logo */}
           <img src={LOGO} alt="MemGenius" style={{ height: 110, objectFit: 'contain', marginBottom: 8 }} />
