@@ -24,6 +24,13 @@ function askNotifications() {
   }
 }
 
+const PULSE_STYLE = `
+  @keyframes profilePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.12); opacity: 0.75; }
+  }
+`
+
 export default function BottomNav() {
   const path = usePathname()
   const [hasProfile] = useState(() => {
@@ -36,6 +43,8 @@ export default function BottomNav() {
   if (path === '/' && !hasProfile) return null
 
   return (
+    <>
+    <style>{PULSE_STYLE}</style>
     <nav style={{
       position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
       width: '100%', maxWidth: 430,
@@ -56,12 +65,13 @@ export default function BottomNav() {
               <img
                 src={item.img!}
                 alt={item.label}
-                style={{ width: 44, height: 44, objectFit: 'contain', opacity: 1, transition: 'opacity 0.2s' }}
+                style={{ width: 44, height: 44, objectFit: 'contain', opacity: 1, transition: 'opacity 0.2s', animation: item.href === '/profile' ? 'profilePulse 2.5s ease-in-out infinite' : undefined }}
               />
             </div>
           </Link>
         )
       })}
     </nav>
+    </>
   )
 }
