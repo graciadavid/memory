@@ -43,7 +43,8 @@ export default function HomeClient({ easy, medium, hard }: Props) {
     setRegSaving(true)
     const { data: existing } = await supabase.from('profiles').select('player_name').eq('player_name', regName.trim()).limit(1)
     if (existing && existing.length > 0) { setRegError('Name taken'); setRegSaving(false); return }
-    await createProfile(regName.trim(), regPin)
+    await supabase.from('profiles').upsert({ player_name: regName.trim(), password_hash: regPin })
+    localStorage.setItem('memgenius_profile', JSON.stringify({ name: regName.trim(), pin: regPin }))
     setRegSaving(false)
     setShowRegister(false)
     if (pendingSlug) window.location.href = `/play/${pendingSlug}`
