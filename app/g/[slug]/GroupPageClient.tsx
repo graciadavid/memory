@@ -1,38 +1,21 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
-const CATEGORIES = [
-  { key: 'memory', label: 'Memory', color: '#E91E63', tabs: [
-    { key: 'memory', label: 'Memory', color: '#2E7D32' },
-    { key: 'digits', label: 'Digits', color: '#1976D2' },
-    { key: 'sequence', label: 'Simon Says', color: '#FF6F00' },
-    { key: 'nback', label: 'N-Back', color: '#6A1B9A' },
-  ]},
-  { key: 'agility', label: 'Agility', color: '#FF6F00', tabs: [
-    { key: 'stop', label: 'Stop', color: '#388E3C' },
-    { key: 'f1', label: 'F1 Reaction', color: '#E8002D' },
-    { key: 'pendulum', label: 'Pendulum', color: '#1565C0' },
-    { key: 'ace', label: 'Ace', color: '#4CAF50' },
-  ]},
-  { key: 'knowledge', label: 'Knowledge', color: '#1565C0', tabs: [
-    { key: 'flags', label: 'Flags', color: '#E65100' },
-    { key: 'population', label: 'H or L Population', color: '#6A1B9A' },
-    { key: 'area', label: 'Higher or Lower Area', color: '#00695C' },
-    { key: 'geoshape', label: 'GeoShape', color: '#1565C0' },
-  ]},
-  { key: 'logic', label: 'Logic', color: '#6A1B9A', tabs: [
-    { key: 'sudoku', label: 'Sudoku', color: '#757575' },
-    { key: 'wordly', label: 'Wordly', color: '#2E7D32' },
-    { key: 'mastermind', label: 'Mastermind', color: '#6A1B9A' },
-    { key: '2048', label: '2048', color: '#EDC22E' },
-  ]},
+const TABS = [
+  { key: 'memory', label: 'Memory', color: '#4A2C0A' },
+  { key: 'digits', label: 'Digits', color: '#1565C0' },
+  { key: 'sequence', label: 'Sequence', color: '#6A1B9A' },
+  { key: 'flags', label: 'Flags', color: '#00796B' },
+  { key: 'precision', label: 'Precision', color: '#4A148C' },
+  { key: 'versus', label: 'Versus', color: '#C62828' },
 ]
-const TABS = CATEGORIES.flatMap(c => c.tabs)
 
 function fmt(ms: number) {
   const m = Math.floor(ms / 60000)
@@ -41,170 +24,56 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea, bestSudoku, bestWordly, bestMastermind, bestGeo, bestAce, best2048, bestNback }: any) {
-  const [tab, setTab] = useState('flags')
-  const [myName, setMyName] = useState('')
-  const [joined, setJoined] = useState(false)
-  const [joining, setJoining] = useState(false)
-  const [hasProfile, setHasProfile] = useState(false)
-  const [newName, setNewName] = useState('')
-  const [newPin, setNewPin] = useState('')
-  const [joinError, setJoinError] = useState('')
-  const [joinSaving, setJoinSaving] = useState(false)
-  const [showJoinCard, setShowJoinCard] = useState(true)
-
-  useEffect(() => {
-    const stored = localStorage.getItem('memgenius_profile')
-    if (stored) {
-      const p = JSON.parse(stored)
-      setMyName(p.name || '')
-      setHasProfile(true)
-      const isMember = members.some((m: any) => m.player_name === p.name)
-      setJoined(isMember)
-      if (!isMember) setShowJoinCard(true)
-    } else {
-      setShowJoinCard(true)
-    }
-    // Always show if not a member
-    // Always show if not a member
-  }, [])
-
-  const joinGroup = async () => {
-    if (!myName || joining) return
-    setJoining(true)
-    await supabase.from('group_members').upsert({ group_id: group.id, player_name: myName })
-    setJoined(true)
-    setJoining(false)
-    window.location.reload()
-  }
-
-  const handleJoinNew = async () => {
-    if (!newName.trim()) { setJoinError('Enter a name'); return }
-    if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) { setJoinError('PIN must be 4 digits'); return }
-    setJoinSaving(true)
-    setJoinError('')
-    const { data: existing } = await supabase.from('profiles').select('player_name').eq('player_name', newName.trim()).limit(1)
-    if (existing && existing.length > 0) {
-      setJoinError('Name taken — try another')
-      setJoinSaving(false)
-      return
-    }
-    await supabase.from('profiles').upsert({ player_name: newName.trim(), password_hash: newPin })
-    localStorage.setItem('memgenius_profile', JSON.stringify({ name: newName.trim(), pin: newPin }))
-    await supabase.from('group_members').upsert({ group_id: group.id, player_name: newName.trim() })
-    setMyName(newName.trim())
-    setHasProfile(true)
-    setJoined(true)
-    setShowJoinCard(false)
-    window.location.reload()
-  }
-
-  const handleJoinExisting = async () => {
-    if (!myName || joining) return
-    setJoining(true)
-    await supabase.from('group_members').upsert({ group_id: group.id, player_name: myName })
-    setJoined(true)
-    setJoining(false)
-    setShowJoinCard(false)
-    window.location.reload()
-  }
-
-  const share = async () => {
-    const url = `${window.location.origin}/g/${group.slug || group.id}`
-    const text = `Join my group "${group.name}" on MemGenius! Compete with me in Memory, Digits, Sequence and Flags 🧠`
-    if (navigator.share) await navigator.share({ title: group.name, text, url })
-    else { await navigator.clipboard.writeText(`${text}\n${url}`); alert('Link copied!') }
-  }
+export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestVersus }: any) {
+  const { profile } = usePlayer()
+  const [tab, setTab] = useState('memory')
 
   const getRanking = () => {
     const memberNames = members.map((m: any) => m.player_name)
-    switch(tab) {
+    switch (tab) {
       case 'memory':
         return memberNames
-          .filter((n: string) => bestMemory[n])
+          .filter((n: string) => bestMemory[n] !== undefined)
           .map((n: string) => ({ name: n, score: fmt(bestMemory[n]), raw: bestMemory[n] }))
           .sort((a: any, b: any) => a.raw - b.raw)
       case 'digits':
         return memberNames
-          .filter((n: string) => bestDigits[n])
+          .filter((n: string) => bestDigits[n] !== undefined)
           .map((n: string) => ({ name: n, score: `Level ${bestDigits[n]}`, raw: bestDigits[n] }))
           .sort((a: any, b: any) => b.raw - a.raw)
       case 'sequence':
         return memberNames
-          .filter((n: string) => bestSeq[n])
+          .filter((n: string) => bestSeq[n] !== undefined)
           .map((n: string) => ({ name: n, score: `Level ${bestSeq[n]}`, raw: bestSeq[n] }))
           .sort((a: any, b: any) => b.raw - a.raw)
       case 'flags':
         return memberNames
-          .filter((n: string) => bestFlags[n])
+          .filter((n: string) => bestFlags[n] !== undefined)
           .map((n: string) => ({ name: n, score: `${bestFlags[n]} flags`, raw: bestFlags[n] }))
           .sort((a: any, b: any) => b.raw - a.raw)
-      case 'stop':
+      case 'precision':
         return memberNames
-          .filter((n: string) => bestPrecision?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${(bestPrecision?.[n]/1000).toFixed(3)}s`, raw: bestPrecision?.[n] }))
+          .filter((n: string) => bestPrecision[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${(bestPrecision[n]/1000).toFixed(3)}s`, raw: bestPrecision[n] }))
           .sort((a: any, b: any) => a.raw - b.raw)
-      case 'f1':
+      case 'versus':
         return memberNames
-          .filter((n: string) => bestF1?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestF1?.[n]}ms`, raw: bestF1?.[n] }))
-          .sort((a: any, b: any) => a.raw - b.raw)
-      case 'sudoku':
-        return memberNames
-          .filter((n: string) => bestSudoku?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${Math.floor(bestSudoku[n]/60000)}:${String(Math.floor((bestSudoku[n]%60000)/1000)).padStart(2,'0')}`, raw: bestSudoku[n] }))
-          .sort((a: any, b: any) => a.raw - b.raw)
-      case 'ace':
-        return memberNames
-          .filter((n: string) => bestAce?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestAce[n]} aces`, raw: bestAce[n] }))
-          .sort((a: any, b: any) => b.raw - a.raw)
-      case '2048':
-        return memberNames
-          .filter((n: string) => best2048?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${best2048[n].tile}`, raw: best2048[n].tile }))
-          .sort((a: any, b: any) => b.raw - a.raw)
-      case 'geoshape':
-        return memberNames
-          .filter((n: string) => bestGeo?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestGeo[n]} countries`, raw: bestGeo[n] }))
-          .sort((a: any, b: any) => b.raw - a.raw)
-      case 'nback':
-        return memberNames
-          .filter((n: string) => bestNback?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestNback[n]} correct`, raw: bestNback[n] }))
-          .sort((a: any, b: any) => b.raw - a.raw)
-      case 'wordly':
-        return memberNames
-          .filter((n: string) => bestWordly?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${Math.floor(bestWordly[n]/60000)}:${String(Math.floor((bestWordly[n]%60000)/1000)).padStart(2,'0')}`, raw: bestWordly[n] }))
-          .sort((a: any, b: any) => a.raw - b.raw)
-      case 'mastermind':
-        return memberNames
-          .filter((n: string) => bestMastermind?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${Math.floor(bestMastermind[n]/60000)}:${String(Math.floor((bestMastermind[n]%60000)/1000)).padStart(2,'0')}`, raw: bestMastermind[n] }))
-          .sort((a: any, b: any) => a.raw - b.raw)
-      case 'pendulum':
-        return memberNames
-          .filter((n: string) => bestPendulum?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestPendulum?.[n]}ms`, raw: bestPendulum?.[n] }))
-          .sort((a: any, b: any) => a.raw - b.raw)
-      case 'population':
-        return memberNames
-          .filter((n: string) => bestVersusPop?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestVersusPop?.[n]} correct`, raw: bestVersusPop?.[n] }))
-          .sort((a: any, b: any) => b.raw - a.raw)
-      case 'area':
-        return memberNames
-          .filter((n: string) => bestVersusArea?.[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestVersusArea?.[n]} correct`, raw: bestVersusArea?.[n] }))
+          .filter((n: string) => bestVersus[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestVersus[n]} correct`, raw: bestVersus[n] }))
           .sort((a: any, b: any) => b.raw - a.raw)
       default: return []
     }
   }
 
   const ranking = getRanking()
-  const activeTab = TABS.find(t => t.key === tab)!
+  const myName = profile?.name || ''
+
+  const shareGroup = () => {
+    const url = `${window.location.origin}/g/${group.slug || group.id}`
+    const text = `🧠 Join "${group.name}" on MemGenius and compete with me!\n${url}`
+    if (navigator.share) navigator.share({ text })
+    else navigator.clipboard.writeText(url).then(() => alert('Link copied!'))
+  }
 
   return (
     <main style={{
@@ -212,171 +81,71 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
       background: `linear-gradient(180deg, #FFF8E1 0%, ${CREAM} 100%)`,
       fontFamily: 'var(--font-nunito), sans-serif',
       maxWidth: 430, margin: '0 auto',
-      padding: '0 0 100px',
+      paddingBottom: 100,
     }}>
       {/* Header */}
-      <div style={{ background: 'linear-gradient(135deg, #1A3A5C, #1565C0)', padding: '28px 20px 24px' }}>
-        <a href="/profile" style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 800, textDecoration: 'none' }}>← Profile</a>
-        <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginTop: 12, marginBottom: 4 }}>Group</div>
-        <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{group.name}</div>
-        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>{memberCount} member{memberCount !== 1 ? 's' : ''}</div>
+      <div style={{
+        background: 'linear-gradient(135deg, #1A3A5C, #1565C0)',
+        padding: '28px 20px 24px',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Group</div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{group.name}</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>{memberCount} member{memberCount !== 1 ? 's' : ''}</div>
+          </div>
+          <button onClick={shareGroup} style={{
+            padding: '10px 16px', borderRadius: 12, border: 'none',
+            background: '#25D366', color: '#fff', fontSize: 13, fontWeight: 800,
+            fontFamily: 'inherit', cursor: 'pointer',
+          }}>Invite 📲</button>
+        </div>
       </div>
 
-      {/* Join Card */}
-      {!joined && (
-        <div style={{
-          margin: '16px', background: '#fff', borderRadius: 20,
-          padding: '24px', boxShadow: '0 8px 32px rgba(74,44,10,0.15)',
-          border: '1px solid rgba(74,44,10,0.08)',
-        }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>You are invited</div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>You have been invited to join {group.name}</div>
-          <div style={{ fontSize: 13, color: `${BROWN}60`, marginBottom: 16, lineHeight: 1.6 }}>
-            {hasProfile ? 'Join this group to compete with its members.' : 'Create your profile to join this group and compete.'}
+      {/* Tabs */}
+      <div style={{ display: 'flex', gap: 6, padding: '16px 16px 8px', overflowX: 'auto' }}>
+        {TABS.map(t => (
+          <button key={t.key} onClick={() => setTab(t.key)} style={{
+            padding: '8px 14px', borderRadius: 20, border: 'none', flexShrink: 0,
+            background: tab === t.key ? t.color : '#fff',
+            color: tab === t.key ? '#fff' : `${BROWN}60`,
+            fontSize: 12, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
+            boxShadow: tab === t.key ? `0 4px 0 ${t.color}50` : `0 2px 8px ${BROWN}08`,
+          }}>{t.label}</button>
+        ))}
+      </div>
+
+      {/* Ranking */}
+      <div style={{ padding: '8px 16px' }}>
+        {ranking.length === 0 ? (
+          <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, padding: '40px 0' }}>
+            No scores yet. Play {TABS.find(t => t.key === tab)?.label} to appear here!
           </div>
-
-          {!hasProfile && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 12 }}>
-              <input
-                type="text" placeholder="Your name" value={newName}
-                onChange={e => setNewName(e.target.value)}
-                maxLength={20}
-                style={{ padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${BROWN}20`, background: '#FAF7F2', fontSize: 15, fontFamily: 'inherit', outline: 'none', color: BROWN, fontWeight: 700 }}
-              />
-              <input
-                type="number" placeholder="4-digit PIN" value={newPin}
-                onChange={e => setNewPin(e.target.value.slice(0, 4))}
-                style={{ padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${BROWN}20`, background: '#FAF7F2', fontSize: 15, fontFamily: 'inherit', outline: 'none', color: BROWN, fontWeight: 700 }}
-              />
-              {joinError && <div style={{ fontSize: 12, color: '#C62828', fontWeight: 700 }}>{joinError}</div>}
-              <button onClick={handleJoinNew} disabled={joinSaving} style={{
-                padding: '14px', borderRadius: 14, border: 'none',
-                background: BROWN, color: '#fff',
-                fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
-                boxShadow: `0 5px 0 ${BROWN}60`,
-              }}>{joinSaving ? 'Joining...' : `Join ${group.name}`}</button>
-            </div>
-          )}
-
-          {hasProfile && !joined && (
-            <button onClick={handleJoinExisting} disabled={joining} style={{
-              width: '100%', padding: '14px', borderRadius: 14, border: 'none',
-              background: BROWN, color: '#fff',
-              fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
-              boxShadow: `0 5px 0 ${BROWN}60`, marginBottom: 8,
-            }}>{joining ? 'Joining...' : `Join as ${myName}`}</button>
-          )}
-
-
-        </div>
-      )}
-
-      {/* Join Card */}
-      {!joined && (
-        <div style={{
-          margin: '16px', background: '#fff', borderRadius: 20,
-          padding: '24px', boxShadow: '0 8px 32px rgba(74,44,10,0.15)',
-          border: '1px solid rgba(74,44,10,0.08)',
-        }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>You are invited</div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, marginBottom: 4 }}>You have been invited to join {group.name}</div>
-          <div style={{ fontSize: 13, color: `${BROWN}60`, marginBottom: 16, lineHeight: 1.6 }}>
-            {hasProfile ? 'Join this group to compete with its members.' : 'Create your profile to join this group and compete.'}
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {ranking.map((r: any, i: number) => {
+              const isMe = r.name === myName
+              return (
+                <div key={r.name} style={{
+                  display: 'grid', gridTemplateColumns: '36px 1fr auto',
+                  alignItems: 'center', gap: 10,
+                  background: isMe ? `${GOLD}22` : i === 0 ? `${GOLD}08` : '#fff',
+                  border: `1px solid ${isMe ? GOLD + '60' : i === 0 ? GOLD + '20' : BROWN + '08'}`,
+                  borderRadius: 14, padding: '14px 12px',
+                }}>
+                  <div style={{ fontSize: 15, fontWeight: 900, textAlign: 'center', color: i === 0 ? GOLD : i === 1 ? '#999' : i === 2 ? '#A0522D' : `${BROWN}30` }}>
+                    {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: BROWN, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    {r.name}
+                    {isMe && <span style={{ fontSize: 8, color: GOLD, fontWeight: 900, background: `${GOLD}20`, padding: '1px 5px', borderRadius: 4 }}>YOU</span>}
+                  </div>
+                  <div style={{ fontSize: 14, fontWeight: 900, color: TABS.find(t => t.key === tab)?.color }}>{r.score}</div>
+                </div>
+              )
+            })}
           </div>
-
-          {!hasProfile && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 12 }}>
-              <input
-                type="text" placeholder="Your name" value={newName}
-                onChange={e => setNewName(e.target.value)}
-                maxLength={20}
-                style={{ padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${BROWN}20`, background: '#FAF7F2', fontSize: 15, fontFamily: 'inherit', outline: 'none', color: BROWN, fontWeight: 700 }}
-              />
-              <input
-                type="number" placeholder="4-digit PIN" value={newPin}
-                onChange={e => setNewPin(e.target.value.slice(0, 4))}
-                style={{ padding: '12px 14px', borderRadius: 12, border: `1.5px solid ${BROWN}20`, background: '#FAF7F2', fontSize: 15, fontFamily: 'inherit', outline: 'none', color: BROWN, fontWeight: 700 }}
-              />
-              {joinError && <div style={{ fontSize: 12, color: '#C62828', fontWeight: 700 }}>{joinError}</div>}
-              <button onClick={handleJoinNew} disabled={joinSaving} style={{
-                padding: '14px', borderRadius: 14, border: 'none',
-                background: BROWN, color: '#fff',
-                fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
-                boxShadow: `0 5px 0 ${BROWN}60`,
-              }}>{joinSaving ? 'Joining...' : `Join ${group.name}`}</button>
-            </div>
-          )}
-
-          {hasProfile && !joined && (
-            <button onClick={handleJoinExisting} disabled={joining} style={{
-              width: '100%', padding: '14px', borderRadius: 14, border: 'none',
-              background: BROWN, color: '#fff',
-              fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
-              boxShadow: `0 5px 0 ${BROWN}60`, marginBottom: 8,
-            }}>{joining ? 'Joining...' : `Join as ${myName}`}</button>
-          )}
-
-
-        </div>
-      )}
-
-      <div style={{ padding: '16px' }}>
-        {/* Action buttons */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-          <button onClick={share} style={{
-            flex: 1, padding: '13px', borderRadius: 14, border: 'none',
-            background: '#2E7D32', color: '#fff',
-            fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
-            boxShadow: '0 5px 0 #1B5E2060',
-          }}>Invite friends</button>
-
-          {!joined && myName && (
-            <button onClick={joinGroup} disabled={joining} style={{
-              flex: 1, padding: '13px', borderRadius: 14, border: 'none',
-              background: BROWN, color: '#fff',
-              fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
-              boxShadow: `0 5px 0 ${BROWN}60`,
-            }}>{joining ? '...' : 'Join group'}</button>
-          )}
-        </div>
-
-
-
-        {/* Ranking tabs */}
-        <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Ranking</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 6, marginBottom: 12 }}>
-          {TABS.map(t => (
-            <button key={t.key} onClick={() => setTab(t.key)} style={{
-              padding: '10px 4px', borderRadius: 12, border: 'none',
-              background: tab === t.key ? t.color : '#fff',
-              color: tab === t.key ? '#fff' : `${BROWN}60`,
-              fontSize: 11, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
-              boxShadow: tab === t.key ? `0 4px 0 ${t.color}60` : 'none',
-            }}>{t.label}</button>
-          ))}
-        </div>
-
-        {/* Ranking list */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {ranking.length === 0 ? (
-            <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, padding: '40px 0' }}>
-              No scores yet — play to appear here!
-            </div>
-          ) : ranking.map((r: any, i: number) => (
-            <div key={r.name} style={{
-              background: r.name === myName ? `${GOLD}22` : i === 0 ? `${GOLD}08` : '#fff',
-              border: `1px solid ${r.name === myName ? GOLD + '60' : i === 0 ? GOLD + '20' : BROWN + '08'}`,
-              borderRadius: 12, padding: '12px 14px',
-              display: 'flex', alignItems: 'center', gap: 10,
-            }}>
-              <div style={{ fontSize: 14, fontWeight: 900, color: i === 0 ? GOLD : i === 1 ? '#999' : i === 2 ? '#A0522D' : `${BROWN}30`, width: 24 }}>{i + 1}</div>
-              <div style={{ flex: 1, fontSize: 14, fontWeight: 800, color: BROWN }}>
-                {r.name}{r.name === myName ? ' 👤' : ''}
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 900, color: activeTab.color }}>{r.score}</div>
-            </div>
-          ))}
-        </div>
+        )}
       </div>
     </main>
   )

@@ -7,14 +7,18 @@ export const revalidate = 0
 export default async function GroupPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
 
-  // Try by slug first, then by id
-  let { data: group } = await supabase.from('groups').select('*').eq('slug', slug).single()
+  let { data: group } = await supabase.from('groups').select('*').eq('slug', slug).maybeSingle()
   if (!group) {
-    const res = await supabase.from('groups').select('*').eq('id', slug).single()
+    const res = await supabase.from('groups').select('*').eq('id', slug).maybeSingle()
     group = res.data
   }
 
-  if (!group) return <div style={{ padding: 40, textAlign: 'center', fontFamily: 'sans-serif' }}>Group not found</div>
+  if (!group) return (
+    <div style={{ padding: 40, textAlign: 'center', fontFamily: 'sans-serif', color: '#4A2C0A' }}>
+      <div style={{ fontSize: 40, marginBottom: 16 }}>🔍</div>
+      <div style={{ fontSize: 20, fontWeight: 900 }}>Group not found</div>
+    </div>
+  )
 
   const { data: members } = await supabase
     .from('group_members').select('player_name, joined_at')
@@ -23,12 +27,12 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
   const memberNames = members?.map((m: any) => m.player_name) || []
 
   const [memScores, digScores, seqScores, flagScores, precScores, vsScores] = await Promise.all([
-    supabase.from('scores').select('player_name, time_ms').in('player_name', memberNames).order('time_ms', { ascending: true }),
-    supabase.from('number_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
-    supabase.from('sequence_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
-    supabase.from('flag_scores').select('player_name, level').in('player_name', memberNames).order('level', { ascending: false }),
-    supabase.from('precision_scores').select('player_name, difference_ms').in('player_name', memberNames).order('difference_ms', { ascending: true }),
-    supabase.from('higher_lower_scores').select('player_name, level').eq('category', 'population').in('player_name', memberNames).order('level', { ascending: false }),
+    memberNames.length ? supabase.from('scores').select('player_name, time_ms').in('player_name', memberNames) : { data: [] },
+    memberNames.length ? supabase.from('number_scores').select('player_name, level').in('player_name', memberNames) : { data: [] },
+    memberNames.length ? supabase.from('sequence_scores').select('player_name, level').in('player_name', memberNames) : { data: [] },
+    memberNames.length ? supabase.from('flag_scores').select('player_name, level').in('player_name', memberNames) : { data: [] },
+    memberNames.length ? supabase.from('precision_scores').select('player_name, difference_ms').in('player_name', memberNames) : { data: [] },
+    memberNames.length ? supabase.from('higher_lower_scores').select('player_name, level').in('player_name', memberNames) : { data: [] },
   ])
 
   const bestMemory: Record<string, number> = {}
