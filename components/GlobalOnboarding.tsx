@@ -21,7 +21,7 @@ export default function GlobalOnboarding() {
     // Don't show on excluded pages
     if (EXCLUDED.includes(pathname)) return
     // Don't show on game pages - only blog, groups, ranking, profile
-    const showOn = ['/groups', '/profile', '/streak']
+    const showOn = ['/groups', '/profile', '/streak', '/ranking']
     const shouldShow = showOn.some(p => pathname.startsWith(p))
     if (!shouldShow) return
 
