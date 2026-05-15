@@ -530,9 +530,16 @@ export default function ProfilePage() {
                       <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{d.label}{hasResult ? ` · ${fmt(entry.time!)}` : ''}</div>
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
+                  <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
                     <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{loadingRanks ? '...' : hasResult ? `#${entry.rank}` : '—'}</div>
                     <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+                    {hasResult && (
+                      <button onClick={() => shareScore(`🧠 I'm #${entry.rank} in Memory ${d.label} on MemGenius! ${fmt(entry.time!)}\nhttps://memgenius.com/memory`)} style={{
+                        padding: '4px 10px', borderRadius: 8, border: 'none',
+                        background: 'rgba(255,255,255,0.2)', color: '#fff',
+                        fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+                      }}>Share</button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -648,9 +655,16 @@ export default function ProfilePage() {
                     <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>{g.score ?? 'No record yet'}</div>
                   </div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
+                <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
                   <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{g.rank ? `#${g.rank}` : '—'}</div>
                   <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>World</div>
+                  {g.rank && g.share && (
+                    <button onClick={() => shareScore(g.share)} style={{
+                      padding: '4px 10px', borderRadius: 8, border: 'none',
+                      background: 'rgba(255,255,255,0.2)', color: '#fff',
+                      fontSize: 10, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+                    }}>Share</button>
+                  )}
                 </div>
               </div>
             </div>
