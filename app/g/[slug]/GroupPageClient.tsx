@@ -1,21 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import { supabase } from '@/lib/supabase'
 
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-
-const TABS = [
-  { key: 'memory', label: 'Memory', color: '#4A2C0A' },
-  { key: 'digits', label: 'Digits', color: '#1565C0' },
-  { key: 'sequence', label: 'Sequence', color: '#6A1B9A' },
-  { key: 'flags', label: 'Flags', color: '#00796B' },
-  { key: 'precision', label: 'Precision', color: '#4A148C' },
-  { key: 'versus', label: 'Versus', color: '#C62828' },
-]
 
 function fmt(ms: number) {
   const m = Math.floor(ms / 60000)
@@ -24,53 +13,71 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestVersus }: any) {
+const CATEGORIES = [
+  {
+    key: 'memory', label: 'Memory', color: '#4A2C0A',
+    games: [
+      { key: 'memory', label: 'Memory', color: '#4A2C0A' },
+      { key: 'digits', label: 'Digits', color: '#1565C0' },
+      { key: 'sequence', label: 'Sequence', color: '#6A1B9A' },
+      { key: 'nback', label: 'N-Back', color: '#7B1FA2' },
+    ]
+  },
+  {
+    key: 'agility', label: 'Agility', color: '#C62828',
+    games: [
+      { key: 'stopwatch', label: 'Stop', color: '#4A148C' },
+      { key: 'f1', label: 'Formula 1', color: '#E8002D' },
+      { key: 'pendulum', label: 'Pendulum', color: '#1565C0' },
+      { key: 'ace', label: 'Ace', color: '#2E7D32' },
+    ]
+  },
+  {
+    key: 'knowledge', label: 'Knowledge', color: '#00796B',
+    games: [
+      { key: 'flags', label: 'Flags', color: '#00796B' },
+      { key: 'population', label: 'Population', color: '#C62828' },
+      { key: 'area', label: 'Area km²', color: '#C62828' },
+      { key: 'geoshape', label: 'GeoShape', color: '#1565C0' },
+    ]
+  },
+  {
+    key: 'logic', label: 'Logic', color: '#6A1B9A',
+    games: [
+      { key: 'sudoku', label: 'Sudoku', color: '#757575' },
+      { key: 'wordly', label: 'Wordly', color: '#2E7D32' },
+      { key: 'mastermind', label: 'Mastermind', color: '#6A1B9A' },
+      { key: '2048', label: '2048', color: '#EDC22E' },
+    ]
+  },
+]
+
+export default function GroupPageClient({ group, members, memberCount, scores }: any) {
   const { profile } = usePlayer()
-  const [tab, setTab] = useState('memory')
+  const [category, setCategory] = useState('memory')
+  const [game, setGame] = useState('memory')
+  const myName = profile?.name || ''
+
+  const currentCategory = CATEGORIES.find(c => c.key === category)!
+
+  useEffect(() => {
+    setGame(currentCategory.games[0].key)
+  }, [category])
 
   const getRanking = () => {
-    const memberNames = members.map((m: any) => m.player_name)
-    switch (tab) {
-      case 'memory':
-        return memberNames
-          .filter((n: string) => bestMemory[n] !== undefined)
-          .map((n: string) => ({ name: n, score: fmt(bestMemory[n]), raw: bestMemory[n] }))
-          .sort((a: any, b: any) => a.raw - b.raw)
-      case 'digits':
-        return memberNames
-          .filter((n: string) => bestDigits[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `Level ${bestDigits[n]}`, raw: bestDigits[n] }))
-          .sort((a: any, b: any) => b.raw - a.raw)
-      case 'sequence':
-        return memberNames
-          .filter((n: string) => bestSeq[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `Level ${bestSeq[n]}`, raw: bestSeq[n] }))
-          .sort((a: any, b: any) => b.raw - a.raw)
-      case 'flags':
-        return memberNames
-          .filter((n: string) => bestFlags[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestFlags[n]} flags`, raw: bestFlags[n] }))
-          .sort((a: any, b: any) => b.raw - a.raw)
-      case 'precision':
-        return memberNames
-          .filter((n: string) => bestPrecision[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${(bestPrecision[n]/1000).toFixed(3)}s`, raw: bestPrecision[n] }))
-          .sort((a: any, b: any) => a.raw - b.raw)
-      case 'versus':
-        return memberNames
-          .filter((n: string) => bestVersus[n] !== undefined)
-          .map((n: string) => ({ name: n, score: `${bestVersus[n]} correct`, raw: bestVersus[n] }))
-          .sort((a: any, b: any) => b.raw - a.raw)
-      default: return []
-    }
+    const data = scores[game] || []
+    return data.sort((a: any, b: any) => {
+      const lowerBetter = ['stopwatch', 'f1', 'pendulum', 'memory']
+      return lowerBetter.includes(game) ? a.raw - b.raw : b.raw - a.raw
+    })
   }
 
   const ranking = getRanking()
-  const myName = profile?.name || ''
+  const currentGame = currentCategory.games.find(g => g.key === game)!
 
   const shareGroup = () => {
     const url = `${window.location.origin}/g/${group.slug || group.id}`
-    const text = `🧠 Join "${group.name}" on MemGenius and compete with me!\n${url}`
+    const text = `🧠 Join "${group.name}" on MemGenius!\n${url}`
     if (navigator.share) navigator.share({ text })
     else navigator.clipboard.writeText(url).then(() => alert('Link copied!'))
   }
@@ -88,7 +95,7 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
         background: 'linear-gradient(135deg, #1A3A5C, #1565C0)',
         padding: '28px 20px 24px',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Group</div>
             <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{group.name}</div>
@@ -102,24 +109,36 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Category tabs */}
       <div style={{ display: 'flex', gap: 6, padding: '16px 16px 8px', overflowX: 'auto' }}>
-        {TABS.map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)} style={{
-            padding: '8px 14px', borderRadius: 20, border: 'none', flexShrink: 0,
-            background: tab === t.key ? t.color : '#fff',
-            color: tab === t.key ? '#fff' : `${BROWN}60`,
-            fontSize: 12, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
-            boxShadow: tab === t.key ? `0 4px 0 ${t.color}50` : `0 2px 8px ${BROWN}08`,
-          }}>{t.label}</button>
+        {CATEGORIES.map(c => (
+          <button key={c.key} onClick={() => setCategory(c.key)} style={{
+            padding: '8px 16px', borderRadius: 20, border: 'none', flexShrink: 0,
+            background: category === c.key ? c.color : '#fff',
+            color: category === c.key ? '#fff' : `${BROWN}60`,
+            fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
+            boxShadow: category === c.key ? `0 4px 0 ${c.color}50` : `0 2px 8px ${BROWN}08`,
+          }}>{c.label}</button>
+        ))}
+      </div>
+
+      {/* Game tabs */}
+      <div style={{ display: 'flex', gap: 6, padding: '0 16px 12px', overflowX: 'auto' }}>
+        {currentCategory.games.map(g => (
+          <button key={g.key} onClick={() => setGame(g.key)} style={{
+            padding: '6px 12px', borderRadius: 16, border: 'none', flexShrink: 0,
+            background: game === g.key ? g.color : `${BROWN}08`,
+            color: game === g.key ? '#fff' : `${BROWN}50`,
+            fontSize: 11, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+          }}>{g.label}</button>
         ))}
       </div>
 
       {/* Ranking */}
-      <div style={{ padding: '8px 16px' }}>
+      <div style={{ padding: '0 16px' }}>
         {ranking.length === 0 ? (
           <div style={{ textAlign: 'center', color: `${BROWN}30`, fontSize: 14, fontWeight: 700, padding: '40px 0' }}>
-            No scores yet. Play {TABS.find(t => t.key === tab)?.label} to appear here!
+            No scores yet in {currentGame.label}
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -140,7 +159,7 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
                     {r.name}
                     {isMe && <span style={{ fontSize: 8, color: GOLD, fontWeight: 900, background: `${GOLD}20`, padding: '1px 5px', borderRadius: 4 }}>YOU</span>}
                   </div>
-                  <div style={{ fontSize: 14, fontWeight: 900, color: TABS.find(t => t.key === tab)?.color }}>{r.score}</div>
+                  <div style={{ fontSize: 14, fontWeight: 900, color: currentGame.color }}>{r.score}</div>
                 </div>
               )
             })}

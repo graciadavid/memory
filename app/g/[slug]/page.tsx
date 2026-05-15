@@ -26,29 +26,64 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
 
   const memberNames = members?.map((m: any) => m.player_name) || []
 
-  const [memScores, digScores, seqScores, flagScores, precScores, vsScores] = await Promise.all([
-    memberNames.length ? supabase.from('scores').select('player_name, time_ms').in('player_name', memberNames) : { data: [] },
-    memberNames.length ? supabase.from('number_scores').select('player_name, level').in('player_name', memberNames) : { data: [] },
-    memberNames.length ? supabase.from('sequence_scores').select('player_name, level').in('player_name', memberNames) : { data: [] },
-    memberNames.length ? supabase.from('flag_scores').select('player_name, level').in('player_name', memberNames) : { data: [] },
-    memberNames.length ? supabase.from('precision_scores').select('player_name, difference_ms').in('player_name', memberNames) : { data: [] },
-    memberNames.length ? supabase.from('higher_lower_scores').select('player_name, level').in('player_name', memberNames) : { data: [] },
-  ])
-
-  const bestMemory: Record<string, number> = {}
-  memScores.data?.forEach((s: any) => { if (!bestMemory[s.player_name] || s.time_ms < bestMemory[s.player_name]) bestMemory[s.player_name] = s.time_ms })
-
-  const bestLevel = (data: any[]) => {
-    const map: Record<string, number> = {}
-    data?.forEach(s => { if (!map[s.player_name] || s.level > map[s.player_name]) map[s.player_name] = s.level })
-    return map
+  if (!memberNames.length) {
+    return (
+      <>
+        <GroupLandingClient group={group} memberCount={0} />
+        <GroupPageClient group={group} members={[]} memberCount={0} scores={{}} />
+      </>
+    )
   }
 
-  const bestPrecision: Record<string, number> = {}
-  precScores.data?.forEach((s: any) => { if (!bestPrecision[s.player_name] || s.difference_ms < bestPrecision[s.player_name]) bestPrecision[s.player_name] = s.difference_ms })
+  // Fetch all scores for all games
+  const [memS, digS, seqS, nbS, precS, aceS, flagS, hlS, shapeS, sudS, wordS, mmS, g2048S] = await Promise.all([
+    supabase.from('scores').select('player_name, time_ms').in('player_name', memberNames),
+    supabase.from('number_scores').select('player_name, level').in('player_name', memberNames),
+    supabase.from('sequence_scores').select('player_name, level').in('player_name', memberNames),
+    supabase.from('nback_scores').select('player_name, level').in('player_name', memberNames),
+    supabase.from('precision_scores').select('player_name, difference_ms, game_type').in('player_name', memberNames),
+    supabase.from('ace_scores').select('player_name, score').in('player_name', memberNames),
+    supabase.from('flag_scores').select('player_name, level').in('player_name', memberNames),
+    supabase.from('higher_lower_scores').select('player_name, level, category').in('player_name', memberNames),
+    supabase.from('shape_scores').select('player_name, level').in('player_name', memberNames),
+    supabase.from('sudoku_scores').select('player_name, time_ms').in('player_name', memberNames),
+    supabase.from('wordle_scores').select('player_name, score').in('player_name', memberNames),
+    supabase.from('mastermind_scores').select('player_name, score').in('player_name', memberNames),
+    supabase.from('game2048_scores').select('player_name, score').in('player_name', memberNames),
+  ])
 
-  const bestVersus: Record<string, number> = {}
-  vsScores.data?.forEach((s: any) => { if (!bestVersus[s.player_name] || s.level > bestVersus[s.player_name]) bestVersus[s.player_name] = s.level })
+  const bestByPlayer = (data: any[], key: string, lower = false) => {
+    const map: Record<string, number> = {}
+    data?.forEach(s => {
+      const v = s[key]
+      if (!map[s.player_name] || (lower ? v < map[s.player_name] : v > map[s.player_name])) map[s.player_name] = v
+    })
+    return Object.entries(map).map(([name, raw]) => ({
+      name, raw,
+      score: key === 'time_ms' ? (() => { const m = Math.floor(raw/60000); const s = Math.floor((raw%60000)/1000); const c = Math.floor((raw%1000)/10); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}` })()
+        : key === 'difference_ms' ? `${(raw/1000).toFixed(3)}s`
+        : `${raw}`
+    }))
+  }
+
+  const scores: Record<string, any[]> = {
+    memory: bestByPlayer(memS.data || [], 'time_ms', true),
+    digits: bestByPlayer(digS.data || [], 'level'),
+    sequence: bestByPlayer(seqS.data || [], 'level'),
+    nback: bestByPlayer(nbS.data || [], 'level'),
+    stopwatch: bestByPlayer((precS.data || []).filter((s: any) => !s.game_type), 'difference_ms', true),
+    f1: bestByPlayer((precS.data || []).filter((s: any) => s.game_type === 'formula1'), 'difference_ms', true),
+    pendulum: bestByPlayer((precS.data || []).filter((s: any) => s.game_type === 'pendulum'), 'difference_ms', true),
+    ace: bestByPlayer(aceS.data || [], 'score'),
+    flags: bestByPlayer(flagS.data || [], 'level'),
+    population: bestByPlayer((hlS.data || []).filter((s: any) => s.category === 'population'), 'level'),
+    area: bestByPlayer((hlS.data || []).filter((s: any) => s.category === 'area'), 'level'),
+    geoshape: bestByPlayer(shapeS.data || [], 'level'),
+    sudoku: bestByPlayer(sudS.data || [], 'time_ms', true),
+    wordly: bestByPlayer(wordS.data || [], 'score'),
+    mastermind: bestByPlayer(mmS.data || [], 'score'),
+    '2048': bestByPlayer(g2048S.data || [], 'score'),
+  }
 
   return (
     <>
@@ -57,12 +92,7 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
         group={group}
         members={members || []}
         memberCount={memberNames.length}
-        bestMemory={bestMemory}
-        bestDigits={bestLevel(digScores.data || [])}
-        bestSeq={bestLevel(seqScores.data || [])}
-        bestFlags={bestLevel(flagScores.data || [])}
-        bestPrecision={bestPrecision}
-        bestVersus={bestVersus}
+        scores={scores}
       />
     </>
   )
