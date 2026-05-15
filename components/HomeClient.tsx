@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import Onboarding from './Onboarding'
 
