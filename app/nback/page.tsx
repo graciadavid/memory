@@ -183,7 +183,7 @@ export default function NBackPage() {
   }, [phase])
 
   useEffect(() => {
-    return () => if (timerRef.current) clearTimeout(timerRef.current)
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [])
 
   const currentColor = COLORS[current]
