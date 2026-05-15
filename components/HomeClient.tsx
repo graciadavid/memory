@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
+import { useState } from 'react'
+import { supabase } from '@/lib/supabase'
 import Onboarding from './Onboarding'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
@@ -20,7 +22,35 @@ interface Props {
 
 export default function HomeClient({ easy, medium, hard }: Props) {
   const { profile, loaded, createProfile } = usePlayer()
-  if (!loaded || !profile?.name) return null
+  const [showRegister, setShowRegister] = useState(false)
+  const [pendingSlug, setPendingSlug] = useState<string | null>(null)
+  const [regName, setRegName] = useState('')
+  const [regPin, setRegPin] = useState('')
+  const [regError, setRegError] = useState('')
+  const [regSaving, setRegSaving] = useState(false)
+
+  const handlePlay = (slug: string) => {
+    if (profile?.name) {
+      window.location.href = `/play/${slug}`
+    } else {
+      setPendingSlug(slug)
+      setShowRegister(true)
+    }
+  }
+
+  const handleRegister = async () => {
+    if (!regName.trim()) { setRegError('Enter a name'); return }
+    if (regPin.length !== 4 || !/^\d{4}$/.test(regPin)) { setRegError('PIN must be 4 digits'); return }
+    setRegSaving(true)
+    const { data: existing } = await supabase.from('profiles').select('player_name').eq('player_name', regName.trim()).limit(1)
+    if (existing && existing.length > 0) { setRegError('Name taken'); setRegSaving(false); return }
+    await createProfile(regName.trim(), regPin)
+    setRegSaving(false)
+    setShowRegister(false)
+    if (pendingSlug) window.location.href = `/play/${pendingSlug}`
+  }
+
+  if (!loaded) return null
 
   const levels = [
     { slug: easy, label: 'Easy', bg: '#2E7D32', shadow: '#1B5E2060' },
@@ -77,7 +107,7 @@ export default function HomeClient({ easy, medium, hard }: Props) {
           {/* Level buttons */}
           <div style={{ display: 'flex', gap: 10, width: '100%' }}>
             {levels.map(level => (
-              <Link key={level.label} href={`/play/${level.slug}`} style={{ textDecoration: 'none', flex: 1 }}>
+              <div key={level.label} onClick={() => handlePlay(level.slug || '')} style={{ textDecoration: 'none', flex: 1, cursor: 'pointer' }}>
                 <div style={{
                   padding: '20px 8px', borderRadius: 20,
                   background: level.bg,
@@ -86,7 +116,7 @@ export default function HomeClient({ easy, medium, hard }: Props) {
                 }}>
                   <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{level.label}</div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
 
