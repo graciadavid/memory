@@ -476,6 +476,7 @@ export default function LandingPage() {
 
 
           {/* New Game Banner - Ace */}
+          {!hasPlayedAce && (
             <a href="/ace" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
               <div style={{
                 background: 'linear-gradient(135deg, #1B5E20, #4CAF50)',
