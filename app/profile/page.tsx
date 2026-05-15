@@ -359,9 +359,10 @@ export default function ProfilePage() {
                 </div>
                 {profileStreak.current > 0 && (
                   <a href="/streak" style={{ textDecoration: 'none', textAlign: 'center' }}>
-                    <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
-                    <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{profileStreak.current}</div>
+                    <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 36, height: 36, objectFit: 'contain' }} />
+                    <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{profileStreak.current}</div>
                     <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>days</div>
+                    <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>Learn more →</div>
                   </a>
                 )}
               </div>
