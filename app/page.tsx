@@ -496,7 +496,7 @@ export default function LandingPage() {
                 <div>
                   <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', lineHeight: 1, marginBottom: 4 }}>Ace</div>
                   <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', fontWeight: 700 }}>Hit the ball at the perfect moment</div>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 4, fontWeight: 700 }}>Tap to play →</div>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 4, fontWeight: 700 }}>Tap to play</div>
                 </div>
               </div>
             </a>
