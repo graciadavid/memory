@@ -6,8 +6,14 @@ import { usePathname } from 'next/navigation'
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 
-// Pages that don't need onboarding
-const EXCLUDED = ['/', '/terms', '/privacy', '/about', '/how-to-play']
+// Pages where popup never appears
+const EXCLUDED = [
+  '/',
+  '/terms', '/privacy', '/about', '/how-to-play', '/teachers',
+  '/memory', '/digits', '/sequence', '/flags',
+  '/precision', '/ace', '/geoshape', '/sudoku', '/wordle', '/wordly',
+  '/mastermind', '/2048', '/nback', '/versus',
+]
 
 export default function GlobalOnboarding() {
   const [show, setShow] = useState(false)
@@ -18,16 +24,13 @@ export default function GlobalOnboarding() {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Don't show on excluded pages
-    if (EXCLUDED.includes(pathname)) return
-    // Don't show on game pages - only blog, groups, ranking, profile
-    const showOn = ['/groups', '/profile', '/streak', '/ranking']
-    const shouldShow = showOn.some(p => pathname.startsWith(p))
-    if (!shouldShow) return
+    // Check if current path is excluded
+    const isExcluded = EXCLUDED.some(p => pathname === p || pathname.startsWith(p + '/') || pathname.startsWith(p + '?'))
+    if (isExcluded) return
 
     const stored = localStorage.getItem('memgenius_profile')
     if (!stored || !JSON.parse(stored).name) {
-      setTimeout(() => setShow(true), 1000)
+      setTimeout(() => setShow(true), 800)
     }
   }, [pathname])
 
@@ -37,7 +40,6 @@ export default function GlobalOnboarding() {
     setSaving(true)
     setError('')
 
-    // Check name availability
     const { data: existing } = await supabase.from('profiles').select('player_name').eq('player_name', name.trim()).limit(1)
     if (existing && existing.length > 0) {
       setError('Name already taken — try another')
@@ -45,8 +47,6 @@ export default function GlobalOnboarding() {
       return
     }
 
-    // Save profile
-    const bcrypt = pin // simplified — store pin hash in real app
     await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pin })
     localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim(), pin }))
     setSaving(false)
@@ -82,6 +82,7 @@ export default function GlobalOnboarding() {
               placeholder="Your name"
               value={name}
               onChange={e => setName(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSave()}
               maxLength={20}
               style={{
                 padding: '14px 16px', borderRadius: 14,
@@ -95,6 +96,7 @@ export default function GlobalOnboarding() {
               placeholder="4-digit PIN"
               value={pin}
               onChange={e => setPin(e.target.value.slice(0, 4))}
+              onKeyDown={e => e.key === 'Enter' && handleSave()}
               style={{
                 padding: '14px 16px', borderRadius: 14,
                 border: `1.5px solid ${BROWN}20`, background: '#fff',
