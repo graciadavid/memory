@@ -442,8 +442,8 @@ export default function LandingPage() {
           <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, textAlign: 'center', marginTop: 12 }}>{milestone?.msg}</div>
           <div style={{ fontSize: 13, color: `${BROWN}50`, textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>{milestone?.next}</div>
           <SplashDots current={streak.current} color={milestone?.color || GOLD} />
-          <div style={{ marginTop: 20, fontSize: 13, fontWeight: 800, color: `${BROWN}50`, animation: 'blink 1.2s ease-in-out infinite' }}>
-            Your streak is saved in Profile →
+          <div style={{ marginTop: 20, fontSize: 16, fontWeight: 900, color: '#2E7D32', animation: 'blink 1.2s ease-in-out infinite' }}>
+            Your streak is saved in Profile
           </div>
         </div>
       ) : (
