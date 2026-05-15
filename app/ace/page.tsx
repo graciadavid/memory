@@ -319,7 +319,7 @@ export default function AcePage() {
         {/* PLAYING */}
         {phase === 'playing' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '0 0', position: 'relative' }}
-            onClick={handleTap}>
+>
 
             <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H}
               style={{ width: '100%', maxWidth: CANVAS_W, touchAction: 'none', cursor: 'pointer' }} />
@@ -386,7 +386,7 @@ export default function AcePage() {
                 background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
+              }}>Send to WhatsApp</button>
               <button onClick={startGame} style={{
                 flex: 1, padding: '16px', borderRadius: 16, border: 'none',
                 background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
