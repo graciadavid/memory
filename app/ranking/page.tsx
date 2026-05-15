@@ -47,6 +47,7 @@ const CATEGORIES = [
       { key: 'sudoku', href: '/sudoku/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sudoku.png', label: 'Sudoku', bg: '#757575' },
       { key: 'wordly', href: '/wordly/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/wordly.png', label: 'Wordly', bg: '#2E7D32' },
       { key: 'mastermind', href: '/mastermind/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/mastermind.png', label: 'Mastermind', bg: '#6A1B9A' },
+      { key: '2048', href: '/2048/ranking', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/2048.png', label: '2048', bg: '#EDC22E' },
     ]
   },
 ]
