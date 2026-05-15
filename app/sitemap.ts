@@ -26,6 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://memgenius.com/sudoku', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: 'https://memgenius.com/wordly', lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
     { url: 'https://memgenius.com/mastermind', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
+    { url: 'https://memgenius.com/2048', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
 
     // Rankings
     { url: 'https://memgenius.com/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
@@ -40,6 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://memgenius.com/sudoku/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/wordly/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/mastermind/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+    { url: 'https://memgenius.com/2048/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/ranking/hall-of-fame', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
 
     // Memory packs

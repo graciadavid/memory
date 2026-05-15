@@ -38,6 +38,7 @@ const CATEGORIES = [
     { key: 'sudoku', label: 'Sudoku', table: 'sudoku_scores' },
     { key: 'wordly', label: 'Wordly', table: 'wordle_scores' },
     { key: 'mastermind', label: 'Mastermind', table: 'mastermind_scores' },
+    { key: '2048', label: '2048', table: 'game2048_scores' },
   ]},
 ]
 

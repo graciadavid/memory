@@ -55,6 +55,7 @@ const CATEGORIES = [
       { key: 'sudoku', href: '/sudoku', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sudoku.png', label: 'Sudoku', sub: 'How fast can you solve it?', bg: '#757575' },
       { key: 'wordly', href: '/wordly', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/wordly.png', label: 'Wordly', sub: 'Guess the word of the day', bg: '#2E7D32' },
       { key: 'mastermind', href: '/mastermind', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/mastermind.png', label: 'Mastermind', sub: 'Crack the color code', bg: '#6A1B9A' },
+      { key: '2048', href: '/2048', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/2048.png', label: '2048', sub: 'Reach the highest tile', bg: '#EDC22E' },
     ]
   },
 ]

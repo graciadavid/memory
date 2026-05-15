@@ -63,6 +63,7 @@ export default function ProfilePage() {
   const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusAreaRank, setVersusAreaRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [activeTab, setActiveTab] = useState('memory')
+  const [rank2048, setRank2048] = useState<{ tile: number | null, time: number | null, rank: number | null }>({ tile: null, time: null, rank: null })
   const [aceRank, setAceRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [geoRank, setGeoRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [sudokuRank, setSudokuRank] = useState<{ time: number | null, rank: number | null, difficulty: string | null }>({ time: null, rank: null, difficulty: null })
@@ -144,6 +145,17 @@ export default function ProfilePage() {
       const myBest = best[profile.name]
       if (!myBest) return
       setSudokuRank({ time: myBest.time, difficulty: myBest.difficulty, rank: Object.values(best).filter(d => d.time < myBest.time).length + 1 })
+    })
+
+    // Fetch 2048
+    supabase.from('game2048_scores').select('player_name, best_tile, time_ms').order('best_tile', { ascending: false }).order('time_ms', { ascending: true }).limit(500).then(({ data }) => {
+      if (!data) return
+      const best: Record<string, { tile: number, time: number }> = {}
+      data.forEach((s: any) => { if (!best[s.player_name] || s.best_tile > best[s.player_name].tile || (s.best_tile === best[s.player_name].tile && s.time_ms < best[s.player_name].time)) best[s.player_name] = { tile: s.best_tile, time: s.time_ms } })
+      const myBest = best[profile.name]
+      if (!myBest) return
+      const sorted = Object.values(best).sort((a, b) => b.tile - a.tile || a.time - b.time)
+      setRank2048({ tile: myBest.tile, time: myBest.time, rank: sorted.findIndex(s => s.tile === myBest.tile && s.time === myBest.time) + 1 })
     })
 
     // Fetch Ace

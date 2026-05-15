@@ -28,6 +28,7 @@ const CATEGORIES = [
     { key: 'sudoku', label: 'Sudoku', color: '#757575' },
     { key: 'wordly', label: 'Wordly', color: '#2E7D32' },
     { key: 'mastermind', label: 'Mastermind', color: '#6A1B9A' },
+    { key: '2048', label: '2048', color: '#EDC22E' },
   ]},
 ]
 const TABS = CATEGORIES.flatMap(c => c.tabs)
@@ -39,7 +40,7 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea, bestSudoku, bestWordly, bestMastermind, bestGeo, bestAce }: any) {
+export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea, bestSudoku, bestWordly, bestMastermind, bestGeo, bestAce, best2048 }: any) {
   const [tab, setTab] = useState('flags')
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
@@ -113,6 +114,11 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
         return memberNames
           .filter((n: string) => bestAce?.[n] !== undefined)
           .map((n: string) => ({ name: n, score: `${bestAce[n]} aces`, raw: bestAce[n] }))
+          .sort((a: any, b: any) => b.raw - a.raw)
+      case '2048':
+        return memberNames
+          .filter((n: string) => best2048?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${best2048[n].tile}`, raw: best2048[n].tile }))
           .sort((a: any, b: any) => b.raw - a.raw)
       case 'geoshape':
         return memberNames
