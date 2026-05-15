@@ -486,33 +486,7 @@ export default function LandingPage() {
           </div>
 
 
-          {/* New Game Banner - Ace */}
-          {!hasPlayedAce && (
-            <a href="/ace" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
-              <div style={{
-                background: 'linear-gradient(135deg, #1B5E20, #4CAF50)',
-                borderRadius: 20, padding: '16px 20px',
-                display: 'flex', alignItems: 'center', gap: 14,
-                boxShadow: '0 8px 0 #1B5E2060',
-                position: 'relative', overflow: 'hidden',
-              }}>
-                <div style={{
-                  position: 'absolute', top: 10, right: 12,
-                  background: '#FFD600', borderRadius: 20,
-                  padding: '4px 10px', fontSize: 10, fontWeight: 900,
-                  color: '#1B5E20', letterSpacing: 1, textTransform: 'uppercase',
-                  boxShadow: '0 2px 0 #F9A82560',
-                  animation: 'blink 1s ease-in-out infinite',
-                }}>🎾 New Game</div>
-                <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/padel.png" alt="Ace" style={{ width: 64, height: 64, objectFit: 'contain', flexShrink: 0 }} />
-                <div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', lineHeight: 1, marginBottom: 4 }}>Ace</div>
-                  <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', fontWeight: 700 }}>Hit the ball at the perfect moment</div>
-                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', marginTop: 4, fontWeight: 700 }}>Tap to play</div>
-                </div>
-              </div>
-            </a>
-          )}
+
           {/* Category tabs */}
           <div style={{ display: 'flex', gap: 8, width: '100%', marginBottom: 16 }}>
             {CATEGORIES.map(cat => (
