@@ -32,6 +32,7 @@ const CATEGORIES = [
       { key: 'stop', href: '/precision/stopwatch', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', label: 'Stop', sub: 'Stop at exactly 5 seconds', bg: '#388E3C' },
       { key: 'f1', href: '/precision/formula1', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/f1.png', label: 'F1 Reaction', sub: 'React when lights go out', bg: '#E8002D' },
       { key: 'pendulum', href: '/precision/pendulum', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.png', label: 'Pendulum', sub: 'Stop it at the center', bg: '#1565C0' },
+      { key: 'ace', href: '/ace', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/padel.png', label: 'Ace', sub: 'Hit the ball at the perfect moment', bg: '#4CAF50' },
     ]
   },
   {

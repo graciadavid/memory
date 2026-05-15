@@ -26,6 +26,7 @@ const CATEGORIES = [
       { key: 'stop', href: '/precision/ranking', icon: `${BASE}/precision.png`, label: 'Stop', bg: '#388E3C' },
       { key: 'f1', href: '/precision/ranking', icon: `${BASE}/f1.png`, label: 'F1 Reaction', bg: '#E8002D' },
       { key: 'pendulum', href: '/precision/ranking', icon: `${BASE}/pendulum.png`, label: 'Pendulum', bg: '#1565C0' },
+      { key: 'ace', href: '/ace/ranking', icon: `${BASE}/padel.png`, label: 'Ace', bg: '#4CAF50' },
     ]
   },
   {

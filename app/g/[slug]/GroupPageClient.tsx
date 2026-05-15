@@ -16,6 +16,7 @@ const CATEGORIES = [
     { key: 'stop', label: 'Stop', color: '#388E3C' },
     { key: 'f1', label: 'F1 Reaction', color: '#E8002D' },
     { key: 'pendulum', label: 'Pendulum', color: '#1565C0' },
+    { key: 'ace', label: 'Ace', color: '#4CAF50' },
   ]},
   { key: 'knowledge', label: 'Knowledge', color: '#1565C0', tabs: [
     { key: 'flags', label: 'Flags', color: '#E65100' },
@@ -38,7 +39,7 @@ function fmt(ms: number) {
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(c).padStart(2,'0')}`
 }
 
-export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea, bestSudoku, bestWordly, bestMastermind, bestGeo }: any) {
+export default function GroupPageClient({ group, members, memberCount, bestMemory, bestDigits, bestSeq, bestFlags, bestPrecision, bestF1, bestPendulum, bestVersusPop, bestVersusArea, bestSudoku, bestWordly, bestMastermind, bestGeo, bestAce }: any) {
   const [tab, setTab] = useState('flags')
   const [myName, setMyName] = useState('')
   const [joined, setJoined] = useState(false)
@@ -108,6 +109,11 @@ export default function GroupPageClient({ group, members, memberCount, bestMemor
           .filter((n: string) => bestSudoku?.[n] !== undefined)
           .map((n: string) => ({ name: n, score: `${Math.floor(bestSudoku[n]/60000)}:${String(Math.floor((bestSudoku[n]%60000)/1000)).padStart(2,'0')}`, raw: bestSudoku[n] }))
           .sort((a: any, b: any) => a.raw - b.raw)
+      case 'ace':
+        return memberNames
+          .filter((n: string) => bestAce?.[n] !== undefined)
+          .map((n: string) => ({ name: n, score: `${bestAce[n]} aces`, raw: bestAce[n] }))
+          .sort((a: any, b: any) => b.raw - a.raw)
       case 'geoshape':
         return memberNames
           .filter((n: string) => bestGeo?.[n] !== undefined)

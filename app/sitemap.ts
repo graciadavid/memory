@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://memgenius.com/flags', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: 'https://memgenius.com/versus/population', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: 'https://memgenius.com/versus/area', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: 'https://memgenius.com/ace', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: 'https://memgenius.com/geoshape', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
 
     // Logic
@@ -35,6 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://memgenius.com/precision/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/versus/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/geoshape/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
+    { url: 'https://memgenius.com/ace/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/sudoku/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/wordly/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },
     { url: 'https://memgenius.com/mastermind/ranking', lastModified: new Date(), changeFrequency: 'daily', priority: 0.6 },

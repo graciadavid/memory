@@ -27,6 +27,7 @@ const CATEGORIES = [
     { key: 'stop', label: 'Stop', table: 'precision_scores', filter: { game_type: null } },
     { key: 'f1', label: 'F1', table: 'precision_scores', filter: { game_type: 'formula1' } },
     { key: 'pendulum', label: 'Pendulum', table: 'precision_scores', filter: { game_type: 'pendulum' } },
+    { key: 'ace', label: 'Ace', table: 'ace_scores' },
   ]},
   { key: 'knowledge', label: 'Knowledge', color: '#1565C0', games: [
     { key: 'flags', label: 'Flags', table: 'flag_scores' },

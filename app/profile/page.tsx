@@ -63,6 +63,7 @@ export default function ProfilePage() {
   const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusAreaRank, setVersusAreaRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [activeTab, setActiveTab] = useState('memory')
+  const [aceRank, setAceRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [geoRank, setGeoRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [sudokuRank, setSudokuRank] = useState<{ time: number | null, rank: number | null, difficulty: string | null }>({ time: null, rank: null, difficulty: null })
   const [wordlyRank, setWordlyRank] = useState<{ time: number | null, rank: number | null, attempts: number | null }>({ time: null, rank: null, attempts: null })
@@ -143,6 +144,16 @@ export default function ProfilePage() {
       const myBest = best[profile.name]
       if (!myBest) return
       setSudokuRank({ time: myBest.time, difficulty: myBest.difficulty, rank: Object.values(best).filter(d => d.time < myBest.time).length + 1 })
+    })
+
+    // Fetch Ace
+    supabase.from('ace_scores').select('player_name, level').order('level', { ascending: false }).limit(500).then(({ data }) => {
+      if (!data) return
+      const best: Record<string, number> = {}
+      data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+      const myBest = best[profile.name]
+      if (!myBest) return
+      setAceRank({ level: myBest, rank: Object.values(best).filter(l => l > myBest).length + 1 })
     })
 
     // Fetch GeoShape
@@ -545,6 +556,7 @@ export default function ProfilePage() {
             { label: 'Stop', color: '#388E3C', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', score: precRank.diff !== null ? `${(precRank.diff/1000).toFixed(3)}s off` : null, rank: precRank.rank, share: `I am #${precRank.rank} in Stop! https://memgenius.com/precision/stopwatch` },
             { label: 'F1 Reaction', color: '#E8002D', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/f1.png', score: f1Rank.diff !== null ? `${f1Rank.diff}ms` : null, rank: f1Rank.rank, share: `I am #${f1Rank.rank} in F1 with ${f1Rank.diff}ms! https://memgenius.com/precision/formula1` },
             { label: 'Pendulum', color: '#1565C0', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.png', score: pendulumRank.diff !== null ? `${pendulumRank.diff}ms` : null, rank: pendulumRank.rank, share: `I am #${pendulumRank.rank} in Pendulum with ${pendulumRank.diff}ms! https://memgenius.com/precision/pendulum` },
+            { label: 'Ace', color: '#4CAF50', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/padel.png', score: aceRank.level !== null ? `${aceRank.level} aces` : null, rank: aceRank.rank, share: `I hit ${aceRank.level} aces in a row on MemGenius! https://memgenius.com/ace` },
           ] as any[]).map(g => (
             <div key={g.label} style={{ borderRadius: 20, overflow: 'hidden' }}>
               <div style={{ background: `linear-gradient(135deg, ${g.color}, ${g.color}BB)`, padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
