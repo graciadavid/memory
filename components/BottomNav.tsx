@@ -40,7 +40,7 @@ export default function BottomNav() {
   })
 
   // Hide bottom nav on home if no profile (onboarding)
-  if (path === '/' && !hasProfile) return null
+  // Always show BottomNav
 
   return (
     <>
