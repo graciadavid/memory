@@ -40,7 +40,6 @@ import BottomNav from '@/components/BottomNav'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
 import ProtectPromptGlobal from '@/components/ProtectPromptGlobal'
 import GlobalOnboarding from '@/components/GlobalOnboarding'
-import GlobalOnboarding from '@/components/GlobalOnboarding'
 
 const nunito = Nunito({
   subsets: ['latin'],
