@@ -102,7 +102,7 @@ export default function NBackPage() {
 
   const startGame = useCallback(() => {
     try { getAudioCtx() } catch(e) {}
-    clearTimeout(timerRef.current)
+    if (timerRef.current) clearTimeout(timerRef.current)
     levelRef.current = 0
     phaseRef.current = 'intro'
     setLevel(0)
@@ -135,7 +135,7 @@ export default function NBackPage() {
 
   const handleAnswer = useCallback(async (same: boolean) => {
     if (phaseRef.current !== 'answer') return
-    clearTimeout(timerRef.current)
+    if (timerRef.current) clearTimeout(timerRef.current)
     phaseRef.current = 'feedback'
 
     const isSame = current === previousRef.current
@@ -183,7 +183,7 @@ export default function NBackPage() {
   }, [phase])
 
   useEffect(() => {
-    return () => clearTimeout(timerRef.current)
+    return () => if (timerRef.current) clearTimeout(timerRef.current)
   }, [])
 
   const currentColor = COLORS[current]
