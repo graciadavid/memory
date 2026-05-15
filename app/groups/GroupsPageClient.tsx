@@ -13,7 +13,7 @@ export default function GroupsPageClient() {
   const [myGroups, setMyGroups] = useState<any[]>([])
 
   useEffect(() => {
-    if (loaded && !profile?.name) window.location.href = '/'
+    // GlobalOnboarding handles unauthenticated users
   }, [loaded, profile?.name])
 
   useEffect(() => {
