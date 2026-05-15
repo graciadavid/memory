@@ -37,9 +37,9 @@ function playTone(freq1: number, freq2: number, duration: number, type: Oscillat
     osc.start(); osc.stop(ctx.currentTime + duration)
   } catch(e) {}
 }
-function playCorrect() { playTone(800, 400, 0.15, 'square', 0.15) }
-function playWrong() { playTone(200, 120, 0.4, 'sawtooth', 0.2) }
-function playPerfect() { playTone(900, 450, 0.18, 'square', 0.2) }
+function playCorrect() { playTone(300, 150, 0.12, 'square', 0.25) }
+function playWrong() { playTone(150, 80, 0.3, 'sawtooth', 0.15) }
+function playPerfect() { playTone(350, 120, 0.15, 'square', 0.3) }
 
 type Phase = 'intro' | 'playing' | 'gameover'
 type HitResult = 'perfect' | 'good' | 'miss' | null
@@ -49,18 +49,16 @@ const CANVAS_H = 340
 const BALL_R = 16
 const TARGET_R = 36
 const TARGET_X = CANVAS_W / 2
-const TARGET_Y = CANVAS_H / 2 + 40
+const TARGET_Y = CANVAS_H / 2 - 40
 
 // Ball travels in an arc from left to right
 function getBallPos(t: number): { x: number, y: number } {
-  // t goes from 0 to 1
   const x = t * CANVAS_W
-  // Ball starts high left, comes down to target level at center, goes back up right
-  // At t=0.5 the ball is exactly at TARGET_Y
-  const startY = TARGET_Y - 140
-  const endY = TARGET_Y - 100
-  // Parabola that passes through TARGET_Y at t=0.5
-  const y = TARGET_Y - 140 * Math.sin(t * Math.PI) + (startY - TARGET_Y) * (1 - t) + (endY - TARGET_Y) * t
+  // Arc peaks exactly at TARGET_X, TARGET_Y (t=0.5)
+  const startY = CANVAS_H - 40
+  const endY = CANVAS_H - 40
+  // Parabola: y = startY - (startY - TARGET_Y) * sin(t * PI)
+  const y = startY - (startY - TARGET_Y) * Math.sin(t * Math.PI)
   return { x, y }
 }
 
@@ -140,28 +138,15 @@ export default function AcePage() {
 
     // Ball shadow
     ctx.beginPath()
-    ctx.ellipse(x, TARGET_Y + TARGET_R + 4, BALL_R * 0.8 * (1 - Math.abs(y - TARGET_Y) / 200), 4, 0, 0, Math.PI * 2)
-    ctx.fillStyle = 'rgba(0,0,0,0.1)'
+    ctx.ellipse(x, CANVAS_H - 30, BALL_R * 0.6, 5, 0, 0, Math.PI * 2)
+    ctx.fillStyle = 'rgba(0,0,0,0.08)'
     ctx.fill()
 
-    // Ball
-    const gradient = ctx.createRadialGradient(x - 4, y - 4, 2, x, y, BALL_R)
-    gradient.addColorStop(0, '#FFEE58')
-    gradient.addColorStop(1, '#F9A825')
-    ctx.beginPath()
-    ctx.arc(x, y, BALL_R, 0, Math.PI * 2)
-    ctx.fillStyle = gradient
-    ctx.fill()
-    ctx.strokeStyle = 'rgba(0,0,0,0.15)'
-    ctx.lineWidth = 1
-    ctx.stroke()
-
-    // Ball fuzz lines
-    ctx.strokeStyle = 'rgba(255,255,255,0.5)'
-    ctx.lineWidth = 1.5
-    ctx.beginPath()
-    ctx.arc(x, y, BALL_R * 0.5, -0.5, 0.5)
-    ctx.stroke()
+    // Ball emoji
+    ctx.font = `${BALL_R * 2}px serif`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText('🎾', x, y)
 
     if (t < 1 && phaseRef.current === 'playing') {
       animRef.current = requestAnimationFrame(drawFrame)
