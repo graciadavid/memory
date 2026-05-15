@@ -66,10 +66,20 @@ export default function GroupPageClient({ group, members, memberCount, scores }:
 
   const getRanking = () => {
     const data = scores[game] || []
-    return data.sort((a: any, b: any) => {
-      const lowerBetter = ['stopwatch', 'f1', 'pendulum', 'memory']
-      return lowerBetter.includes(game) ? a.raw - b.raw : b.raw - a.raw
-    })
+    const lowerBetter = ['stopwatch', 'f1', 'pendulum', 'memory', 'sudoku', 'wordly', 'mastermind']
+    return [...data].sort((a: any, b: any) => lowerBetter.includes(game) ? a.raw - b.raw : b.raw - a.raw)
+  }
+
+  const formatScore = (r: any) => {
+    const lowerBetter = ['stopwatch', 'f1', 'pendulum', 'sudoku', 'wordly', 'mastermind']
+    if (lowerBetter.includes(game)) {
+      const ms = r.raw
+      if (ms < 10000) return `${(ms/1000).toFixed(3)}s`
+      const m = Math.floor(ms/60000)
+      const s = Math.floor((ms%60000)/1000)
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+    }
+    return r.score
   }
 
   const ranking = getRanking()
@@ -159,7 +169,7 @@ export default function GroupPageClient({ group, members, memberCount, scores }:
                     {r.name}
                     {isMe && <span style={{ fontSize: 8, color: GOLD, fontWeight: 900, background: `${GOLD}20`, padding: '1px 5px', borderRadius: 4 }}>YOU</span>}
                   </div>
-                  <div style={{ fontSize: 14, fontWeight: 900, color: currentGame.color }}>{r.score}</div>
+                  <div style={{ fontSize: 14, fontWeight: 900, color: currentGame.color }}>{formatScore(r)}</div>
                 </div>
               )
             })}

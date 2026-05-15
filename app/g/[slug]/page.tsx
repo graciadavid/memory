@@ -71,7 +71,7 @@ export default async function GroupPage({ params }: { params: Promise<{ slug: st
     digits: bestByPlayer(digS.data || [], 'level'),
     sequence: bestByPlayer(seqS.data || [], 'level'),
     nback: bestByPlayer(nbS.data || [], 'level'),
-    stopwatch: bestByPlayer((precS.data || []).filter((s: any) => !s.game_type), 'difference_ms', true),
+    stopwatch: bestByPlayer((precS.data || []).filter((s: any) => !s.game_type || s.game_type === null), 'difference_ms', true),
     f1: bestByPlayer((precS.data || []).filter((s: any) => s.game_type === 'formula1'), 'difference_ms', true),
     pendulum: bestByPlayer((precS.data || []).filter((s: any) => s.game_type === 'pendulum'), 'difference_ms', true),
     ace: bestByPlayer(aceS.data || [], 'level'),
