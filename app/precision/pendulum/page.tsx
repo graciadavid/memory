@@ -177,6 +177,7 @@ export default function PendulumPage() {
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', width: '100%', gap: 12 }}>
+        <img src={LOGO} alt="Pendulum" style={{ height: 52, objectFit: 'contain', animation: 'floatLogo 3s ease-in-out infinite', flexShrink: 0 }} />
         <div>
           <div style={{ fontSize: 28, fontWeight: 900, color: PURPLE, letterSpacing: -0.5, lineHeight: 1 }}>Pendulum</div>
           <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Stop it at the center</div>
@@ -195,19 +196,27 @@ export default function PendulumPage() {
               Watch the pendulum swing.<br />Press STOP when it reaches the center.<br />Precision measured in milliseconds.
             </div>
           </div>
-          {worldRecord && (
-              <div style={{ background: `${GOLD}15`, borderRadius: 14, padding: '10px 20px', textAlign: 'center' }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase' }}>World record</div>
-                <div style={{ fontSize: 32, fontWeight: 900, color: GOLD }}>{worldRecord.diff}ms</div>
-                <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 800 }}>{worldRecord.name}</div>
-              </div>
-            )}
-            {bestScore !== null && (
-            <div style={{ background: `${PURPLE}10`, border: `1px solid ${PURPLE}20`, borderRadius: 14, padding: '10px 20px', textAlign: 'center' }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 1, textTransform: 'uppercase' }}>Your best</div>
-              <div style={{ fontSize: 24, fontWeight: 900, color: PURPLE }}>{bestScore}ms</div>
+          <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
+              {bestScore !== null ? (
+                <div style={{ fontSize: 32, fontWeight: 900, color: PURPLE }}>{bestScore}ms</div>
+              ) : (
+                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
+              )}
             </div>
-          )}
+            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
+              {worldRecord ? (
+                <>
+                  <div style={{ fontSize: 32, fontWeight: 900, color: '#C8960C' }}>{worldRecord.diff}ms</div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{worldRecord.name}</div>
+                </>
+              ) : (
+                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
+              )}
+            </div>
+          </div>
           <button onClick={startPendulum} style={{
             width: '100%', padding: '18px', borderRadius: 20, border: 'none',
             background: PURPLE, color: '#fff',
