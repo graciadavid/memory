@@ -203,12 +203,27 @@ export default function Formula1Page() {
             <div style={{ textAlign: 'center', color: `${BROWN}60`, fontSize: 14, fontWeight: 700, lineHeight: 1.6 }}>
               Wait for the lights to go out,<br />then react as fast as possible!
             </div>
-            {bestScore !== null && (
-              <div style={{ background: `${RED}10`, borderRadius: 16, padding: '12px 24px', textAlign: 'center', border: `1px solid ${RED}20` }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: RED, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your best</div>
-                <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>{bestScore}ms</div>
+            <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+                <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
+                {bestScore !== null ? (
+                  <div style={{ fontSize: 32, fontWeight: 900, color: RED }}>{bestScore}ms</div>
+                ) : (
+                  <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
+                )}
               </div>
-            )}
+              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+                <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
+                {worldRecord ? (
+                  <>
+                    <div style={{ fontSize: 32, fontWeight: 900, color: '#C8960C' }}>{worldRecord.diff}ms</div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{worldRecord.name}</div>
+                  </>
+                ) : (
+                  <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
+                )}
+              </div>
+            </div>
             <button onClick={startSequence} style={{
               width: '100%', padding: '20px', borderRadius: 20, border: 'none',
               background: RED, color: '#fff', fontSize: 20, fontWeight: 900,

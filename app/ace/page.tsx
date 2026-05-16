@@ -280,19 +280,28 @@ export default function AcePage() {
               </div>
             </div>
 
-            {bestLevel !== null && (
-              <div style={{ background: `${TENNIS}15`, borderRadius: 14, padding: '10px 20px', display: 'flex', gap: 16 }}>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase' }}>Your best</div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: TENNIS }}>{bestLevel}</div>
-                </div>
-                {topScores[0] && (
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase' }}>World record</div>
-                    <div style={{ fontSize: 32, fontWeight: 900, color: GOLD }}>{topScores[0].level}</div>
-                    <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 800 }}>{topScores[0].name}</div>
-                  </div>
+            <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+                <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
+                {bestLevel !== null ? (
+                  <div style={{ fontSize: 32, fontWeight: 900, color: TENNIS }}>{bestLevel}</div>
+                ) : (
+                  <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
                 )}
+              </div>
+              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+                <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
+                {topScores[0] ? (
+                  <>
+                    <div style={{ fontSize: 32, fontWeight: 900, color: '#C8960C' }}>{topScores[0].level}</div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{topScores[0].name}</div>
+                  </>
+                ) : (
+                  <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
+                )}
+              </div>
+            </div>
+            {false && (
               </div>
             )}
 
