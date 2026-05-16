@@ -349,12 +349,7 @@ export default function Game2048Page() {
               <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 700, marginBottom: 8 }}>best tile · {fmt(elapsed)}</div>
               <div style={{ fontSize: 16, fontWeight: 800, color: BROWN, marginBottom: 16 }}>Score: {score}</div>
 
-              {worldRank && (
-                <div style={{ background: `${GOLD}10`, border: `1px solid ${GOLD}20`, borderRadius: 12, padding: '10px' }}>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>World Ranking</div>
-                  <div style={{ fontSize: 28, fontWeight: 900, color: GOLD }}>#{worldRank}</div>
-                </div>
-              )}
+
             </div>
 
             <CreateGroupBanner playerName={profile?.name || ''} />

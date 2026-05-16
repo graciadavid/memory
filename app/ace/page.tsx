@@ -367,12 +367,7 @@ export default function AcePage() {
               <div style={{ fontSize: 56, fontWeight: 900, color: TENNIS, lineHeight: 1 }}>{level}</div>
               <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 700, marginBottom: 16 }}>aces in a row</div>
 
-              {worldRank && (
-                <div style={{ background: `${GOLD}10`, border: `1px solid ${GOLD}20`, borderRadius: 12, padding: '10px', marginBottom: 8 }}>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>World Ranking</div>
-                  <div style={{ fontSize: 28, fontWeight: 900, color: GOLD }}>#{worldRank}</div>
-                </div>
-              )}
+
 
               {bestLevel !== null && (
                 <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700 }}>
