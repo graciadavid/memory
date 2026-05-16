@@ -164,7 +164,14 @@ export default function MastermindPage() {
 
       {/* INTRO */}
       {phase === 'intro' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 16, width: '100%' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', gap: 16, width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+            <img src={LOGO} alt="Mastermind" style={{ height: 56, objectFit: 'contain', flexShrink: 0 }} />
+            <div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: PURPLE }}>Mastermind</div>
+              <div style={{ fontSize: 12, color: '#4A2C0A50', fontStyle: 'italic' }}>Crack the color code</div>
+            </div>
+          </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 8 }}>Crack the color code</div>
             <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.7 }}>
