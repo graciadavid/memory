@@ -212,7 +212,7 @@ export default function WordlePage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
         <div>
-          <div style={{ fontSize: 28, fontWeight: 900, color: GREEN, letterSpacing: -0.5 }}>Wordle</div>
+          <div style={{ fontSize: 28, fontWeight: 900, color: GREEN, letterSpacing: -0.5 }}>Wordly</div>
           <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Guess the word of the day</div>
         </div>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -266,7 +266,7 @@ export default function WordlePage() {
           {worldRank && <div style={{ fontSize: 20, fontWeight: 900, color: GREEN, marginTop: 8 }}>#{worldRank} World Today</div>}
           {phase === 'won' && (
             <button onClick={() => {
-              const text = `I solved today's MemGenius Wordle in ${fmtTime(finalTime)} with ${guesses.length} tries! Can you beat me? memgenius.com/wordly`
+              const text = `I solved today's MemGenius Wordly in ${fmtTime(finalTime)} with ${guesses.length} tries! Can you beat me? memgenius.com/wordly`
               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
             }} style={{ marginTop: 16, padding: '14px 32px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
               Share

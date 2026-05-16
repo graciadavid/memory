@@ -148,6 +148,7 @@ export default function SudokuPage() {
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
+        <img src={LOGO} alt="Sudoku" style={{ height: 52, objectFit: 'contain', flexShrink: 0 }} />
         <div>
           <div style={{ fontSize: 28, fontWeight: 900, color: PURPLE, letterSpacing: -0.5 }}>Sudoku</div>
           <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>How fast can you solve it?</div>
@@ -160,13 +161,7 @@ export default function SudokuPage() {
       {/* MENU */}
       {phase === 'menu' && (
         <div style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', marginBottom: 8 }}>
-            <img src={LOGO} alt="Sudoku" style={{ height: 52, objectFit: 'contain', flexShrink: 0 }} />
-            <div>
-              <div style={{ fontSize: 26, fontWeight: 900, color: PURPLE }}>Sudoku</div>
-              <div style={{ fontSize: 12, color: BROWN + '80', fontStyle: 'italic' }}>How fast can you solve it?</div>
-            </div>
-          </div>
+
           <div style={{ display: 'flex', gap: 12, width: '100%' }}>
             <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
               <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
