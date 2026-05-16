@@ -42,6 +42,9 @@ const getDailyWord = () => {
   return WORDS[diff % WORDS.length]
 }
 
+const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/wordly.png'
+const TROPHY = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.webp'
+
 const KEYBOARD = [
   ['Q','W','E','R','T','Y','U','I','O','P'],
   ['A','S','D','F','G','H','J','K','L'],
@@ -82,7 +85,8 @@ export default function WordlePage() {
   const [word] = useState(getDailyWord)
   const [guesses, setGuesses] = useState<string[]>([])
   const [current, setCurrent] = useState('')
-  const [phase, setPhase] = useState<'playing' | 'won' | 'lost'>('playing')
+  const [phase, setPhase] = useState<'intro' | 'playing' | 'won' | 'lost'>('intro')
+  const [topScores, setTopScores] = useState<{ name: string, time_ms: number, attempts: number }[]>([])
   const [startTime] = useState(Date.now())
   const [elapsed, setElapsed] = useState(0)
   const [finalTime, setFinalTime] = useState(0)
@@ -91,6 +95,17 @@ export default function WordlePage() {
   const [shake, setShake] = useState(false)
   const [keyStates, setKeyStates] = useState<Record<string, LetterState>>({})
   const [alreadyPlayed, setAlreadyPlayed] = useState(false)
+
+  useEffect(() => {
+    supabase.from('wordle_scores').select('player_name, time_ms, attempts').order('time_ms', { ascending: true }).limit(200)
+      .then(({ data }) => {
+        if (data) {
+          const best: Record<string, { time_ms: number, attempts: number }> = {}
+          data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name].time_ms) best[s.player_name] = { time_ms: s.time_ms, attempts: s.attempts } })
+          setTopScores(Object.entries(best).map(([name, d]) => ({ name, ...d })).sort((a, b) => a.time_ms - b.time_ms))
+        }
+      })
+  }, [])
 
   useEffect(() => {
     if (phase !== 'playing' || alreadyPlayed) return
