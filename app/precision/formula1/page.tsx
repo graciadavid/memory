@@ -20,6 +20,7 @@ export default function Formula1Page() {
   const [litCount, setLitCount] = useState(0)
   const [reactionMs, setReactionMs] = useState(0)
   const [bestScore, setBestScore] = useState<number | null>(null)
+  const [worldRecord, setWorldRecord] = useState<{ diff: number, name: string } | null>(null)
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const goTimeRef = useRef<number>(0)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -49,6 +50,17 @@ export default function Formula1Page() {
       osc.stop(ctx.currentTime + 0.3)
     } catch(e) {}
   }
+
+  useEffect(() => {
+    supabase.from('precision_scores')
+      .select('player_name, difference_ms')
+      .eq('game_type', 'formula1')
+      .order('difference_ms', { ascending: true })
+      .limit(1)
+      .then(({ data }) => {
+        if (data?.[0]) setWorldRecord({ diff: data[0].difference_ms, name: data[0].player_name })
+      })
+  }, [])
 
   useEffect(() => {
     if (!profile?.name) return

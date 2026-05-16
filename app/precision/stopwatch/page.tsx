@@ -20,10 +20,20 @@ export default function PrecisionPage() {
   const [difference, setDifference] = useState(0)
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const [bestScore, setBestScore] = useState<number | null>(null)
+  const [worldRecord, setWorldRecord] = useState<{ diff: number, name: string } | null>(null)
   const startRef = useRef<number>(0)
   const rafRef = useRef<number>(0)
 
   useEffect(() => {
+    // World record
+    supabase.from('precision_scores')
+      .select('player_name, difference_ms')
+      .is('game_type', null)
+      .order('difference_ms', { ascending: true })
+      .limit(1)
+      .then(({ data }) => {
+        if (data?.[0]) setWorldRecord({ diff: data[0].difference_ms, name: data[0].player_name })
+      })
     if (!profile?.name) return
     supabase.from('precision_scores')
       .select('difference_ms')
@@ -128,6 +138,14 @@ export default function PrecisionPage() {
 
             {bestScore !== null && (
               <div style={{ background: `${PURPLE}10`, borderRadius: 16, padding: '12px 24px', textAlign: 'center', border: `1px solid ${PURPLE}20` }}>
+                {worldRecord && (
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase' }}>World record</div>
+                    <div style={{ fontSize: 22, fontWeight: 900, color: GOLD }}>{worldRecord.diff}ms</div>
+                    <div style={{ fontSize: 11, color: `${BROWN}40`, fontWeight: 700 }}>{worldRecord.name}</div>
+                  </div>
+                )}
+                <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 11, fontWeight: 800, color: PURPLE, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your best</div>
                 <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>{(bestScore / 1000).toFixed(3)}s off</div>
               </div>

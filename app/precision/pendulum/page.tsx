@@ -42,10 +42,22 @@ export default function PendulumPage() {
   const [deviation, setDeviation] = useState(0)
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const [bestScore, setBestScore] = useState<number | null>(null)
+  const [worldRecord, setWorldRecord] = useState<{ diff: number, name: string } | null>(null)
   const startRef = useRef<number>(0)
   const rafRef = useRef<number>(0)
   const audioCtxRef = useRef<AudioContext | null>(null)
   const lastTickSideRef = useRef<number>(0)
+
+  useEffect(() => {
+    supabase.from('precision_scores')
+      .select('player_name, difference_ms')
+      .eq('game_type', 'pendulum')
+      .order('difference_ms', { ascending: true })
+      .limit(1)
+      .then(({ data }) => {
+        if (data?.[0]) setWorldRecord({ diff: data[0].difference_ms, name: data[0].player_name })
+      })
+  }, [])
 
   useEffect(() => {
     if (!profile?.name) return
