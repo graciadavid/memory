@@ -10,6 +10,8 @@ const CREAM = '#FAF7F2'
 const PURPLE = '#6A1B9A'
 
 const COLORS = ['#6A1B9A', '#1E88E5', '#43A047', '#FDD835', '#FB8C00']
+const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/mastermind.png'
+const TROPHY = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.webp'
 const EMPTY = '#E0E0E0'
 const MAX_ATTEMPTS = 7
 const CODE_LENGTH = 5
@@ -47,7 +49,8 @@ export default function MastermindPage() {
   const [guesses, setGuesses] = useState<number[][]>([])
   const [feedbacks, setFeedbacks] = useState<{ black: number, white: number, correctPos: number[], wrongPos: number[] }[]>([])
   const [current, setCurrent] = useState<(number | null)[]>(Array(CODE_LENGTH).fill(null))
-  const [phase, setPhase] = useState<'playing' | 'won' | 'lost'>('playing')
+  const [phase, setPhase] = useState<'intro' | 'playing' | 'won' | 'lost'>('intro')
+  const [topScores, setTopScores] = useState<{ name: string, time_ms: number, attempts: number }[]>([])
   const [startTime] = useState(Date.now())
   const [elapsed, setElapsed] = useState(0)
   const [finalTime, setFinalTime] = useState(0)
@@ -56,6 +59,17 @@ export default function MastermindPage() {
   const [blinking, setBlinking] = useState<number[]>([])
   const [selectedPos, setSelectedPos] = useState<number>(0)
   const [checking, setChecking] = useState(false)
+
+  useEffect(() => {
+    supabase.from('mastermind_scores').select('player_name, time_ms, attempts').order('time_ms', { ascending: true }).limit(200)
+      .then(({ data }) => {
+        if (data) {
+          const best: Record<string, { time_ms: number, attempts: number }> = {}
+          data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name].time_ms) best[s.player_name] = { time_ms: s.time_ms, attempts: s.attempts } })
+          setTopScores(Object.entries(best).map(([name, d]) => ({ name, ...d })).sort((a, b) => a.time_ms - b.time_ms))
+        }
+      })
+  }, [])
 
   useEffect(() => {
     if (phase !== 'playing') return
@@ -147,6 +161,65 @@ export default function MastermindPage() {
         @keyframes blink { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:0.4; transform:scale(0.8) } }
         @keyframes fadeUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
       `}</style>
+
+      {/* INTRO */}
+      {phase === 'intro' && (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 16, width: '100%' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 8 }}>Crack the color code</div>
+            <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.7 }}>
+              5 colors. 7 attempts. One code to crack.<br />
+              Green border = correct position.<br />
+              Pink border = wrong position.<br />
+              No border = not in the code.
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+            {COLORS.map((col, i) => (
+              <div key={i} style={{ width: 36, height: 36, borderRadius: 8, background: col, boxShadow: `0 4px 0 ${col}80` }} />
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
+              {bestScore ? (
+                <>
+                  <div style={{ fontSize: 32, fontWeight: 900, color: PURPLE }}>{fmt(bestScore.time_ms)}</div>
+                  <div style={{ fontSize: 12, color: '#4A2C0A50', fontWeight: 700 }}>{bestScore.attempts} tries</div>
+                </>
+              ) : (
+                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
+              )}
+            </div>
+            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
+              {topScores[0] ? (
+                <>
+                  <div style={{ fontSize: 32, fontWeight: 900, color: '#C8960C' }}>{fmt(topScores[0].time_ms)}</div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{topScores[0].name}</div>
+                </>
+              ) : (
+                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
+              )}
+            </div>
+          </div>
+          <button onClick={() => setPhase('playing')} style={{
+            padding: '18px', borderRadius: 20, border: 'none',
+            background: PURPLE, color: '#fff',
+            fontSize: 18, fontWeight: 900, fontFamily: 'inherit',
+            cursor: 'pointer', boxShadow: '0 8px 0 #4A148C60', width: '100%',
+          }}>Play</button>
+          <a href="/mastermind/ranking" style={{ textDecoration: 'none', width: '100%' }}>
+            <div style={{ width: '100%', padding: '14px', borderRadius: 16, background: '#fff', border: '1.5px solid #4A2C0A20', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxSizing: 'border-box' }}>
+              <img src={TROPHY} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+              <span style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>World Ranking</span>
+            </div>
+          </a>
+        </div>
+      )}
+
+      {/* GAME */}
+      {phase !== 'intro' && <>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
@@ -271,6 +344,7 @@ export default function MastermindPage() {
           }}>Check →</button>
         </div>
       )}
+    </> }
     </main>
   )
 }
