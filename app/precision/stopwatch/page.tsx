@@ -12,7 +12,6 @@ const CREAM = '#FAF7F2'
 const PURPLE = '#4A148C'
 const TARGET = 5000 // 5 seconds in ms
 const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/stop.png'
-const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/stop.png'
 
 export default function StopPage() {
   const { profile } = usePlayer()
