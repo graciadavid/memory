@@ -119,9 +119,8 @@ export default function StopPage() {
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
-        <div style={{ fontSize: 52, flexShrink: 0 }}>⏱</div>
+        <img src={LOGO} alt='Stop' style={{ height: 52, objectFit: 'contain', animation: 'floatLogo 3s ease-in-out infinite', flexShrink: 0 }} />
         <div>
-          <img src={LOGO} alt='Stop' style={{ height: 52, objectFit: 'contain', animation: 'floatLogo 3s ease-in-out infinite' }} />
           <div style={{ fontSize: 28, fontWeight: 900, color: PURPLE, letterSpacing: -0.5 }}>Stop</div>
           <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Stop exactly at 5 seconds</div>
         </div>
@@ -138,21 +137,27 @@ export default function StopPage() {
               <div style={{ fontSize: 14, color: `${BROWN}50`, marginTop: 8 }}>Press Start, then Stop at exactly 5 seconds</div>
             </div>
 
-            {bestScore !== null && (
-              <div style={{ background: `${PURPLE}10`, borderRadius: 16, padding: '12px 24px', textAlign: 'center', border: `1px solid ${PURPLE}20` }}>
-                {worldRecord && (
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase' }}>World record</div>
-                    <div style={{ fontSize: 22, fontWeight: 900, color: GOLD }}>{worldRecord.diff}ms</div>
-                    <div style={{ fontSize: 11, color: `${BROWN}40`, fontWeight: 700 }}>{worldRecord.name}</div>
-                  </div>
+            <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+                <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
+                {bestScore !== null ? (
+                  <div style={{ fontSize: 32, fontWeight: 900, color: PURPLE }}>{(bestScore/1000).toFixed(3)}s</div>
+                ) : (
+                  <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
                 )}
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: PURPLE, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your best</div>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>{(bestScore / 1000).toFixed(3)}s off</div>
-                </div>
               </div>
-            )}
+              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+                <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
+                {worldRecord ? (
+                  <>
+                    <div style={{ fontSize: 32, fontWeight: 900, color: GOLD }}>{(worldRecord.diff/1000).toFixed(3)}s</div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{worldRecord.name}</div>
+                  </>
+                ) : (
+                  <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
+                )}
+              </div>
+            </div>
 
             <button onClick={start} style={{
               width: '100%', padding: '20px', borderRadius: 20, border: 'none',

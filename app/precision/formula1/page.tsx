@@ -179,7 +179,7 @@ export default function Formula1Page() {
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
         <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/f1.png" alt="" style={{ height: 52, objectFit: 'contain', flexShrink: 0 }} />
         <div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: phase === 'go' ? '#fff' : RED, letterSpacing: -0.5 }}>Formula 1</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: phase === 'go' ? '#fff' : RED, letterSpacing: -0.5 }}>F1 Reaction</div>
           <div style={{ fontSize: 11, color: phase === 'go' ? 'rgba(255,255,255,0.5)' : `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>React when the lights go out</div>
         </div>
       </div>
