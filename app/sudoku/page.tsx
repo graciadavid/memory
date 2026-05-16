@@ -61,16 +61,14 @@ export default function SudokuPage() {
   const startRef = useRef<number>(0)
 
   useEffect(() => {
-    import('../../lib/supabase').then(({ supabase }) => {
     supabase.from('sudoku_scores').select('player_name, time_ms, difficulty').order('time_ms', { ascending: true }).limit(200)
       .then(({ data }) => {
         if (data) {
-          const best = {}
-          data.forEach((s) => { if (!best[s.player_name] || s.time_ms < best[s.player_name].time_ms) best[s.player_name] = { time_ms: s.time_ms, difficulty: s.difficulty } })
+          const best: Record<string, { time_ms: number, difficulty: string }> = {}
+          data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name].time_ms) best[s.player_name] = { time_ms: s.time_ms, difficulty: s.difficulty } })
           setTopScores(Object.entries(best).map(([name, d]) => ({ name, ...d })).sort((a, b) => a.time_ms - b.time_ms))
         }
       })
-    })
   }, [])
 
   useEffect(() => {
