@@ -5,6 +5,8 @@ import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
 const BROWN = '#4A2C0A'
+const TROPHY = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.webp'
+const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sudoku.png'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const PURPLE = '#4A148C'
@@ -53,9 +55,23 @@ export default function SudokuPage() {
   const [elapsed, setElapsed] = useState(0)
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const [bestScore, setBestScore] = useState<number | null>(null)
+  const [topScores, setTopScores] = useState<{ name: string, time_ms: number, difficulty: string }[]>([])
   const [errors, setErrors] = useState<Set<string>>(new Set())
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const startRef = useRef<number>(0)
+
+  useEffect(() => {
+    import('../../lib/supabase').then(({ supabase }) => {
+    supabase.from('sudoku_scores').select('player_name, time_ms, difficulty').order('time_ms', { ascending: true }).limit(200)
+      .then(({ data }) => {
+        if (data) {
+          const best = {}
+          data.forEach((s) => { if (!best[s.player_name] || s.time_ms < best[s.player_name].time_ms) best[s.player_name] = { time_ms: s.time_ms, difficulty: s.difficulty } })
+          setTopScores(Object.entries(best).map(([name, d]) => ({ name, ...d })).sort((a, b) => a.time_ms - b.time_ms))
+        }
+      })
+    })
+  }, [])
 
   useEffect(() => {
     if (!profile?.name || !difficulty) return
@@ -145,17 +161,51 @@ export default function SudokuPage() {
 
       {/* MENU */}
       {phase === 'menu' && (
-        <div style={{ padding: '32px 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div style={{ fontSize: 15, fontWeight: 900, color: BROWN, marginBottom: 8 }}>Choose difficulty</div>
+        <div style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', marginBottom: 8 }}>
+            <img src={LOGO} alt="Sudoku" style={{ height: 52, objectFit: 'contain', flexShrink: 0 }} />
+            <div>
+              <div style={{ fontSize: 26, fontWeight: 900, color: PURPLE }}>Sudoku</div>
+              <div style={{ fontSize: 12, color: BROWN + '80', fontStyle: 'italic' }}>How fast can you solve it?</div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
+              {bestScore ? (
+                <div style={{ fontSize: 28, fontWeight: 900, color: PURPLE }}>{fmt(bestScore)}</div>
+              ) : (
+                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>--</div>
+              )}
+            </div>
+            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
+              {topScores[0] ? (
+                <div>
+                  <div style={{ fontSize: 28, fontWeight: 900, color: '#C8960C' }}>{fmt(topScores[0].time_ms)}</div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{topScores[0].name}</div>
+                </div>
+              ) : (
+                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>--</div>
+              )}
+            </div>
+          </div>
+          <div style={{ fontSize: 14, fontWeight: 900, color: BROWN, alignSelf: 'flex-start' }}>Choose difficulty</div>
           {(['easy', 'medium', 'hard'] as const).map(d => (
             <button key={d} onClick={() => startGame(d)} style={{
-              padding: '20px', borderRadius: 20, border: 'none',
+              width: '100%', padding: '20px', borderRadius: 20, border: 'none',
               background: COLORS[d], color: '#fff',
               fontSize: 18, fontWeight: 900, fontFamily: 'inherit',
-              cursor: 'pointer', boxShadow: `0 8px 0 ${COLORS[d]}60`,
+              cursor: 'pointer', boxShadow: '0 8px 0 ' + COLORS[d] + '60',
               textTransform: 'capitalize',
             }}>{d}</button>
           ))}
+          <a href="/sudoku/ranking" style={{ textDecoration: 'none', width: '100%' }}>
+            <div style={{ width: '100%', padding: '14px', borderRadius: 16, background: '#fff', border: '1.5px solid #4A2C0A20', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxSizing: 'border-box' }}>
+              <img src={TROPHY} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+              <span style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>World Ranking</span>
+            </div>
+          </a>
         </div>
       )}
 
