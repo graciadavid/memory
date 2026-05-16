@@ -301,9 +301,7 @@ export default function AcePage() {
                 )}
               </div>
             </div>
-            {false && (
-              </div>
-            )}
+
 
             <button onClick={startGame} style={{
               padding: '18px', borderRadius: 20, border: 'none',
