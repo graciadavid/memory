@@ -146,8 +146,9 @@ export default function PrecisionPage() {
                   </div>
                 )}
                 <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: PURPLE, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your best</div>
-                <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>{(bestScore / 1000).toFixed(3)}s off</div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: PURPLE, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your best</div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>{(bestScore / 1000).toFixed(3)}s off</div>
+                </div>
               </div>
             )}
 
