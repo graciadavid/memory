@@ -11,8 +11,10 @@ const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const PURPLE = '#4A148C'
 const TARGET = 5000 // 5 seconds in ms
+const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/stop.png'
+const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/stop.png'
 
-export default function PrecisionPage() {
+export default function StopPage() {
   const { profile } = usePlayer()
   const router = useRouter()
   const [phase, setPhase] = useState<'idle' | 'running' | 'result'>('idle')
@@ -120,7 +122,8 @@ export default function PrecisionPage() {
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
         <div style={{ fontSize: 52, flexShrink: 0 }}>⏱</div>
         <div>
-          <div style={{ fontSize: 28, fontWeight: 900, color: PURPLE, letterSpacing: -0.5 }}>Precision</div>
+          <img src={LOGO} alt='Stop' style={{ height: 52, objectFit: 'contain', animation: 'floatLogo 3s ease-in-out infinite' }} />
+          <div style={{ fontSize: 28, fontWeight: 900, color: PURPLE, letterSpacing: -0.5 }}>Stop</div>
           <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Stop exactly at 5 seconds</div>
         </div>
       </div>
@@ -216,7 +219,7 @@ export default function PrecisionPage() {
 
             <button onClick={() => {
               const url = `${window.location.origin}/challenge?game=precision&score=${Math.abs(difference)}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-              const text = `⏱ ${profile?.name} stopped at ${(difference / 1000).toFixed(3)}s off on MemGenius Precision! Can you be more precise? ${url}`
+              const text = `${profile?.name} stopped at ${(difference / 1000).toFixed(3)}s off on MemGenius Stop! Can you be more precise? ${url}`
               window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
             }} style={{
               width: '100%', padding: '16px', borderRadius: 16, border: 'none',

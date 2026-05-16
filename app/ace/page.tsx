@@ -289,8 +289,8 @@ export default function AcePage() {
                 {topScores[0] && (
                   <div style={{ textAlign: 'center' }}>
                     <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase' }}>World record</div>
-                    <div style={{ fontSize: 22, fontWeight: 900, color: GOLD }}>{topScores[0].level}</div>
-                    <div style={{ fontSize: 11, color: `${BROWN}40`, fontWeight: 700 }}>{topScores[0].name}</div>
+                    <div style={{ fontSize: 32, fontWeight: 900, color: GOLD }}>{topScores[0].level}</div>
+                    <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 800 }}>{topScores[0].name}</div>
                   </div>
                 )}
               </div>

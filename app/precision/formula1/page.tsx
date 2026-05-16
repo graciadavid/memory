@@ -311,7 +311,7 @@ export default function Formula1Page() {
       background: '#FAF7F2',
     }}>
       <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
-        F1 Reaction — Formula 1 Reaction Time Test
+        F1 Reaction — F1 Reaction Time Test
       </h2>
       <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
         F1 Reaction simulates the most iconic moment in motorsport — the starting lights. Five red lights illuminate one by one, just like a real Formula 1 race start. When they go out, hit the accelerator as fast as you can. Your reaction time is measured in milliseconds. How close to an F1 driver can you get?

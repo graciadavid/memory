@@ -7,6 +7,7 @@ import { updateStreak } from '@/lib/streak'
 import Link from 'next/link'
 
 const BROWN = '#4A2C0A'
+const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.png'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const PURPLE = '#4A148C'
@@ -194,7 +195,14 @@ export default function PendulumPage() {
               Watch the pendulum swing.<br />Press STOP when it reaches the center.<br />Precision measured in milliseconds.
             </div>
           </div>
-          {bestScore !== null && (
+          {worldRecord && (
+              <div style={{ background: `${GOLD}15`, borderRadius: 14, padding: '10px 20px', textAlign: 'center' }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase' }}>World record</div>
+                <div style={{ fontSize: 32, fontWeight: 900, color: GOLD }}>{worldRecord.diff}ms</div>
+                <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 800 }}>{worldRecord.name}</div>
+              </div>
+            )}
+            {bestScore !== null && (
             <div style={{ background: `${PURPLE}10`, border: `1px solid ${PURPLE}20`, borderRadius: 14, padding: '10px 20px', textAlign: 'center' }}>
               <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 1, textTransform: 'uppercase' }}>Your best</div>
               <div style={{ fontSize: 24, fontWeight: 900, color: PURPLE }}>{bestScore}ms</div>
