@@ -345,8 +345,6 @@ export default function MastermindPage() {
         </div>
       )}
     </> }
-    </> }
-    </> }
     </main>
   )
 }
