@@ -460,6 +460,15 @@ export default function BrainTestClient() {
   const baseAge = Math.round(65 - (brainScore / 1000) * 47)
   const brainAge = Math.min(65, Math.max(18, baseAge + timePenalty))
 
+
+  const getBrainMessage = (age: number) => {
+    if (age <= 25) return { msg: 'Exceptional. Top 5% worldwide.', sub: 'Your brain performs like an elite.' }
+    if (age <= 32) return { msg: 'Sharp mind. Better than most.', sub: 'You are above average.' }
+    if (age <= 40) return { msg: 'Good performance. Keep training.', sub: 'Daily practice will lower your age.' }
+    if (age <= 50) return { msg: 'Room to grow. Train daily.', sub: 'Consistency is the key.' }
+    return { msg: 'Your brain needs training.', sub: 'Start today. Come back tomorrow.' }
+  }
+
   return (
     <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #E8EAF6 0%, ${CREAM} 100%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 80 }}>
       <style>{`
@@ -670,25 +679,58 @@ export default function BrainTestClient() {
       )}
 
       {/* RESULT */}
-      {phase === 'result' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 20 }}>
-          <img src={LOGO} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
-          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Your Brain Age</div>
-          <div style={{ fontSize: 96, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', lineHeight: 1, animation: 'popIn 0.5s ease' }}>{brainAge}</div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', marginTop: -8 }}>years old</div>
+      {phase === 'result' && (() => {
+        const { msg, sub } = getBrainMessage(brainAge)
+        const ageColor = brainAge <= 25 ? '#00E676' : brainAge <= 35 ? '#69F0AE' : brainAge <= 45 ? '#FF9100' : '#FF5252'
+        return (
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          minHeight: '100dvh', padding: '40px 24px', gap: 0,
+          background: 'linear-gradient(180deg, #0A0A1A 0%, #0D1B2A 60%, #0A1628 100%)',
+        }}>
+          {/* Name */}
+          {profile?.name && (
+            <div style={{ fontSize: 16, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 32 }}>{profile.name}</div>
+          )}
+          {!profile?.name && (
+            <div style={{ marginBottom: 32 }} />
+          )}
 
-          <button onClick={() => {
-            const text = `🧠 My Brain Age is ${brainAge} on MemGenius Brain Test! What's yours?`
-            const url = 'https://memgenius.com/brain-test'
-            if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-          }} style={{ width: '100%', padding: '18px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60' }}>
-            Share on WhatsApp
-          </button>
-          <button onClick={() => window.location.href = '/'} style={{ width: '100%', padding: '16px', borderRadius: 16, border: 'none', background: '#0D1B4B', color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #08103060', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-            Train Your Brain <span style={{ fontSize: 22 }}>→</span>
-          </button>
+          {/* Age number */}
+          <div style={{ fontSize: 120, fontWeight: 900, color: ageColor, lineHeight: 1, animation: 'popIn 0.5s ease', textShadow: `0 0 60px ${ageColor}40` }}>{brainAge}</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: ageColor, marginTop: 4, marginBottom: 32, opacity: 0.8 }}>years old</div>
+
+          {/* Message */}
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 8 }}>{msg}</div>
+            <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', fontWeight: 700 }}>{sub}</div>
+          </div>
+
+          {/* Logo watermark */}
+          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: 120, objectFit: 'contain', opacity: 0.6, marginBottom: 32 }} />
+
+          {/* Buttons */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
+            <button onClick={() => {
+              const text = `🧠 My Brain Age is ${brainAge} on MemGenius! ${msg} What's yours?`
+              const url = 'https://memgenius.com/brain-test'
+              if (navigator.share) { navigator.share({ title: 'MemGenius Brain Age', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
+            }} style={{
+              width: '100%', padding: '18px', borderRadius: 16, border: 'none',
+              background: 'linear-gradient(135deg, #25D366, #128C7E)',
+              color: '#fff', fontSize: 18, fontWeight: 900,
+              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
+            }}>Share my Brain Age</button>
+            <button onClick={() => window.location.href = '/'} style={{
+              width: '100%', padding: '16px', borderRadius: 16, border: 'none',
+              background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)',
+              fontSize: 15, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}>Train Your Brain →</button>
+          </div>
         </div>
-      )}
+        )
+      })()}
     </main>
   )
 }
