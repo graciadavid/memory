@@ -694,6 +694,7 @@ export default function BrainTestClient() {
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
           minHeight: '100dvh', padding: '40px 24px', gap: 0,
           background: 'linear-gradient(180deg, #0A0A1A 0%, #0D1B2A 60%, #0A1628 100%)',
+          paddingBottom: 100,
         }}>
           {/* Name */}
           {profile?.name && (
