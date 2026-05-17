@@ -6,6 +6,13 @@ const CREAM = "#FAF7F2"
 
 const POSTS = [
   {
+    slug: 'brain-age-test',
+    title: 'Brain Age Test Online — Discover How Old Your Brain Really Is',
+    desc: 'Free online Brain Age Test. 5 cognitive games measuring memory, reaction time, precision, geography and logic. Discover your brain age in 4 minutes.',
+    date: 'May 2026',
+    tag: 'Brain Training',
+  },
+  {
     slug: 'sudoku-tips-tricks',
     title: 'Sudoku Tips and Tricks — How to Solve Any Puzzle Faster',
     desc: 'Master Sudoku with proven techniques from beginner elimination to advanced X-Wing patterns.',
