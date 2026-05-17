@@ -26,7 +26,14 @@ const GEO_COUNTRIES = [
   { code: 'au', name: 'Australia' }, { code: 'mx', name: 'Mexico' },
   { code: 'ar', name: 'Argentina' }, { code: 'in', name: 'India' },
   { code: 'cn', name: 'China' }, { code: 'ca', name: 'Canada' },
-  { code: 'ru', name: 'Russia' },
+  { code: 'ru', name: 'Russia' }, { code: 'ng', name: 'Nigeria' },
+  { code: 'eg', name: 'Egypt' }, { code: 'za', name: 'South Africa' },
+  { code: 'th', name: 'Thailand' }, { code: 'vn', name: 'Vietnam' },
+  { code: 'pl', name: 'Poland' }, { code: 'ua', name: 'Ukraine' },
+  { code: 'se', name: 'Sweden' }, { code: 'no', name: 'Norway' },
+  { code: 'fi', name: 'Finland' }, { code: 'cl', name: 'Chile' },
+  { code: 'co', name: 'Colombia' }, { code: 'pe', name: 'Peru' },
+  { code: 'iq', name: 'Iraq' }, { code: 'ir', name: 'Iran' },
 ]
 
 const CANVAS_W = 390
@@ -98,6 +105,7 @@ export default function BrainTestPage() {
   const [nbScore, setNbScore] = useState(0)
   const [nbIndex, setNbIndex] = useState(0)
   const [nbFeedback, setNbFeedback] = useState<'correct' | 'wrong' | null>(null)
+  const [nbStarted, setNbStarted] = useState(false)
   const nbTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const NB_TOTAL = 10
   const nbCurrentRef = useRef(0)
@@ -356,7 +364,7 @@ export default function BrainTestPage() {
       const nextIdx = geoIndex + 1
       if (nextIdx >= GEO_TOTAL) {
         setScores(s => ({ ...s, geoshape: newScore }))
-        const seq = Array.from({ length: 6 }, () => Math.floor(Math.random() * 10))
+        const seq = Array.from({ length: 7 }, () => Math.floor(Math.random() * 10))
         setDigitSeq(seq); setDigitInput([]); setDigitPhase('show')
         setTimeout(() => setPhase('digits'), 500)
       } else {
@@ -384,7 +392,7 @@ export default function BrainTestPage() {
       const timeTaken = Date.now() - digitStartTime
       let correct = 0
       next.forEach((d, i) => { if (d === digitSeq[i]) correct++ })
-      const basePoints = correct * 30
+      const basePoints = Math.round(correct * (200/7))
       const speedBonus = timeTaken < 5000 ? 20 : timeTaken < 10000 ? 10 : timeTaken > 15000 ? -10 : 0
       const total = Math.max(0, Math.min(200, basePoints + speedBonus))
       setDigitPhase('done')
@@ -433,7 +441,6 @@ export default function BrainTestPage() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 0', gap: 8 }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>Ace</div>
           <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', padding: '0 20px' }}>Hit the ball through the circle</div>
-          <div style={{ fontSize: 18, fontWeight: 900, color: '#4CAF50' }}>{acePoints} pts</div>
           <div style={{ position: 'relative', width: '100%' }} onClick={handleAceTap}>
             <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{ width: '100%', touchAction: 'none' }} />
             {aceResult && (
@@ -448,31 +455,49 @@ export default function BrainTestPage() {
 
       {/* N-BACK */}
       {phase === 'nback' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 24px', gap: 16 }}>
-          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 2 of 5</div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80dvh', padding: '24px', gap: 16 }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>N-Back</div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, textAlign: 'center' }}>
-            {nbShowCard ? 'Remember this color' : nbIndex === 0 ? 'Memorizing first color...' : 'Same color as before?'}
+          <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center' }}>
+            {!nbStarted ? 'Is the color the same as the previous one?' : nbShowCard ? 'Remember this color' : nbIndex <= 1 ? 'Memorizing...' : ''}
           </div>
-          <div style={{ fontSize: 16, color: GOLD, fontWeight: 900 }}>{Math.min(nbIndex, NB_TOTAL)} / {NB_TOTAL} · {nbScore} correct</div>
-          <div style={{ width: 200, height: 200, borderRadius: 28, background: nbShowCard ? NBACK_COLORS[nbCurrent].bg : '#E0E0E0', boxShadow: nbShowCard ? `0 8px 0 ${NBACK_COLORS[nbCurrent].shadow}` : '0 4px 0 #BDBDBD', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}>
-            {!nbShowCard && nbIndex > 0 && (
-              <div style={{ textAlign: 'center', padding: '0 16px' }}>
-                <div style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A40', lineHeight: 1.3 }}>Same<br/>or<br/>Different?</div>
+          {!nbStarted ? (
+            <button onClick={() => { setNbStarted(true); startNbRound(0, null) }} style={{
+              width: '100%', padding: '20px', borderRadius: 20, border: 'none',
+              background: '#2E7D32', color: '#fff', fontSize: 20, fontWeight: 900,
+              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
+            }}>Start</button>
+          ) : (
+            <>
+              <div style={{ fontSize: 14, color: GOLD, fontWeight: 900 }}>{Math.min(nbIndex, NB_TOTAL)} / {NB_TOTAL} · {nbScore} correct</div>
+              <div style={{
+                width: 240, height: 240, borderRadius: 28,
+                background: nbShowCard ? NBACK_COLORS[nbCurrent].bg : '#E8E8E8',
+                boxShadow: nbShowCard ? `0 8px 0 ${NBACK_COLORS[nbCurrent].shadow}` : '0 4px 0 #BDBDBD',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                gap: 10, transition: 'background 0.15s', position: 'relative', overflow: 'hidden',
+              }}>
+                {!nbShowCard && nbIndex > 1 && nbPhase === 'answer' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', padding: '16px', boxSizing: 'border-box' }}>
+                    <button onClick={() => handleNbAnswer(false)} style={{
+                      width: '100%', padding: '14px', borderRadius: 14, border: 'none',
+                      background: '#E53935', color: '#fff', fontSize: 17, fontWeight: 900,
+                      fontFamily: 'inherit', cursor: 'pointer',
+                    }}>Different</button>
+                    <button onClick={() => handleNbAnswer(true)} style={{
+                      width: '100%', padding: '14px', borderRadius: 14, border: 'none',
+                      background: '#43A047', color: '#fff', fontSize: 17, fontWeight: 900,
+                      fontFamily: 'inherit', cursor: 'pointer',
+                    }}>Same</button>
+                  </div>
+                )}
+                {nbFeedback && (
+                  <div style={{ fontSize: 28, fontWeight: 900, color: nbFeedback === 'correct' ? '#fff' : '#fff', position: 'absolute' }}>
+                    {nbFeedback === 'correct' ? '✓' : '✗'}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          {nbFeedback && <div style={{ fontSize: 22, fontWeight: 900, color: nbFeedback === 'correct' ? '#2E7D32' : '#C62828', animation: 'popIn 0.3s ease' }}>{nbFeedback === 'correct' ? '✓ Correct' : '✗ Wrong'}</div>}
-          {nbPhase === 'answer' && (
-            <div style={{ display: 'flex', gap: 12, width: '100%' }}>
-              <button onClick={() => handleNbAnswer(false)} style={{ flex: 1, padding: '20px', borderRadius: 18, border: 'none', background: '#E53935', color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 5px 0 #B71C1C60' }}>Different</button>
-              <button onClick={() => handleNbAnswer(true)} style={{ flex: 1, padding: '20px', borderRadius: 18, border: 'none', background: '#43A047', color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 5px 0 #2E7D3260' }}>Same</button>
-            </div>
+            </>
           )}
-          {nbPhase !== 'answer' && <div style={{ display: 'flex', gap: 12, width: '100%', opacity: 0.25 }}>
-            <div style={{ flex: 1, padding: '20px', borderRadius: 18, background: '#E53935', textAlign: 'center', fontSize: 18, fontWeight: 900, color: '#fff' }}>Different</div>
-            <div style={{ flex: 1, padding: '20px', borderRadius: 18, background: '#43A047', textAlign: 'center', fontSize: 18, fontWeight: 900, color: '#fff' }}>Same</div>
-          </div>}
         </div>
       )}
 
@@ -489,12 +514,12 @@ export default function BrainTestPage() {
           {stopPhase !== 'ready' && (
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontSize: 14, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your time</div>
-              <div style={{ fontSize: 60, fontWeight: 900, fontVariantNumeric: 'tabular-nums', color: stopPhase === 'done' ? (stopDiff < 200 ? '#2E7D32' : stopDiff < 800 ? '#F9A825' : '#C62828') : '#4A148C' }}>
+              <div style={{ fontSize: 60, fontWeight: 900, fontVariantNumeric: 'tabular-nums', color: stopPhase === 'done' ? (stopDiff === 0 ? '#2E7D32' : '#C62828') : '#4A148C' }}>
                 {(stopElapsed / 1000).toFixed(3)}s
               </div>
             </div>
           )}
-          {stopPhase === 'done' && <div style={{ fontSize: 28, fontWeight: 900, color: stopDiff < 200 ? '#2E7D32' : stopDiff < 800 ? '#F9A825' : '#C62828' }}>{stopDiff}ms off</div>}
+          {stopPhase === 'done' && <div style={{ fontSize: 28, fontWeight: 900, color: stopDiff === 0 ? '#2E7D32' : '#C62828' }}>{stopDiff}ms off</div>}
           {stopPhase === 'ready' && <button onClick={startStop} style={{ width: '100%', padding: '20px', borderRadius: 20, border: 'none', background: '#2E7D32', color: '#fff', fontSize: 20, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060' }}>Start</button>}
           {stopPhase === 'running' && <button onClick={stopIt} style={{ width: '100%', padding: '20px', borderRadius: 20, border: 'none', background: '#B71C1C', color: '#fff', fontSize: 20, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #B71C1C60' }}>Stop!</button>}
         </div>
@@ -540,7 +565,7 @@ export default function BrainTestPage() {
           {digitPhase === 'input' && (
             <>
               <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                {Array(6).fill(null).map((_, i) => (
+                {Array(7).fill(null).map((_, i) => (
                   <div key={i} style={{ width: 44, height: 56, borderRadius: 12, background: digitInput[i] !== undefined ? '#1976D2' : '#E3F2FD', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 900, color: digitInput[i] !== undefined ? '#fff' : `${BROWN}20`, border: `2px solid ${digitInput[i] !== undefined ? '#1976D2' : '#90CAF9'}` }}>
                     {digitInput[i] !== undefined ? digitInput[i] : ''}
                   </div>
@@ -572,12 +597,7 @@ export default function BrainTestPage() {
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Your Brain Profile</div>
           <div style={{ fontSize: 18, fontWeight: 800, color: `${BROWN}50`, marginBottom: 4 }}>Brain Age</div>
           <div style={{ fontSize: 96, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', lineHeight: 1, animation: 'popIn 0.5s ease' }}>{brainAge}</div>
-          {worldPercent !== null && (
-            <div style={{ background: `${GOLD}15`, borderRadius: 20, padding: '20px 32px', textAlign: 'center', border: `1px solid ${GOLD}30`, width: '100%' }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World ranking</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: GOLD }}>Top {100 - worldPercent}%</div>
-            </div>
-          )}
+
           <button onClick={() => {
             const text = `🧠 My Brain Age is ${brainAge} on MemGenius Brain Test! I'm in the top ${100 - (worldPercent || 50)}% worldwide. What's yours? memgenius.com/brain-test`
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
