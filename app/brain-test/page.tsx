@@ -454,7 +454,8 @@ export default function BrainTestPage() {
               fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
             }}>Start</button>
           )}
-          {aceStarted && <div style={{ position: 'relative', width: '100%' }} onClick={handleAceTap}>
+          {aceStarted && <>
+          <div style={{ position: 'relative', width: '100%' }} onClick={handleAceTap}>
             <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{ width: '100%', touchAction: 'none' }} />
             {aceResult && (
               <div style={{ position: 'absolute', top: '25%', left: '50%', transform: 'translateX(-50%)', fontSize: 32, fontWeight: 900, color: aceResult === 'miss' ? '#C62828' : aceResult === 'perfect' ? '#C8960C' : '#2E7D32', animation: 'popIn 0.3s ease' }}>
@@ -463,6 +464,7 @@ export default function BrainTestPage() {
             )}
           </div>
           <button onClick={handleAceTap} style={{ width: '80%', padding: '18px', borderRadius: 20, border: 'none', background: '#4CAF50', color: '#fff', fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #2E7D3260' }}>SERVE!</button>
+          </>}
         </div>
       )}
 
