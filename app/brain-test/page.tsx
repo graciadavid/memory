@@ -427,12 +427,12 @@ export default function BrainTestPage() {
       const timeTaken = Date.now() - digitStartTime
       let correct = 0
       next.forEach((d, i) => { if (d === digitSeq[i]) correct++ })
-      const basePoints = Math.round(correct * (200/7))
-      const speedBonus = timeTaken < 5000 ? 20 : timeTaken < 10000 ? 10 : timeTaken > 15000 ? -10 : 0
-      const total = Math.max(0, Math.min(200, basePoints + speedBonus))
+      const digMap: Record<number, number> = { 7: 200, 6: 150, 5: 100, 4: 75, 3: 75, 2: 75, 1: 75, 0: 0 }
+      const pts = digMap[correct] || 0
+      setDigitResult({ correct, total: 7, points: pts })
+      setScores(s => ({ ...s, digits: pts }))
       setDigitPhase('done')
-      playSound(correct === 6 ? 660 : 330, correct === 6 ? 880 : 220, 0.3, 0.2)
-      const finalScores = { ...scores, digits: total }
+      playSound(correct >= 5 ? 660 : 330, correct >= 5 ? 880 : 220, 0.3, 0.2)
     }
   }
 
@@ -460,8 +460,8 @@ export default function BrainTestPage() {
 
       {/* INTRO */}
       {phase === 'intro' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '0 24px', gap: 20 }}>
-          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: '100%', maxWidth: 180, objectFit: 'contain' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '0 32px', gap: 32 }}>
+          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: '100%', maxWidth: 200, objectFit: 'contain', marginTop: -40 }} />
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 36, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 16 }}>Brain Age Test</div>
             <div style={{ fontSize: 20, color: `${BROWN}60`, lineHeight: 1.7, fontWeight: 600 }}>
