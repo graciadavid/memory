@@ -674,7 +674,7 @@ export default function BrainTestClient() {
           }} style={{ width: '100%', padding: '18px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60' }}>
             Share on WhatsApp
           </button>
-          <button onClick={() => window.location.href = '/'} style={{ width: '100%', padding: '16px', borderRadius: 16, border: 'none', background: '#0D1B4B', color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #08103060', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+          <button onClick={() => window.location.href = '/?register=1'} style={{ width: '100%', padding: '16px', borderRadius: 16, border: 'none', background: '#0D1B4B', color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #08103060', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
             Train Your Brain <span style={{ fontSize: 22 }}>→</span>
           </button>
         </div>

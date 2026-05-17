@@ -308,7 +308,13 @@ export default function LandingPage() {
 
       {!profile?.name ? (
         /* REDIRECT TO BRAIN TEST */
-        (() => { if (typeof window !== "undefined") window.location.replace("/brain-test"); return null })()
+        (() => {
+          if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search)
+            if (!params.get('register')) window.location.replace('/brain-test')
+          }
+          return null
+        })()
       ) : false ? (
         /* NOT REGISTERED - disabled */
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
