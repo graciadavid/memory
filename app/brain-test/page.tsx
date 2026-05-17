@@ -94,6 +94,7 @@ export default function BrainTestPage() {
   const [acePoints, setAcePoints] = useState(0)
   const [aceResult, setAceResult] = useState<'perfect' | 'good' | 'miss' | null>(null)
   const [aceDone, setAceDone] = useState(false)
+  const [aceStarted, setAceStarted] = useState(false)
   const aceLevelRef = useRef(0)
   const acePointsRef = useRef(0)
 
@@ -252,12 +253,17 @@ export default function BrainTestPage() {
 
   useEffect(() => {
     if (phase !== 'ace') return
-    acePhaseRef.current = 'playing'
     aceLevelRef.current = 0
     acePointsRef.current = 0
-    setTimeout(() => startAceRound(), 400)
+    setAceStarted(false)
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current) }
   }, [phase, startAceRound])
+
+  const startAce = () => {
+    setAceStarted(true)
+    acePhaseRef.current = 'playing'
+    setTimeout(() => startAceRound(), 300)
+  }
 
   useEffect(() => {
     if (!aceDone) return
@@ -423,9 +429,9 @@ export default function BrainTestPage() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 28 }}>
           <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: '100%', maxWidth: 180, objectFit: 'contain' }} />
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 44, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 20 }}>Brain Test</div>
-            <div style={{ fontSize: 22, color: `${BROWN}70`, lineHeight: 1.6, fontWeight: 700 }}>
-              Discover your cognitive<br />profile and your %<br />in the world.
+            <div style={{ fontSize: 44, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 16 }}>Brain Age Test</div>
+            <div style={{ fontSize: 20, color: `${BROWN}60`, lineHeight: 1.7, fontWeight: 600 }}>
+              How old is your brain?<br />5 games. One result.
             </div>
           </div>
           <button onClick={() => { acePhaseRef.current = 'playing'; setPhase('ace') }} style={{
@@ -441,7 +447,14 @@ export default function BrainTestPage() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 0', gap: 8 }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>Ace</div>
           <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', padding: '0 20px' }}>Hit the ball through the circle</div>
-          <div style={{ position: 'relative', width: '100%' }} onClick={handleAceTap}>
+          {!aceStarted && (
+            <button onClick={startAce} style={{
+              width: '100%', padding: '20px', borderRadius: 20, border: 'none',
+              background: '#2E7D32', color: '#fff', fontSize: 20, fontWeight: 900,
+              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
+            }}>Start</button>
+          )}
+          {aceStarted && <div style={{ position: 'relative', width: '100%' }} onClick={handleAceTap}>
             <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{ width: '100%', touchAction: 'none' }} />
             {aceResult && (
               <div style={{ position: 'absolute', top: '25%', left: '50%', transform: 'translateX(-50%)', fontSize: 32, fontWeight: 900, color: aceResult === 'miss' ? '#C62828' : aceResult === 'perfect' ? '#C8960C' : '#2E7D32', animation: 'popIn 0.3s ease' }}>
@@ -450,53 +463,60 @@ export default function BrainTestPage() {
             )}
           </div>
           <button onClick={handleAceTap} style={{ width: '80%', padding: '18px', borderRadius: 20, border: 'none', background: '#4CAF50', color: '#fff', fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #2E7D3260' }}>SERVE!</button>
+          }
         </div>
       )}
 
       {/* N-BACK */}
       {phase === 'nback' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80dvh', padding: '24px', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '90dvh', padding: '24px', gap: 20 }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>N-Back</div>
-          <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center' }}>
-            {!nbStarted ? 'Is the color the same as the previous one?' : nbShowCard ? 'Remember this color' : nbIndex <= 1 ? 'Memorizing...' : ''}
-          </div>
-          {!nbStarted ? (
-            <button onClick={() => { setNbStarted(true); startNbRound(0, null) }} style={{
-              width: '100%', padding: '20px', borderRadius: 20, border: 'none',
-              background: '#2E7D32', color: '#fff', fontSize: 20, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
-            }}>Start</button>
-          ) : (
+
+          {!nbStarted && (
             <>
-              <div style={{ fontSize: 14, color: GOLD, fontWeight: 900 }}>{Math.min(nbIndex, NB_TOTAL)} / {NB_TOTAL} · {nbScore} correct</div>
-              <div style={{
-                width: 240, height: 240, borderRadius: 28,
-                background: nbShowCard ? NBACK_COLORS[nbCurrent].bg : '#E8E8E8',
-                boxShadow: nbShowCard ? `0 8px 0 ${NBACK_COLORS[nbCurrent].shadow}` : '0 4px 0 #BDBDBD',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                gap: 10, transition: 'background 0.15s', position: 'relative', overflow: 'hidden',
-              }}>
-                {!nbShowCard && nbIndex > 1 && nbPhase === 'answer' && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', padding: '16px', boxSizing: 'border-box' }}>
-                    <button onClick={() => handleNbAnswer(false)} style={{
-                      width: '100%', padding: '14px', borderRadius: 14, border: 'none',
-                      background: '#E53935', color: '#fff', fontSize: 17, fontWeight: 900,
-                      fontFamily: 'inherit', cursor: 'pointer',
-                    }}>Different</button>
-                    <button onClick={() => handleNbAnswer(true)} style={{
-                      width: '100%', padding: '14px', borderRadius: 14, border: 'none',
-                      background: '#43A047', color: '#fff', fontSize: 17, fontWeight: 900,
-                      fontFamily: 'inherit', cursor: 'pointer',
-                    }}>Same</button>
-                  </div>
-                )}
-                {nbFeedback && (
-                  <div style={{ fontSize: 28, fontWeight: 900, color: nbFeedback === 'correct' ? '#fff' : '#fff', position: 'absolute' }}>
-                    {nbFeedback === 'correct' ? '✓' : '✗'}
-                  </div>
-                )}
+              <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', lineHeight: 1.7 }}>
+                A color appears and disappears.<br />Was it the same as the previous one?
               </div>
+              <button onClick={() => { setNbStarted(true); startNbRound(0, null) }} style={{
+                width: '100%', padding: '20px', borderRadius: 20, border: 'none',
+                background: '#2E7D32', color: '#fff', fontSize: 20, fontWeight: 900,
+                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
+              }}>Start</button>
             </>
+          )}
+
+          {nbStarted && nbShowCard && (
+            <div style={{
+              width: 260, height: 260, borderRadius: 32,
+              background: NBACK_COLORS[nbCurrent].bg,
+              boxShadow: `0 12px 0 ${NBACK_COLORS[nbCurrent].shadow}`,
+              animation: 'fadeIn 0.15s ease',
+            }} />
+          )}
+
+          {nbStarted && !nbShowCard && nbPhase === 'answer' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%', animation: 'fadeIn 0.2s ease' }}>
+              <button onClick={() => handleNbAnswer(true)} style={{
+                width: '100%', padding: '28px', borderRadius: 20, border: 'none',
+                background: '#43A047', color: '#fff', fontSize: 22, fontWeight: 900,
+                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #2E7D3260',
+              }}>Same color</button>
+              <button onClick={() => handleNbAnswer(false)} style={{
+                width: '100%', padding: '28px', borderRadius: 20, border: 'none',
+                background: '#E53935', color: '#fff', fontSize: 22, fontWeight: 900,
+                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #B71C1C60',
+              }}>Different color</button>
+            </div>
+          )}
+
+          {nbStarted && !nbShowCard && nbPhase === 'show' && (
+            <div style={{ fontSize: 16, color: `${BROWN}40`, fontWeight: 700 }}>Memorizing...</div>
+          )}
+
+          {nbFeedback && (
+            <div style={{ fontSize: 28, fontWeight: 900, color: nbFeedback === 'correct' ? '#2E7D32' : '#C62828', animation: 'popIn 0.3s ease' }}>
+              {nbFeedback === 'correct' ? '✓' : '✗'}
+            </div>
           )}
         </div>
       )}
