@@ -83,6 +83,7 @@ export default function BrainTestPage() {
   const [phase, setPhase] = useState<GamePhase>('intro')
   const [scores, setScores] = useState({ ace: 0, nback: 0, stop: 0, geoshape: 0, digits: 0 })
   const [worldPercent, setWorldPercent] = useState<number | null>(null)
+  const [testStartTime] = useState(Date.now())
 
   // ACE
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -188,7 +189,7 @@ export default function BrainTestPage() {
     ctx.strokeStyle = inTarget ? '#4CAF50' : 'rgba(74,44,10,0.2)'; ctx.lineWidth = 3; ctx.stroke()
     ctx.font = '900 44px sans-serif'; ctx.fillStyle = '#4CAF50'
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
-    ctx.fillText(String(aceLevelRef.current) + '/5', TARGET_X, TARGET_Y - TARGET_R - 36)
+    // no level display
     ctx.font = `${BALL_R * 2}px serif`
     ctx.fillText('🎾', x, y)
     if (t < 1 && acePhaseRef.current === 'playing') animRef.current = requestAnimationFrame(drawAceFrame)
@@ -415,7 +416,13 @@ export default function BrainTestPage() {
   }
 
   const brainScore = calcBrainScore(scores)
-  const brainAge = Math.round(60 - (brainScore / 1000) * 42) // 1000pts = age 18, 0pts = age 60
+  // Brain Age: base from score, penalized by total test time
+  // Perfect score fast = age 18, zero score slow = age 65
+  const testDuration = (Date.now() - testStartTime) / 1000 // seconds
+  const expectedTime = 240 // 4 minutes expected
+  const timePenalty = Math.max(0, Math.round((testDuration - expectedTime) / 30)) // +1 year per 30s over expected
+  const baseAge = Math.round(65 - (brainScore / 1000) * 47)
+  const brainAge = Math.min(65, Math.max(18, baseAge + timePenalty))
 
   return (
     <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #E8EAF6 0%, ${CREAM} 100%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 80 }}>
@@ -447,7 +454,7 @@ export default function BrainTestPage() {
       {phase === 'ace' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 0', gap: 8 }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>Ace</div>
-          <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', padding: '0 20px' }}>Hit the ball through the circle</div>
+          <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center' }}>Hit the ball through the circle</div>
           <div style={{ position: 'relative', width: '100%' }} onClick={aceStarted ? handleAceTap : undefined}>
             <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{ width: '100%', touchAction: 'none' }} />
             {aceResult && (
@@ -623,7 +630,7 @@ export default function BrainTestPage() {
               <div style={{ fontSize: 16, fontWeight: 700, color: `${BROWN}60` }}>
                 You got <span style={{ color: digitResult.correct >= 5 ? '#2E7D32' : '#C62828', fontWeight: 900, fontSize: 20 }}>{digitResult.correct}</span> of 7 correct
               </div>
-              <button onClick={() => saveResult(scores)} style={{
+              <button onClick={() => { const s = {...scores}; saveResult(s) }} style={{
                 width: '100%', padding: '20px', borderRadius: 20, border: 'none',
                 background: '#0D1B4B', color: '#fff', fontSize: 18, fontWeight: 900,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #08103060',
