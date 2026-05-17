@@ -383,35 +383,22 @@ export default function BrainTestPage() {
 
       {/* INTRO */}
       {phase === 'intro' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 24px', gap: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 24 }}>
+          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain-logo.webp" alt="MemGenius" style={{ width: 80, height: 80, objectFit: 'contain' }} />
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 8 }}>MemGenius</div>
-            <div style={{ fontSize: 32, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1 }}>Brain Test</div>
-            <div style={{ fontSize: 15, color: `${BROWN}60`, marginTop: 10, lineHeight: 1.7 }}>
-              5 mini-games. 4 minutes.<br />Discover your cognitive profile<br />and your % in the world.
+            <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 12 }}>MemGenius</div>
+            <div style={{ fontSize: 40, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 16 }}>Brain Test</div>
+            <div style={{ fontSize: 20, color: `${BROWN}70`, lineHeight: 1.7, fontWeight: 700 }}>
+              Discover your cognitive<br />profile and your % in the world.
+            </div>
+            <div style={{ fontSize: 14, color: `${BROWN}40`, marginTop: 12, fontWeight: 600 }}>
+              5 games · ~4 minutes
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%' }}>
-            {[
-              { icon: '🎾', label: 'Ace', desc: 'Timing & Agility' },
-              { icon: '🧠', label: 'N-Back', desc: 'Working Memory' },
-              { icon: '⏱', label: 'Stop', desc: 'Precision' },
-              { icon: '🌍', label: 'GeoShape', desc: 'Spatial Knowledge' },
-              { icon: '🔵', label: 'Mastermind', desc: 'Deductive Logic' },
-            ].map((g, i) => (
-              <div key={i} style={{ background: '#fff', borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, border: '1px solid #4A2C0A08' }}>
-                <div style={{ fontSize: 24 }}>{g.icon}</div>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 900, color: BROWN }}>{g.label}</div>
-                  <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700 }}>{g.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
           <button onClick={() => { acePhaseRef.current = 'playing'; setPhase('ace') }} style={{
-            width: '100%', padding: '18px', borderRadius: 20, border: 'none',
-            background: BROWN, color: '#fff', fontSize: 18, fontWeight: 900,
-            fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 8px 0 ${BROWN}60`,
+            width: '100%', padding: '20px', borderRadius: 20, border: 'none',
+            background: '#2E7D32', color: '#fff', fontSize: 20, fontWeight: 900,
+            fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
           }}>Start Brain Test</button>
         </div>
       )}
@@ -436,13 +423,14 @@ export default function BrainTestPage() {
       {/* N-BACK */}
       {phase === 'nback' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 24px', gap: 16 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase' }}>2 of 5 — N-Back</div>
-          <div style={{ fontSize: 13, color: `${BROWN}50`, textAlign: 'center', lineHeight: 1.5 }}>
+          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 2 of 5</div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>N-Back</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, textAlign: 'center' }}>
             {nbShowCard ? 'Remember this color' : nbIndex === 0 ? 'Memorizing...' : 'Same color as before?'}
           </div>
-          <div style={{ fontSize: 12, color: GOLD, fontWeight: 800 }}>{nbIndex + 1}/{NB_TOTAL} · {nbScore} correct</div>
+          <div style={{ fontSize: 16, color: GOLD, fontWeight: 900 }}>{nbIndex + 1} / {NB_TOTAL} · {nbScore} correct</div>
           <div style={{ width: 200, height: 200, borderRadius: 28, background: nbShowCard ? NBACK_COLORS[nbCurrent].bg : '#E0E0E0', boxShadow: nbShowCard ? `0 8px 0 ${NBACK_COLORS[nbCurrent].shadow}` : '0 4px 0 #BDBDBD', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}>
-            {!nbShowCard && nbIndex > 0 && <div style={{ fontSize: 36 }}>🤔</div>}
+            {!nbShowCard && nbIndex > 0 && <img src='https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain-logo.webp' alt='' style={{ width: 60, height: 60, objectFit: 'contain', opacity: 0.3 }} />}
           </div>
           {nbFeedback && <div style={{ fontSize: 20, fontWeight: 900, color: nbFeedback === 'correct' ? '#2E7D32' : '#C62828' }}>{nbFeedback === 'correct' ? '✓ Correct' : '✗ Wrong'}</div>}
           {nbPhase === 'answer' && (
@@ -461,7 +449,8 @@ export default function BrainTestPage() {
       {/* STOP */}
       {phase === 'stop' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 24px', gap: 16 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase' }}>3 of 5 — Stop</div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 3 of 5</div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>Stop</div>
           <div style={{ fontSize: 13, color: '#4A2C0A60' }}>Stop at exactly 5 seconds</div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 18, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Target</div>
@@ -484,7 +473,8 @@ export default function BrainTestPage() {
       {/* GEOSHAPE */}
       {phase === 'geoshape' && geoCountries.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 24px', gap: 16 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase' }}>4 of 5 — GeoShape</div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 4 of 5</div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>GeoShape</div>
           <div style={{ fontSize: 13, color: `${BROWN}50` }}>{geoIndex + 1} of {GEO_TOTAL}</div>
           <img src={`https://raw.githubusercontent.com/djaiss/mapsicon/master/all/${geoCountries[geoIndex].code.toLowerCase()}/512.png`} alt="" style={{ width: 200, height: 180, objectFit: 'contain' }} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, width: '100%' }}>
@@ -503,7 +493,8 @@ export default function BrainTestPage() {
       {/* MASTERMIND */}
       {phase === 'mastermind' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 16px', gap: 12 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase' }}>5 of 5 — Mastermind</div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 5 of 5</div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>Mastermind</div>
           <div style={{ fontSize: 13, color: `${BROWN}50` }}>Crack the code — {MM_MAX - mmGuesses.length} attempts left</div>
           {mmGuesses.map((g, ri) => (
             <div key={ri} style={{ display: 'flex', gap: 8 }}>
@@ -514,18 +505,36 @@ export default function BrainTestPage() {
           ))}
           {!mmDone && mmGuesses.length < MM_MAX && (
             <>
-              <div style={{ display: 'flex', gap: 8 }}>
-                {mmCurrent.map((c, ci) => (
-                  <div key={ci} style={{ width: 44, height: 44, borderRadius: 10, background: c !== null ? MM_COLORS[c] : '#E0E0E0', border: `2px dashed ${BROWN}30` }} />
-                ))}
-              </div>
-              <div style={{ fontSize: 12, color: '#4A2C0A60', fontWeight: 700, marginBottom: 4 }}>Tap a color then tap a position</div>
-              <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 8 }}>
+              <div style={{ fontSize: 14, color: '#4A2C0A60', fontWeight: 700 }}>1. Pick a color · 2. Pick a slot</div>
+              <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
                 {MM_COLORS.map((col, ci) => (
-                  <div key={ci} onClick={() => setMmSelected(ci)} style={{ width: 40, height: 40, borderRadius: 10, background: col, cursor: 'pointer', border: mmSelected === ci ? '3px solid #4A2C0A' : '3px solid transparent', boxShadow: mmSelected === ci ? '0 0 0 2px #fff inset' : 'none' }} />
+                  <div key={ci} onClick={() => setMmSelected(ci)} style={{
+                    width: 44, height: 44, borderRadius: 10, background: col, cursor: 'pointer',
+                    border: mmSelected === ci ? '4px solid #4A2C0A' : '4px solid transparent',
+                    transform: mmSelected === ci ? 'scale(1.15)' : 'scale(1)',
+                    transition: 'transform 0.15s',
+                  }} />
                 ))}
               </div>
-              <button onClick={handleMmSubmit} disabled={mmCurrent.some(v => v === null)} style={{ width: '100%', padding: '14px', borderRadius: 16, border: 'none', background: BROWN, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>Check →</button>
+              <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+                {mmCurrent.map((col, ci) => (
+                  <div key={ci} onClick={() => handleMmColor(ci)} style={{
+                    width: 52, height: 52, borderRadius: 12,
+                    background: col !== null ? MM_COLORS[col] : '#E0E0E0',
+                    border: '3px dashed #4A2C0A30',
+                    cursor: mmSelected !== null ? 'pointer' : 'default',
+                    transition: 'background 0.15s',
+                  }} />
+                ))}
+              </div>
+              <button onClick={handleMmSubmit} disabled={mmCurrent.some(v => v === null)} style={{
+                width: '100%', padding: '16px', borderRadius: 16, border: 'none',
+                background: mmCurrent.some(v => v === null) ? '#E0E0E0' : '#2E7D32',
+                color: mmCurrent.some(v => v === null) ? '#9E9E9E' : '#fff',
+                fontSize: 16, fontWeight: 900, fontFamily: 'inherit',
+                cursor: mmCurrent.some(v => v === null) ? 'default' : 'pointer',
+                boxShadow: mmCurrent.some(v => v === null) ? 'none' : '0 6px 0 #1B5E2060',
+              }}>Check</button>
             </>
           )}
         </div>
