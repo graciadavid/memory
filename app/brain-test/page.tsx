@@ -642,6 +642,7 @@ export default function BrainTestPage() {
           <img src={LOGO} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Your Brain Age</div>
           <div style={{ fontSize: 96, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', lineHeight: 1, animation: 'popIn 0.5s ease' }}>{brainAge}</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: `${BROWN}50`, marginTop: 4 }}>years old</div>
 
           <button onClick={() => {
             const text = `🧠 My Brain Age is ${brainAge} on MemGenius Brain Test! I'm in the top ${100 - (worldPercent || 50)}% worldwide. What's yours? memgenius.com/brain-test`
