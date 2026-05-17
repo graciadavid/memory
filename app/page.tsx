@@ -274,13 +274,6 @@ export default function LandingPage() {
     }
 
     setChecking(false)
-
-    // Check if user has brain test - if not redirect to brain test
-    const { data: brainTest } = await supabase.from('brain_test_scores').select('id').eq('player_name', name.trim()).limit(1)
-    if (!brainTest || brainTest.length === 0) {
-      window.location.href = '/brain-test'
-      return
-    }
   }
 
   if (!loaded) return null
