@@ -36,10 +36,7 @@ const WORDS = [
 ]
 
 const getDailyWord = () => {
-  const start = new Date("2026-01-01").getTime()
-  const today = new Date().toISOString().split("T")[0]
-  const diff = Math.floor((new Date(today).getTime() - start) / 86400000)
-  return WORDS[diff % WORDS.length]
+  return WORDS[Math.floor(Math.random() * WORDS.length)]
 }
 
 const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/wordly.png'
