@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import SequenceClient from './SequenceClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function SequencePage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Why Simon Says is more than a children's game</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>The original Simon electronic game was used in cognitive research in the 1980s to study working memory and attention. Studies consistently show that children who perform well on Simon-type tasks also perform well on academic measures of reading and mathematics. Adults who train with sequence memory games show improvements in attention control and the ability to suppress distracting information.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Children beat adults at this game on average. That should concern you — and motivate you to practice daily.</p>
+      <RelatedGames category='memory' current='Simon Says' />
       </div>
     </>
   )

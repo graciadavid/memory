@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import FlagsClient from './FlagsClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function FlagsPage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Why geography knowledge matters</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Geographic literacy is associated with better performance in history, economics and current events comprehension. Studies show that students with strong geographic knowledge demonstrate better spatial reasoning and are more likely to engage with global news and international issues. In an increasingly interconnected world, knowing where countries are and what they look like is a fundamental form of cultural literacy.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Most adults can correctly identify fewer than 30 country flags. With daily practice on Flags, that number can reach 100 or more within a few weeks — a genuine expansion of your knowledge base that stays with you permanently.</p>
+      <RelatedGames category='knowledge' current='Flags' />
       </div>
     </>
   )

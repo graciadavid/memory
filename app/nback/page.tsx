@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import NBackClient from './NBackClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function NBackPage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Does N-Back training actually work?</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>This is one of the most debated questions in cognitive science. A landmark 2008 study by Jaeggi and colleagues claimed that N-Back training produced significant gains in fluid intelligence. Subsequent research has been mixed, but a consistent finding is that N-Back training reliably improves performance on working memory tasks and attention control.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>The consensus today is that N-Back training is one of the most effective brain training paradigms available — far more evidence-backed than most commercial brain training products. Daily practice of 15-20 minutes produces measurable improvements in working memory capacity within four to six weeks.</p>
+      <RelatedGames category='memory' current='N-Back' />
       </div>
     </>
   )

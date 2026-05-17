@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import WordlyClient from './WordlyClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function WordlyPage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Language and cognitive aging</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Verbal abilities are among the most resilient cognitive functions — they decline later and more slowly than most other abilities. However, word retrieval speed — the time it takes to access a word you know — begins declining in the forties and becomes a common source of frustration in later life. The tip-of-the-tongue phenomenon becomes more frequent with age.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Daily engagement with Wordly exercises the word retrieval networks, maintaining the speed and fluency of lexical access. The competitive element — comparing your solving time against other players on the world ranking — adds a motivational dimension that sustains daily engagement far more effectively than practice for its own sake.</p>
+      <RelatedGames category='logic' current='Wordly' />
       </div>
     </>
   )

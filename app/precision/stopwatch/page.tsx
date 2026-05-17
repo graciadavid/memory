@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import StopClient from './StopClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function StopPage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Can you train your internal clock?</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Yes. Time perception is one of the most trainable cognitive abilities. Studies show that regular practice with timing tasks produces measurable improvements in temporal accuracy within two to three weeks. The improvement transfers partially to other timing tasks, suggesting genuine plasticity in the neural circuits responsible for time perception.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Top players on the MemGenius Stop ranking consistently stop within 10-20 milliseconds of the 5-second target. That level of precision is achievable with daily practice. The world record holders are not superhuman — they simply trained their internal clock until it became reliable.</p>
+      <RelatedGames category='agility' current='Stop' />
       </div>
     </>
   )

@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import DigitsClient from './DigitsClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function DigitsPage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Why digit span matters</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Digit span is a component of the Wechsler Intelligence Scale, one of the most widely used intelligence tests in psychology. A strong digit span correlates with better performance in mathematics, reading comprehension and problem-solving. It is also one of the first abilities affected by cognitive decline, making it a valuable early indicator of brain health.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Daily practice with Digits builds the neural circuits responsible for verbal working memory, improving your ability to follow complex instructions, retain information during conversations and perform mental arithmetic.</p>
+      <RelatedGames category='memory' current='Digits' />
       </div>
     </>
   )

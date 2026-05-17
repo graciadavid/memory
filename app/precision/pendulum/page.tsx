@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import PendulumClient from './PendulumClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function PendulumPage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Anticipatory timing in everyday life</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Anticipatory timing is one of the most underappreciated cognitive skills. It underlies the ability to catch a ball, merge onto a motorway, play a musical instrument in time with others, and execute precise movements in sport. Elite athletes demonstrate measurably superior anticipatory timing compared to recreational athletes, and this advantage is largely trainable.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Daily practice with Pendulum builds the neural circuits responsible for temporal prediction and motor preparation. Improvements typically become measurable within two to three weeks of consistent daily practice.</p>
+      <RelatedGames category='agility' current='Pendulum' />
       </div>
     </>
   )

@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import AceClient from './AceClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function AcePage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Hand-eye coordination and brain health</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Hand-eye coordination involves a complex network of brain regions including the visual cortex, cerebellum, motor cortex and parietal lobe. Training this network through regular interceptive timing exercises produces improvements that transfer to real-world motor tasks and has been shown to slow age-related decline in motor precision.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Studies of older adults who engage in regular eye-hand coordination training show significantly better performance on tests of fine motor control, balance and reaction time compared to sedentary peers of the same age. Ace provides exactly this type of training in a format that takes under two minutes per session.</p>
+      <RelatedGames category='agility' current='Ace' />
       </div>
     </>
   )

@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import MastermindClient from './MastermindClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function MastermindPage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>The mathematics of Mastermind</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Mastermind has attracted serious mathematical attention since its invention in 1970. In 1977, Donald Knuth proved that the classic six-color, four-position version can always be solved in five or fewer guesses using an optimal strategy. The MemGenius version uses five colors and five positions, creating a larger solution space that rewards more sophisticated deductive strategies.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>The fastest Mastermind players think several moves ahead, selecting guesses that maximize information gain regardless of the answer. This strategic depth makes Mastermind one of the richest brain training games available — deceptively simple to learn but genuinely demanding to master.</p>
+      <RelatedGames category='logic' current='Mastermind' />
       </div>
     </>
   )

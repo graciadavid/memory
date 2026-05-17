@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import SudokuClient from './SudokuClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function SudokuPage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Sudoku and cognitive aging</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Sudoku is one of the most evidence-backed brain training activities for adults over 50. Its combination of logical constraint satisfaction, pattern recognition and sustained concentration engages cognitive systems that are particularly vulnerable to age-related decline. The structured nature of Sudoku — unlike many games, there is always a logical path to the solution — means that improvement is directly measurable and motivating.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>The competitive element on MemGenius — a live world ranking showing your solving time against players worldwide — adds a dimension that transforms Sudoku from a solitary activity into a global competition. This social motivation significantly increases engagement and the frequency of daily practice, amplifying the cognitive benefits.</p>
+      <RelatedGames category='logic' current='Sudoku' />
       </div>
     </>
   )

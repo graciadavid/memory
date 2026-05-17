@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import Game2048Client from './Game2048Client'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function Game2048Page() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>The cognitive depth of 2048</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>2048 was created by Gabriele Cirulli in 2014 and became one of the most played browser games in history within weeks of its release. Its appeal lies in the perfect balance between accessibility and depth — the rules take thirty seconds to learn but mastery requires genuine strategic thinking and pattern recognition that develops over hundreds of sessions.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Research on puzzle games similar to 2048 shows consistent improvements in spatial working memory and planning ability with regular play. The competitive ranking system on MemGenius adds a social dimension — seeing your tile rank against players worldwide provides the motivational context that sustains long-term engagement and accelerates skill development.</p>
+      <RelatedGames category='logic' current='2048' />
       </div>
     </>
   )

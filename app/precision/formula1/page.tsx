@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import F1Client from './F1Client'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function F1Page() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Reaction time and cognitive health</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Reaction time is one of the strongest predictors of overall cognitive health. A large study of over 5,000 adults found that slower reaction time at age 50 predicted faster cognitive decline over the following decade. This makes reaction time training not just a performance measure but a meaningful indicator of brain health.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Daily practice with F1 Reaction improves the speed of your visuomotor loop — the circuit connecting your eyes, brain and hands. This improvement transfers to real-world tasks including driving, sports and any activity requiring rapid response to visual cues.</p>
+      <RelatedGames category='agility' current='F1 Reaction' />
       </div>
     </>
   )

@@ -1,3 +1,4 @@
+import RelatedGames from '@/components/RelatedGames'
 import GeoShapeClient from './GeoShapeClient'
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function GeoShapePage() {
         <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Why country shapes are harder than flags</h2>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Flags provide color, symbols and patterns as recognition cues. Country shapes provide only an outline — a much more demanding task that requires genuine spatial memory and geographic knowledge. Most people who consider themselves geographically literate fail at GeoShape within the first few countries, revealing a gap between knowing country names and truly visualizing them in space.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>With daily practice, GeoShape builds a mental map of the world that is qualitatively different from simple name recognition. You begin to see the world as a spatial system rather than a list of names — a shift that improves performance in geography, history, economics and international affairs comprehension.</p>
+      <RelatedGames category='knowledge' current='GeoShape' />
       </div>
     </>
   )
