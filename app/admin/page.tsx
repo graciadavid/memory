@@ -110,10 +110,11 @@ export default function AdminPage() {
     }
 
     // KPIs
-    const [usersToday, streaks, groups] = await Promise.all([
+    const [usersToday, streaks, groups, brainTests] = await Promise.all([
       supabase.from('streaks').select('player_name', { count: 'exact', head: true }).gte('updated_at', start).lte('updated_at', end),
       supabase.from('streaks').select('player_name', { count: 'exact', head: true }).gte('current_streak', 2).eq('last_played_date', new Date().toISOString().split('T')[0]),
       supabase.from('groups').select('id', { count: 'exact', head: true }).gte('created_at', start).lte('created_at', end),
+      supabase.from('brain_test_scores').select('id', { count: 'exact', head: true }).gte('created_at', start).lte('created_at', end),
     ])
 
     // Game stats
@@ -172,6 +173,7 @@ export default function AdminPage() {
       users: usersToday.count || 0,
       streaks: streaks.count || 0,
       groups: groups.count || 0,
+      brainTests: brainTests.count || 0,
       totalPlays: allGameStats.reduce((sum, g) => sum + g.plays, 0),
     })
     setGameStats(allGameStats)
@@ -241,6 +243,7 @@ export default function AdminPage() {
             { label: 'Streaks 2+', value: kpis.streaks, color: '#FF6F00' },
             { label: 'Groups', value: kpis.groups, color: '#6A1B9A' },
             { label: 'MGI min', value: kpis.mgi, color: '#00796B' },
+            { label: 'Brain Tests', value: kpis.brainTests, color: '#2E7D32' },
           ].map(k => (
             <div key={k.label} style={{ background: '#fff', borderRadius: 16, padding: '16px', border: `1px solid ${BROWN}10` }}>
               <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
