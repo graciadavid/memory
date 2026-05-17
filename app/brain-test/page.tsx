@@ -346,12 +346,12 @@ export default function BrainTestPage() {
     setTimeout(() => {
       if (newIdx >= NB_TOTAL) {
         setScores(s => ({ ...s, nback: newScore }))
-        setTimeout(() => { setStopPhase('ready'); setPhase('stop') }, 500)
+        setTimeout(() => { setStopPhase('ready'); setPhase('stop') }, 300)
       } else {
         nbIndexRef.current = newIdx; setNbIndex(newIdx); setNbScore(newScore)
         startNbRound(newIdx, nbCurrentRef.current)
       }
-    }, 500)
+    }, 300)
   }, [nbPhase, startNbRound])
 
   useEffect(() => {
@@ -434,7 +434,6 @@ export default function BrainTestPage() {
       setDigitPhase('done')
       playSound(correct === 6 ? 660 : 330, correct === 6 ? 880 : 220, 0.3, 0.2)
       const finalScores = { ...scores, digits: total }
-      setTimeout(() => saveResult(finalScores), 800)
     }
   }
 
@@ -540,9 +539,7 @@ export default function BrainTestPage() {
             </div>
           )}
 
-          {nbStarted && !nbShowCard && nbPhase === 'show' && (
-            <div style={{ fontSize: 16, color: `${BROWN}40`, fontWeight: 700 }}>Memorizing...</div>
-          )}
+
 
           {nbFeedback && (
             <div style={{ fontSize: 28, fontWeight: 900, color: nbFeedback === 'correct' ? '#2E7D32' : '#C62828', animation: 'popIn 0.3s ease' }}>
@@ -671,7 +668,7 @@ export default function BrainTestPage() {
           <img src={LOGO} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Your Brain Age</div>
           <div style={{ fontSize: 96, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', lineHeight: 1, animation: 'popIn 0.5s ease' }}>{brainAge}</div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', marginTop: 0 }}>years old</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', marginTop: -8 }}>years old</div>
 
           <button onClick={() => {
             const text = `🧠 My Brain Age is ${brainAge} on MemGenius Brain Test! I'm in the top ${100 - (worldPercent || 50)}% worldwide. What's yours? memgenius.com/brain-test`
