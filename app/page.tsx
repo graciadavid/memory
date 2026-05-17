@@ -274,6 +274,13 @@ export default function LandingPage() {
     }
 
     setChecking(false)
+
+    // Check if user has brain test - if not redirect to brain test
+    const { data: brainTest } = await supabase.from('brain_test_scores').select('id').eq('player_name', name.trim()).limit(1)
+    if (!brainTest || brainTest.length === 0) {
+      window.location.href = '/brain-test'
+      return
+    }
   }
 
   if (!loaded) return null
@@ -320,9 +327,7 @@ export default function LandingPage() {
       overflowY: 'auto',
     }}>
 
-      {loaded && !profile?.name && typeof window !== 'undefined' && !new URLSearchParams(window.location.search).get('register') ? (
-        (() => { window.location.replace('/brain-test'); return null })()
-      ) : !profile?.name ? (
+      {!profile?.name ? (
         /* NOT REGISTERED - onboarding */
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {/* Logo */}
