@@ -265,6 +265,21 @@ export default function BrainTestPage() {
     aceLevelRef.current = 0
     acePointsRef.current = 0
     setAceStarted(false)
+    // Draw initial canvas with target circle
+    setTimeout(() => {
+      const canvas = canvasRef.current
+      if (!canvas) return
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+      ctx.clearRect(0, 0, CANVAS_W, CANVAS_H)
+      ctx.beginPath(); ctx.arc(TARGET_X, TARGET_Y, TARGET_R, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(76,175,80,0.15)'; ctx.fill()
+      ctx.strokeStyle = '#4CAF50'; ctx.lineWidth = 3; ctx.stroke()
+      ctx.strokeStyle = 'rgba(76,175,80,0.3)'; ctx.lineWidth = 1.5
+      ctx.beginPath(); ctx.moveTo(TARGET_X - TARGET_R, TARGET_Y); ctx.lineTo(TARGET_X + TARGET_R, TARGET_Y)
+      ctx.moveTo(TARGET_X, TARGET_Y - TARGET_R); ctx.lineTo(TARGET_X, TARGET_Y + TARGET_R)
+      ctx.stroke()
+    }, 100)
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current) }
   }, [phase, startAceRound])
 
@@ -296,6 +311,7 @@ export default function BrainTestPage() {
     nbTimer.current = setTimeout(() => {
       setNbShowCard(false)
       if (idx === 0) {
+        // First card done - show second card, no answer needed yet
         setTimeout(() => {
           const second = Math.floor(Math.random() * NBACK_COLORS.length)
           nbPrevRef.current = next
@@ -303,9 +319,14 @@ export default function BrainTestPage() {
           setNbPrev(next); setNbCurrent(second)
           setNbShowCard(true); setNbPhase('show')
           nbIndexRef.current = 1; setNbIndex(1)
-          nbTimer.current = setTimeout(() => { setNbShowCard(false); setNbPhase('answer') }, 2000)
+          nbTimer.current = setTimeout(() => {
+            // Second card done - NOW show answer buttons
+            setNbShowCard(false)
+            setNbPhase('answer')
+          }, 2000)
         }, 500)
       } else {
+        // All subsequent cards - show answer buttons
         setNbPhase('answer')
       }
     }, 2000)
@@ -441,10 +462,10 @@ export default function BrainTestPage() {
 
       {/* INTRO */}
       {phase === 'intro' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '80px 24px 40px', gap: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '0 24px', gap: 20 }}>
           <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: '100%', maxWidth: 180, objectFit: 'contain' }} />
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 44, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 16 }}>Brain Age Test</div>
+            <div style={{ fontSize: 36, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 16 }}>Brain Age Test</div>
             <div style={{ fontSize: 20, color: `${BROWN}60`, lineHeight: 1.7, fontWeight: 600 }}>
               How old is your brain?<br />5 games. One result.
             </div>
@@ -470,16 +491,10 @@ export default function BrainTestPage() {
               </div>
             )}
           </div>
-          {!aceStarted && (
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <button onClick={startAce} style={{
-                padding: '20px 48px', borderRadius: 20, border: 'none',
-                background: '#2E7D32', color: '#fff', fontSize: 22, fontWeight: 900,
-                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
-              }}>Start</button>
-            </div>
-          )}
-          {aceStarted && <button onClick={handleAceTap} style={{ width: '80%', padding: '18px', borderRadius: 20, border: 'none', background: '#4CAF50', color: '#fff', fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #2E7D3260' }}>SERVE!</button>}
+          {!aceStarted
+            ? <button onClick={startAce} style={{ width: '80%', padding: '18px', borderRadius: 20, border: 'none', background: '#2E7D32', color: '#fff', fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060' }}>Start</button>
+            : <button onClick={handleAceTap} style={{ width: '80%', padding: '18px', borderRadius: 20, border: 'none', background: '#4CAF50', color: '#fff', fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #2E7D3260' }}>SERVE!</button>
+          }
         </div>
       )}
 
