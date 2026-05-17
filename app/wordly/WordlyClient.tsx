@@ -105,7 +105,7 @@ export default function WordlyClient() {
   }, [])
 
   useEffect(() => {
-    if (phase !== 'playing' || alreadyPlayed) return
+    if (phase !== 'playing') return
     const t = setInterval(() => setElapsed(Date.now() - startTime), 100)
     return () => clearInterval(t)
   }, [phase, startTime, alreadyPlayed])
@@ -115,8 +115,7 @@ export default function WordlyClient() {
     const today = new Date().toISOString().split('T')[0]
     supabase.from('wordle_scores').select('time_ms, attempts').eq('player_name', profile.name).order('time_ms', { ascending: true }).limit(1)
       .then(({ data }) => { if (data?.[0]) setBestScore(data[0]) })
-    supabase.from('wordle_scores').select('id').eq('player_name', profile.name).eq('word_date', today).limit(1)
-      .then(({ data }) => { if (data?.[0]) setAlreadyPlayed(true) })
+
   }, [profile?.name])
 
   const updateKeyStates = useCallback((guess: string, states: LetterState[]) => {
@@ -146,7 +145,7 @@ export default function WordlyClient() {
       setFinalTime(time)
       setPhase(won ? 'won' : 'lost')
 
-      if (won && profile?.name && !alreadyPlayed) {
+      if (won && profile?.name) {
         const today = new Date().toISOString().split('T')[0]
         await supabase.from('wordle_scores').insert({
           player_name: profile.name,
@@ -162,7 +161,7 @@ export default function WordlyClient() {
         }
       }
     }
-  }, [current, guesses, word, startTime, profile?.name, alreadyPlayed, updateKeyStates])
+  }, [current, guesses, word, startTime, profile?.name, updateKeyStates])
 
   const handleKey = useCallback((k: string) => {
     if (phase !== 'playing') return
@@ -220,7 +219,7 @@ export default function WordlyClient() {
         </div>
       </div>
 
-      {alreadyPlayed && (
+      {false && (
         <div style={{ margin: '16px 20px 0', background: `${GOLD}20`, borderRadius: 14, padding: '12px 16px', fontSize: 13, fontWeight: 800, color: BROWN, textAlign: 'center' }}>
           You already played today. Come back tomorrow!
         </div>
