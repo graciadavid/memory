@@ -534,7 +534,7 @@ export default function BrainTestClient() {
         if (navigator.share && navigator.canShare({ files: [file] })) {
           await navigator.share({
             title: 'MemGenius Brain Age',
-            text: `My Brain Age is ${brainAge}! What's yours?`,
+            text: `My Brain Age is ${brainAge}! What's yours? memgenius.com/brain-test`,
             files: [file],
           })
         } else {
