@@ -355,7 +355,6 @@ export default function BrainTestPage() {
   }, [nbPhase, startNbRound])
 
   useEffect(() => {
-    if (phase === 'nback') startNbRound(0, null)
     return () => { if (nbTimer.current) clearTimeout(nbTimer.current) }
   }, [phase])
 
@@ -633,30 +632,28 @@ export default function BrainTestPage() {
           )}
 
           {digitPhase === 'done' && digitResult && (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: '100%' }}>
-              <div style={{ fontSize: 16, fontWeight: 800, color: `${BROWN}50` }}>The sequence was:</div>
-              <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, width: '100%' }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 1, textTransform: 'uppercase' }}>Correct sequence</div>
+              <div style={{ display: 'flex', gap: 6 }}>
                 {digitSeq.map((d, i) => (
-                  <div key={i} style={{
-                    width: 38, height: 50, borderRadius: 10,
-                    background: digitInput[i] === d ? '#2E7D32' : '#C62828',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 22, fontWeight: 900, color: '#fff',
-                    boxShadow: digitInput[i] === d ? '0 4px 0 #1B5E2060' : '0 4px 0 #B71C1C60'
-                  }}>{d}</div>
+                  <div key={i} style={{ width: 36, height: 48, borderRadius: 10, background: '#2E7D32', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 900, color: '#fff', boxShadow: '0 3px 0 #1B5E2060' }}>{d}</div>
                 ))}
               </div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: `${BROWN}60` }}>
-                You got <span style={{ color: digitResult.correct >= 5 ? '#2E7D32' : '#C62828', fontWeight: 900, fontSize: 20 }}>{digitResult.correct}</span> of 7 correct
+              <div style={{ fontSize: 14, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 1, textTransform: 'uppercase' }}>Your answer</div>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {digitSeq.map((d, i) => (
+                  <div key={i} style={{ width: 36, height: 48, borderRadius: 10, background: digitInput[i] === d ? '#2E7D32' : '#C62828', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 900, color: '#fff', boxShadow: digitInput[i] === d ? '0 3px 0 #1B5E2060' : '0 3px 0 #B71C1C60' }}>{digitInput[i] ?? '?'}</div>
+                ))}
               </div>
-              <button onClick={() => { const s = {...scores}; saveResult(s) }} style={{
+              <div style={{ fontSize: 18, fontWeight: 800, color: BROWN }}>
+                {digitResult.correct} of 7 correct
+              </div>
+              <button onClick={() => saveResult({...scores})} style={{
                 width: '100%', padding: '20px', borderRadius: 20, border: 'none',
                 background: '#0D1B4B', color: '#fff', fontSize: 18, fontWeight: 900,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #08103060',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
-              }}>
-                Discover your Brain Age <span style={{ fontSize: 24 }}>→</span>
-              </button>
+              }}>Discover your Brain Age <span style={{ fontSize: 22 }}>→</span></button>
             </div>
           )}
         </div>
