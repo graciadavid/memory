@@ -66,13 +66,18 @@ function playSound(freq1: number, freq2: number, duration: number, vol: number) 
 }
 
 function confetti() {
-  const colors = ['#E91E63','#2196F3','#4CAF50','#FF9800','#9C27B0','#FFD600']
-  for (let i = 0; i < 80; i++) {
+  const colors = ['#E91E63','#2196F3','#4CAF50','#FF9800','#9C27B0','#FFD600','#00E676','#FFEA00','#FF5252']
+  const shapes = ['8px', '10px', '6px']
+  for (let i = 0; i < 120; i++) {
     const div = document.createElement('div')
-    div.style.cssText = `position:fixed;width:8px;height:8px;background:${colors[i%colors.length]};border-radius:2px;left:${Math.random()*100}vw;top:-10px;z-index:9999;animation:confettiFall ${1+Math.random()*2}s linear forwards`
-    div.style.animationDelay = `${Math.random()*0.5}s`
+    const size = shapes[i % shapes.length]
+    const duration = 1.5 + Math.random() * 2.5
+    const delay = Math.random() * 0.8
+    const left = Math.random() * 100
+    const rotation = Math.random() * 720
+    div.style.cssText = `position:fixed;width:${size};height:${size};background:${colors[i%colors.length]};border-radius:${Math.random() > 0.5 ? '50%' : '2px'};left:${left}vw;top:-10px;z-index:9999;animation:confettiFall ${duration}s ease-in forwards;animation-delay:${delay}s;transform:rotate(${rotation}deg)`
     document.body.appendChild(div)
-    setTimeout(() => div.remove(), 3000)
+    setTimeout(() => div.remove(), (duration + delay + 0.5) * 1000)
   }
 }
 
@@ -184,6 +189,8 @@ export default function BrainTestClient() {
     setScores(finalScores)
     setPhase('result')
     setTimeout(() => {
+      confetti()
+      confetti()
       confetti()
       playSound(523, 784, 0.5, 0.3)
     }, 300)
@@ -474,7 +481,7 @@ export default function BrainTestClient() {
       <style>{`
         @keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         @keyframes popIn { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.2)} 100%{transform:scale(1);opacity:1} }
-        @keyframes confettiFall { to{transform:translateY(110vh) rotate(720deg);opacity:0} }
+        @keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
       `}</style>
 
       {/* INTRO */}
