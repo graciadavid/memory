@@ -197,8 +197,18 @@ export default function BrainTestPage() {
     if (animRef.current) cancelAnimationFrame(animRef.current)
     playSound(220, 150, 0.3, 0.15)
     setAceResult('miss')
-    setAceDone(true)
-  }, [])
+    if (aceLevelRef.current < 4) {
+      aceLevelRef.current += 1
+      setAceLevel(aceLevelRef.current)
+      setTimeout(() => {
+        setAceResult(null)
+        acePhaseRef.current = 'playing'
+        startAceRound()
+      }, 600)
+    } else {
+      setAceDone(true)
+    }
+  }, [startAceRound])
 
   const handleAceTap = useCallback(() => {
     if (acePhaseRef.current !== 'playing') return
@@ -228,9 +238,7 @@ export default function BrainTestPage() {
         setAceDone(true)
       }
     } else {
-      playSound(220, 150, 0.3, 0.15)
-      setAceResult('miss')
-      setAceDone(true)
+      handleAceMiss()
     }
   }, [startAceRound])
 
@@ -404,14 +412,12 @@ export default function BrainTestPage() {
       {/* INTRO */}
       {phase === 'intro' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 28 }}>
-          <img src={LOGO} alt="MemGenius" style={{ width: 90, height: 90, objectFit: 'contain' }} />
+          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: '100%', maxWidth: 280, objectFit: 'contain' }} />
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>MemGenius</div>
             <div style={{ fontSize: 44, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 20 }}>Brain Test</div>
             <div style={{ fontSize: 22, color: `${BROWN}70`, lineHeight: 1.6, fontWeight: 700 }}>
               Discover your cognitive<br />profile and your %<br />in the world.
             </div>
-            <div style={{ fontSize: 14, color: `${BROWN}40`, marginTop: 16, fontWeight: 600 }}>5 games · ~4 minutes</div>
           </div>
           <button onClick={() => { acePhaseRef.current = 'playing'; setPhase('ace') }} style={{
             width: '100%', padding: '22px', borderRadius: 20, border: 'none',
@@ -426,9 +432,7 @@ export default function BrainTestPage() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 0', gap: 8 }}>
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 1 of 5</div>
           <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>Ace</div>
-          <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', padding: '0 20px' }}>
-            Hit the ball through the circle.<br />ACE = 200pts · GOOD = 100pts
-          </div>
+          <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', padding: '0 20px' }}>Hit the ball through the circle</div>
           <div style={{ fontSize: 18, fontWeight: 900, color: '#4CAF50' }}>{acePoints} pts</div>
           <div style={{ position: 'relative', width: '100%' }} onClick={handleAceTap}>
             <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{ width: '100%', touchAction: 'none' }} />
