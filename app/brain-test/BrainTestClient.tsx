@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import html2canvas from 'html2canvas'
-import html2canvas from 'html2canvas'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 
