@@ -7,31 +7,17 @@ const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
 const CREAM = '#FAF7F2'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+const LOGO = `${BASE}/brain-logo.webp`
 
-// COLORS for N-Back
 const NBACK_COLORS = [
-  { name: 'Red', bg: '#E53935', shadow: '#B71C1C' },
-  { name: 'Blue', bg: '#1E88E5', shadow: '#1565C0' },
-  { name: 'Green', bg: '#43A047', shadow: '#2E7D32' },
-  { name: 'Yellow', bg: '#FDD835', shadow: '#F9A825' },
-  { name: 'Orange', bg: '#FB8C00', shadow: '#E65100' },
-  { name: 'Purple', bg: '#8E24AA', shadow: '#6A1B9A' },
+  { bg: '#E53935', shadow: '#B71C1C' },
+  { bg: '#1E88E5', shadow: '#1565C0' },
+  { bg: '#43A047', shadow: '#2E7D32' },
+  { bg: '#FDD835', shadow: '#F9A825' },
+  { bg: '#FB8C00', shadow: '#E65100' },
+  { bg: '#8E24AA', shadow: '#6A1B9A' },
 ]
 
-// MASTERMIND
-const MM_COLORS = ['#6A1B9A', '#1E88E5', '#43A047', '#FDD835', '#FB8C00']
-const generateCode = () => Array.from({ length: 5 }, () => Math.floor(Math.random() * MM_COLORS.length))
-const getFeedback = (guess: number[], code: number[]) => {
-  const codeUsed = Array(5).fill(false)
-  const guessUsed = Array(5).fill(false)
-  const correctPos: number[] = []
-  const wrongPos: number[] = []
-  guess.forEach((g, i) => { if (g === code[i]) { correctPos.push(i); codeUsed[i] = true; guessUsed[i] = true } })
-  guess.forEach((g, i) => { if (guessUsed[i]) return; const idx = code.findIndex((c, j) => c === g && !codeUsed[j]); if (idx !== -1) { wrongPos.push(i); codeUsed[idx] = true } })
-  return { correctPos, wrongPos }
-}
-
-// GEOSHAPE countries
 const GEO_COUNTRIES = [
   { code: 'fr', name: 'France' }, { code: 'es', name: 'Spain' },
   { code: 'it', name: 'Italy' }, { code: 'de', name: 'Germany' },
@@ -43,13 +29,12 @@ const GEO_COUNTRIES = [
   { code: 'ru', name: 'Russia' },
 ]
 
-// ACE canvas constants
 const CANVAS_W = 390
-const CANVAS_H = 260
-const BALL_R = 16
+const CANVAS_H = 240
 const TARGET_R = 36
 const TARGET_X = CANVAS_W / 2
 const TARGET_Y = CANVAS_H / 2 - 20
+const BALL_R = 16
 
 function getBallPos(t: number) {
   const x = t * CANVAS_W
@@ -58,53 +43,76 @@ function getBallPos(t: number) {
   return { x, y }
 }
 
-function fmt(ms: number) {
-  const m = Math.floor(ms / 60000)
-  const s = Math.floor((ms % 60000) / 1000)
-  const c = Math.floor((ms % 1000) / 100)
-  return m > 0 ? `${m}:${String(s).padStart(2, '0')}.${c}` : `${s}.${c}s`
+function playSound(freq1: number, freq2: number, duration: number, vol: number) {
+  try {
+    const ctx = new AudioContext()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(freq1, ctx.currentTime)
+    osc.frequency.setValueAtTime(freq2, ctx.currentTime + 0.08)
+    gain.gain.setValueAtTime(vol, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
+    osc.connect(gain); gain.connect(ctx.destination)
+    osc.start(); osc.stop(ctx.currentTime + duration)
+  } catch(e) {}
 }
 
-type GamePhase = 'intro' | 'ace' | 'nback' | 'stop' | 'geoshape' | 'mastermind' | 'result'
+function confetti() {
+  const colors = ['#E91E63','#2196F3','#4CAF50','#FF9800','#9C27B0','#FFD600']
+  for (let i = 0; i < 80; i++) {
+    const div = document.createElement('div')
+    div.style.cssText = `position:fixed;width:8px;height:8px;background:${colors[i%colors.length]};border-radius:2px;left:${Math.random()*100}vw;top:-10px;z-index:9999;animation:confettiFall ${1+Math.random()*2}s linear forwards`
+    div.style.animationDelay = `${Math.random()*0.5}s`
+    document.body.appendChild(div)
+    setTimeout(() => div.remove(), 3000)
+  }
+}
+
+type GamePhase = 'intro' | 'ace' | 'nback' | 'stop' | 'geoshape' | 'digits' | 'result'
 
 export default function BrainTestPage() {
   const { profile } = usePlayer()
   const [phase, setPhase] = useState<GamePhase>('intro')
-  const [scores, setScores] = useState({ ace: 0, nback: 0, stop: 0, geoshape: 0, mastermind: 0 })
+  const [scores, setScores] = useState({ ace: 0, nback: 0, stop: 0, geoshape: 0, digits: 0 })
   const [worldPercent, setWorldPercent] = useState<number | null>(null)
-  const [topScore, setTopScore] = useState<number | null>(null)
 
-  // ACE state
+  // ACE
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animRef = useRef<number | null>(null)
   const startTimeRef = useRef(0)
   const durationRef = useRef(1800)
   const acePhaseRef = useRef<'playing' | 'done'>('playing')
   const [aceLevel, setAceLevel] = useState(0)
+  const [acePoints, setAcePoints] = useState(0)
   const [aceResult, setAceResult] = useState<'perfect' | 'good' | 'miss' | null>(null)
   const [aceDone, setAceDone] = useState(false)
   const aceLevelRef = useRef(0)
+  const acePointsRef = useRef(0)
 
-  // N-Back state
-  const [nbCards, setNbCards] = useState<number[]>([])
-  const [nbCurrent, setNbCurrent] = useState<number>(0)
+  // N-Back
+  const [nbCurrent, setNbCurrent] = useState(0)
   const [nbPrev, setNbPrev] = useState<number | null>(null)
   const [nbShowCard, setNbShowCard] = useState(false)
-  const [nbPhase, setNbPhase] = useState<'show' | 'answer' | 'feedback' | 'done'>('show')
+  const [nbPhase, setNbPhase] = useState<'show' | 'answer' | 'feedback'>('show')
   const [nbScore, setNbScore] = useState(0)
   const [nbIndex, setNbIndex] = useState(0)
   const [nbFeedback, setNbFeedback] = useState<'correct' | 'wrong' | null>(null)
   const nbTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const NB_TOTAL = 10
+  const nbCurrentRef = useRef(0)
+  const nbPrevRef = useRef<number | null>(null)
+  const nbScoreRef = useRef(0)
+  const nbIndexRef = useRef(0)
 
-  // STOP state
+  // STOP
   const [stopPhase, setStopPhase] = useState<'ready' | 'running' | 'done'>('ready')
   const [stopElapsed, setStopElapsed] = useState(0)
   const [stopDiff, setStopDiff] = useState(0)
   const stopStart = useRef(0)
   const stopRaf = useRef(0)
 
-  // GEOSHAPE state
+  // GEOSHAPE
   const [geoCountries, setGeoCountries] = useState<typeof GEO_COUNTRIES>([])
   const [geoIndex, setGeoIndex] = useState(0)
   const [geoOptions, setGeoOptions] = useState<string[]>([])
@@ -112,51 +120,48 @@ export default function BrainTestPage() {
   const [geoScore, setGeoScore] = useState(0)
   const GEO_TOTAL = 5
 
-  // MASTERMIND state
-  const [mmCode] = useState(generateCode)
-  const [mmGuesses, setMmGuesses] = useState<number[][]>([])
-  const [mmFeedbacks, setMmFeedbacks] = useState<{ correctPos: number[], wrongPos: number[] }[]>([])
-  const [mmCurrent, setMmCurrent] = useState<(number | null)[]>(Array(5).fill(null))
-  const [mmDone, setMmDone] = useState(false)
-  const [mmSelected, setMmSelected] = useState<number | null>(null)
-  const [mmStartTime] = useState(Date.now())
-  const MM_MAX = 7
+  // DIGITS
+  const [digitSeq, setDigitSeq] = useState<number[]>([])
+  const [digitInput, setDigitInput] = useState<number[]>([])
+  const [digitPhase, setDigitPhase] = useState<'show' | 'input' | 'done'>('show')
+  const [digitStartTime, setDigitStartTime] = useState(0)
 
   const calcBrainScore = (s: typeof scores) => {
-    const aceP = Math.min(200, s.ace * 40)
+    const aceP = Math.min(200, s.ace)
     const nbP = Math.min(200, s.nback * 20)
-    const stopP = Math.max(0, 200 - Math.floor(s.stop / 10))
+    const stopP = Math.max(0, Math.round(200 - (s.stop / 2000) * 200))
     const geoP = Math.min(200, s.geoshape * 40)
-    const mmAttempts = s.mastermind
-    const mmP = mmAttempts === 0 ? 0 : Math.max(0, 200 - (mmAttempts - 1) * 30)
-    return aceP + nbP + stopP + geoP + mmP
+    const digP = Math.min(200, s.digits)
+    return aceP + nbP + stopP + geoP + digP
   }
 
   const saveResult = async (finalScores: typeof scores) => {
     const total = calcBrainScore(finalScores)
     if (profile?.name) {
       await supabase.from('brain_test_scores').insert({
-        player_name: profile.name,
-        score: total,
-        ace_score: finalScores.ace,
-        nback_score: finalScores.nback,
-        stop_score: finalScores.stop,
-        geoshape_score: finalScores.geoshape,
-        mastermind_score: finalScores.mastermind,
+        player_name: profile.name, score: total,
+        ace_score: finalScores.ace, nback_score: finalScores.nback,
+        stop_score: finalScores.stop, geoshape_score: finalScores.geoshape,
+        mastermind_score: finalScores.digits,
       })
     }
     const { data } = await supabase.from('brain_test_scores').select('score').order('score', { ascending: false })
-    if (data) {
-      const scores_arr = data.map((s: any) => s.score)
-      const better = scores_arr.filter((s: number) => s < total).length
-      setWorldPercent(scores_arr.length > 1 ? Math.round((better / (scores_arr.length - 1)) * 100) : 50)
-      setTopScore(scores_arr[0])
+    if (data && data.length > 1) {
+      const arr = data.map((s: any) => s.score)
+      const better = arr.filter((s: number) => s < total).length
+      setWorldPercent(Math.round((better / (arr.length - 1)) * 100))
+    } else {
+      setWorldPercent(50)
     }
     setScores(finalScores)
     setPhase('result')
+    setTimeout(() => {
+      confetti()
+      playSound(523, 784, 0.5, 0.3)
+    }, 300)
   }
 
-  // ACE
+  // ACE draw
   const drawAceFrame = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -166,62 +171,34 @@ export default function BrainTestPage() {
     const t = Math.min(elapsed / durationRef.current, 1)
     const { x, y } = getBallPos(t)
     ctx.clearRect(0, 0, CANVAS_W, CANVAS_H)
-    // Target
     const dist = Math.sqrt((x - TARGET_X) ** 2 + (y - TARGET_Y) ** 2)
     const inTarget = dist < TARGET_R
     ctx.beginPath(); ctx.arc(TARGET_X, TARGET_Y, TARGET_R, 0, Math.PI * 2)
     ctx.fillStyle = inTarget ? 'rgba(76,175,80,0.2)' : 'rgba(74,44,10,0.06)'; ctx.fill()
     ctx.strokeStyle = inTarget ? '#4CAF50' : 'rgba(74,44,10,0.2)'; ctx.lineWidth = 3; ctx.stroke()
-    // Level
-    ctx.font = '900 48px sans-serif'; ctx.fillStyle = '#4CAF50'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
-    ctx.fillText(String(aceLevelRef.current), TARGET_X, TARGET_Y - TARGET_R - 40)
-    // Ball
-    ctx.font = `${BALL_R * 2}px serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+    ctx.font = '900 44px sans-serif'; ctx.fillStyle = '#4CAF50'
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+    ctx.fillText(String(aceLevelRef.current) + '/5', TARGET_X, TARGET_Y - TARGET_R - 36)
+    ctx.font = `${BALL_R * 2}px serif`
     ctx.fillText('🎾', x, y)
     if (t < 1 && acePhaseRef.current === 'playing') animRef.current = requestAnimationFrame(drawAceFrame)
-    else if (t >= 1 && acePhaseRef.current === 'playing') endAceRound('miss')
+    else if (t >= 1 && acePhaseRef.current === 'playing') handleAceMiss()
   }, [])
 
   const startAceRound = useCallback(() => {
-    durationRef.current = Math.max(700, 1800 - aceLevelRef.current * 80)
+    durationRef.current = Math.max(700, 1800 - aceLevelRef.current * 100)
     startTimeRef.current = Date.now()
     if (animRef.current) cancelAnimationFrame(animRef.current)
     animRef.current = requestAnimationFrame(drawAceFrame)
   }, [drawAceFrame])
 
-  const playAceSound = (hit: boolean) => {
-    try {
-      const ctx = new AudioContext()
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.type = 'sine'
-      osc.frequency.setValueAtTime(hit ? 440 : 220, ctx.currentTime)
-      osc.frequency.setValueAtTime(hit ? 330 : 150, ctx.currentTime + 0.08)
-      gain.gain.setValueAtTime(0.2, ctx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
-      osc.connect(gain); gain.connect(ctx.destination)
-      osc.start(); osc.stop(ctx.currentTime + 0.3)
-    } catch(e) {}
-  }
-
-  const endAceRound = useCallback((result: 'perfect' | 'good' | 'miss') => {
+  const handleAceMiss = useCallback(() => {
     acePhaseRef.current = 'done'
     if (animRef.current) cancelAnimationFrame(animRef.current)
-    playAceSound(result !== 'miss')
-    setAceResult(result)
-    if (result !== 'miss' && aceLevelRef.current < 5) {
-      const next = aceLevelRef.current + 1
-      aceLevelRef.current = next
-      setAceLevel(next)
-      setTimeout(() => {
-        setAceResult(null)
-        acePhaseRef.current = 'playing'
-        startAceRound()
-      }, 500)
-    } else {
-      setAceDone(true)
-    }
-  }, [startAceRound])
+    playSound(220, 150, 0.3, 0.15)
+    setAceResult('miss')
+    setAceDone(true)
+  }, [])
 
   const handleAceTap = useCallback(() => {
     if (acePhaseRef.current !== 'playing') return
@@ -229,50 +206,74 @@ export default function BrainTestPage() {
     const t = elapsed / durationRef.current
     const { x, y } = getBallPos(t)
     const dist = Math.sqrt((x - TARGET_X) ** 2 + (y - TARGET_Y) ** 2)
+    acePhaseRef.current = 'done'
+    if (animRef.current) cancelAnimationFrame(animRef.current)
     if (dist < TARGET_R) {
-      endAceRound(dist < TARGET_R * 0.5 ? 'perfect' : 'good')
+      const isPerfect = dist < TARGET_R * 0.5
+      const pts = isPerfect ? 200 : 100
+      const newPts = Math.min(200, acePointsRef.current + pts)
+      acePointsRef.current = newPts
+      setAcePoints(newPts)
+      playSound(isPerfect ? 660 : 523, isPerfect ? 880 : 660, 0.25, 0.2)
+      setAceResult(isPerfect ? 'perfect' : 'good')
+      if (aceLevelRef.current < 4) {
+        aceLevelRef.current += 1
+        setAceLevel(aceLevelRef.current)
+        setTimeout(() => {
+          setAceResult(null)
+          acePhaseRef.current = 'playing'
+          startAceRound()
+        }, 500)
+      } else {
+        setAceDone(true)
+      }
     } else {
-      endAceRound('miss')
+      playSound(220, 150, 0.3, 0.15)
+      setAceResult('miss')
+      setAceDone(true)
     }
-  }, [endAceRound])
+  }, [startAceRound])
 
-  // Start ACE
   useEffect(() => {
     if (phase !== 'ace') return
     acePhaseRef.current = 'playing'
     aceLevelRef.current = 0
-    setTimeout(() => startAceRound(), 300)
+    acePointsRef.current = 0
+    setTimeout(() => startAceRound(), 400)
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current) }
   }, [phase, startAceRound])
 
-  // Finish ACE
   useEffect(() => {
     if (!aceDone) return
-    const s = { ...scores, ace: aceLevelRef.current }
+    const s = { ...scores, ace: acePointsRef.current }
     setScores(s)
-    setTimeout(() => { setNbIndex(0); setNbScore(0); startNbRound(0, null); setPhase('nback') }, 1000)
+    setTimeout(() => {
+      nbIndexRef.current = 0; nbScoreRef.current = 0
+      setNbIndex(0); setNbScore(0)
+      startNbRound(0, null)
+      setPhase('nback')
+    }, 1000)
   }, [aceDone])
 
   // N-Back
   const startNbRound = useCallback((idx: number, prev: number | null) => {
     const next = Math.floor(Math.random() * NBACK_COLORS.length)
-    setNbCurrent(next); setNbPrev(prev); setNbShowCard(true); setNbPhase('show'); setNbFeedback(null)
+    nbCurrentRef.current = next
+    nbPrevRef.current = prev
+    setNbCurrent(next); setNbPrev(prev)
+    setNbShowCard(true); setNbPhase('show'); setNbFeedback(null)
     nbTimer.current = setTimeout(() => {
       setNbShowCard(false)
       if (idx === 0) {
-        // First card - just show it then show second card
         setTimeout(() => {
           const second = Math.floor(Math.random() * NBACK_COLORS.length)
-          setNbCurrent(second)
-          setNbPrev(next)
-          setNbShowCard(true)
-          setNbPhase('show')
-          setNbIndex(1)
-          nbTimer.current = setTimeout(() => {
-            setNbShowCard(false)
-            setNbPhase('answer')
-          }, 1200)
-        }, 300)
+          nbPrevRef.current = next
+          nbCurrentRef.current = second
+          setNbPrev(next); setNbCurrent(second)
+          setNbShowCard(true); setNbPhase('show')
+          nbIndexRef.current = 1; setNbIndex(1)
+          nbTimer.current = setTimeout(() => { setNbShowCard(false); setNbPhase('answer') }, 1200)
+        }, 400)
       } else {
         setNbPhase('answer')
       }
@@ -283,30 +284,33 @@ export default function BrainTestPage() {
   const handleNbAnswer = useCallback((same: boolean) => {
     if (nbPhase !== 'answer') return
     if (nbTimer.current) clearTimeout(nbTimer.current)
-    const isSame = nbCurrent === nbPrev
+    const isSame = nbCurrentRef.current === nbPrevRef.current
     const correct = same === isSame
+    playSound(correct ? 660 : 220, correct ? 660 : 180, 0.15, 0.15)
     setNbFeedback(correct ? 'correct' : 'wrong')
-    const newScore = correct ? nbScore + 1 : nbScore
-    const newIdx = nbIndex + 1
+    const newScore = correct ? nbScoreRef.current + 1 : nbScoreRef.current
+    nbScoreRef.current = newScore
+    const newIdx = nbIndexRef.current + 1
     setTimeout(() => {
       if (newIdx >= NB_TOTAL) {
         setScores(s => ({ ...s, nback: newScore }))
         setTimeout(() => { setStopPhase('ready'); setPhase('stop') }, 500)
       } else {
-        setNbIndex(newIdx); setNbScore(newScore)
-        const next = startNbRound(newIdx, nbCurrent)
+        nbIndexRef.current = newIdx; setNbIndex(newIdx); setNbScore(newScore)
+        startNbRound(newIdx, nbCurrentRef.current)
       }
     }, 500)
-  }, [nbPhase, nbCurrent, nbPrev, nbScore, nbIndex, startNbRound])
+  }, [nbPhase, startNbRound])
 
   useEffect(() => {
-    if (phase === 'nback') { startNbRound(0, null) }
+    if (phase === 'nback') startNbRound(0, null)
     return () => { if (nbTimer.current) clearTimeout(nbTimer.current) }
   }, [phase])
 
   // STOP
   const startStop = () => {
     stopStart.current = Date.now()
+    setStopElapsed(0)
     setStopPhase('running')
     const tick = () => { setStopElapsed(Date.now() - stopStart.current); stopRaf.current = requestAnimationFrame(tick) }
     stopRaf.current = requestAnimationFrame(tick)
@@ -314,8 +318,11 @@ export default function BrainTestPage() {
 
   const stopIt = () => {
     cancelAnimationFrame(stopRaf.current)
-    const diff = Math.abs((Date.now() - stopStart.current) - 5000)
+    const elapsed = Date.now() - stopStart.current
+    setStopElapsed(elapsed)
+    const diff = Math.abs(elapsed - 5000)
     setStopDiff(diff); setStopPhase('done')
+    playSound(diff < 200 ? 660 : 330, diff < 200 ? 880 : 220, 0.3, 0.2)
     setScores(s => ({ ...s, stop: diff }))
     setTimeout(() => {
       const shuffled = [...GEO_COUNTRIES].sort(() => Math.random() - 0.5).slice(0, GEO_TOTAL)
@@ -335,12 +342,15 @@ export default function BrainTestPage() {
     if (geoSelected) return
     setGeoSelected(answer)
     const correct = answer === geoCountries[geoIndex].name
+    playSound(correct ? 660 : 220, correct ? 660 : 180, 0.15, 0.15)
     const newScore = correct ? geoScore + 1 : geoScore
     setTimeout(() => {
       const nextIdx = geoIndex + 1
       if (nextIdx >= GEO_TOTAL) {
         setScores(s => ({ ...s, geoshape: newScore }))
-        setTimeout(() => setPhase('mastermind'), 500)
+        const seq = Array.from({ length: 6 }, () => Math.floor(Math.random() * 10))
+        setDigitSeq(seq); setDigitInput([]); setDigitPhase('show')
+        setTimeout(() => setPhase('digits'), 500)
       } else {
         setGeoIndex(nextIdx); setGeoScore(newScore); setGeoSelected(null)
         setGeoOptions(getGeoOptions(geoCountries[nextIdx].name))
@@ -348,56 +358,64 @@ export default function BrainTestPage() {
     }, 800)
   }
 
-  // MASTERMIND
-  const handleMmColor = (posIdx: number) => {
-    if (mmDone || mmSelected === null) return
-    const next = [...mmCurrent]; next[posIdx] = mmSelected; setMmCurrent(next)
-  }
+  // DIGITS
+  useEffect(() => {
+    if (phase !== 'digits' || digitPhase !== 'show') return
+    const t = setTimeout(() => {
+      setDigitPhase('input')
+      setDigitStartTime(Date.now())
+    }, 2500)
+    return () => clearTimeout(t)
+  }, [phase, digitPhase])
 
-  const handleMmSubmit = () => {
-    if (mmCurrent.some(v => v === null) || mmDone) return
-    const guess = mmCurrent as number[]
-    const fb = getFeedback(guess, mmCode)
-    const newGuesses = [...mmGuesses, guess]
-    const newFbs = [...mmFeedbacks, fb]
-    setMmGuesses(newGuesses); setMmFeedbacks(newFbs)
-    const won = fb.correctPos.length === 5
-    if (won || newGuesses.length >= MM_MAX) {
-      setMmDone(true)
-      const finalScores = { ...scores, mastermind: newGuesses.length }
+  const handleDigitInput = (n: number) => {
+    if (digitPhase !== 'input') return
+    const next = [...digitInput, n]
+    setDigitInput(next)
+    if (next.length === 6) {
+      const timeTaken = Date.now() - digitStartTime
+      let correct = 0
+      next.forEach((d, i) => { if (d === digitSeq[i]) correct++ })
+      const basePoints = correct * 30
+      const speedBonus = timeTaken < 5000 ? 20 : timeTaken < 10000 ? 10 : timeTaken > 15000 ? -10 : 0
+      const total = Math.max(0, Math.min(200, basePoints + speedBonus))
+      setDigitPhase('done')
+      playSound(correct === 6 ? 660 : 330, correct === 6 ? 880 : 220, 0.3, 0.2)
+      const finalScores = { ...scores, digits: total }
       setTimeout(() => saveResult(finalScores), 800)
-    } else {
-      const nextRow = Array(5).fill(null)
-      fb.correctPos.forEach(i => { nextRow[i] = guess[i] })
-      setMmCurrent(nextRow)
     }
   }
 
+  const handleDigitDelete = () => {
+    if (digitPhase !== 'input') return
+    setDigitInput(prev => prev.slice(0, -1))
+  }
+
   const brainScore = calcBrainScore(scores)
-  const strongest = Object.entries({ ace: scores.ace * 40, nback: scores.nback * 20, geoshape: scores.geoshape * 40 }).sort((a, b) => b[1] - a[1])[0][0]
-  const strongestLabel: Record<string, string> = { ace: 'Timing & Agility', nback: 'Working Memory', geoshape: 'Spatial Knowledge' }
 
   return (
     <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #E8EAF6 0%, ${CREAM} 100%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 80 }}>
-      <style>{`@keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} } @keyframes popIn { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.2)} 100%{transform:scale(1);opacity:1} }`}</style>
+      <style>{`
+        @keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes popIn { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.2)} 100%{transform:scale(1);opacity:1} }
+        @keyframes confettiFall { to{transform:translateY(110vh) rotate(720deg);opacity:0} }
+      `}</style>
 
       {/* INTRO */}
       {phase === 'intro' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 24 }}>
-          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain-logo.webp" alt="MemGenius" style={{ width: 80, height: 80, objectFit: 'contain' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 28 }}>
+          <img src={LOGO} alt="MemGenius" style={{ width: 90, height: 90, objectFit: 'contain' }} />
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 12 }}>MemGenius</div>
-            <div style={{ fontSize: 40, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 16 }}>Brain Test</div>
-            <div style={{ fontSize: 20, color: `${BROWN}70`, lineHeight: 1.7, fontWeight: 700 }}>
-              Discover your cognitive<br />profile and your % in the world.
+            <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>MemGenius</div>
+            <div style={{ fontSize: 44, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 20 }}>Brain Test</div>
+            <div style={{ fontSize: 22, color: `${BROWN}70`, lineHeight: 1.6, fontWeight: 700 }}>
+              Discover your cognitive<br />profile and your %<br />in the world.
             </div>
-            <div style={{ fontSize: 14, color: `${BROWN}40`, marginTop: 12, fontWeight: 600 }}>
-              5 games · ~4 minutes
-            </div>
+            <div style={{ fontSize: 14, color: `${BROWN}40`, marginTop: 16, fontWeight: 600 }}>5 games · ~4 minutes</div>
           </div>
           <button onClick={() => { acePhaseRef.current = 'playing'; setPhase('ace') }} style={{
-            width: '100%', padding: '20px', borderRadius: 20, border: 'none',
-            background: '#2E7D32', color: '#fff', fontSize: 20, fontWeight: 900,
+            width: '100%', padding: '22px', borderRadius: 20, border: 'none',
+            background: '#2E7D32', color: '#fff', fontSize: 22, fontWeight: 900,
             fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
           }}>Start Brain Test</button>
         </div>
@@ -405,43 +423,47 @@ export default function BrainTestPage() {
 
       {/* ACE */}
       {phase === 'ace' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 0' }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>1 of 5 — Ace</div>
-          <div style={{ fontSize: 13, color: `${BROWN}50`, marginBottom: 8 }}>Hit the ball through the circle — {5 - aceLevel} left</div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 0', gap: 8 }}>
+          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 1 of 5</div>
+          <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>Ace</div>
+          <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', padding: '0 20px' }}>
+            Hit the ball through the circle.<br />ACE = 200pts · GOOD = 100pts
+          </div>
+          <div style={{ fontSize: 18, fontWeight: 900, color: '#4CAF50' }}>{acePoints} pts</div>
           <div style={{ position: 'relative', width: '100%' }} onClick={handleAceTap}>
             <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{ width: '100%', touchAction: 'none' }} />
             {aceResult && (
-              <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', fontSize: 28, fontWeight: 900, color: aceResult === 'miss' ? '#C62828' : '#2E7D32', animation: 'popIn 0.3s ease' }}>
+              <div style={{ position: 'absolute', top: '25%', left: '50%', transform: 'translateX(-50%)', fontSize: 32, fontWeight: 900, color: aceResult === 'miss' ? '#C62828' : aceResult === 'perfect' ? '#C8960C' : '#2E7D32', animation: 'popIn 0.3s ease' }}>
                 {aceResult === 'perfect' ? 'ACE! 🎾' : aceResult === 'good' ? 'GOOD!' : 'MISS!'}
               </div>
             )}
           </div>
-          <button onClick={handleAceTap} style={{ marginTop: 8, width: '80%', padding: '16px', borderRadius: 20, border: 'none', background: '#4CAF50', color: '#fff', fontSize: 20, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #2E7D3260' }}>SERVE!</button>
+          <button onClick={handleAceTap} style={{ width: '80%', padding: '18px', borderRadius: 20, border: 'none', background: '#4CAF50', color: '#fff', fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #2E7D3260' }}>SERVE!</button>
         </div>
       )}
 
       {/* N-BACK */}
       {phase === 'nback' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 24px', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 24px', gap: 16 }}>
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 2 of 5</div>
-          <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>N-Back</div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: BROWN, textAlign: 'center' }}>
-            {nbShowCard ? 'Remember this color' : nbIndex === 0 ? 'Memorizing...' : 'Same color as before?'}
+          <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>N-Back</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: BROWN, textAlign: 'center' }}>
+            {nbShowCard ? 'Remember this color' : nbIndex === 0 ? 'Memorizing first color...' : 'Same color as before?'}
           </div>
-          <div style={{ fontSize: 16, color: GOLD, fontWeight: 900 }}>{nbIndex + 1} / {NB_TOTAL} · {nbScore} correct</div>
+          <div style={{ fontSize: 16, color: GOLD, fontWeight: 900 }}>{Math.min(nbIndex, NB_TOTAL)} / {NB_TOTAL} · {nbScore} correct</div>
           <div style={{ width: 200, height: 200, borderRadius: 28, background: nbShowCard ? NBACK_COLORS[nbCurrent].bg : '#E0E0E0', boxShadow: nbShowCard ? `0 8px 0 ${NBACK_COLORS[nbCurrent].shadow}` : '0 4px 0 #BDBDBD', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}>
-            {!nbShowCard && nbIndex > 0 && <img src='https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain-logo.webp' alt='' style={{ width: 60, height: 60, objectFit: 'contain', opacity: 0.3 }} />}
+            {!nbShowCard && nbIndex > 0 && <img src={LOGO} alt="" style={{ width: 60, height: 60, objectFit: 'contain', opacity: 0.25 }} />}
           </div>
-          {nbFeedback && <div style={{ fontSize: 20, fontWeight: 900, color: nbFeedback === 'correct' ? '#2E7D32' : '#C62828' }}>{nbFeedback === 'correct' ? '✓ Correct' : '✗ Wrong'}</div>}
+          {nbFeedback && <div style={{ fontSize: 22, fontWeight: 900, color: nbFeedback === 'correct' ? '#2E7D32' : '#C62828', animation: 'popIn 0.3s ease' }}>{nbFeedback === 'correct' ? '✓ Correct' : '✗ Wrong'}</div>}
           {nbPhase === 'answer' && (
             <div style={{ display: 'flex', gap: 12, width: '100%' }}>
-              <button onClick={() => handleNbAnswer(false)} style={{ flex: 1, padding: '18px', borderRadius: 18, border: 'none', background: '#E53935', color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 5px 0 #B71C1C60' }}>Different</button>
-              <button onClick={() => handleNbAnswer(true)} style={{ flex: 1, padding: '18px', borderRadius: 18, border: 'none', background: '#43A047', color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 5px 0 #2E7D3260' }}>Same</button>
+              <button onClick={() => handleNbAnswer(false)} style={{ flex: 1, padding: '20px', borderRadius: 18, border: 'none', background: '#E53935', color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 5px 0 #B71C1C60' }}>Different</button>
+              <button onClick={() => handleNbAnswer(true)} style={{ flex: 1, padding: '20px', borderRadius: 18, border: 'none', background: '#43A047', color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 5px 0 #2E7D3260' }}>Same</button>
             </div>
           )}
-          {nbPhase !== 'answer' && <div style={{ display: 'flex', gap: 12, width: '100%', opacity: 0.3 }}>
-            <div style={{ flex: 1, padding: '18px', borderRadius: 18, background: '#E53935', textAlign: 'center', fontSize: 16, fontWeight: 900, color: '#fff' }}>Different</div>
-            <div style={{ flex: 1, padding: '18px', borderRadius: 18, background: '#43A047', textAlign: 'center', fontSize: 16, fontWeight: 900, color: '#fff' }}>Same</div>
+          {nbPhase !== 'answer' && <div style={{ display: 'flex', gap: 12, width: '100%', opacity: 0.25 }}>
+            <div style={{ flex: 1, padding: '20px', borderRadius: 18, background: '#E53935', textAlign: 'center', fontSize: 18, fontWeight: 900, color: '#fff' }}>Different</div>
+            <div style={{ flex: 1, padding: '20px', borderRadius: 18, background: '#43A047', textAlign: 'center', fontSize: 18, fontWeight: 900, color: '#fff' }}>Same</div>
           </div>}
         </div>
       )}
@@ -450,22 +472,22 @@ export default function BrainTestPage() {
       {phase === 'stop' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 24px', gap: 16 }}>
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 3 of 5</div>
-          <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>Stop</div>
-          <div style={{ fontSize: 13, color: '#4A2C0A60' }}>Stop at exactly 5 seconds</div>
+          <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>Stop</div>
+          <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center' }}>Press Start, then Stop at exactly 5 seconds</div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 18, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Target</div>
-            <div style={{ fontSize: 64, fontWeight: 900, color: '#4A148C', fontVariantNumeric: 'tabular-nums' }}>5.00s</div>
+            <div style={{ fontSize: 14, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Target</div>
+            <div style={{ fontSize: 60, fontWeight: 900, color: '#4A148C', fontVariantNumeric: 'tabular-nums' }}>5.000s</div>
           </div>
           {stopPhase !== 'ready' && (
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 18, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your time</div>
-              <div style={{ fontSize: 64, fontWeight: 900, color: stopPhase === 'done' ? (stopDiff < 200 ? '#2E7D32' : stopDiff < 800 ? '#F9A825' : '#C62828') : '#4A148C', fontVariantNumeric: 'tabular-nums' }}>
-                {(stopElapsed / 1000).toFixed(2)}s
+              <div style={{ fontSize: 14, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your time</div>
+              <div style={{ fontSize: 60, fontWeight: 900, fontVariantNumeric: 'tabular-nums', color: stopPhase === 'done' ? (stopDiff < 200 ? '#2E7D32' : stopDiff < 800 ? '#F9A825' : '#C62828') : '#4A148C' }}>
+                {(stopElapsed / 1000).toFixed(3)}s
               </div>
             </div>
           )}
-          {stopPhase === 'done' && <div style={{ fontSize: 24, fontWeight: 900, color: stopDiff < 200 ? '#2E7D32' : stopDiff < 800 ? '#F9A825' : '#C62828' }}>{stopDiff}ms off</div>}
-          {stopPhase === 'ready' && <button onClick={startStop} style={{ width: '100%', padding: '20px', borderRadius: 20, border: 'none', background: '#4A148C', color: '#fff', fontSize: 20, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #4A148C60' }}>Start</button>}
+          {stopPhase === 'done' && <div style={{ fontSize: 28, fontWeight: 900, color: stopDiff < 200 ? '#2E7D32' : stopDiff < 800 ? '#F9A825' : '#C62828' }}>{stopDiff}ms off</div>}
+          {stopPhase === 'ready' && <button onClick={startStop} style={{ width: '100%', padding: '20px', borderRadius: 20, border: 'none', background: '#2E7D32', color: '#fff', fontSize: 20, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060' }}>Start</button>}
           {stopPhase === 'running' && <button onClick={stopIt} style={{ width: '100%', padding: '20px', borderRadius: 20, border: 'none', background: '#B71C1C', color: '#fff', fontSize: 20, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #B71C1C60' }}>Stop!</button>}
         </div>
       )}
@@ -474,109 +496,87 @@ export default function BrainTestPage() {
       {phase === 'geoshape' && geoCountries.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 24px', gap: 16 }}>
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 4 of 5</div>
-          <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>GeoShape</div>
-          <div style={{ fontSize: 13, color: `${BROWN}50` }}>{geoIndex + 1} of {GEO_TOTAL}</div>
-          <img src={`https://raw.githubusercontent.com/djaiss/mapsicon/master/all/${geoCountries[geoIndex].code.toLowerCase()}/512.png`} alt="" style={{ width: 200, height: 180, objectFit: 'contain' }} />
+          <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>GeoShape</div>
+          <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700 }}>Which country is this? {geoIndex + 1}/{GEO_TOTAL}</div>
+          <img src={`https://raw.githubusercontent.com/djaiss/mapsicon/master/all/${geoCountries[geoIndex].code.toLowerCase()}/512.png`} alt="" style={{ width: 200, height: 180, objectFit: 'contain', filter: 'brightness(0) opacity(0.8)' }} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, width: '100%' }}>
             {geoOptions.map(opt => (
               <button key={opt} onClick={() => handleGeoAnswer(opt)} style={{
-                padding: '14px', borderRadius: 14, border: 'none', fontFamily: 'inherit', cursor: 'pointer', fontSize: 13, fontWeight: 800,
+                padding: '16px', borderRadius: 14, border: 'none', fontFamily: 'inherit', cursor: 'pointer', fontSize: 14, fontWeight: 800,
                 background: geoSelected === null ? '#fff' : opt === geoCountries[geoIndex].name ? '#2E7D32' : geoSelected === opt ? '#C62828' : '#fff',
                 color: geoSelected && (opt === geoCountries[geoIndex].name || geoSelected === opt) ? '#fff' : BROWN,
-                outline: 'none',
+                boxShadow: '0 2px 0 #4A2C0A10',
               }}>{opt}</button>
             ))}
           </div>
         </div>
       )}
 
-      {/* MASTERMIND */}
-      {phase === 'mastermind' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 16px', gap: 12 }}>
+      {/* DIGITS */}
+      {phase === 'digits' && (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 24px', gap: 16 }}>
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 5 of 5</div>
-          <div style={{ fontSize: 24, fontWeight: 900, color: BROWN }}>Mastermind</div>
-          <div style={{ fontSize: 13, color: `${BROWN}50` }}>Crack the code — {MM_MAX - mmGuesses.length} attempts left</div>
-          {mmGuesses.map((g, ri) => (
-            <div key={ri} style={{ display: 'flex', gap: 8 }}>
-              {g.map((c, ci) => (
-                <div key={ci} style={{ width: 44, height: 44, borderRadius: 10, background: MM_COLORS[c], border: mmFeedbacks[ri].correctPos.includes(ci) ? '3px solid #2E7D32' : mmFeedbacks[ri].wrongPos.includes(ci) ? '3px solid #E91E8C' : '3px solid transparent' }} />
+          <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>Digits</div>
+          <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center' }}>
+            {digitPhase === 'show' ? 'Memorize these 6 digits' : digitPhase === 'input' ? 'Type them in order — fast!' : 'Done!'}
+          </div>
+
+          {digitPhase === 'show' && (
+            <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+              {digitSeq.map((d, i) => (
+                <div key={i} style={{ width: 44, height: 56, borderRadius: 12, background: '#1976D2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 900, color: '#fff', boxShadow: '0 4px 0 #1565C060' }}>{d}</div>
               ))}
             </div>
-          ))}
-          {!mmDone && mmGuesses.length < MM_MAX && (
+          )}
+
+          {digitPhase === 'input' && (
             <>
-              <div style={{ fontSize: 14, color: '#4A2C0A60', fontWeight: 700 }}>1. Pick a color · 2. Pick a slot</div>
-              <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-                {MM_COLORS.map((col, ci) => (
-                  <div key={ci} onClick={() => setMmSelected(ci)} style={{
-                    width: 44, height: 44, borderRadius: 10, background: col, cursor: 'pointer',
-                    border: mmSelected === ci ? '4px solid #4A2C0A' : '4px solid transparent',
-                    transform: mmSelected === ci ? 'scale(1.15)' : 'scale(1)',
-                    transition: 'transform 0.15s',
-                  }} />
+              <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+                {Array(6).fill(null).map((_, i) => (
+                  <div key={i} style={{ width: 44, height: 56, borderRadius: 12, background: digitInput[i] !== undefined ? '#1976D2' : '#E3F2FD', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 900, color: digitInput[i] !== undefined ? '#fff' : `${BROWN}20`, border: `2px solid ${digitInput[i] !== undefined ? '#1976D2' : '#90CAF9'}` }}>
+                    {digitInput[i] !== undefined ? digitInput[i] : ''}
+                  </div>
                 ))}
               </div>
-              <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-                {mmCurrent.map((col, ci) => (
-                  <div key={ci} onClick={() => handleMmColor(ci)} style={{
-                    width: 52, height: 52, borderRadius: 12,
-                    background: col !== null ? MM_COLORS[col] : '#E0E0E0',
-                    border: '3px dashed #4A2C0A30',
-                    cursor: mmSelected !== null ? 'pointer' : 'default',
-                    transition: 'background 0.15s',
-                  }} />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, width: '100%', maxWidth: 280, marginTop: 8 }}>
+                {[1,2,3,4,5,6,7,8,9,'⌫',0,''].map((n, i) => (
+                  n === '' ? <div key={i} /> :
+                  n === '⌫' ? (
+                    <button key={i} onClick={handleDigitDelete} style={{ padding: '16px', borderRadius: 14, border: 'none', background: '#fff', fontSize: 20, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 3px 0 #4A2C0A10' }}>⌫</button>
+                  ) : (
+                    <button key={i} onClick={() => handleDigitInput(n as number)} style={{ padding: '16px', borderRadius: 14, border: 'none', background: '#fff', fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 3px 0 #4A2C0A10', color: BROWN }}>{n}</button>
+                  )
                 ))}
               </div>
-              <button onClick={handleMmSubmit} disabled={mmCurrent.some(v => v === null)} style={{
-                width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-                background: mmCurrent.some(v => v === null) ? '#E0E0E0' : '#2E7D32',
-                color: mmCurrent.some(v => v === null) ? '#9E9E9E' : '#fff',
-                fontSize: 16, fontWeight: 900, fontFamily: 'inherit',
-                cursor: mmCurrent.some(v => v === null) ? 'default' : 'pointer',
-                boxShadow: mmCurrent.some(v => v === null) ? 'none' : '0 6px 0 #1B5E2060',
-              }}>Check</button>
             </>
+          )}
+
+          {digitPhase === 'done' && (
+            <div style={{ fontSize: 20, fontWeight: 900, color: '#2E7D32' }}>Calculating your score...</div>
           )}
         </div>
       )}
 
       {/* RESULT */}
       {phase === 'result' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 24px', gap: 16 }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase' }}>Your Brain Profile</div>
-          <div style={{ fontSize: 80, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{brainScore}</div>
-          <div style={{ fontSize: 14, color: `${BROWN}50`, fontWeight: 700 }}>Brain Score out of 1000</div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 20 }}>
+          <img src={LOGO} alt="" style={{ width: 70, height: 70, objectFit: 'contain' }} />
+          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Your Brain Profile</div>
+          <div style={{ fontSize: 96, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', lineHeight: 1, animation: 'popIn 0.5s ease' }}>{brainScore}</div>
+          <div style={{ fontSize: 16, color: `${BROWN}50`, fontWeight: 700 }}>out of 1000</div>
           {worldPercent !== null && (
-            <div style={{ background: `${GOLD}15`, borderRadius: 16, padding: '16px 24px', textAlign: 'center', border: `1px solid ${GOLD}30`, width: '100%' }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World ranking</div>
-              <div style={{ fontSize: 36, fontWeight: 900, color: GOLD }}>Top {100 - worldPercent}%</div>
+            <div style={{ background: `${GOLD}15`, borderRadius: 20, padding: '20px 32px', textAlign: 'center', border: `1px solid ${GOLD}30`, width: '100%' }}>
+              <div style={{ fontSize: 12, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World ranking</div>
+              <div style={{ fontSize: 44, fontWeight: 900, color: GOLD }}>Top {100 - worldPercent}%</div>
             </div>
           )}
-          <div style={{ width: '100%', background: '#fff', borderRadius: 20, padding: '20px', border: '1px solid #4A2C0A10' }}>
-            <div style={{ fontSize: 12, fontWeight: 900, color: `${BROWN}50`, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 12 }}>Your scores</div>
-            {[
-              { label: 'Ace', value: `${scores.ace}/5`, points: scores.ace * 40 },
-              { label: 'N-Back', value: `${scores.nback}/${NB_TOTAL}`, points: scores.nback * 20 },
-              { label: 'Stop', value: `${scores.stop}ms off`, points: Math.max(0, 200 - Math.floor(scores.stop / 10)) },
-              { label: 'GeoShape', value: `${scores.geoshape}/${GEO_TOTAL}`, points: scores.geoshape * 40 },
-              { label: 'Mastermind', value: `${scores.mastermind} tries`, points: Math.max(0, 200 - (scores.mastermind - 1) * 30) },
-            ].map((s, i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <div style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>{s.label}</div>
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <div style={{ fontSize: 13, color: `${BROWN}50` }}>{s.value}</div>
-                  <div style={{ fontSize: 14, fontWeight: 900, color: GOLD }}>{s.points}pts</div>
-                </div>
-              </div>
-            ))}
-          </div>
           <button onClick={() => {
-            const text = `🧠 My Brain Score is ${brainScore}/1000 on MemGenius Brain Test! I'm in the top ${100 - (worldPercent || 50)}% worldwide. Can you beat me? memgenius.com/brain-test`
+            const text = `🧠 My Brain Score is ${brainScore}/1000 on MemGenius! I'm in the top ${100 - (worldPercent || 50)}% worldwide. Can you beat me? memgenius.com/brain-test`
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
-          }} style={{ width: '100%', padding: '16px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60' }}>
+          }} style={{ width: '100%', padding: '18px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60' }}>
             Share on WhatsApp
           </button>
-          <button onClick={() => window.location.href = '/'} style={{ width: '100%', padding: '14px', borderRadius: 16, border: 'none', background: BROWN, color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
+          <button onClick={() => window.location.href = '/'} style={{ width: '100%', padding: '14px', borderRadius: 16, border: 'none', background: BROWN, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
             Play all games →
           </button>
         </div>
