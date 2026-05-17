@@ -307,7 +307,10 @@ export default function LandingPage() {
     }}>
 
       {!profile?.name ? (
-        /* NOT REGISTERED */
+        /* REDIRECT TO BRAIN TEST */
+        (() => { if (typeof window !== "undefined") window.location.replace("/brain-test"); return null })()
+      ) : false ? (
+        /* NOT REGISTERED - disabled */
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {/* Logo */}
           <img src={LOGO} alt="MemGenius" style={{ height: 110, objectFit: 'contain', marginBottom: 8 }} />
