@@ -445,7 +445,7 @@ export default function BrainTestPage() {
                 padding: '14px', borderRadius: 14, border: 'none', fontFamily: 'inherit', cursor: 'pointer', fontSize: 13, fontWeight: 800,
                 background: geoSelected === null ? '#fff' : opt === geoCountries[geoIndex].name ? '#2E7D32' : geoSelected === opt ? '#C62828' : '#fff',
                 color: geoSelected && (opt === geoCountries[geoIndex].name || geoSelected === opt) ? '#fff' : BROWN,
-                border: `1px solid ${BROWN}10`,
+                outline: 'none',
               }}>{opt}</button>
             ))}
           </div>
