@@ -118,6 +118,7 @@ export default function BrainTestPage() {
   const [mmFeedbacks, setMmFeedbacks] = useState<{ correctPos: number[], wrongPos: number[] }[]>([])
   const [mmCurrent, setMmCurrent] = useState<(number | null)[]>(Array(5).fill(null))
   const [mmDone, setMmDone] = useState(false)
+  const [mmSelected, setMmSelected] = useState<number | null>(null)
   const [mmStartTime] = useState(Date.now())
   const MM_MAX = 7
 
@@ -148,7 +149,7 @@ export default function BrainTestPage() {
     if (data) {
       const scores_arr = data.map((s: any) => s.score)
       const better = scores_arr.filter((s: number) => s < total).length
-      setWorldPercent(Math.round((better / scores_arr.length) * 100))
+      setWorldPercent(scores_arr.length > 1 ? Math.round((better / (scores_arr.length - 1)) * 100) : 50)
       setTopScore(scores_arr[0])
     }
     setScores(finalScores)
@@ -332,9 +333,9 @@ export default function BrainTestPage() {
   }
 
   // MASTERMIND
-  const handleMmColor = (colorIdx: number, posIdx: number) => {
-    if (mmDone) return
-    const next = [...mmCurrent]; next[posIdx] = colorIdx; setMmCurrent(next)
+  const handleMmColor = (posIdx: number) => {
+    if (mmDone || mmSelected === null) return
+    const next = [...mmCurrent]; next[posIdx] = mmSelected; setMmCurrent(next)
   }
 
   const handleMmSubmit = () => {
@@ -457,7 +458,7 @@ export default function BrainTestPage() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 24px', gap: 16 }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase' }}>4 of 5 — GeoShape</div>
           <div style={{ fontSize: 13, color: `${BROWN}50` }}>{geoIndex + 1} of {GEO_TOTAL}</div>
-          <img src={`${BASE}/shapes/${geoCountries[geoIndex].code}.svg`} alt="" style={{ width: 200, height: 180, objectFit: 'contain' }} />
+          <img src={`https://raw.githubusercontent.com/djaiss/mapsicon/master/all/${geoCountries[geoIndex].code.toLowerCase()}/512.png`} alt="" style={{ width: 200, height: 180, objectFit: 'contain' }} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, width: '100%' }}>
             {geoOptions.map(opt => (
               <button key={opt} onClick={() => handleGeoAnswer(opt)} style={{
@@ -490,13 +491,10 @@ export default function BrainTestPage() {
                   <div key={ci} style={{ width: 44, height: 44, borderRadius: 10, background: c !== null ? MM_COLORS[c] : '#E0E0E0', border: `2px dashed ${BROWN}30` }} />
                 ))}
               </div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <div style={{ fontSize: 12, color: '#4A2C0A60', fontWeight: 700, marginBottom: 4 }}>Tap a color then tap a position</div>
+              <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 8 }}>
                 {MM_COLORS.map((col, ci) => (
-                  <div key={ci} style={{ display: 'flex', gap: 6 }}>
-                    {mmCurrent.map((_, pi) => (
-                      <div key={pi} onClick={() => handleMmColor(ci, pi)} style={{ width: 36, height: 36, borderRadius: 8, background: col, cursor: 'pointer', opacity: mmCurrent[pi] === ci ? 1 : 0.5 }} />
-                    ))}
-                  </div>
+                  <div key={ci} onClick={() => setMmSelected(ci)} style={{ width: 40, height: 40, borderRadius: 10, background: col, cursor: 'pointer', border: mmSelected === ci ? '3px solid #4A2C0A' : '3px solid transparent', boxShadow: mmSelected === ci ? '0 0 0 2px #fff inset' : 'none' }} />
                 ))}
               </div>
               <button onClick={handleMmSubmit} disabled={mmCurrent.some(v => v === null)} style={{ width: '100%', padding: '14px', borderRadius: 16, border: 'none', background: BROWN, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>Check →</button>
