@@ -296,7 +296,7 @@ export default function BrainTestPage() {
           setNbShowCard(true); setNbPhase('show')
           nbIndexRef.current = 1; setNbIndex(1)
           nbTimer.current = setTimeout(() => { setNbShowCard(false); setNbPhase('answer') }, 2000)
-        }, 600)
+        }, 500)
       } else {
         setNbPhase('answer')
       }
@@ -608,17 +608,29 @@ export default function BrainTestPage() {
 
           {digitPhase === 'done' && digitResult && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: '100%' }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: `${BROWN}50` }}>The sequence was:</div>
               <div style={{ display: 'flex', gap: 8 }}>
                 {digitSeq.map((d, i) => (
-                  <div key={i} style={{ width: 40, height: 52, borderRadius: 10, background: digitInput[i] === d ? '#2E7D32' : '#C62828', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 900, color: '#fff' }}>{d}</div>
+                  <div key={i} style={{
+                    width: 38, height: 50, borderRadius: 10,
+                    background: digitInput[i] === d ? '#2E7D32' : '#C62828',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 22, fontWeight: 900, color: '#fff',
+                    boxShadow: digitInput[i] === d ? '0 4px 0 #1B5E2060' : '0 4px 0 #B71C1C60'
+                  }}>{d}</div>
                 ))}
               </div>
-              <div style={{ fontSize: 18, color: `${BROWN}60`, fontWeight: 700 }}>{digitResult.correct} of 7 correct</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: `${BROWN}60` }}>
+                You got <span style={{ color: digitResult.correct >= 5 ? '#2E7D32' : '#C62828', fontWeight: 900, fontSize: 20 }}>{digitResult.correct}</span> of 7 correct
+              </div>
               <button onClick={() => saveResult(scores)} style={{
-                width: '100%', padding: '18px', borderRadius: 20, border: 'none',
+                width: '100%', padding: '20px', borderRadius: 20, border: 'none',
                 background: '#0D1B4B', color: '#fff', fontSize: 18, fontWeight: 900,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #08103060',
-              }}>See your Brain Age →</button>
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+              }}>
+                Discover your Brain Age <span style={{ fontSize: 24 }}>→</span>
+              </button>
             </div>
           )}
         </div>
@@ -637,8 +649,8 @@ export default function BrainTestPage() {
           }} style={{ width: '100%', padding: '18px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60' }}>
             Share on WhatsApp
           </button>
-          <button onClick={() => window.location.href = '/'} style={{ width: '100%', padding: '16px', borderRadius: 16, border: 'none', background: '#0D1B4B', color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #08103060' }}>
-            Train Your Brain
+          <button onClick={() => window.location.href = '/'} style={{ width: '100%', padding: '16px', borderRadius: 16, border: 'none', background: '#0D1B4B', color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #08103060', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+            Train Your Brain <span style={{ fontSize: 22 }}>→</span>
           </button>
         </div>
       )}
