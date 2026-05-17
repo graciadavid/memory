@@ -322,6 +322,7 @@ export default function MastermindPage() {
             {phase === 'won' && (
               <button onClick={() => {
                 const text = `I cracked the Mastermind code in ${fmt(finalTime)} with ${guesses.length} tries on MemGenius! memgenius.com/mastermind`
+                const url = 'https://memgenius.com/mastermind'
                 if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
               }} style={{ flex: 2, padding: '14px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
             )}
