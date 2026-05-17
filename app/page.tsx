@@ -320,7 +320,7 @@ export default function LandingPage() {
       overflowY: 'auto',
     }}>
 
-      {!profile?.name && typeof window !== 'undefined' && !new URLSearchParams(window.location.search).get('register') ? (
+      {loaded && !profile?.name && typeof window !== 'undefined' && !new URLSearchParams(window.location.search).get('register') ? (
         (() => { window.location.replace('/brain-test'); return null })()
       ) : !profile?.name ? (
         /* NOT REGISTERED - onboarding */
