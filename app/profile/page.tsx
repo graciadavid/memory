@@ -60,6 +60,7 @@ export default function ProfilePage() {
   const [f1Rank, setF1Rank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
   const [pendulumRank, setPendulumRank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
   const [profileStreak, setProfileStreak] = useState<{ current: number, longest: number }>({ current: 0, longest: 0 })
+  const [profileBrainAge, setProfileBrainAge] = useState<number | null>(null)
   const [versusRank, setVersusRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusAreaRank, setVersusAreaRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
@@ -121,6 +122,15 @@ export default function ProfilePage() {
 
     // Fetch streak
     getStreak(profile.name).then(s => setProfileStreak({ current: s.current, longest: s.longest }))
+    supabase.from('brain_test_scores').select('score').eq('player_name', profile.name)
+      .order('created_at', { ascending: false }).limit(1)
+      .then(({ data }) => {
+        if (data?.[0]) {
+          const score = data[0].score
+          const age = Math.min(65, Math.max(18, Math.round(65 - (score / 1000) * 47)))
+          setProfileBrainAge(age)
+        }
+      })
 
     // Fetch F1
     supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'formula1').order('difference_ms', { ascending: true }).limit(500).then(({ data }) => {
@@ -318,56 +328,41 @@ export default function ProfilePage() {
         padding: '18px 24px', borderRadius: 24,
         boxShadow: '0 8px 32px rgba(13,43,94,0.5)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-          <div style={{ position: 'relative' }}>
-            <Avatar name={profile.name} photo={profile.avatar} size={80} />
-            <button onClick={() => fileRef.current?.click()} style={{
-              position: 'absolute', bottom: -4, right: -4,
-              width: 26, height: 26, borderRadius: 8,
-              background: GOLD, border: '2px solid #fff',
-              fontSize: 12, cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>📷</button>
-            <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhoto} />
-          </div>
+        {/* Name row */}
+        <div style={{ marginBottom: 20 }}>
+          {editingName ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ display: 'flex', gap: 6 }}>
+                <input type="text" value={newName} onChange={e => { setNewName(e.target.value); setNameError('') }} onKeyDown={e => e.key === 'Enter' && saveName()} maxLength={20} autoFocus
+                  style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 16, fontWeight: 800, fontFamily: 'inherit', outline: 'none' }} />
+                <button onClick={saveName} style={{ padding: '8px 12px', borderRadius: 10, border: 'none', background: GOLD, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>{nameSaving ? '...' : 'Save'}</button>
+                <button onClick={() => { setEditingName(false); setNameError('') }} style={{ padding: '8px 10px', borderRadius: 10, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
+              </div>
+              {nameError && <div style={{ fontSize: 10, color: '#FFB3B3', fontWeight: 700 }}>{nameError}</div>}
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
+              <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
+              <button onClick={() => setEditingPassword(!editingPassword)} style={{ padding: '3px 8px', borderRadius: 6, border: 'none', cursor: 'pointer', fontFamily: 'inherit', background: hasPassword ? 'rgba(46,125,50,0.4)' : 'rgba(230,81,0,0.8)', color: '#fff', fontSize: 9, fontWeight: 800 }}>
+                {hasPassword ? '🔒' : '⚠️ Protect'}
+              </button>
+            </div>
+          )}
+        </div>
 
-          <div style={{ flex: 1 }}>
-            {editingName ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <div style={{ display: 'flex', gap: 6 }}>
-                  <input type="text" value={newName} onChange={e => { setNewName(e.target.value); setNameError('') }} onKeyDown={e => e.key === 'Enter' && saveName()} maxLength={20} autoFocus
-                    style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 16, fontWeight: 800, fontFamily: 'inherit', outline: 'none' }} />
-                  <button onClick={saveName} style={{ padding: '8px 12px', borderRadius: 10, border: 'none', background: GOLD, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>{nameSaving ? '...' : 'Save'}</button>
-                  <button onClick={() => { setEditingName(false); setNameError('') }} style={{ padding: '8px 10px', borderRadius: 10, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
-                </div>
-                {nameError && <div style={{ fontSize: 10, color: '#FFB3B3', fontWeight: 700 }}>{nameError}</div>}
-              </div>
-            ) : (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                    <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
-                    <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '2px 7px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
-                  </div>
-                  <button onClick={() => setEditingPassword(!editingPassword)} style={{
-                    padding: '4px 10px', borderRadius: 16, border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                    background: hasPassword ? 'rgba(46,125,50,0.3)' : 'rgba(230,81,0,0.8)',
-                    color: '#fff', fontSize: 10, fontWeight: 800,
-                  }}>
-                    {hasPassword ? '🔒 Protected' : '⚠️ Protect'}
-                  </button>
-                </div>
-                {profileStreak.current > 0 && (
-                  <a href="/streak" style={{ textDecoration: 'none', textAlign: 'center' }}>
-                    <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" alt="" style={{ width: 36, height: 36, objectFit: 'contain' }} />
-                    <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{profileStreak.current}</div>
-                    <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>days</div>
-                    <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>Learn more →</div>
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
+        {/* Stats row */}
+        <div style={{ display: 'flex', gap: 12 }}>
+          <a href="/streak" style={{ textDecoration: 'none', flex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 16, padding: '12px', textAlign: 'center' }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Streak</div>
+            <div style={{ fontSize: 36, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{profileStreak.current > 0 ? profileStreak.current : '—'}</div>
+            {profileStreak.current > 0 && <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginTop: 2 }}>days</div>}
+          </a>
+          <a href="/brain-test" style={{ textDecoration: 'none', flex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 16, padding: '12px', textAlign: 'center' }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Brain Age</div>
+            <div style={{ fontSize: 36, fontWeight: 900, color: profileBrainAge ? '#4CAF50' : 'rgba(255,255,255,0.3)', lineHeight: 1 }}>{profileBrainAge ?? '—'}</div>
+            {profileBrainAge && <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginTop: 2 }}>years old</div>}
+          </a>
         </div>
 
         {/* Password editor */}
