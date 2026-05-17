@@ -82,7 +82,7 @@ export default function WordlyClient() {
   const [word] = useState(getDailyWord)
   const [guesses, setGuesses] = useState<string[]>([])
   const [current, setCurrent] = useState('')
-  const [phase, setPhase] = useState<'intro' | 'playing' | 'won' | 'lost'>('playing')
+  const [phase, setPhase] = useState<'intro' | 'playing' | 'won' | 'lost'>('intro')
   const [topScores, setTopScores] = useState<{ name: string, time_ms: number, attempts: number }[]>([])
   const [startTime] = useState(Date.now())
   const [elapsed, setElapsed] = useState(0)
@@ -178,7 +178,11 @@ export default function WordlyClient() {
     if (phase !== 'playing') return
     if (k === 'ENTER') { submit(); return }
     if (k === '⌫') { setCurrent(p => p.slice(0, -1)); return }
-    if (current.length < 5 && /^[A-Z]$/.test(k)) setCurrent(p => p + k)
+    if (current.length < 5 && /^[A-Z]$/.test(k)) {
+      const next = current + k
+      setCurrent(next)
+      if (next.length === 5) setTimeout(() => submit(), 100)
+    }
   }, [phase, current, submit])
 
   useEffect(() => {
@@ -243,8 +247,31 @@ export default function WordlyClient() {
         </div>
       )}
 
+      {/* Intro */}
+      {phase === 'intro' && (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 24px', gap: 16 }}>
+          <div style={{ fontSize: 14, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', lineHeight: 1.7 }}>
+            Guess the 5-letter word in 6 tries.<br />
+            Green = correct position.<br />
+            Yellow = wrong position.<br />
+            Grey = not in the word.
+          </div>
+          {bestScore && (
+            <div style={{ background: `${GREEN}10`, borderRadius: 14, padding: '12px 20px', textAlign: 'center', width: '100%' }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase', marginBottom: 4 }}>Your best</div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: GREEN }}>{fmtTime(bestScore.time_ms)} · {bestScore.attempts} tries</div>
+            </div>
+          )}
+          <button onClick={() => { setPhase('playing'); }} style={{
+            width: '100%', padding: '18px', borderRadius: 20, border: 'none',
+            background: GREEN, color: '#fff', fontSize: 18, fontWeight: 900,
+            fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 8px 0 ${GREEN}60`,
+          }}>Play</button>
+        </div>
+      )}
+
       {/* Grid */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '20px 20px 0', alignItems: 'center' }}>
+      {phase !== 'intro' && <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '20px 20px 0', alignItems: 'center' }}>
         {rows.map((row, i) => (
           <div key={i} style={{ display: 'flex', gap: 6, animation: shake && i === guesses.length ? 'shake 0.5s ease' : undefined }}>
             {row.map((cell, j) => (
@@ -260,6 +287,8 @@ export default function WordlyClient() {
           </div>
         ))}
       </div>
+
+      </div>}
 
       {/* Result */}
       {phase !== 'playing' && (
