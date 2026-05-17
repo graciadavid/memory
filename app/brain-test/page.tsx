@@ -83,7 +83,7 @@ export default function BrainTestPage() {
   const [phase, setPhase] = useState<GamePhase>('intro')
   const [scores, setScores] = useState({ ace: 0, nback: 0, stop: 0, geoshape: 0, digits: 0 })
   const [worldPercent, setWorldPercent] = useState<number | null>(null)
-  const [testStartTime] = useState(Date.now())
+  const testStartTimeRef = useRef(0)
 
   // ACE
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -138,12 +138,19 @@ export default function BrainTestPage() {
   const [digitResult, setDigitResult] = useState<{ correct: number, total: number, points: number } | null>(null)
 
   const calcBrainScore = (s: typeof scores) => {
-    const aceP = Math.min(200, s.ace)
-    const nbP = Math.min(200, s.nback * 20)
-    const stopP = Math.max(0, Math.round(200 - (s.stop / 2000) * 200))
+    // Ace: max 150pts (less weight)
+    const aceP = Math.min(150, s.ace * 0.75)
+    // N-Back: max 250pts (more weight)
+    const nbP = Math.min(250, s.nback * 25)
+    // Stop: 200pts base, -20pts per 100ms off
+    const stopP = Math.max(0, Math.round(200 - (s.stop / 100) * 20))
+    // GeoShape: max 200pts
     const geoP = Math.min(200, s.geoshape * 40)
-    const digP = Math.min(200, s.digits)
-    return aceP + nbP + stopP + geoP + digP
+    // Digits: fixed scale
+    const digMap: Record<number, number> = { 7: 200, 6: 150, 5: 100, 4: 75, 3: 75, 2: 75, 1: 75, 0: 0 }
+    const digCorrect = Math.round(s.digits / (200/7))
+    const digP = digMap[Math.min(7, Math.max(0, digCorrect))] || 0
+    return Math.round(aceP + nbP + stopP + geoP + digP)
   }
 
   const saveResult = async (finalScores: typeof scores) => {
@@ -396,7 +403,7 @@ export default function BrainTestPage() {
     if (digitPhase !== 'input') return
     const next = [...digitInput, n]
     setDigitInput(next)
-    if (next.length === 6) {
+    if (next.length === 7) {
       const timeTaken = Date.now() - digitStartTime
       let correct = 0
       next.forEach((d, i) => { if (d === digitSeq[i]) correct++ })
@@ -418,9 +425,9 @@ export default function BrainTestPage() {
   const brainScore = calcBrainScore(scores)
   // Brain Age: base from score, penalized by total test time
   // Perfect score fast = age 18, zero score slow = age 65
-  const testDuration = (Date.now() - testStartTime) / 1000 // seconds
-  const expectedTime = 240 // 4 minutes expected
-  const timePenalty = Math.max(0, Math.round((testDuration - expectedTime) / 30)) // +1 year per 30s over expected
+  const testDuration = testStartTimeRef.current > 0 ? (Date.now() - testStartTimeRef.current) / 1000 : 240
+  const expectedTime = 180 // 3 minutes expected
+  const timePenalty = Math.max(0, Math.round((testDuration - expectedTime) / 30)) // +1 year per 30s over 3min
   const baseAge = Math.round(65 - (brainScore / 1000) * 47)
   const brainAge = Math.min(65, Math.max(18, baseAge + timePenalty))
 
@@ -434,7 +441,7 @@ export default function BrainTestPage() {
 
       {/* INTRO */}
       {phase === 'intro' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 28 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '80px 24px 40px', gap: 24 }}>
           <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: '100%', maxWidth: 180, objectFit: 'contain' }} />
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 44, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 16 }}>Brain Age Test</div>
@@ -446,7 +453,7 @@ export default function BrainTestPage() {
             width: '100%', padding: '22px', borderRadius: 20, border: 'none',
             background: '#2E7D32', color: '#fff', fontSize: 22, fontWeight: 900,
             fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
-          }}>Start Brain Test</button>
+          }}>Start Brain Age Test</button>
         </div>
       )}
 
@@ -580,7 +587,7 @@ export default function BrainTestPage() {
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 5 of 5</div>
           <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>Digits</div>
           <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center' }}>
-            {digitPhase === 'show' ? 'Memorize these 6 digits' : digitPhase === 'input' ? 'Type them in order — fast!' : 'Done!'}
+            {digitPhase === 'show' ? 'Memorize these 7 digits' : digitPhase === 'input' ? 'Type them in order — fast!' : 'Done!'}
           </div>
 
           {digitPhase === 'show' && (
@@ -649,7 +656,7 @@ export default function BrainTestPage() {
           <img src={LOGO} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Your Brain Age</div>
           <div style={{ fontSize: 96, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', lineHeight: 1, animation: 'popIn 0.5s ease' }}>{brainAge}</div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: `${BROWN}50`, marginTop: 4 }}>years old</div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', marginTop: 0 }}>years old</div>
 
           <button onClick={() => {
             const text = `🧠 My Brain Age is ${brainAge} on MemGenius Brain Test! I'm in the top ${100 - (worldPercent || 50)}% worldwide. What's yours? memgenius.com/brain-test`
