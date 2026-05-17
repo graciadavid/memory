@@ -534,7 +534,7 @@ export default function BrainTestClient() {
         if (navigator.share && navigator.canShare({ files: [file] })) {
           await navigator.share({
             title: 'MemGenius Brain Age',
-            text: \`My Brain Age is \${brainAge}! What's yours?\`,
+            text: `My Brain Age is ${brainAge}! What's yours?`,
             files: [file],
           })
         } else {
@@ -545,7 +545,7 @@ export default function BrainTestClient() {
         }
       }, 'image/png')
     } catch(e) {
-      const text = \`🧠 My Brain Age is \${brainAge} on MemGenius! What's yours?\`
+      const text = `🧠 My Brain Age is ${brainAge} on MemGenius! What's yours?`
       const url = 'https://memgenius.com/brain-test'
       if (navigator.share) navigator.share({ title: 'MemGenius', text, url })
       else window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank')
