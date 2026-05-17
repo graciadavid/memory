@@ -607,6 +607,17 @@ export default function ProfilePage() {
 
       </div>
       </div>
+    <div style={{ padding: '0 16px 16px' }}>
+      <a href='/blog' style={{ textDecoration: 'none' }}>
+        <div style={{ background: '#fff', borderRadius: 16, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #4A2C0A10', boxShadow: '0 2px 8px #4A2C0A08' }}>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 900, color: '#4A2C0A' }}>Brain Training Blog</div>
+            <div style={{ fontSize: 12, color: '#4A2C0A50', fontWeight: 700 }}>Tips, science and guides</div>
+          </div>
+          <div style={{ fontSize: 20, color: '#4A2C0A40' }}>→</div>
+        </div>
+      </a>
+    </div>
     </main>
     </>
   )
