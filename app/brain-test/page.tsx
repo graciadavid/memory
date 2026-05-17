@@ -189,9 +189,25 @@ export default function BrainTestPage() {
     animRef.current = requestAnimationFrame(drawAceFrame)
   }, [drawAceFrame])
 
+  const playAceSound = (hit: boolean) => {
+    try {
+      const ctx = new AudioContext()
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(hit ? 440 : 220, ctx.currentTime)
+      osc.frequency.setValueAtTime(hit ? 330 : 150, ctx.currentTime + 0.08)
+      gain.gain.setValueAtTime(0.2, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+      osc.connect(gain); gain.connect(ctx.destination)
+      osc.start(); osc.stop(ctx.currentTime + 0.3)
+    } catch(e) {}
+  }
+
   const endAceRound = useCallback((result: 'perfect' | 'good' | 'miss') => {
     acePhaseRef.current = 'done'
     if (animRef.current) cancelAnimationFrame(animRef.current)
+    playAceSound(result !== 'miss')
     setAceResult(result)
     if (result !== 'miss' && aceLevelRef.current < 5) {
       const next = aceLevelRef.current + 1
@@ -421,9 +437,12 @@ export default function BrainTestPage() {
       {phase === 'nback' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 24px', gap: 16 }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase' }}>2 of 5 — N-Back</div>
-          <div style={{ fontSize: 13, color: `${BROWN}50` }}>{nbIndex + 1} of {NB_TOTAL} — Score: {nbScore}</div>
+          <div style={{ fontSize: 13, color: `${BROWN}50`, textAlign: 'center', lineHeight: 1.5 }}>
+            {nbShowCard ? 'Remember this color' : nbIndex === 0 ? 'Memorizing...' : 'Same color as before?'}
+          </div>
+          <div style={{ fontSize: 12, color: GOLD, fontWeight: 800 }}>{nbIndex + 1}/{NB_TOTAL} · {nbScore} correct</div>
           <div style={{ width: 200, height: 200, borderRadius: 28, background: nbShowCard ? NBACK_COLORS[nbCurrent].bg : '#E0E0E0', boxShadow: nbShowCard ? `0 8px 0 ${NBACK_COLORS[nbCurrent].shadow}` : '0 4px 0 #BDBDBD', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}>
-            {!nbShowCard && <div style={{ fontSize: 20, fontWeight: 900, color: `${BROWN}25`, textAlign: 'center' }}>Same<br />or<br />Different?</div>}
+            {!nbShowCard && nbIndex > 0 && <div style={{ fontSize: 36 }}>🤔</div>}
           </div>
           {nbFeedback && <div style={{ fontSize: 20, fontWeight: 900, color: nbFeedback === 'correct' ? '#2E7D32' : '#C62828' }}>{nbFeedback === 'correct' ? '✓ Correct' : '✗ Wrong'}</div>}
           {nbPhase === 'answer' && (
@@ -441,13 +460,22 @@ export default function BrainTestPage() {
 
       {/* STOP */}
       {phase === 'stop' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 24px', gap: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 24px', gap: 16 }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 3, textTransform: 'uppercase' }}>3 of 5 — Stop</div>
-          <div style={{ fontSize: 13, color: `${BROWN}50` }}>Stop at exactly 5 seconds</div>
-          <div style={{ fontSize: 72, fontWeight: 900, color: '#4A148C', fontVariantNumeric: 'tabular-nums' }}>
-            {stopPhase === 'ready' ? '5.00' : stopPhase === 'done' ? (stopElapsed / 1000).toFixed(2) : (stopElapsed / 1000).toFixed(2)}
+          <div style={{ fontSize: 13, color: '#4A2C0A60' }}>Stop at exactly 5 seconds</div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 18, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Target</div>
+            <div style={{ fontSize: 64, fontWeight: 900, color: '#4A148C', fontVariantNumeric: 'tabular-nums' }}>5.00s</div>
           </div>
-          {stopPhase === 'done' && <div style={{ fontSize: 20, fontWeight: 900, color: stopDiff < 100 ? '#2E7D32' : stopDiff < 500 ? GOLD : '#C62828' }}>{stopDiff}ms off</div>}
+          {stopPhase !== 'ready' && (
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your time</div>
+              <div style={{ fontSize: 64, fontWeight: 900, color: stopPhase === 'done' ? (stopDiff < 200 ? '#2E7D32' : stopDiff < 800 ? '#F9A825' : '#C62828') : '#4A148C', fontVariantNumeric: 'tabular-nums' }}>
+                {(stopElapsed / 1000).toFixed(2)}s
+              </div>
+            </div>
+          )}
+          {stopPhase === 'done' && <div style={{ fontSize: 24, fontWeight: 900, color: stopDiff < 200 ? '#2E7D32' : stopDiff < 800 ? '#F9A825' : '#C62828' }}>{stopDiff}ms off</div>}
           {stopPhase === 'ready' && <button onClick={startStop} style={{ width: '100%', padding: '20px', borderRadius: 20, border: 'none', background: '#4A148C', color: '#fff', fontSize: 20, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #4A148C60' }}>Start</button>}
           {stopPhase === 'running' && <button onClick={stopIt} style={{ width: '100%', padding: '20px', borderRadius: 20, border: 'none', background: '#B71C1C', color: '#fff', fontSize: 20, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #B71C1C60' }}>Stop!</button>}
         </div>
