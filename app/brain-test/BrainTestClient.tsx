@@ -141,7 +141,7 @@ export default function BrainTestClient() {
     // Ace: max 150pts (less weight)
     const aceP = Math.min(150, s.ace * 0.75)
     // N-Back: max 250pts (more weight)
-    const nbP = Math.min(250, s.nback * 25)
+    const nbP = Math.min(250, s.nback * 50)
     // Stop: 200pts base, -20pts per 100ms off
     const stopP = Math.max(0, Math.round(200 - (s.stop / 100) * 20))
     // GeoShape: max 200pts
