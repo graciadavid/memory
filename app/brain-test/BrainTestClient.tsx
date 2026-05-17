@@ -91,7 +91,6 @@ export default function BrainTestClient() {
   const [worldPercent, setWorldPercent] = useState<number | null>(null)
   const testStartTimeRef = useRef(0)
   const resultCardRef = useRef<HTMLDivElement>(null)
-  const resultCardRef = useRef<HTMLDivElement>(null)
 
   // ACE
   const canvasRef = useRef<HTMLCanvasElement>(null)
