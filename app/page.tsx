@@ -501,18 +501,20 @@ export default function LandingPage() {
           {/* Featured Game — Stop */}
           <a href="/precision/stopwatch" style={{ textDecoration: 'none', width: '100%', marginBottom: 16, display: 'block' }}>
             <div style={{
-              background: 'linear-gradient(135deg, #4A148C, #6A1B9A)',
+              background: 'linear-gradient(135deg, #1565C0 0%, #0D47A1 50%, #1976D2 100%)',
               borderRadius: 20, padding: '16px 20px',
               display: 'flex', alignItems: 'center', gap: 16,
-              boxShadow: '0 8px 0 #4A148C60',
+              boxShadow: '0 8px 0 #0D47A160',
+              position: 'relative', overflow: 'hidden',
             }}>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png" alt="Stop" style={{ width: 64, height: 64, objectFit: 'contain', flexShrink: 0 }} />
-              <div style={{ flex: 1 }}>
+              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 2px, transparent 2px, transparent 12px)', borderRadius: 20 }} />
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png" alt="Stop" style={{ width: 64, height: 64, objectFit: 'contain', flexShrink: 0, position: 'relative' }} />
+              <div style={{ flex: 1, position: 'relative' }}>
                 <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Featured Game</div>
                 <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 2 }}>Stop</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>Stop at exactly 5 seconds</div>
               </div>
-              <div style={{ fontSize: 28, color: 'rgba(255,255,255,0.4)' }}>→</div>
+              <div style={{ fontSize: 28, color: 'rgba(255,255,255,0.4)', position: 'relative' }}>→</div>
             </div>
           </a>
 
