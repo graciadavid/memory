@@ -11,6 +11,11 @@ const TOPICS = [
   { href: '/versus/area', img: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/area.png', label: 'Area km²', sub: 'Which country is bigger?' },
 ]
 
+export const metadata = {
+  title: 'Higher or Lower — Geography Knowledge Game | MemGenius',
+  description: 'Which country has more people or larger area? Free online geography game with world ranking. Train your world knowledge. No login required.',
+}
+
 export default function VersusPage() {
   return (
     <>
@@ -75,6 +80,11 @@ export default function VersusPage() {
           </details>
         ))}
       </div>
+      <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 32 }}>What does Higher or Lower train?</h2>
+      <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Higher or Lower trains geographic knowledge and probabilistic reasoning — the ability to estimate relative quantities and make decisions under uncertainty. Every comparison requires you to draw on your accumulated knowledge of world geography, combining facts about country size, population density and global demographics into a rapid judgment.</p>
+      <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>This type of quantitative geographic reasoning is associated with stronger performance in economics, geopolitics and data literacy. People who can accurately estimate relative quantities — which country is bigger, which city is more populous — demonstrate better calibration in everyday numerical judgments across all domains.</p>
+      <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12, marginTop: 24 }}>Geography knowledge and crystallized intelligence</h2>
+      <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Geographic knowledge is a form of crystallized intelligence — the accumulated factual knowledge built through education and experience. Unlike fluid intelligence, which declines with age, crystallized intelligence can continue growing through the fifties and sixties. Higher or Lower provides a motivating and competitive context for expanding this knowledge base, with each session teaching you something new about the relative size and population of countries worldwide.</p>
     </section>
 
     </>
