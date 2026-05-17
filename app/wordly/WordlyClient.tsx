@@ -82,12 +82,23 @@ export default function WordlyClient() {
   const [word] = useState(getDailyWord)
   const [guesses, setGuesses] = useState<string[]>([])
   const [current, setCurrent] = useState('')
-  const [phase, setPhase] = useState<'intro' | 'playing' | 'won' | 'lost'>('intro')
+  const [phase, setPhase] = useState<'intro' | 'playing' | 'won' | 'lost'>('playing')
   const [topScores, setTopScores] = useState<{ name: string, time_ms: number, attempts: number }[]>([])
   const [startTime] = useState(Date.now())
   const [elapsed, setElapsed] = useState(0)
   const [finalTime, setFinalTime] = useState(0)
   const [worldRank, setWorldRank] = useState<number | null>(null)
+
+  const resetGame = () => {
+    const newWord = WORDS[Math.floor(Math.random() * WORDS.length)]
+    setGuesses([])
+    setCurrent('')
+    setPhase('playing')
+    setWorldRank(null)
+    setKeyStates({})
+    // Update word - need to use ref or reload
+    window.location.reload()
+  }
   const [bestScore, setBestScore] = useState<{ time_ms: number, attempts: number } | null>(null)
   const [shake, setShake] = useState(false)
   const [keyStates, setKeyStates] = useState<Record<string, LetterState>>({})
@@ -108,7 +119,7 @@ export default function WordlyClient() {
     if (phase !== 'playing') return
     const t = setInterval(() => setElapsed(Date.now() - startTime), 100)
     return () => clearInterval(t)
-  }, [phase, startTime, alreadyPlayed])
+  }, [phase, startTime])
 
   useEffect(() => {
     if (!profile?.name) return
@@ -221,7 +232,7 @@ export default function WordlyClient() {
 
       {false && (
         <div style={{ margin: '16px 20px 0', background: `${GOLD}20`, borderRadius: 14, padding: '12px 16px', fontSize: 13, fontWeight: 800, color: BROWN, textAlign: 'center' }}>
-          You already played today. Come back tomorrow!
+          Play again!
         </div>
       )}
 
@@ -257,17 +268,23 @@ export default function WordlyClient() {
             {phase === 'won' ? fmtTime(finalTime) : word}
           </div>
           <div style={{ fontSize: 14, color: `${BROWN}60`, marginTop: 4 }}>
-            {phase === 'won' ? `Solved in ${guesses.length} ${guesses.length === 1 ? 'try' : 'tries'}` : 'Better luck tomorrow'}
+            {phase === 'won' ? `Solved in ${guesses.length} ${guesses.length === 1 ? 'try' : 'tries'}` : 'Better luck!'}
           </div>
           {worldRank && <div style={{ fontSize: 20, fontWeight: 900, color: GREEN, marginTop: 8 }}>#{worldRank} World Today</div>}
-          {phase === 'won' && (
-            <button onClick={() => {
-              const text = `I solved today's MemGenius Wordly in ${fmtTime(finalTime)} with ${guesses.length} tries! Can you beat me? memgenius.com/wordly`
-              window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
-            }} style={{ marginTop: 16, padding: '14px 32px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-              Share
+          <div style={{ display: 'flex', gap: 10, marginTop: 16, justifyContent: 'center' }}>
+            {phase === 'won' && (
+              <button onClick={() => {
+                const text = `I solved today's MemGenius Wordly in ${fmtTime(finalTime)} with ${guesses.length} tries! Can you beat me? memgenius.com/wordly`
+                const url = 'https://memgenius.com/wordly'
+                if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
+              }} style={{ padding: '14px 24px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
+                Share
+              </button>
+            )}
+            <button onClick={resetGame} style={{ padding: '14px 24px', borderRadius: 16, border: 'none', background: '#C8960C', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
+              Play again
             </button>
-          )}
+          </div>
         </div>
       )}
 
