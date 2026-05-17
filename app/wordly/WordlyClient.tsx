@@ -184,10 +184,10 @@ export default function WordlyClient() {
       <style>{`@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} } @keyframes popIn { 0%{transform:scale(0.8);opacity:0} 100%{transform:scale(1);opacity:1} }`}</style>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
-        <img src={LOGO} alt="Wordly" style={{ height: 48, objectFit: 'contain' }} />
+      <div style={{ display: 'flex', alignItems: 'center', padding: '12px 20px 0', gap: 12 }}>
+        <img src={LOGO} alt="Wordly" style={{ height: 38, objectFit: 'contain' }} />
         <div>
-          <div style={{ fontSize: 26, fontWeight: 900, color: GREEN }}>Wordly</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: GREEN }}>Wordly</div>
           <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>Guess the 5-letter word</div>
         </div>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -237,9 +237,9 @@ export default function WordlyClient() {
               <div key={i} style={{ display: 'flex', gap: 6, animation: shake && i === guesses.length ? 'shake 0.5s ease' : undefined }}>
                 {row.map((cell, j) => (
                   <div key={j} style={{
-                    width: 52, height: 52, borderRadius: 8,
+                    width: 44, height: 44, borderRadius: 8,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 20, fontWeight: 900, color: cell.state === 'empty' || cell.state === 'active' ? BROWN : '#fff',
+                    fontSize: 17, fontWeight: 900, color: cell.state === 'empty' || cell.state === 'active' ? BROWN : '#fff',
                     background: CELL_COLORS[cell.state as LetterState],
                     border: cell.state === 'empty' ? `2px solid ${BROWN}15` : cell.state === 'active' ? `2px solid ${BROWN}60` : 'none',
                     transition: 'background 0.3s',
@@ -283,12 +283,12 @@ export default function WordlyClient() {
               <div key={i} style={{ display: 'flex', gap: 5, justifyContent: 'center' }}>
                 {row.map(k => (
                   <button key={k} onClick={() => handleKey(k)} style={{
-                    padding: k.length > 1 ? '14px 8px' : '14px',
-                    minWidth: k.length > 1 ? 48 : 36,
+                    padding: k.length > 1 ? '11px 6px' : '11px',
+                    minWidth: k.length > 1 ? 44 : 30,
                     borderRadius: 8, border: 'none', cursor: 'pointer',
-                    background: keyStates[k] ? CELL_COLORS[keyStates[k]] : '#E0E0E0',
-                    color: keyStates[k] && keyStates[k] !== 'empty' && keyStates[k] !== 'active' ? '#fff' : BROWN,
-                    fontSize: k.length > 1 ? 11 : 14, fontWeight: 900, fontFamily: 'inherit',
+                    background: k === 'ENTER' ? '#2E7D32' : keyStates[k] ? CELL_COLORS[keyStates[k]] : '#E0E0E0',
+                    color: k === 'ENTER' || (keyStates[k] && keyStates[k] !== 'empty' && keyStates[k] !== 'active') ? '#fff' : BROWN,
+                    fontSize: k.length > 1 ? 10 : 13, fontWeight: 900, fontFamily: 'inherit',
                   }}>{k}</button>
                 ))}
               </div>
