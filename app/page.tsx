@@ -306,17 +306,10 @@ export default function LandingPage() {
       overflowY: 'auto',
     }}>
 
-      {!profile?.name ? (
-        /* REDIRECT TO BRAIN TEST */
-        (() => {
-          if (typeof window !== 'undefined') {
-            const params = new URLSearchParams(window.location.search)
-            if (!params.get('register')) window.location.replace('/brain-test')
-          }
-          return null
-        })()
-      ) : false ? (
-        /* NOT REGISTERED - disabled */
+      {!profile?.name && typeof window !== 'undefined' && !new URLSearchParams(window.location.search).get('register') ? (
+        (() => { window.location.replace('/brain-test'); return null })()
+      ) : !profile?.name ? (
+        /* NOT REGISTERED - onboarding */
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {/* Logo */}
           <img src={LOGO} alt="MemGenius" style={{ height: 110, objectFit: 'contain', marginBottom: 8 }} />
