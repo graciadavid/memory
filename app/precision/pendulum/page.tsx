@@ -301,7 +301,7 @@ export default function PendulumPage() {
                 <button onClick={() => {
                   const url = `${window.location.origin}/challenge?game=pendulum&score=${deviation}&by=${encodeURIComponent(profile?.name || 'Someone')}`
                   const text = `${profile?.name} stopped the pendulum at ${deviation}ms on MemGenius! Can you beat them? ${url}`
-                  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
+                  if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
                 }} style={{
                   flex: 2, padding: '16px', borderRadius: 16, border: 'none',
                   background: '#25D366', color: '#fff',

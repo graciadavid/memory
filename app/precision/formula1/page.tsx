@@ -291,7 +291,7 @@ export default function Formula1Page() {
             <button onClick={() => {
               const url = `${window.location.origin}/challenge?game=formula1&score=${reactionMs}&by=${encodeURIComponent(profile?.name || 'Someone')}`
               const text = `🏎️ ${profile?.name} reacted in ${reactionMs}ms on MemGenius F1! Can you beat them? ${url}`
-              window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
+              if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
             }} style={{
               width: '100%', padding: '16px', borderRadius: 16, border: 'none',
               background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900,

@@ -383,13 +383,13 @@ export default function AcePage() {
                 const url = `${window.location.origin}/challenge?game=ace&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
                 const text = `🎾 ${profile?.name} hit ${level} aces in a row on MemGenius! Can you beat them? ${url}`
                 track('challenge_shared')
-                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
+                if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
               }} style={{
                 width: '100%', padding: '16px', borderRadius: 16, border: 'none',
                 background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900,
                 fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              }}>Send to WhatsApp</button>
+              }}>Share</button>
               <button onClick={startGame} style={{
                 flex: 1, padding: '16px', borderRadius: 16, border: 'none',
                 background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,

@@ -342,7 +342,7 @@ export default function GeoShapePage() {
                 const url = `${window.location.origin}/challenge?game=geoshape&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
                 const text = `🗺️ ${profile?.name} identified ${level} country shapes in a row on MemGenius! Can you beat them? ${url}`
                 track('challenge_shared')
-                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
+                if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
               }} style={{
                 width: '100%', padding: '16px', borderRadius: 16, border: 'none',
                 background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900,

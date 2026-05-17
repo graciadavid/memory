@@ -277,7 +277,7 @@ export default function SudokuPage() {
               <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
                 <button onClick={() => {
                   const text = `🧩 I solved the ${difficulty} Sudoku in ${fmt(elapsed)} on MemGenius! Can you beat me? memgenius.com/sudoku`
-                  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
+                  if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
                 }} style={{
                   flex: 2, padding: '16px', borderRadius: 16, border: 'none',
                   background: '#25D366', color: '#fff',
