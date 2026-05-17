@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
-import html2canvas from 'html2canvas'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 
@@ -471,39 +470,85 @@ export default function BrainTestClient() {
 
 
   const shareImage = async () => {
-    if (!resultCardRef.current) return
     try {
-      const canvas = await html2canvas(resultCardRef.current, {
-        backgroundColor: '#0A0A1A',
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-      })
+      const canvas = document.createElement('canvas')
+      canvas.width = 800
+      canvas.height = 1000
+      const ctx = canvas.getContext('2d')!
+      
+      // Background
+      const grad = ctx.createLinearGradient(0, 0, 0, 1000)
+      grad.addColorStop(0, '#0A0A1A')
+      grad.addColorStop(0.6, '#0D1B2A')
+      grad.addColorStop(1, '#0A1628')
+      ctx.fillStyle = grad
+      ctx.fillRect(0, 0, 800, 1000)
+
+      // Name
+      if (profile?.name) {
+        ctx.fillStyle = '#C8960C'
+        ctx.font = '700 32px sans-serif'
+        ctx.textAlign = 'center'
+        ctx.letterSpacing = '6px'
+        ctx.fillText(profile.name.toUpperCase(), 400, 180)
+      }
+
+      // Age number
+      const ageColor = brainAge <= 25 ? '#00E676' : brainAge <= 35 ? '#69F0AE' : brainAge <= 45 ? '#FF9100' : '#FF5252'
+      ctx.fillStyle = ageColor
+      ctx.font = '900 280px sans-serif'
+      ctx.textAlign = 'center'
+      ctx.fillText(String(brainAge), 400, 480)
+
+      // years old
+      ctx.fillStyle = ageColor
+      ctx.globalAlpha = 0.8
+      ctx.font = '700 40px sans-serif'
+      ctx.fillText('years old', 400, 540)
+      ctx.globalAlpha = 1
+
+      // Message
+      const msgs: Record<string, string[]> = {
+        great: ['Exceptional.', 'Top 5% worldwide.'],
+        good: ['Sharp mind.', 'Better than most.'],
+        mid: ['Good performance.', 'Keep training.'],
+        low: ['Room to grow.', 'Train daily.'],
+        bad: ['Your brain needs training.', 'Start today.'],
+      }
+      const key = brainAge <= 25 ? 'great' : brainAge <= 32 ? 'good' : brainAge <= 40 ? 'mid' : brainAge <= 50 ? 'low' : 'bad'
+      ctx.fillStyle = '#ffffff'
+      ctx.font = '900 44px sans-serif'
+      ctx.fillText(msgs[key][0], 400, 650)
+      ctx.fillStyle = 'rgba(255,255,255,0.5)'
+      ctx.font = '600 28px sans-serif'
+      ctx.fillText(msgs[key][1], 400, 700)
+
+      // URL watermark
+      ctx.fillStyle = 'rgba(255,255,255,0.3)'
+      ctx.font = '600 24px sans-serif'
+      ctx.fillText('memgenius.com/brain-test', 400, 940)
+
       canvas.toBlob(async (blob) => {
         if (!blob) return
-        const file = new File([blob], 'my-brain-age.png', { type: 'image/png' })
+        const file = new File([blob], 'brain-age.png', { type: 'image/png' })
         if (navigator.share && navigator.canShare({ files: [file] })) {
           await navigator.share({
             title: 'MemGenius Brain Age',
-            text: `🧠 My Brain Age is ${brainAge}! What's yours? memgenius.com/brain-test`,
+            text: \`My Brain Age is \${brainAge}! What's yours?\`,
             files: [file],
           })
         } else {
-          // Fallback - download image
           const url = URL.createObjectURL(blob)
           const a = document.createElement('a')
-          a.href = url
-          a.download = 'my-brain-age.png'
-          a.click()
+          a.href = url; a.download = 'brain-age.png'; a.click()
           URL.revokeObjectURL(url)
         }
       }, 'image/png')
     } catch(e) {
-      // Fallback to text share
-      const text = `🧠 My Brain Age is ${brainAge} on MemGenius Brain Age Test! What's yours?`
+      const text = \`🧠 My Brain Age is \${brainAge} on MemGenius! What's yours?\`
       const url = 'https://memgenius.com/brain-test'
-      if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) }
-      else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
+      if (navigator.share) navigator.share({ title: 'MemGenius', text, url })
+      else window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank')
     }
   }
 
@@ -763,7 +808,7 @@ export default function BrainTestClient() {
               background: 'linear-gradient(135deg, #25D366, #128C7E)',
               color: '#fff', fontSize: 18, fontWeight: 900,
               fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
-            }}>Share my Brain Age 📸</button>
+            }}>Share my Brain Age</button>
             <button onClick={() => window.location.href = '/'} style={{
               width: '100%', padding: '16px', borderRadius: 16, border: 'none',
               background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)',
