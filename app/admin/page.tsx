@@ -144,14 +144,27 @@ export default function AdminPage() {
     const { data: recentVs } = await supabase.from('higher_lower_scores').select('player_name, created_at, category').order('created_at', { ascending: false }).limit(20)
     const { data: recentSud } = await supabase.from('sudoku_scores').select('player_name, created_at, difficulty').order('created_at', { ascending: false }).limit(20)
 
+    const { data: recentWordly } = await supabase.from('wordle_scores').select('player_name, created_at').order('created_at', { ascending: false }).limit(20)
+    const { data: recentMm } = await supabase.from('mastermind_scores').select('player_name, created_at').order('created_at', { ascending: false }).limit(20)
+    const { data: recent2048 } = await supabase.from('game2048_scores').select('player_name, created_at').order('created_at', { ascending: false }).limit(20)
+    const { data: recentAce } = await supabase.from('ace_scores').select('player_name, created_at').order('created_at', { ascending: false }).limit(20)
+    const { data: recentGeo } = await supabase.from('shape_scores').select('player_name, created_at').order('created_at', { ascending: false }).limit(20)
+    const { data: recentNb } = await supabase.from('nback_scores').select('player_name, created_at').order('created_at', { ascending: false }).limit(20)
+
     const allRecent = [
       ...(recentMem || []).map((s: any) => ({ ...s, game: 'Memory' })),
       ...(recentDig || []).map((s: any) => ({ ...s, game: 'Digits' })),
       ...(recentSeq || []).map((s: any) => ({ ...s, game: 'Simon Says' })),
+      ...(recentNb || []).map((s: any) => ({ ...s, game: 'N-Back' })),
       ...(recentFlag || []).map((s: any) => ({ ...s, game: 'Flags' })),
       ...(recentPrec || []).map((s: any) => ({ ...s, game: s.game_type === 'formula1' ? 'F1' : s.game_type === 'pendulum' ? 'Pendulum' : 'Stop' })),
+      ...(recentAce || []).map((s: any) => ({ ...s, game: 'Ace' })),
       ...(recentVs || []).map((s: any) => ({ ...s, game: s.category === 'population' ? 'Population' : 'Area' })),
+      ...(recentGeo || []).map((s: any) => ({ ...s, game: 'GeoShape' })),
       ...(recentSud || []).map((s: any) => ({ ...s, game: `Sudoku ${s.difficulty}` })),
+      ...(recentWordly || []).map((s: any) => ({ ...s, game: 'Wordly' })),
+      ...(recentMm || []).map((s: any) => ({ ...s, game: 'Mastermind' })),
+      ...(recent2048 || []).map((s: any) => ({ ...s, game: '2048' })),
     ].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 30)
 
     setKpis({
