@@ -506,6 +506,7 @@ export default function LandingPage() {
               display: 'flex', alignItems: 'center', gap: 16,
               boxShadow: '0 8px 0 #0D47A160',
               position: 'relative', overflow: 'hidden',
+              animation: 'featuredPulse 2s ease-in-out infinite',
             }}>
               <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 2px, transparent 2px, transparent 12px)', borderRadius: 20 }} />
               <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png" alt="Stop" style={{ width: 64, height: 64, objectFit: 'contain', flexShrink: 0, position: 'relative' }} />
@@ -514,7 +515,9 @@ export default function LandingPage() {
                 <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 2 }}>Stop</div>
                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>Stop at exactly 5 seconds</div>
               </div>
-              <div style={{ fontSize: 28, color: 'rgba(255,255,255,0.4)', position: 'relative' }}>→</div>
+              <div style={{ position: 'relative' }}>
+                <div style={{ background: '#2E7D32', color: '#fff', fontWeight: 900, fontSize: 14, padding: '10px 18px', borderRadius: 12, boxShadow: '0 4px 0 #1B5E2060', fontFamily: 'inherit' }}>Play</div>
+              </div>
             </div>
           </a>
 
