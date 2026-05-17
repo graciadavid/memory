@@ -120,7 +120,7 @@ export default function AdminPage() {
     const allGameStats: any[] = []
     for (const cat of CATEGORIES) {
       for (const game of cat.games) {
-        let query = supabase.from(game.table as any).select('player_name, created_at').gte('created_at', start).lte('created_at', end).neq('player_name', 'David')
+        let query = supabase.from(game.table as any).select('player_name, created_at').gte('created_at', start).lte('created_at', end)
         if ((game as any).filter) {
           const filter = (game as any).filter
           for (const [k, v] of Object.entries(filter)) {
