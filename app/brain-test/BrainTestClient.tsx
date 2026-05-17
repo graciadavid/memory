@@ -109,7 +109,7 @@ export default function BrainTestClient() {
   const [nbFeedback, setNbFeedback] = useState<'correct' | 'wrong' | null>(null)
   const [nbStarted, setNbStarted] = useState(false)
   const nbTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const NB_TOTAL = 10
+  const NB_TOTAL = 5
   const nbCurrentRef = useRef(0)
   const nbPrevRef = useRef<number | null>(null)
   const nbScoreRef = useRef(0)
