@@ -259,6 +259,20 @@ export default function LandingPage() {
     })
 
     createProfile(name.trim())
+
+    // Save pending brain test if exists
+    const pending = localStorage.getItem('pending_brain_test')
+    if (pending) {
+      try {
+        const data = JSON.parse(pending)
+        await supabase.from('brain_test_scores').insert({
+          player_name: name.trim(),
+          ...data,
+        })
+        localStorage.removeItem('pending_brain_test')
+      } catch(e) {}
+    }
+
     setChecking(false)
   }
 

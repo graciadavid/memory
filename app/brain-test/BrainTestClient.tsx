@@ -155,6 +155,15 @@ export default function BrainTestClient() {
 
   const saveResult = async (finalScores: typeof scores) => {
     const total = calcBrainScore(finalScores)
+    // Always save to localStorage for later use
+    localStorage.setItem('pending_brain_test', JSON.stringify({
+      score: total,
+      ace_score: finalScores.ace,
+      nback_score: finalScores.nback,
+      stop_score: finalScores.stop,
+      geoshape_score: finalScores.geoshape,
+      mastermind_score: finalScores.digits,
+    }))
     if (profile?.name) {
       await supabase.from('brain_test_scores').insert({
         player_name: profile.name, score: total,
@@ -162,6 +171,7 @@ export default function BrainTestClient() {
         stop_score: finalScores.stop, geoshape_score: finalScores.geoshape,
         mastermind_score: finalScores.digits,
       })
+      localStorage.removeItem('pending_brain_test')
     }
     const { data } = await supabase.from('brain_test_scores').select('score').order('score', { ascending: false })
     if (data && data.length > 1) {
