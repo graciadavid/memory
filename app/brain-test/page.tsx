@@ -240,7 +240,26 @@ export default function BrainTestPage() {
   const startNbRound = useCallback((idx: number, prev: number | null) => {
     const next = Math.floor(Math.random() * NBACK_COLORS.length)
     setNbCurrent(next); setNbPrev(prev); setNbShowCard(true); setNbPhase('show'); setNbFeedback(null)
-    nbTimer.current = setTimeout(() => { setNbShowCard(false); setNbPhase(idx === 0 ? 'show' : 'answer') }, 1200)
+    nbTimer.current = setTimeout(() => {
+      setNbShowCard(false)
+      if (idx === 0) {
+        // First card - just show it then show second card
+        setTimeout(() => {
+          const second = Math.floor(Math.random() * NBACK_COLORS.length)
+          setNbCurrent(second)
+          setNbPrev(next)
+          setNbShowCard(true)
+          setNbPhase('show')
+          setNbIndex(1)
+          nbTimer.current = setTimeout(() => {
+            setNbShowCard(false)
+            setNbPhase('answer')
+          }, 1200)
+        }, 300)
+      } else {
+        setNbPhase('answer')
+      }
+    }, 1200)
     return next
   }, [])
 
