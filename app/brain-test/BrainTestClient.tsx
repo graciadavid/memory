@@ -1,5 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
+import html2canvas from 'html2canvas'
+import html2canvas from 'html2canvas'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 
@@ -89,6 +91,8 @@ export default function BrainTestClient() {
   const [scores, setScores] = useState({ ace: 0, nback: 0, stop: 0, geoshape: 0, digits: 0 })
   const [worldPercent, setWorldPercent] = useState<number | null>(null)
   const testStartTimeRef = useRef(0)
+  const resultCardRef = useRef<HTMLDivElement>(null)
+  const resultCardRef = useRef<HTMLDivElement>(null)
 
   // ACE
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -468,6 +472,80 @@ export default function BrainTestClient() {
   const brainAge = Math.min(65, Math.max(18, baseAge + timePenalty))
 
 
+  const shareImage = async () => {
+    if (!resultCardRef.current) return
+    try {
+      const canvas = await html2canvas(resultCardRef.current, {
+        backgroundColor: '#0A0A1A',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+      })
+      canvas.toBlob(async (blob) => {
+        if (!blob) return
+        const file = new File([blob], 'my-brain-age.png', { type: 'image/png' })
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: 'MemGenius Brain Age',
+            text: `🧠 My Brain Age is ${brainAge}! What's yours? memgenius.com/brain-test`,
+            files: [file],
+          })
+        } else {
+          // Fallback - download image
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'my-brain-age.png'
+          a.click()
+          URL.revokeObjectURL(url)
+        }
+      }, 'image/png')
+    } catch(e) {
+      // Fallback to text share
+      const text = `🧠 My Brain Age is ${brainAge} on MemGenius Brain Age Test! What's yours?`
+      const url = 'https://memgenius.com/brain-test'
+      if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) }
+      else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
+    }
+  }
+
+  const shareImage = async () => {
+    if (!resultCardRef.current) return
+    try {
+      const canvas = await html2canvas(resultCardRef.current, {
+        backgroundColor: '#0A0A1A',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+      })
+      canvas.toBlob(async (blob) => {
+        if (!blob) return
+        const file = new File([blob], 'my-brain-age.png', { type: 'image/png' })
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: 'MemGenius Brain Age',
+            text: `🧠 My Brain Age is ${brainAge}! What's yours? memgenius.com/brain-test`,
+            files: [file],
+          })
+        } else {
+          // Fallback - download image
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'my-brain-age.png'
+          a.click()
+          URL.revokeObjectURL(url)
+        }
+      }, 'image/png')
+    } catch(e) {
+      // Fallback to text share
+      const text = `🧠 My Brain Age is ${brainAge} on MemGenius Brain Age Test! What's yours?`
+      const url = 'https://memgenius.com/brain-test'
+      if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) }
+      else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
+    }
+  }
+
   const getBrainMessage = (age: number) => {
     if (age <= 25) return { msg: 'Exceptional. Top 5% worldwide.', sub: 'Your brain performs like an elite.' }
     if (age <= 32) return { msg: 'Sharp mind. Better than most.', sub: 'You are above average.' }
@@ -690,7 +768,7 @@ export default function BrainTestClient() {
         const { msg, sub } = getBrainMessage(brainAge)
         const ageColor = brainAge <= 25 ? '#00E676' : brainAge <= 35 ? '#69F0AE' : brainAge <= 45 ? '#FF9100' : '#FF5252'
         return (
-        <div style={{
+        <div ref={resultCardRef} style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
           minHeight: '100dvh', padding: '40px 24px', gap: 0,
           background: 'linear-gradient(180deg, #0A0A1A 0%, #0D1B2A 60%, #0A1628 100%)',
@@ -719,16 +797,12 @@ export default function BrainTestClient() {
 
           {/* Buttons */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
-            <button onClick={() => {
-              const text = `🧠 My Brain Age is ${brainAge} on MemGenius! ${msg} What's yours?`
-              const url = 'https://memgenius.com/brain-test'
-              if (navigator.share) { navigator.share({ title: 'MemGenius Brain Age', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-            }} style={{
+            <button onClick={shareImage} style={{
               width: '100%', padding: '18px', borderRadius: 16, border: 'none',
               background: 'linear-gradient(135deg, #25D366, #128C7E)',
               color: '#fff', fontSize: 18, fontWeight: 900,
               fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
-            }}>Share my Brain Age</button>
+            }}>Share my Brain Age 📸</button>
             <button onClick={() => window.location.href = '/'} style={{
               width: '100%', padding: '16px', borderRadius: 16, border: 'none',
               background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)',
