@@ -508,43 +508,6 @@ export default function BrainTestClient() {
     }
   }
 
-  const shareImage = async () => {
-    if (!resultCardRef.current) return
-    try {
-      const canvas = await html2canvas(resultCardRef.current, {
-        backgroundColor: '#0A0A1A',
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-      })
-      canvas.toBlob(async (blob) => {
-        if (!blob) return
-        const file = new File([blob], 'my-brain-age.png', { type: 'image/png' })
-        if (navigator.share && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            title: 'MemGenius Brain Age',
-            text: `🧠 My Brain Age is ${brainAge}! What's yours? memgenius.com/brain-test`,
-            files: [file],
-          })
-        } else {
-          // Fallback - download image
-          const url = URL.createObjectURL(blob)
-          const a = document.createElement('a')
-          a.href = url
-          a.download = 'my-brain-age.png'
-          a.click()
-          URL.revokeObjectURL(url)
-        }
-      }, 'image/png')
-    } catch(e) {
-      // Fallback to text share
-      const text = `🧠 My Brain Age is ${brainAge} on MemGenius Brain Age Test! What's yours?`
-      const url = 'https://memgenius.com/brain-test'
-      if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) }
-      else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-    }
-  }
-
   const getBrainMessage = (age: number) => {
     if (age <= 25) return { msg: 'Exceptional. Top 5% worldwide.', sub: 'Your brain performs like an elite.' }
     if (age <= 32) return { msg: 'Sharp mind. Better than most.', sub: 'You are above average.' }
