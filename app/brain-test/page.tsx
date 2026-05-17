@@ -31,7 +31,7 @@ const GEO_COUNTRIES = [
 
 const CANVAS_W = 390
 const CANVAS_H = 240
-const TARGET_R = 36
+const TARGET_R = 26
 const TARGET_X = CANVAS_W / 2
 const TARGET_Y = CANVAS_H / 2 - 20
 const BALL_R = 16
@@ -400,6 +400,7 @@ export default function BrainTestPage() {
   }
 
   const brainScore = calcBrainScore(scores)
+  const brainAge = Math.round(60 - (brainScore / 1000) * 42) // 1000pts = age 18, 0pts = age 60
 
   return (
     <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #E8EAF6 0%, ${CREAM} 100%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 80 }}>
@@ -412,7 +413,7 @@ export default function BrainTestPage() {
       {/* INTRO */}
       {phase === 'intro' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 28 }}>
-          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: '100%', maxWidth: 280, objectFit: 'contain' }} />
+          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: '100%', maxWidth: 180, objectFit: 'contain' }} />
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 44, fontWeight: 900, color: BROWN, letterSpacing: -1, lineHeight: 1.1, marginBottom: 20 }}>Brain Test</div>
             <div style={{ fontSize: 22, color: `${BROWN}70`, lineHeight: 1.6, fontWeight: 700 }}>
@@ -430,7 +431,6 @@ export default function BrainTestPage() {
       {/* ACE */}
       {phase === 'ace' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 0', gap: 8 }}>
-          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 1 of 5</div>
           <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>Ace</div>
           <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', padding: '0 20px' }}>Hit the ball through the circle</div>
           <div style={{ fontSize: 18, fontWeight: 900, color: '#4CAF50' }}>{acePoints} pts</div>
@@ -456,7 +456,11 @@ export default function BrainTestPage() {
           </div>
           <div style={{ fontSize: 16, color: GOLD, fontWeight: 900 }}>{Math.min(nbIndex, NB_TOTAL)} / {NB_TOTAL} · {nbScore} correct</div>
           <div style={{ width: 200, height: 200, borderRadius: 28, background: nbShowCard ? NBACK_COLORS[nbCurrent].bg : '#E0E0E0', boxShadow: nbShowCard ? `0 8px 0 ${NBACK_COLORS[nbCurrent].shadow}` : '0 4px 0 #BDBDBD', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}>
-            {!nbShowCard && nbIndex > 0 && <img src={LOGO} alt="" style={{ width: 60, height: 60, objectFit: 'contain', opacity: 0.25 }} />}
+            {!nbShowCard && nbIndex > 0 && (
+              <div style={{ textAlign: 'center', padding: '0 16px' }}>
+                <div style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A40', lineHeight: 1.3 }}>Same<br/>or<br/>Different?</div>
+              </div>
+            )}
           </div>
           {nbFeedback && <div style={{ fontSize: 22, fontWeight: 900, color: nbFeedback === 'correct' ? '#2E7D32' : '#C62828', animation: 'popIn 0.3s ease' }}>{nbFeedback === 'correct' ? '✓ Correct' : '✗ Wrong'}</div>}
           {nbPhase === 'answer' && (
@@ -566,22 +570,22 @@ export default function BrainTestPage() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 20 }}>
           <img src={LOGO} alt="" style={{ width: 70, height: 70, objectFit: 'contain' }} />
           <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Your Brain Profile</div>
-          <div style={{ fontSize: 96, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', lineHeight: 1, animation: 'popIn 0.5s ease' }}>{brainScore}</div>
-          <div style={{ fontSize: 16, color: `${BROWN}50`, fontWeight: 700 }}>out of 1000</div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: `${BROWN}50`, marginBottom: 4 }}>Brain Age</div>
+          <div style={{ fontSize: 96, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', lineHeight: 1, animation: 'popIn 0.5s ease' }}>{brainAge}</div>
           {worldPercent !== null && (
             <div style={{ background: `${GOLD}15`, borderRadius: 20, padding: '20px 32px', textAlign: 'center', border: `1px solid ${GOLD}30`, width: '100%' }}>
               <div style={{ fontSize: 12, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World ranking</div>
-              <div style={{ fontSize: 44, fontWeight: 900, color: GOLD }}>Top {100 - worldPercent}%</div>
+              <div style={{ fontSize: 28, fontWeight: 900, color: GOLD }}>Top {100 - worldPercent}%</div>
             </div>
           )}
           <button onClick={() => {
-            const text = `🧠 My Brain Score is ${brainScore}/1000 on MemGenius! I'm in the top ${100 - (worldPercent || 50)}% worldwide. Can you beat me? memgenius.com/brain-test`
+            const text = `🧠 My Brain Age is ${brainAge} on MemGenius Brain Test! I'm in the top ${100 - (worldPercent || 50)}% worldwide. What's yours? memgenius.com/brain-test`
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
           }} style={{ width: '100%', padding: '18px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60' }}>
             Share on WhatsApp
           </button>
           <button onClick={() => window.location.href = '/'} style={{ width: '100%', padding: '14px', borderRadius: 16, border: 'none', background: BROWN, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-            Play all games →
+            Training →
           </button>
         </div>
       )}
