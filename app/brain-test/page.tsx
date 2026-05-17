@@ -134,6 +134,7 @@ export default function BrainTestPage() {
   const [digitInput, setDigitInput] = useState<number[]>([])
   const [digitPhase, setDigitPhase] = useState<'show' | 'input' | 'done'>('show')
   const [digitStartTime, setDigitStartTime] = useState(0)
+  const [digitResult, setDigitResult] = useState<{ correct: number, total: number, points: number } | null>(null)
 
   const calcBrainScore = (s: typeof scores) => {
     const aceP = Math.min(200, s.ace)
@@ -294,12 +295,12 @@ export default function BrainTestPage() {
           setNbPrev(next); setNbCurrent(second)
           setNbShowCard(true); setNbPhase('show')
           nbIndexRef.current = 1; setNbIndex(1)
-          nbTimer.current = setTimeout(() => { setNbShowCard(false); setNbPhase('answer') }, 1200)
-        }, 400)
+          nbTimer.current = setTimeout(() => { setNbShowCard(false); setNbPhase('answer') }, 2000)
+        }, 600)
       } else {
         setNbPhase('answer')
       }
-    }, 1200)
+    }, 2000)
     return next
   }, [])
 
@@ -447,15 +448,7 @@ export default function BrainTestPage() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 0', gap: 8 }}>
           <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>Ace</div>
           <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', padding: '0 20px' }}>Hit the ball through the circle</div>
-          {!aceStarted && (
-            <button onClick={startAce} style={{
-              width: '100%', padding: '20px', borderRadius: 20, border: 'none',
-              background: '#2E7D32', color: '#fff', fontSize: 20, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
-            }}>Start</button>
-          )}
-          {aceStarted && <>
-          <div style={{ position: 'relative', width: '100%' }} onClick={handleAceTap}>
+          <div style={{ position: 'relative', width: '100%' }} onClick={aceStarted ? handleAceTap : undefined}>
             <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{ width: '100%', touchAction: 'none' }} />
             {aceResult && (
               <div style={{ position: 'absolute', top: '25%', left: '50%', transform: 'translateX(-50%)', fontSize: 32, fontWeight: 900, color: aceResult === 'miss' ? '#C62828' : aceResult === 'perfect' ? '#C8960C' : '#2E7D32', animation: 'popIn 0.3s ease' }}>
@@ -463,8 +456,16 @@ export default function BrainTestPage() {
               </div>
             )}
           </div>
-          <button onClick={handleAceTap} style={{ width: '80%', padding: '18px', borderRadius: 20, border: 'none', background: '#4CAF50', color: '#fff', fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #2E7D3260' }}>SERVE!</button>
-          </>}
+          {!aceStarted && (
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <button onClick={startAce} style={{
+                padding: '20px 48px', borderRadius: 20, border: 'none',
+                background: '#2E7D32', color: '#fff', fontSize: 22, fontWeight: 900,
+                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
+              }}>Start</button>
+            </div>
+          )}
+          {aceStarted && <button onClick={handleAceTap} style={{ width: '80%', padding: '18px', borderRadius: 20, border: 'none', background: '#4CAF50', color: '#fff', fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #2E7D3260' }}>SERVE!</button>}
         </div>
       )}
 
@@ -605,8 +606,20 @@ export default function BrainTestPage() {
             </>
           )}
 
-          {digitPhase === 'done' && (
-            <div style={{ fontSize: 20, fontWeight: 900, color: '#2E7D32' }}>Calculating your score...</div>
+          {digitPhase === 'done' && digitResult && (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: '100%' }}>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {digitSeq.map((d, i) => (
+                  <div key={i} style={{ width: 40, height: 52, borderRadius: 10, background: digitInput[i] === d ? '#2E7D32' : '#C62828', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 900, color: '#fff' }}>{d}</div>
+                ))}
+              </div>
+              <div style={{ fontSize: 18, color: `${BROWN}60`, fontWeight: 700 }}>{digitResult.correct} of 7 correct</div>
+              <button onClick={() => saveResult(scores)} style={{
+                width: '100%', padding: '18px', borderRadius: 20, border: 'none',
+                background: '#0D1B4B', color: '#fff', fontSize: 18, fontWeight: 900,
+                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #08103060',
+              }}>See your Brain Age →</button>
+            </div>
           )}
         </div>
       )}
@@ -614,9 +627,8 @@ export default function BrainTestPage() {
       {/* RESULT */}
       {phase === 'result' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 24px', gap: 20 }}>
-          <img src={LOGO} alt="" style={{ width: 70, height: 70, objectFit: 'contain' }} />
-          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Your Brain Profile</div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: `${BROWN}50`, marginBottom: 4 }}>Brain Age</div>
+          <img src={LOGO} alt="" style={{ width: 90, height: 90, objectFit: 'contain' }} />
+          <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Your Brain Age</div>
           <div style={{ fontSize: 96, fontWeight: 900, color: brainScore >= 500 ? '#2E7D32' : '#C62828', lineHeight: 1, animation: 'popIn 0.5s ease' }}>{brainAge}</div>
 
           <button onClick={() => {
@@ -625,8 +637,8 @@ export default function BrainTestPage() {
           }} style={{ width: '100%', padding: '18px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60' }}>
             Share on WhatsApp
           </button>
-          <button onClick={() => window.location.href = '/'} style={{ width: '100%', padding: '14px', borderRadius: 16, border: 'none', background: BROWN, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-            Training →
+          <button onClick={() => window.location.href = '/'} style={{ width: '100%', padding: '16px', borderRadius: 16, border: 'none', background: '#0D1B4B', color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #08103060' }}>
+            Train Your Brain
           </button>
         </div>
       )}
