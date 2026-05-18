@@ -278,9 +278,13 @@ export default function PendulumClient() {
                 {deviation}ms
               </div>
 
-              {worldRank && (
-                <div style={{ marginTop: 8, fontSize: 18, fontWeight: 900, color: PURPLE }}>#{worldRank} World</div>
-              )}
+               {worldRank && (
+               <div style={{ background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', borderRadius: 16, padding: '16px', marginTop: 8, textAlign: 'center' }}>
+                 <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
+                 <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
+                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
+               </div>
+             )}
             </div>
           )}
 
