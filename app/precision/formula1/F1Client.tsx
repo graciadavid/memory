@@ -281,11 +281,13 @@ export default function F1Client() {
               <div style={{ fontSize: 13, color: `${BROWN}50`, marginBottom: 12 }}>
                 {reactionMs < 150 ? '🏆 Incredible!' : reactionMs < 200 ? '🔥 Elite!' : reactionMs < 250 ? '⚡ Fast!' : reactionMs < 350 ? '👍 Good' : '💪 Keep training'}
               </div>
-              {worldRank && (
-                <div style={{ fontSize: 14, color: `${BROWN}60`, fontWeight: 700 }}>
-                  World Ranking: <span style={{ color: GOLD, fontWeight: 900 }}>#{worldRank}</span>
-                </div>
-              )}
+               {worldRank && (
+               <div style={{ background: 'linear-gradient(135deg, #B71C1C, #D32F2F)', borderRadius: 16, padding: '16px', marginBottom: 16, textAlign: 'center' }}>
+                 <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
+                 <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
+                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
+               </div>
+             )}
             </div>
 
             <button onClick={() => {
