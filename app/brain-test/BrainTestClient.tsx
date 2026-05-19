@@ -552,6 +552,17 @@ export default function BrainTestClient() {
     }
   }
 
+  const getWeakArea = (s: typeof scores) => {
+    const areas = [
+      { key: 'nback', label: 'Working Memory', score: Math.min(200, s.nback * 50), games: ['N-Back', 'Digits'], hrefs: ['/nback', '/digits'], icon: '🧠' },
+      { key: 'stop', label: 'Precision', score: Math.max(0, 200 - (s.stop / 100) * 20), games: ['Stop', 'F1 Reaction'], hrefs: ['/precision/stopwatch', '/precision/formula1'], icon: '⏱' },
+      { key: 'geoshape', label: 'Spatial Knowledge', score: Math.min(200, s.geoshape * 40), games: ['GeoShape', 'Flags'], hrefs: ['/geoshape', '/flags'], icon: '🌍' },
+      { key: 'digits', label: 'Short-term Memory', score: Math.min(200, s.digits), games: ['Digits', 'Simon Says'], hrefs: ['/digits', '/sequence'], icon: '🔢' },
+      { key: 'ace', label: 'Agility', score: Math.min(200, s.ace), games: ['Ace', 'Pendulum'], hrefs: ['/ace', '/precision/pendulum'], icon: '🎾' },
+    ]
+    return areas.sort((a, b) => a.score - b.score)[0]
+  }
+
   const getBrainMessage = (age: number) => {
     if (age <= 25) return { msg: 'Exceptional. Top 5% worldwide.', sub: 'Your brain performs like an elite.' }
     if (age <= 32) return { msg: 'Sharp mind. Better than most.', sub: 'You are above average.' }
@@ -800,6 +811,26 @@ export default function BrainTestClient() {
 
           {/* Logo watermark */}
           <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: 120, objectFit: 'contain', opacity: 0.6, marginBottom: 32 }} />
+
+          {(() => {
+            const weak = getWeakArea(scores)
+            return (
+              <div style={{ width: '100%', background: 'rgba(255,255,255,0.08)', borderRadius: 20, padding: '16px', border: '1px solid rgba(255,255,255,0.1)', marginBottom: 4 }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Your weakest area</div>
+                <div style={{ fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 4 }}>{weak.icon} {weak.label}</div>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>Train daily for 7 days and retake the test</div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {weak.hrefs.map((href, i) => (
+                    <a key={i} href={href} style={{ flex: 1, textDecoration: 'none' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 12, padding: '10px', textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#fff' }}>
+                        {weak.games[i]} →
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )
+          })()}
 
           {/* Buttons */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
