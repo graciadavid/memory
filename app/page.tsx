@@ -126,6 +126,7 @@ export default function LandingPage() {
   const [confirmPin, setConfirmPin] = useState('')
   const [needsNewPin, setNeedsNewPin] = useState(false)
   const [showStreak, setShowStreak] = useState(false)
+  const [hasBrainTest, setHasBrainTest] = useState(false)
   const [activeCategory, setActiveCategory] = useState('memory')
   const [hasPlayedAce, setHasPlayedAce] = useState(() => {
     if (typeof window === 'undefined') return false
