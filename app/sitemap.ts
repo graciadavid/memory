@@ -61,7 +61,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     // Social
     { url: 'https://memgenius.com/groups', lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
-    { url: 'https://memgenius.com/streak', lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
 
     // Blog
     { url: 'https://memgenius.com/blog', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
