@@ -174,7 +174,7 @@ export default function Game2048Client() {
         setPhase('gameover')
         if (profile?.name) {
           supabase.from('game2048_scores').insert({ player_name: profile.name, best_tile: tile, time_ms: finalTime })
-            .then(() => updateStreak(profile.name))
+            
             .then(() => { window.dispatchEvent(new Event('game_completed')) })
             .then(() => supabase.from('game2048_scores').select('player_name, best_tile, time_ms').order('best_tile', { ascending: false }).order('time_ms', { ascending: true }).limit(200))
             .then(({ data }) => {

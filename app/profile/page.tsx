@@ -3,7 +3,6 @@ import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { fetchAllRanks } from './RanksFetcher'
 import { supabase } from '@/lib/supabase'
-import { getStreak } from '@/lib/streak'
 import Link from 'next/link'
 
 const GOLD = '#C8960C'
@@ -59,7 +58,6 @@ export default function ProfilePage() {
   const [precRank, setPrecRank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
   const [f1Rank, setF1Rank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
   const [pendulumRank, setPendulumRank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
-  const [profileStreak, setProfileStreak] = useState<{ current: number, longest: number }>({ current: 0, longest: 0 })
   const [profileBrainAge, setProfileBrainAge] = useState<number | null>(null)
   const [versusRank, setVersusRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
@@ -121,7 +119,6 @@ export default function ProfilePage() {
     })
 
     // Fetch streak
-    getStreak(profile.name).then(s => setProfileStreak({ current: s.current, longest: s.longest }))
     supabase.from('brain_test_scores').select('score').eq('player_name', profile.name)
       .order('created_at', { ascending: false }).limit(1)
       .then(({ data }) => {
