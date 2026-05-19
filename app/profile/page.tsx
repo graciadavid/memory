@@ -470,7 +470,69 @@ export default function ProfilePage() {
 
 
 
-        <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
+        {/* Plan */}
+        <div style={{ fontSize: 11, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginTop: 8, marginBottom: 4 }}>7-Day Training Plan</div>
+        {!brainPlan && (() => {
+          const areaScores3 = calcAreaScores(brainTest)
+          const weakArea = Object.entries(areaScores3).sort((a, b) => a[1] - b[1])[0][0]
+          const area = BRAIN_AREAS[weakArea as keyof typeof BRAIN_AREAS]
+          return (
+            <div style={{ background: '#fff', borderRadius: 20, padding: '20px', border: '1px solid #4A2C0A08', textAlign: 'center' }}>
+              <div style={{ fontSize: 16, fontWeight: 900, color: '#4A2C0A', marginBottom: 8 }}>{area.icon} Train your {area.label}</div>
+              <div style={{ fontSize: 13, color: '#4A2C0A60', marginBottom: 16 }}>Your weakest area. 7 days to improve it.</div>
+              <button onClick={() => createPlan(weakArea)} disabled={creatingPlan} style={{ width: '100%', padding: '16px', borderRadius: 16, border: 'none', background: area.color, color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
+                {creatingPlan ? 'Creating...' : 'Start 7-day plan'}
+              </button>
+            </div>
+          )
+        })()}
+
+        {brainPlan && brainPlan.completed_days.length < 7 && (
+          <div style={{ background: '#fff', borderRadius: 20, padding: '20px', border: '1px solid #4A2C0A08' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div>
+                <div style={{ fontSize: 16, fontWeight: 900, color: '#4A2C0A' }}>
+                  {BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.icon} {BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.label} Plan
+                </div>
+                <div style={{ fontSize: 12, color: '#4A2C0A50', fontWeight: 700 }}>Day {brainPlan.completed_days.length} of 7</div>
+              </div>
+              <div style={{ fontSize: 32, fontWeight: 900, color: BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.color }}>{brainPlan.completed_days.length}/7</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {brainPlan.game_labels.map((label: string, i: number) => {
+                const completed = brainPlan.completed_days.includes(i + 1)
+                const today = new Date().toISOString().split('T')[0]
+                const planDay = Math.ceil((new Date(today).getTime() - new Date(brainPlan.start_date).getTime()) / 86400000) + 1
+                const isToday = i + 1 === planDay
+                const areaColor = BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.color || '#4A2C0A'
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderRadius: 12, background: completed ? '#E8F5E9' : isToday ? `${areaColor}10` : '#F5F5F5', border: isToday ? `1.5px solid ${areaColor}40` : 'none' }}>
+                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: completed ? '#2E7D32' : isToday ? areaColor : '#E0E0E0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 900, color: '#fff', flexShrink: 0 }}>
+                      {completed ? '✓' : i + 1}
+                    </div>
+                    <div style={{ flex: 1, fontSize: 13, fontWeight: 800, color: completed ? '#2E7D32' : '#4A2C0A' }}>Day {i + 1} — {label}</div>
+                    {isToday && !completed && (
+                      <a href={brainPlan.games[i]} style={{ textDecoration: 'none', background: areaColor, color: '#fff', padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 900 }}>Play</a>
+                    )}
+                    {!isToday && !completed && i + 1 > planDay && (
+                      <span style={{ fontSize: 16 }}>🔒</span>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {brainPlan && brainPlan.completed_days.length >= 7 && (
+          <div style={{ background: '#E8F5E9', borderRadius: 20, padding: '20px', textAlign: 'center', border: '1px solid #2E7D3220' }}>
+            <div style={{ fontSize: 32, marginBottom: 8 }}>🎉</div>
+            <div style={{ fontSize: 16, fontWeight: 900, color: '#2E7D32', marginBottom: 8 }}>Plan complete!</div>
+            <a href="/brain-test" style={{ textDecoration: 'none', display: 'block', background: '#2E7D32', color: '#fff', padding: '14px', borderRadius: 14, fontWeight: 900, fontSize: 15 }}>Retake Brain Age Test</a>
+          </div>
+        )}
+
+                <div style={{ background: '#fff', borderRadius: 20, padding: '18px 20px', boxShadow: `0 2px 12px ${BROWN}08` }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <div style={{ fontSize: 13, fontWeight: 900, color: BROWN }}>My Groups</div>
             <a href="/create-group" style={{ padding: '6px 14px', borderRadius: 10, background: '#2E7D32', color: '#fff', fontSize: 12, fontWeight: 800, textDecoration: 'none', boxShadow: '0 3px 0 #1B5E2060' }}>+ New</a>
@@ -688,67 +750,7 @@ export default function ProfilePage() {
           )
         })}
 
-        {/* Plan */}
-        <div style={{ fontSize: 11, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginTop: 8, marginBottom: 4 }}>7-Day Training Plan</div>
-        {!brainPlan && (() => {
-          const areaScores3 = calcAreaScores(brainTest)
-          const weakArea = Object.entries(areaScores3).sort((a, b) => a[1] - b[1])[0][0]
-          const area = BRAIN_AREAS[weakArea as keyof typeof BRAIN_AREAS]
-          return (
-            <div style={{ background: '#fff', borderRadius: 20, padding: '20px', border: '1px solid #4A2C0A08', textAlign: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 900, color: '#4A2C0A', marginBottom: 8 }}>{area.icon} Train your {area.label}</div>
-              <div style={{ fontSize: 13, color: '#4A2C0A60', marginBottom: 16 }}>Your weakest area. 7 days to improve it.</div>
-              <button onClick={() => createPlan(weakArea)} disabled={creatingPlan} style={{ width: '100%', padding: '16px', borderRadius: 16, border: 'none', background: area.color, color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-                {creatingPlan ? 'Creating...' : 'Start 7-day plan'}
-              </button>
-            </div>
-          )
-        })()}
 
-        {brainPlan && brainPlan.completed_days.length < 7 && (
-          <div style={{ background: '#fff', borderRadius: 20, padding: '20px', border: '1px solid #4A2C0A08' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 900, color: '#4A2C0A' }}>
-                  {BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.icon} {BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.label} Plan
-                </div>
-                <div style={{ fontSize: 12, color: '#4A2C0A50', fontWeight: 700 }}>Day {brainPlan.completed_days.length} of 7</div>
-              </div>
-              <div style={{ fontSize: 32, fontWeight: 900, color: BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.color }}>{brainPlan.completed_days.length}/7</div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {brainPlan.game_labels.map((label: string, i: number) => {
-                const completed = brainPlan.completed_days.includes(i + 1)
-                const today = new Date().toISOString().split('T')[0]
-                const planDay = Math.ceil((new Date(today).getTime() - new Date(brainPlan.start_date).getTime()) / 86400000) + 1
-                const isToday = i + 1 === planDay
-                const areaColor = BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.color || '#4A2C0A'
-                return (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderRadius: 12, background: completed ? '#E8F5E9' : isToday ? `${areaColor}10` : '#F5F5F5', border: isToday ? `1.5px solid ${areaColor}40` : 'none' }}>
-                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: completed ? '#2E7D32' : isToday ? areaColor : '#E0E0E0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 900, color: '#fff', flexShrink: 0 }}>
-                      {completed ? '✓' : i + 1}
-                    </div>
-                    <div style={{ flex: 1, fontSize: 13, fontWeight: 800, color: completed ? '#2E7D32' : '#4A2C0A' }}>Day {i + 1} — {label}</div>
-                    {isToday && !completed && (
-                      <a href={brainPlan.games[i]} style={{ textDecoration: 'none', background: areaColor, color: '#fff', padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 900 }}>Play</a>
-                    )}
-                    {!isToday && !completed && i + 1 > planDay && (
-                      <span style={{ fontSize: 16 }}>🔒</span>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {brainPlan && brainPlan.completed_days.length >= 7 && (
-          <div style={{ background: '#E8F5E9', borderRadius: 20, padding: '20px', textAlign: 'center', border: '1px solid #2E7D3220' }}>
-            <div style={{ fontSize: 32, marginBottom: 8 }}>🎉</div>
-            <div style={{ fontSize: 16, fontWeight: 900, color: '#2E7D32', marginBottom: 8 }}>Plan complete!</div>
-            <a href="/brain-test" style={{ textDecoration: 'none', display: 'block', background: '#2E7D32', color: '#fff', padding: '14px', borderRadius: 14, fontWeight: 900, fontSize: 15 }}>Retake Brain Age Test</a>
-          </div>
-        )}
       </div>
     )}
 
