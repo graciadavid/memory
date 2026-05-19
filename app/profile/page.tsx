@@ -732,6 +732,9 @@ export default function ProfilePage() {
                     {isToday && !completed && (
                       <a href={brainPlan.games[i]} style={{ textDecoration: 'none', background: areaColor, color: '#fff', padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 900 }}>Play</a>
                     )}
+                    {completed && (
+                      <a href={brainPlan.games[i]} style={{ textDecoration: 'none', background: '#2E7D3220', color: '#2E7D32', padding: '6px 12px', borderRadius: 8, fontSize: 11, fontWeight: 900 }}>Train more</a>
+                    )}
                     {!isToday && !completed && i + 1 > planDay && (
                       <span style={{ fontSize: 16 }}>🔒</span>
                     )}
