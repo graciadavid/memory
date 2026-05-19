@@ -4,7 +4,6 @@ import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { track } from '@vercel/analytics'
-import { updateStreak } from '@/lib/streak'
 
 const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
@@ -163,8 +162,7 @@ export default function VersusPage() {
         const finalStreak = streak
         if (profile?.name && finalStreak > 0) {
           await supabase.from('higher_lower_scores').insert({ player_name: profile.name, level: finalStreak, category: 'population' })
-        await updateStreak(profile.name)
-        window.dispatchEvent(new Event('game_completed'))
+            window.dispatchEvent(new Event('game_completed'))
           const { count } = await supabase.from('higher_lower_scores')
             .select('*', { count: 'exact', head: true })
             .eq('category', 'population').gt('level', finalStreak)

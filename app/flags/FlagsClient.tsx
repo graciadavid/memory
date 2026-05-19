@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { track } from '@vercel/analytics'
-import { updateStreak } from '@/lib/streak'
 import { usePlayer } from '@/lib/usePlayer'
 import { revalidateRanking } from '@/app/actions'
 import Link from 'next/link'
@@ -190,8 +189,7 @@ export default function FlagsClient() {
       setTimeout(async () => {
         if (profile?.name) {
           await supabase.from('flag_scores').insert({ player_name: profile.name, level })
-      await updateStreak(profile.name)
-      window.dispatchEvent(new Event('game_completed'))
+        window.dispatchEvent(new Event('game_completed'))
           revalidateRanking('flags')
           const { data } = await supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
           if (data) {

@@ -3,7 +3,6 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
-import { updateStreak } from '@/lib/streak'
 import Link from 'next/link'
 
 const BROWN = '#4A2C0A'
@@ -126,8 +125,7 @@ export default function PendulumClient() {
         difference_ms: clampedDev,
         game_type: 'pendulum',
       })
-      await updateStreak(profile.name)
-      window.dispatchEvent(new Event('game_completed'))
+        window.dispatchEvent(new Event('game_completed'))
 
       const { data } = await supabase
         .from('precision_scores')

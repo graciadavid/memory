@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
-import { updateStreak } from '@/lib/streak'
 import { useRouter } from 'next/navigation'
 
 const BROWN = '#4A2C0A'
@@ -79,8 +78,7 @@ export default function StopClient() {
     setPhase('result')
 
     if (profile?.name) {
-      await updateStreak(profile.name)
-      window.dispatchEvent(new Event('game_completed'))
+        window.dispatchEvent(new Event('game_completed'))
       await supabase.from('precision_scores').insert({
         player_name: profile.name,
         difference_ms: Math.abs(diff),

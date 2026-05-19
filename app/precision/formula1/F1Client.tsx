@@ -2,7 +2,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
-import { updateStreak } from '@/lib/streak'
 
 const BROWN = '#4A2C0A'
 
@@ -119,8 +118,7 @@ export default function F1Client() {
           difference_ms: reaction,
           game_type: 'formula1',
         })
-        await updateStreak(profile.name)
-        window.dispatchEvent(new Event('game_completed'))
+            window.dispatchEvent(new Event('game_completed'))
 
         const { count } = await supabase
           .from('precision_scores')

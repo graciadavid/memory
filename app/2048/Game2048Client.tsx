@@ -3,7 +3,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { track } from '@vercel/analytics'
-import { updateStreak } from '@/lib/streak'
 import { usePlayer } from '@/lib/usePlayer'
 import Link from 'next/link'
 
