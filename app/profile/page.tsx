@@ -7,6 +7,28 @@ import Link from 'next/link'
 
 const GOLD = '#C8960C'
 const BROWN = '#4A2C0A'
+
+const BRAIN_AREAS = {
+  memory: { label: 'Memory', color: '#E91E63', icon: '🧠', desc: 'Working memory and short-term recall', games: [{ label: 'N-Back', href: '/nback' },{ label: 'Digits', href: '/digits' },{ label: 'Simon Says', href: '/sequence' },{ label: 'Memory', href: '/memory' },{ label: 'N-Back', href: '/nback' },{ label: 'Digits', href: '/digits' },{ label: 'Simon Says', href: '/sequence' }] },
+  agility: { label: 'Agility', color: '#FF6F00', icon: '⚡', desc: 'Reaction time and motor precision', games: [{ label: 'Stop', href: '/precision/stopwatch' },{ label: 'F1 Reaction', href: '/precision/formula1' },{ label: 'Pendulum', href: '/precision/pendulum' },{ label: 'Ace', href: '/ace' },{ label: 'Stop', href: '/precision/stopwatch' },{ label: 'F1 Reaction', href: '/precision/formula1' },{ label: 'Pendulum', href: '/precision/pendulum' }] },
+  knowledge: { label: 'Knowledge', color: '#1565C0', icon: '🌍', desc: 'Spatial cognition and world knowledge', games: [{ label: 'Flags', href: '/flags' },{ label: 'GeoShape', href: '/geoshape' },{ label: 'Higher or Lower', href: '/versus' },{ label: 'Flags', href: '/flags' },{ label: 'GeoShape', href: '/geoshape' },{ label: 'Higher or Lower', href: '/versus' },{ label: 'Flags', href: '/flags' }] },
+  logic: { label: 'Logic', color: '#6A1B9A', icon: '🎯', desc: 'Logical thinking and deductive reasoning', games: [{ label: 'Mastermind', href: '/mastermind' },{ label: 'Sudoku', href: '/sudoku' },{ label: 'Wordly', href: '/wordly' },{ label: '2048', href: '/2048' },{ label: 'Mastermind', href: '/mastermind' },{ label: 'Sudoku', href: '/sudoku' },{ label: 'Wordly', href: '/wordly' }] },
+}
+
+function calcAreaScores(test: any) {
+  const nbP = Math.min(250, (test.nback_score || 0) * 50)
+  const stopDiff = test.stop_score || 2000
+  const stopP = Math.max(0, Math.round(200 - (stopDiff / 100) * 20))
+  const geoP = Math.min(200, (test.geoshape_score || 0) * 40)
+  const digP = Math.min(200, test.mastermind_score || 0)
+  const aceP = Math.min(150, (test.ace_score || 0) * 0.75)
+  return {
+    memory: Math.round(((nbP / 250) + (digP / 200)) / 2 * 100),
+    agility: Math.round(((aceP / 150) + (stopP / 200)) / 2 * 100),
+    knowledge: Math.round((geoP / 200) * 100),
+    logic: Math.round((digP / 200) * 100),
+  }
+}
 const CREAM = '#FAF7F2'
 
 const DIFF_CONFIG = [
@@ -59,6 +81,10 @@ export default function ProfilePage() {
   const [f1Rank, setF1Rank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
   const [pendulumRank, setPendulumRank] = useState<{ diff: number | null, rank: number | null }>({ diff: null, rank: null })
   const [profileBrainAge, setProfileBrainAge] = useState<number | null>(null)
+  const [brainTest, setBrainTest] = useState<any | null>(null)
+  const [brainPlan, setBrainPlan] = useState<any | null>(null)
+  const [brainPercentiles, setBrainPercentiles] = useState<Record<string, number>>({})
+  const [creatingPlan, setCreatingPlan] = useState(false)
   const [versusRank, setVersusRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusPopRank, setVersusPopRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
   const [versusAreaRank, setVersusAreaRank] = useState<{ level: number | null, rank: number | null }>({ level: null, rank: null })
@@ -119,15 +145,30 @@ export default function ProfilePage() {
     })
 
     // Fetch streak
-    supabase.from('brain_test_scores').select('score').eq('player_name', profile.name)
+    supabase.from('brain_test_scores').select('*').eq('player_name', profile.name)
       .order('created_at', { ascending: false }).limit(1)
       .then(({ data }) => {
         if (data?.[0]) {
           const score = data[0].score
           const age = Math.min(65, Math.max(18, Math.round(65 - (score / 1000) * 47)))
           setProfileBrainAge(age)
+          setBrainTest(data[0])
+          // Calculate percentiles
+          supabase.from('brain_test_scores').select('score, ace_score, nback_score, stop_score, geoshape_score, mastermind_score').then(({ data: all }) => {
+            if (all && data[0]) {
+              const myScores = calcAreaScores(data[0])
+              const percs: Record<string, number> = {}
+              for (const area of Object.keys(BRAIN_AREAS)) {
+                const allS = all.map((t: any) => calcAreaScores(t)[area as keyof typeof myScores])
+                percs[area] = Math.round((allS.filter((s: number) => s < myScores[area as keyof typeof myScores]).length / allS.length) * 100)
+              }
+              setBrainPercentiles(percs)
+            }
+          })
         }
       })
+    supabase.from('brain_plans').select('*').eq('player_name', profile.name).order('created_at', { ascending: false }).limit(1)
+      .then(({ data }) => { if (data?.[0]) setBrainPlan(data[0]) })
 
     // Fetch F1
     supabase.from('precision_scores').select('player_name, difference_ms').eq('game_type', 'formula1').order('difference_ms', { ascending: true }).limit(500).then(({ data }) => {
@@ -301,6 +342,23 @@ export default function ProfilePage() {
   const shareScore = async (text: string) => {
     if (navigator.share) await navigator.share({ text })
     else { await navigator.clipboard.writeText(text); alert('Copied!') }
+  }
+
+  const createPlan = async (weakArea: string) => {
+    if (!profile?.name) return
+    setCreatingPlan(true)
+    const areaData = BRAIN_AREAS[weakArea as keyof typeof BRAIN_AREAS]
+    await supabase.from('brain_plans').insert({
+      player_name: profile.name,
+      weak_area: weakArea,
+      games: areaData.games.map(g => g.href),
+      game_labels: areaData.games.map(g => g.label),
+      completed_days: [],
+      start_date: new Date().toISOString().split('T')[0],
+    })
+    const { data } = await supabase.from('brain_plans').select('*').eq('player_name', profile.name).order('created_at', { ascending: false }).limit(1)
+    if (data?.[0]) setBrainPlan(data[0])
+    setCreatingPlan(false)
   }
 
   if (!loaded) return null
@@ -596,6 +654,104 @@ export default function ProfilePage() {
 
       </div>
       </div>
+    {/* Brain Age + Plan */}
+    {brainTest && (
+      <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+        
+        {/* 4 Areas */}
+        <div style={{ fontSize: 11, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Cognitive Areas</div>
+        {Object.entries(BRAIN_AREAS).map(([key, area]) => {
+          const scores = calcAreaScores(brainTest)
+          const score = scores[key as keyof typeof scores]
+          const pct = brainPercentiles[key] ?? 50
+          const areaScores2 = calcAreaScores(brainTest)
+          const isWeak = key === Object.entries(areaScores2).sort((a, b) => a[1] - b[1])[0][0]
+          return (
+            <div key={key} style={{ background: '#fff', borderRadius: 16, padding: '14px 16px', border: isWeak ? `2px solid ${area.color}` : '1px solid #4A2C0A08' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 18 }}>{area.icon}</span>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 900, color: '#4A2C0A' }}>{area.label}</div>
+                    <div style={{ fontSize: 11, color: '#4A2C0A50', fontWeight: 700 }}>{area.desc}</div>
+                  </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 18, fontWeight: 900, color: area.color }}>Top {100 - pct}%</div>
+                  {isWeak && <div style={{ fontSize: 10, fontWeight: 800, color: area.color, textTransform: 'uppercase', letterSpacing: 1 }}>Weakest</div>}
+                </div>
+              </div>
+              <div style={{ background: '#F5F5F5', borderRadius: 8, height: 8, overflow: 'hidden' }}>
+                <div style={{ width: `${score}%`, height: '100%', background: area.color, borderRadius: 8 }} />
+              </div>
+            </div>
+          )
+        })}
+
+        {/* Plan */}
+        <div style={{ fontSize: 11, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginTop: 8, marginBottom: 4 }}>7-Day Training Plan</div>
+        {!brainPlan && (() => {
+          const areaScores3 = calcAreaScores(brainTest)
+          const weakArea = Object.entries(areaScores3).sort((a, b) => a[1] - b[1])[0][0]
+          const area = BRAIN_AREAS[weakArea as keyof typeof BRAIN_AREAS]
+          return (
+            <div style={{ background: '#fff', borderRadius: 20, padding: '20px', border: '1px solid #4A2C0A08', textAlign: 'center' }}>
+              <div style={{ fontSize: 16, fontWeight: 900, color: '#4A2C0A', marginBottom: 8 }}>{area.icon} Train your {area.label}</div>
+              <div style={{ fontSize: 13, color: '#4A2C0A60', marginBottom: 16 }}>Your weakest area. 7 days to improve it.</div>
+              <button onClick={() => createPlan(weakArea)} disabled={creatingPlan} style={{ width: '100%', padding: '16px', borderRadius: 16, border: 'none', background: area.color, color: '#fff', fontSize: 16, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
+                {creatingPlan ? 'Creating...' : 'Start 7-day plan'}
+              </button>
+            </div>
+          )
+        })()}
+
+        {brainPlan && brainPlan.completed_days.length < 7 && (
+          <div style={{ background: '#fff', borderRadius: 20, padding: '20px', border: '1px solid #4A2C0A08' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div>
+                <div style={{ fontSize: 16, fontWeight: 900, color: '#4A2C0A' }}>
+                  {BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.icon} {BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.label} Plan
+                </div>
+                <div style={{ fontSize: 12, color: '#4A2C0A50', fontWeight: 700 }}>Day {brainPlan.completed_days.length} of 7</div>
+              </div>
+              <div style={{ fontSize: 32, fontWeight: 900, color: BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.color }}>{brainPlan.completed_days.length}/7</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {brainPlan.game_labels.map((label: string, i: number) => {
+                const completed = brainPlan.completed_days.includes(i + 1)
+                const today = new Date().toISOString().split('T')[0]
+                const planDay = Math.ceil((new Date(today).getTime() - new Date(brainPlan.start_date).getTime()) / 86400000) + 1
+                const isToday = i + 1 === planDay
+                const areaColor = BRAIN_AREAS[brainPlan.weak_area as keyof typeof BRAIN_AREAS]?.color || '#4A2C0A'
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderRadius: 12, background: completed ? '#E8F5E9' : isToday ? `${areaColor}10` : '#F5F5F5', border: isToday ? `1.5px solid ${areaColor}40` : 'none' }}>
+                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: completed ? '#2E7D32' : isToday ? areaColor : '#E0E0E0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 900, color: '#fff', flexShrink: 0 }}>
+                      {completed ? '✓' : i + 1}
+                    </div>
+                    <div style={{ flex: 1, fontSize: 13, fontWeight: 800, color: completed ? '#2E7D32' : '#4A2C0A' }}>Day {i + 1} — {label}</div>
+                    {isToday && !completed && (
+                      <a href={brainPlan.games[i]} style={{ textDecoration: 'none', background: areaColor, color: '#fff', padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 900 }}>Play</a>
+                    )}
+                    {!isToday && !completed && i + 1 > planDay && (
+                      <span style={{ fontSize: 16 }}>🔒</span>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {brainPlan && brainPlan.completed_days.length >= 7 && (
+          <div style={{ background: '#E8F5E9', borderRadius: 20, padding: '20px', textAlign: 'center', border: '1px solid #2E7D3220' }}>
+            <div style={{ fontSize: 32, marginBottom: 8 }}>🎉</div>
+            <div style={{ fontSize: 16, fontWeight: 900, color: '#2E7D32', marginBottom: 8 }}>Plan complete!</div>
+            <a href="/brain-test" style={{ textDecoration: 'none', display: 'block', background: '#2E7D32', color: '#fff', padding: '14px', borderRadius: 14, fontWeight: 900, fontSize: 15 }}>Retake Brain Age Test</a>
+          </div>
+        )}
+      </div>
+    )}
+
     <div style={{ padding: '0 16px 16px' }}>
       <a href='/blog' style={{ textDecoration: 'none' }}>
         <div style={{ background: '#fff', borderRadius: 16, padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid #4A2C0A10', boxShadow: '0 2px 8px #4A2C0A08' }}>
