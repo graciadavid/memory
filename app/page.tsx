@@ -167,13 +167,7 @@ export default function LandingPage() {
     if (!seen) {
       sessionStorage.setItem('splash_done', '1')
       setShowLoading(true)
-      supabase.from('brain_plans').select('id, completed_days').eq('player_name', profile.name).order('created_at', { ascending: false }).limit(1).then(({ data }) => {
-        if (data?.[0] && data[0].completed_days.length < 7) {
-          const params = new URLSearchParams(window.location.search)
-          if (!params.get('skipplan')) { window.location.href = '/brain-age'; return }
-        }
-        setTimeout(() => setShowLoading(false), 1000)
-      })
+      setTimeout(() => setShowLoading(false), 1000)
     }
   }, [profile?.name])
 
