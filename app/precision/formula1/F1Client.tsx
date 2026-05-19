@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { completePlanDay } from '@/lib/plan'
 
 const BROWN = '#4A2C0A'
 
@@ -119,6 +120,7 @@ export default function F1Client() {
           game_type: 'formula1',
         })
             window.dispatchEvent(new Event('game_completed'))
+      completePlanDay(profile?.name || profile?.name || '', '/precision/formula1')
 
         const { count } = await supabase
           .from('precision_scores')

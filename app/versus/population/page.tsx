@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { completePlanDay } from '@/lib/plan'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { track } from '@vercel/analytics'
 
@@ -163,6 +164,7 @@ export default function VersusPage() {
         if (profile?.name && finalStreak > 0) {
           await supabase.from('higher_lower_scores').insert({ player_name: profile.name, level: finalStreak, category: 'population' })
             window.dispatchEvent(new Event('game_completed'))
+      completePlanDay(profile?.name || profile?.name || '', '/versus')
           const { count } = await supabase.from('higher_lower_scores')
             .select('*', { count: 'exact', head: true })
             .eq('category', 'population').gt('level', finalStreak)

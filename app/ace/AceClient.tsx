@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
+import { completePlanDay } from '@/lib/plan'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { track } from '@vercel/analytics'
 import { usePlayer } from '@/lib/usePlayer'
@@ -182,6 +183,7 @@ export default function AceClient() {
       if (profile?.name) {
         await supabase.from('ace_scores').insert({ player_name: profile.name, level: finalLevel })
             window.dispatchEvent(new Event('game_completed'))
+      completePlanDay(profile?.name || profile?.name || '', '/ace')
         const { data } = await supabase.from('ace_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
         if (data) {
           const best: Record<string, number> = {}

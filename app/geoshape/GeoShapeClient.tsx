@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { completePlanDay } from '@/lib/plan'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { track } from '@vercel/analytics'
 import { usePlayer } from '@/lib/usePlayer'
@@ -198,6 +199,7 @@ export default function GeoShapeClient() {
         if (profile?.name) {
           await supabase.from('shape_scores').insert({ player_name: profile.name, level })
                 window.dispatchEvent(new Event('game_completed'))
+      completePlanDay(profile?.name || profile?.name || '', '/geoshape')
           const { data } = await supabase.from('shape_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
           if (data) {
             const best: Record<string, number> = {}
