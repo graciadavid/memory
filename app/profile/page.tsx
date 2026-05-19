@@ -351,14 +351,6 @@ export default function ProfilePage() {
         {/* Stats row */}
         <div style={{ display: 'flex', gap: 12 }}>
           <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 16, padding: '12px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase' }}>Streak</div>
-            <div style={{ fontSize: 36, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{profileStreak.current > 0 ? profileStreak.current : '—'}</div>
-            {profileStreak.current > 0 && <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>days</div>}
-            <a href="/streak" style={{ textDecoration: 'none', marginTop: 4 }}>
-              <div style={{ fontSize: 12, fontWeight: 900, color: '#fff', background: 'rgba(255,255,255,0.2)', borderRadius: 10, padding: '8px 12px' }}>Learn more →</div>
-            </a>
-          </div>
-          <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 16, padding: '12px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 6 }}>
             <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase' }}>Brain Age</div>
             <div style={{ fontSize: 36, fontWeight: 900, color: profileBrainAge ? '#4CAF50' : 'rgba(255,255,255,0.3)', lineHeight: 1 }}>{profileBrainAge ?? '—'}</div>
             {profileBrainAge && <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>years old</div>}
