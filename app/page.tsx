@@ -164,6 +164,9 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (!profile?.name) return
+    supabase.from('brain_test_scores').select('id').eq('player_name', profile.name).limit(1).then(({ data }) => {
+      if (data?.[0]) setHasBrainTest(true)
+    })
     const seen = sessionStorage.getItem('splash_done')
     if (!seen) {
       sessionStorage.setItem('splash_done', '1')
