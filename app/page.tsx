@@ -173,16 +173,10 @@ export default function LandingPage() {
        if (!params.get('skipplan')) window.location.href = '/brain-age'
      }
    })
-   getStreak(profile.name).then(s => {
-        setStreak(s)
-        setTimeout(() => {
+   setTimeout(() => {
           setShowLoading(false)
-          setShowStreak(true)
-          setTimeout(() => setShowStreak(false), 3500)
         }, 1000)
-      })
-    } else {
-      getStreak(profile.name).then(s => setStreak(s))
+      }
     }
   }, [profile?.name])
 
