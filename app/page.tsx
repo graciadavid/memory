@@ -319,6 +319,8 @@ export default function LandingPage() {
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {/* Logo */}
           <img src={LOGO} alt="MemGenius" style={{ height: 110, objectFit: 'contain', marginBottom: 8 }} />
+          <div style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', textAlign: 'center', marginBottom: 4 }}>Improve your Brain Age in 7 days.</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(74,44,10,0.5)', textAlign: 'center', marginBottom: 20 }}>Always free.</div>
 
           {!nameExists && !needsNewPin ? (
             <>
