@@ -489,8 +489,7 @@ export default function LandingPage() {
 
           {/* Claim */}
           <div style={{ fontSize: 12, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 16, letterSpacing: 0.3 }}>
-            Your daily brain workout
-          </div>
+
 
 
 
