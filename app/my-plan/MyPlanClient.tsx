@@ -147,19 +147,9 @@ export default function MyPlanClient() {
         <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', marginBottom: 4 }}>
           {wod?.name || 'My Plan'}
         </div>
-        {brainAge && <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>Brain Age: {brainAge}</div>}
 
-        {userPlan && totalReps > 0 && (
-          <div style={{ marginTop: 16 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-              <div style={{ fontSize: 12, fontWeight: 800, color: 'rgba(255,255,255,0.7)' }}>Today</div>
-              <div style={{ fontSize: 12, fontWeight: 900, color: '#fff' }}>{doneReps}/{totalReps} reps</div>
-            </div>
-            <div style={{ background: 'rgba(255,255,255,0.25)', borderRadius: 8, height: 8, overflow: 'hidden' }}>
-              <div style={{ width: `${(doneReps / totalReps) * 100}%`, height: '100%', background: '#fff', borderRadius: 8, transition: 'width 0.5s ease' }} />
-            </div>
-          </div>
-        )}
+
+
       </div>
 
       <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
