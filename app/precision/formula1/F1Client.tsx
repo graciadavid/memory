@@ -186,7 +186,7 @@ export default function F1Client() {
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '8px 20px 16px', gap: 10 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '8px 20px 16px', gap: 12, justifyContent: 'space-between' }}>
 
         {/* IDLE */}
         {phase === 'idle' && (
@@ -225,7 +225,6 @@ export default function F1Client() {
             {phase === 'go' && (
               <div style={{ fontSize: 32, fontWeight: 900, color: '#00C853', letterSpacing: 2, textAlign: 'center', animation: 'pulse 0.4s ease-in-out infinite' }}>GO!</div>
             )}
-            <div style={{ flex: 1 }} />
             <button onClick={handlePress} style={{
               width: '100%', padding: '24px', borderRadius: 20, border: 'none',
               background: phase === 'go' ? '#00C853' : `${BROWN}20`,
