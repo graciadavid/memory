@@ -161,7 +161,7 @@ export default function MyPlanClient() {
          <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Day {wodDay} of 7</div>
          <div style={{ fontSize: 26, fontWeight: 900, color: '#fff' }}>{wod?.name || 'My Plan'}</div>
        </div>
-       <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ height: 60, objectFit: 'contain', opacity: 0.9, flexShrink: 0 }} />
+       <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ height: 90, objectFit: 'contain', opacity: 0.9, flexShrink: 0 }} />
      </div>
 
       <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
