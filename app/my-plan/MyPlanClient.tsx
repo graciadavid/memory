@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 import { getWodProgress } from '@/lib/wod'
 import Link from 'next/link'
+import { useEffect, useRef } from 'react'
 
 const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
@@ -181,6 +182,55 @@ export default function MyPlanClient() {
           </div>
         )}
 
+        {/* Week overview */}
+        {userPlan && (
+          <div style={{ background: '#fff', borderRadius: 20, padding: '16px 20px', boxShadow: '0 2px 8px #4A2C0A06' }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 14 }}>Your 7-day plan</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {allWods.map((w: any) => {
+                const hist = weekHistory.find((h: any) => h.wod_day === w.day_number)
+                const isToday = w.day_number === wodDay
+                const isPast = w.day_number < wodDay
+                const isFuture = w.day_number > wodDay
+                const done = hist?.completed
+                const partial = hist && !done
+                const color = AREA_COLORS[w.area]
+                return (
+                  <div key={w.day_number} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                    <div style={{
+                      width: '100%', aspectRatio: '1', borderRadius: 12,
+                      background: done ? color : partial ? `${color}40` : isToday ? `${color}20` : '#F0F0F0',
+                      border: isToday ? `2px solid ${color}` : '2px solid transparent',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 11, fontWeight: 900,
+                      color: done ? '#fff' : isToday ? color : `${BROWN}30`,
+                    }}>
+                      {done ? '✓' : partial ? '~' : w.day_number}
+                    </div>
+                    <div style={{ fontSize: 8, fontWeight: 800, color: isToday ? color : `${BROWN}30`, textTransform: 'uppercase', textAlign: 'center' }}>
+                      {AREA_NAMES[w.area]?.slice(0, 3)}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* No brain test - only show if no plan */}
+        {!brainAge && !userPlan && (
+          <div style={{ background: 'linear-gradient(135deg, #0A0A1A, #0D1B2A)', borderRadius: 20, padding: '20px', textAlign: 'center' }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>Discover your Brain Age</div>
+            <Link href="/brain-test" style={{ textDecoration: 'none', display: 'inline-block', background: '#2E7D32', color: '#fff', padding: '12px 24px', borderRadius: 12, fontWeight: 900, fontSize: 14 }}>
+              Take the test →
+            </Link>
+          </div>
+        )}
+
+      </div>
+    </main>
+  )
+}
         {/* Exercises */}
         {userPlan && exercises.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 24, padding: '20px', boxShadow: '0 4px 20px #4A2C0A08' }}>
@@ -230,52 +280,4 @@ export default function MyPlanClient() {
           </div>
         )}
 
-        {/* Week overview */}
-        {userPlan && (
-          <div style={{ background: '#fff', borderRadius: 20, padding: '16px 20px', boxShadow: '0 2px 8px #4A2C0A06' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 14 }}>This week</div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              {allWods.map((w: any) => {
-                const hist = weekHistory.find((h: any) => h.wod_day === w.day_number)
-                const isToday = w.day_number === wodDay
-                const isPast = w.day_number < wodDay
-                const isFuture = w.day_number > wodDay
-                const done = hist?.completed
-                const partial = hist && !done
-                const color = AREA_COLORS[w.area]
-                return (
-                  <div key={w.day_number} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                    <div style={{
-                      width: '100%', aspectRatio: '1', borderRadius: 12,
-                      background: done ? color : partial ? `${color}40` : isToday ? `${color}20` : '#F0F0F0',
-                      border: isToday ? `2px solid ${color}` : '2px solid transparent',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 11, fontWeight: 900,
-                      color: done ? '#fff' : isToday ? color : `${BROWN}30`,
-                    }}>
-                      {done ? '✓' : partial ? '~' : w.day_number}
-                    </div>
-                    <div style={{ fontSize: 8, fontWeight: 800, color: isToday ? color : `${BROWN}30`, textTransform: 'uppercase', textAlign: 'center' }}>
-                      {AREA_NAMES[w.area]?.slice(0, 3)}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
 
-        {/* No brain test - only show if no plan */}
-        {!brainAge && !userPlan && (
-          <div style={{ background: 'linear-gradient(135deg, #0A0A1A, #0D1B2A)', borderRadius: 20, padding: '20px', textAlign: 'center' }}>
-            <div style={{ fontSize: 14, fontWeight: 800, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>Discover your Brain Age</div>
-            <Link href="/brain-test" style={{ textDecoration: 'none', display: 'inline-block', background: '#2E7D32', color: '#fff', padding: '12px 24px', borderRadius: 12, fontWeight: 900, fontSize: 14 }}>
-              Take the test →
-            </Link>
-          </div>
-        )}
-
-      </div>
-    </main>
-  )
-}
