@@ -7,17 +7,19 @@ const PURPLE = '#4A148C'
 const RED = '#E8002D'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
-function RankingList({ scores, myName, isF1 }: { scores: any[], myName: string, isF1: boolean }) {
+function RankingList({ scores, myName, isF1, isPendulum }: { scores: any[], myName: string, isF1: boolean, isPendulum?: boolean }) {
   const myIndex = scores.findIndex(s => s.name === myName)
   const myScore = myIndex >= 0 ? scores[myIndex] : null
   const color = isF1 ? RED : PURPLE
 
-  const fmt = (diff: number) => isF1 ? `${diff}ms` : `${(diff/1000).toFixed(3)}s`
+  const fmt = (diff: number) => isF1 ? `${diff}ms` : isPendulum ? `${(diff/10).toFixed(1)}°` : `${(diff/1000).toFixed(3)}s`
 
   const share = async (position: number, diff: number) => {
     const text = isF1
       ? `🏎️ I'm #${position} in MemGenius F1 with ${diff}ms reaction!\nhttps://memgenius.com/precision/formula1`
-      : `⏱ I'm #${position} in MemGenius Precision with ${(diff/1000).toFixed(3)}s off!\nhttps://memgenius.com/precision/stopwatch`
+      : isPendulum
+        ? `🎯 I'm #${position} in MemGenius Pendulum with ${(diff/10).toFixed(1)}° deviation!\nhttps://memgenius.com/precision/pendulum`
+        : `⏱ I'm #${position} in MemGenius Precision with ${(diff/1000).toFixed(3)}s off!\nhttps://memgenius.com/precision/stopwatch`
     if (navigator.share) await navigator.share({ text })
     else { await navigator.clipboard.writeText(text); alert('Copied!') }
   }
@@ -108,7 +110,7 @@ export default function PrecisionRankingClient({ stopScores, f1Scores, pendulumS
       </div>
       {tab === 'stop' && <RankingList scores={stopScores} myName={myName} isF1={false} />}
       {tab === 'f1' && <RankingList scores={f1Scores} myName={myName} isF1={true} />}
-      {tab === 'pendulum' && <RankingList scores={pendulumScores} myName={myName} isF1={false} />}
+      {tab === 'pendulum' && <RankingList scores={pendulumScores} myName={myName} isF1={false} isPendulum={true} />}
     </div>
   )
 }
