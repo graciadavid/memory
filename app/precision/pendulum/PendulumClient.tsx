@@ -302,7 +302,6 @@ export default function PendulumClient() {
 
           {phase === 'result' && (
             <>
-              <CreateGroupBanner playerName={profile?.name || ''} />
               <div style={{ display: 'flex', gap: 10, width: '100%' }}>
                 <button onClick={reset} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: PURPLE, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${PURPLE}60` }}>Play again</button>
                 <button onClick={() => window.location.href = '/precision/ranking'} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#0D2B5E', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #0D2B5E60' }}>🏆 Ranking</button>
