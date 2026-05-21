@@ -162,10 +162,17 @@ export default function NBackClient() {
             const myBest = best[profile.name] || finalLevel
             setWorldRank(Object.values(best).filter(l => l > myBest).length + 1)
             if (!bestLevel || finalLevel > bestLevel) setBestLevel(finalLevel)
-            fetchTop()
-          }
-        }
-      }, 600)
+           fetchTop()
+
+           // Check WOD completion and redirect
+           try {
+             const { checkAndSaveWodCompletion } = await import('@/lib/wod')
+             const shouldRedirect = await checkAndSaveWodCompletion(profile.name, '/nback')
+             if (shouldRedirect) setTimeout(() => { window.location.href = '/my-plan' }, 1500)
+           } catch(e) {}
+         }
+       }
+     }, 600)
     }
   }, [phase, profile?.name, bestLevel, showNextCard])
 
