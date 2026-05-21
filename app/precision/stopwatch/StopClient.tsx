@@ -256,7 +256,7 @@ export default function StopClient() {
             {/* Buttons */}
             <div style={{ display: 'flex', gap: 10, width: '100%' }}>
               <button onClick={() => window.location.href = '/my-plan'} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: '#0D1B4B', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #08103060' }}>My Plan</button>
-              <button onClick={() => window.location.href = '/precision/ranking'} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: GOLD, color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}60` }}>🏆 Ranking</button>
+              <button onClick={() => window.location.href = '/precision/stopwatch/ranking'} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: GOLD, color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}60` }><img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.webp" alt="" style={{ width: 18, height: 18, objectFit: 'contain', marginRight: 6 }} />Ranking</button>
             </div>
           </>
         )}
