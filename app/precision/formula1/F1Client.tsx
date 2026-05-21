@@ -131,9 +131,27 @@ export default function F1Client() {
           .lt('difference_ms', reaction)
         setWorldRank((count ?? 0) + 1)
         if (bestScore === null || reaction < bestScore) setBestScore(reaction)
-      }
-    }
-  }
+
+       // Check WOD completion and redirect
+       try {
+         const { getTodayPlays } = await import('@/lib/wod')
+         const todayPlays = await getTodayPlays(profile.name, '/precision/formula1')
+         const { data: planData } = await supabase.from('brain_plans').select('start_date').eq('player_name', profile.name).order('created_at', { ascending: false }).limit(1)
+         if (planData?.[0]) {
+           const planDiff = Math.floor((new Date().getTime() - new Date(planData[0].start_date).getTime()) / 86400000)
+           const wodDay = Math.min(7, Math.max(1, planDiff + 1))
+           const { data: wodData } = await supabase.from('wod').select('exercises').eq('day_number', wodDay).limit(1)
+           if (wodData?.[0]) {
+             const ex = wodData[0].exercises.find((e: any) => e.href === '/precision/formula1')
+             if (ex && todayPlays >= ex.reps) {
+               setTimeout(() => { window.location.href = '/my-plan' }, 1500)
+             }
+           }
+         }
+       } catch(e) {}
+     }
+   }
+ }
 
   const reset = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
