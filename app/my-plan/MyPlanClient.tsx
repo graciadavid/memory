@@ -155,21 +155,14 @@ export default function MyPlanClient() {
     <main style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 100 }}>
       <style>{`@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }`}</style>
 
-      {/* Header */}
-      <div style={{ background: `linear-gradient(160deg, ${areaColor}, ${areaColor}BB)`, padding: '32px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6 }}>
-          Brain Gym{userPlan ? ` · Day ${wodDay} of 7` : ''}
-        </div>
-        <div style={{ fontSize: 28, fontWeight: 900, color: '#fff', marginBottom: 4 }}>
-          {wod?.name || 'My Plan'}
-        </div>
-
-
-
-        </div>
-        <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ height: 80, objectFit: 'contain', opacity: 0.9, flexShrink: 0 }} />
-      </div>
+          {/* Header */}
+     <div style={{ margin: '12px 16px 0', background: `linear-gradient(160deg, ${areaColor}, ${areaColor}BB)`, padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, borderRadius: 20, boxShadow: `0 4px 20px ${areaColor}40` }}>
+       <div>
+         <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Day {wodDay} of 7</div>
+         <div style={{ fontSize: 26, fontWeight: 900, color: '#fff' }}>{wod?.name || 'My Plan'}</div>
+       </div>
+       <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ height: 60, objectFit: 'contain', opacity: 0.9, flexShrink: 0 }} />
+     </div>
 
       <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
 
