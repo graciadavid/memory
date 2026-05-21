@@ -84,7 +84,7 @@ export default function ProfilePage() {
 
     if (stop.data?.[0]) grouped.agility.push({ game: 'Stop', href: '/precision/stopwatch', value: `${stop.data[0].difference_ms}ms off` })
     if (f1.data?.[0]) grouped.agility.push({ game: 'F1 Reaction', href: '/precision/formula1', value: `${f1.data[0].difference_ms}ms` })
-    if (pendulum.data?.[0]) grouped.agility.push({ game: 'Pendulum', href: '/precision/pendulum', value: `${pendulum.data[0].difference_ms}ms off` })
+    if (pendulum.data?.[0]) grouped.agility.push({ game: 'Pendulum', href: '/precision/pendulum', value: `${(pendulum.data[0].difference_ms/10).toFixed(1)}° off` })
     if (ace.data?.[0]) grouped.agility.push({ game: 'Ace', href: '/ace', value: `Level ${ace.data[0].level}` })
 
     if (flags.data?.[0]) grouped.knowledge.push({ game: 'Flags', href: '/flags', value: `${flags.data[0].level} in a row` })
