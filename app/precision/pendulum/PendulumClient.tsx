@@ -14,7 +14,7 @@ const CREAM = '#FAF7F2'
 const PURPLE = '#4A148C'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
-const PERIOD = 2000 // full swing in ms
+const PERIOD = 1400 // full swing in ms
 const AMPLITUDE = 60 // max degrees
 
 function getPendulumAngle(t: number): number {
