@@ -60,7 +60,7 @@ export default function BottomNav() {
             animation: 'brainPulse 2.5s ease-in-out infinite',
             marginBottom: 4,
           }}>
-            <span style={{ fontSize: 24 }}>📋</span>
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/myplan.png" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
           </div>
           <div style={{ fontSize: 9, fontWeight: 800, color: '#2E7D32', letterSpacing: 0.5 }}>MY PLAN</div>
         </div>

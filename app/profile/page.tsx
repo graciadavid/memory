@@ -180,7 +180,7 @@ export default function ProfilePage() {
             </div>
             <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 16, padding: '12px', textAlign: 'center' }}>
               <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>My Plan</div>
-              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/myplan.png" alt="" style={{ width: 36, height: 36, objectFit: 'contain' }} />
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/myplan.png" alt="" style={{ width: 48, height: 48, objectFit: 'contain', margin: '0 auto', display: 'block' }} />
               <a href="/my-plan" style={{ textDecoration: 'none', marginTop: 6, display: 'block' }}>
                 <div style={{ fontSize: 10, fontWeight: 900, color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.1)', borderRadius: 8, padding: '4px 8px' }}>View plan →</div>
               </a>
@@ -218,10 +218,10 @@ export default function ProfilePage() {
 
         {/* Records by area */}
         {[
-          { key: 'memory', label: 'Memory', color: '#E91E63', icon: '🧠' },
-          { key: 'agility', label: 'Agility', color: '#FF6F00', icon: '⚡' },
-          { key: 'knowledge', label: 'Knowledge', color: '#1565C0', icon: '🌍' },
-          { key: 'logic', label: 'Logic', color: '#6A1B9A', icon: '🎯' },
+          { key: 'memory', label: 'Memory', color: '#E91E63', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain-logo.webp' },
+          { key: 'agility', label: 'Agility', color: '#FF6F00', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/ray.png' },
+          { key: 'knowledge', label: 'Knowledge', color: '#1565C0', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/population.png' },
+          { key: 'logic', label: 'Logic', color: '#6A1B9A', icon: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sudoku.png' },
         ].map(area => {
           const areaRecords = records[area.key] || []
           if (areaRecords.length === 0) return null
@@ -230,7 +230,7 @@ export default function ProfilePage() {
             <div key={area.key} style={{ background: '#fff', borderRadius: 20, padding: '14px 20px', marginBottom: 10, boxShadow: '0 2px 12px #4A2C0A08' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => setOpenArea(isOpen ? null : area.key)}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 18 }}>{area.icon}</span>
+                  <img src={area.icon} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
                   <div style={{ fontSize: 14, fontWeight: 900, color: BROWN }}>{area.label}</div>
                   <div style={{ fontSize: 11, fontWeight: 800, color: area.color }}>{areaRecords.length} games</div>
                 </div>
