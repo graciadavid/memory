@@ -116,15 +116,16 @@ export default function PendulumClient() {
           ? elapsed - cyclePos + halfPeriod
           : elapsed - cyclePos + halfPeriod * 1.5
 
+    const angleDev = Math.abs(Math.round(currentAngle * 10)) / 10  // degrees from center, 1 decimal
     const dev = Math.abs(Math.round(elapsed - nearestCenter))
     const clampedDev = Math.min(dev, PERIOD / 4)
-    setDeviation(clampedDev)
+    setDeviation(angleDev)
     setPhase('result')
 
     if (profile?.name) {
       await supabase.from('precision_scores').insert({
         player_name: profile.name,
-        difference_ms: clampedDev,
+        difference_ms: clampedDev,  // keep ms for ranking consistency
         game_type: 'pendulum',
       })
         window.dispatchEvent(new Event('game_completed'))
