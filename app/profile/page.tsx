@@ -180,7 +180,7 @@ export default function ProfilePage() {
             </div>
             <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 16, padding: '12px', textAlign: 'center' }}>
               <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>My Plan</div>
-              <div style={{ fontSize: 36, fontWeight: 900, color: '#fff', lineHeight: 1 }}>📋</div>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/myplan.png" alt="" style={{ width: 36, height: 36, objectFit: 'contain' }} />
               <a href="/my-plan" style={{ textDecoration: 'none', marginTop: 6, display: 'block' }}>
                 <div style={{ fontSize: 10, fontWeight: 900, color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.1)', borderRadius: 8, padding: '4px 8px' }}>View plan →</div>
               </a>
