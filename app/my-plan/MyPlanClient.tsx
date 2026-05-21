@@ -141,16 +141,6 @@ export default function MyPlanClient() {
     return () => clearInterval(timer)
   }, [])
 
-  // Fire confetti when session complete
-  useEffect(() => {
-    if (allDone && !confettiFired.current) {
-      confettiFired.current = true
-      launchConfetti()
-      launchConfetti()
-      playWinSound()
-    }
-  }, [allDone])
-
   // Refresh when user comes back to tab
   useEffect(() => {
     const handleFocus = () => loadData()
