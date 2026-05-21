@@ -38,7 +38,6 @@ import { Nunito } from 'next/font/google'
 import './globals.css'
 import BottomNav from '@/components/BottomNav'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
-import ProtectPromptGlobal from '@/components/ProtectPromptGlobal'
 import GameProfileGuard from '@/components/GameProfileGuard'
 import CookieBanner from '@/components/CookieBanner'
 
@@ -80,7 +79,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <a href='/privacy' style={{ color: '#4A2C0A40', textDecoration: 'none', marginRight: 16 }}>Privacy Policy</a>
           <a href='/terms' style={{ color: '#4A2C0A40', textDecoration: 'none' }}>Terms of Service</a>
         </div>
-        <ProtectPromptGlobal />
         <CookieBanner />
         <GAAnalytics />
         <VercelAnalytics />
