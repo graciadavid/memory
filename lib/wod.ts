@@ -107,9 +107,9 @@ export async function checkAndSaveWodCompletion(playerName: string, gameHref: st
     })
   }
 
-  // Check if THIS game just hit its reps target
+  // Check if THIS game just hit its reps target exactly
   const ex = wod.exercises.find((e: any) => e.href === gameHref)
-  if (ex && (progress[gameHref] || 0) >= ex.reps) return true
+  if (ex && (progress[gameHref] || 0) === ex.reps) return true
 
   return false
 }
