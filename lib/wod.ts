@@ -55,3 +55,35 @@ export async function completeWodExercise(playerName: string, gameHref: string) 
   // This function is kept for backward compatibility
   // Progress is now calculated from actual plays via getTodayPlays
 }
+
+export async function saveWodCompletion(playerName: string, wodDay: number, exercises: any[], progress: Record<string, number>) {
+  const today = new Date().toISOString().split('T')[0]
+  
+  const completedExercises = exercises
+    .filter((ex: any) => (progress[ex.href] || 0) >= ex.reps)
+    .map((ex: any) => ex.href)
+  
+  const allDone = completedExercises.length === exercises.length
+
+  const { data: existing } = await supabase
+    .from('wod_completions')
+    .select('id')
+    .eq('player_name', playerName)
+    .eq('date', today)
+    .limit(1)
+
+  if (existing?.[0]) {
+    await supabase.from('wod_completions').update({
+      completed_exercises: completedExercises,
+      completed: allDone,
+    }).eq('id', existing[0].id)
+  } else {
+    await supabase.from('wod_completions').insert({
+      player_name: playerName,
+      wod_day: wodDay,
+      completed_exercises: completedExercises,
+      completed: allDone,
+      date: today,
+    })
+  }
+}
