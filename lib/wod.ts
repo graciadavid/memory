@@ -1,61 +1,52 @@
 import { supabase } from './supabase'
 
-export async function completeWodExercise(playerName: string, gameHref: string) {
-  if (!playerName) return
+// Count today's plays for a specific game
+export async function getTodayPlays(playerName: string, gameHref: string): Promise<number> {
+ const today = new Date().toISOString().split('T')[0]
+ 
+ const tableMap: Record<string, { table: string, filter?: Record<string, any> }> = {
+   '/precision/stopwatch': { table: 'precision_scores', filter: { game_type: null } },
+   '/precision/formula1': { table: 'precision_scores', filter: { game_type: 'formula1' } },
+   '/precision/pendulum': { table: 'precision_scores', filter: { game_type: 'pendulum' } },
+   '/ace': { table: 'ace_scores' },
+   '/nback': { table: 'nback_scores' },
+   '/digits': { table: 'number_scores' },
+   '/sequence': { table: 'sequence_scores' },
+   '/memory': { table: 'scores' },
+   '/flags': { table: 'flag_scores' },
+   '/geoshape': { table: 'shape_scores' },
+   '/versus': { table: 'higher_lower_scores' },
+   '/mastermind': { table: 'mastermind_scores' },
+   '/sudoku': { table: 'sudoku_scores' },
+   '/wordly': { table: 'wordle_scores' },
+   '/2048': { table: 'game2048_scores' },
+ }
 
-  const today = new Date().toISOString().split('T')[0]
+ const config = tableMap[gameHref]
+ if (!config) return 0
 
-  const { data: planData } = await supabase
-    .from('brain_plans')
-    .select('start_date')
-    .eq('player_name', playerName)
-    .order('created_at', { ascending: false })
-    .limit(1)
+ let query = supabase
+   .from(config.table as any)
+   .select('id', { count: 'exact', head: true })
+   .eq('player_name', playerName)
+   .gte('created_at', `${today}T00:00:00`)
+   .lte('created_at', `${today}T23:59:59`)
 
-  if (!planData?.[0]) return
+ if (config.filter) {
+   for (const [k, v] of Object.entries(config.filter)) {
+     if (v === null) query = (query as any).is(k, null)
+     else query = (query as any).eq(k, v)
+   }
+ }
 
-  const startDate = new Date(planData[0].start_date)
-  const todayDate = new Date(today)
-  const diff = Math.floor((todayDate.getTime() - startDate.getTime()) / 86400000)
-  const wodDay = Math.min(7, Math.max(1, diff + 1))
+ const { count } = await query
+ return count || 0
+}
 
-  const { data: wodData } = await supabase
-    .from('wod')
-    .select('*')
-    .eq('day_number', wodDay)
-    .limit(1)
-
-  if (!wodData?.[0]) return
-  const wod = wodData[0]
-
-  const isInWod = wod.exercises.some((e: any) => e.href === gameHref)
-  if (!isInWod) return
-
-  const { data: compData } = await supabase
-    .from('wod_completions')
-    .select('*')
-    .eq('player_name', playerName)
-    .eq('date', today)
-    .limit(1)
-
-  const currentCompleted = compData?.[0]?.completed_exercises || []
-  if (currentCompleted.includes(gameHref)) return
-
-  const newCompleted = [...currentCompleted, gameHref]
-  const allDone = wod.exercises.every((e: any) => newCompleted.includes(e.href))
-
-  if (compData?.[0]) {
-    await supabase.from('wod_completions').update({
-      completed_exercises: newCompleted,
-      completed: allDone,
-    }).eq('id', compData[0].id)
-  } else {
-    await supabase.from('wod_completions').insert({
-      player_name: playerName,
-      wod_day: wodDay,
-      completed_exercises: newCompleted,
-      completed: allDone,
-      date: today,
-    })
-  }
+export async function getWodProgress(playerName: string, exercises: any[]): Promise<Record<string, number>> {
+ const progress: Record<string, number> = {}
+ await Promise.all(exercises.map(async (ex: any) => {
+   progress[ex.href] = await getTodayPlays(playerName, ex.href)
+ }))
+ return progress
 }
