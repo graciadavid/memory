@@ -151,7 +151,7 @@ export default function PendulumClient() {
     lastTickSideRef.current = 0
   }
 
-  const displayAngle = angle
+  const displayAngle = phase === 'result' ? frozenAngle : angle
 
   return (
     <main style={{
@@ -219,7 +219,7 @@ export default function PendulumClient() {
       )}
 
       {/* RUNNING + RESULT */}
-      {phase === 'running' && (
+      {(phase === 'running' || phase === 'result') && (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, width: '100%', padding: '0 24px' }}>
 
           {/* Pendulum canvas */}
@@ -245,7 +245,7 @@ export default function PendulumClient() {
               width: 4, height: 200,
               transformOrigin: '50% 0%',
               transform: `translateX(-50%) rotate(${displayAngle}deg)`,
-              transition: undefined,
+              transition: phase === 'result' ? 'transform 0.3s ease-out' : undefined,
             }}>
               <div style={{
                 width: '100%', height: '100%',
@@ -262,53 +262,55 @@ export default function PendulumClient() {
               }} />
             </div>
           </div>
-        )}
 
-        {/* Result */}
-        {phase === 'result' && (
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12, padding: '0 24px' }}>
-            <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>You stopped at</div>
-              <div style={{ fontSize: 72, fontWeight: 900, color: BROWN, lineHeight: 1, marginBottom: 8 }}>
-                {frozenAngle > 0 ? '+' : ''}{frozenAngle.toFixed(1)}°
+          {/* Result */}
+          {phase === 'result' && (
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {/* Main result card */}
+              <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>You stopped at</div>
+                <div style={{ fontSize: 72, fontWeight: 900, color: BROWN, lineHeight: 1, marginBottom: 8 }}>
+                  {frozenAngle > 0 ? '+' : ''}{frozenAngle.toFixed(1)}°
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: deviation < 2 ? '#2E7D32' : deviation < 5 ? '#2E7D32' : deviation < 15 ? '#E65100' : '#B71C1C' }}>
+                  {deviation < 2 ? '🏆 Perfect!' : deviation < 5 ? '🔥 Excellent!' : deviation < 15 ? '⚡ Good' : '💪 Keep training'}
+                </div>
+                {bestScore !== null && (
+                  <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700, marginTop: 6 }}>Best: {bestScore}°</div>
+                )}
               </div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: deviation < 5 ? '#2E7D32' : deviation < 15 ? '#E65100' : '#B71C1C' }}>
-                {deviation < 2 ? '🏆 Perfect!' : deviation < 5 ? '🔥 Excellent!' : deviation < 15 ? '⚡ Good' : '💪 Keep training'}
-              </div>
-              {bestScore !== null && (
-                <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700, marginTop: 6 }}>Best: {bestScore}°</div>
+              {/* World ranking */}
+              {worldRank && (
+                <div style={{ width: '100%', background: 'linear-gradient(135deg, #0D2B5E, #1565C0)', borderRadius: 20, padding: '20px', textAlign: 'center', boxShadow: '0 8px 0 #0D2B5E60' }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
+                  <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
+                </div>
               )}
             </div>
+          )}
 
-            {worldRank && (
-              <div style={{ width: '100%', background: 'linear-gradient(135deg, #0D2B5E, #1565C0)', borderRadius: 20, padding: '20px', textAlign: 'center', boxShadow: '0 8px 0 #0D2B5E60' }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
-                <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
-              </div>
-            )}
-
-            <CreateGroupBanner playerName={profile?.name || ''} />
-
-            <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-              <button onClick={reset} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: PURPLE, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${PURPLE}60` }}>Play again</button>
-              <button onClick={() => window.location.href = '/precision/ranking'} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#0D2B5E', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #0D2B5E60' }}>🏆 Ranking</button>
-            </div>
-          </div>
-        )}
-
-        {/* STOP button */}
-        {phase === 'running' && (
-          <div style={{ padding: '0 24px', width: '100%' }}>
+          {/* STOP button */}
+          {phase === 'running' && (
             <button onClick={stop} style={{
               width: '100%', padding: '20px', borderRadius: 20, border: 'none',
               background: PURPLE, color: '#fff',
               fontSize: 22, fontWeight: 900, fontFamily: 'inherit',
               cursor: 'pointer', boxShadow: `0 8px 0 #4A148C60`,
             }}>STOP</button>
-          </div>
-        )}
-      </div>
+          )}
+
+          {phase === 'result' && (
+            <>
+              <CreateGroupBanner playerName={profile?.name || ''} />
+              <div style={{ display: 'flex', gap: 10, width: '100%' }}>
+                <button onClick={reset} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: PURPLE, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${PURPLE}60` }}>Play again</button>
+                <button onClick={() => window.location.href = '/precision/ranking'} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#0D2B5E', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #0D2B5E60' }}>🏆 Ranking</button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </main>
   )
 }
