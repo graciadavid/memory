@@ -269,21 +269,14 @@ export default function PendulumClient() {
               {/* Main result card */}
               <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
                 <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>You stopped at</div>
-                <div style={{ fontSize: 64, fontWeight: 900, color: BROWN, lineHeight: 1, marginBottom: 16 }}>
+                <div style={{ fontSize: 72, fontWeight: 900, color: BROWN, lineHeight: 1, marginBottom: 8 }}>
                   {frozenAngle > 0 ? '+' : ''}{frozenAngle.toFixed(1)}°
                 </div>
-                {/* Deviation card */}
-                <div style={{ background: deviation < 5 ? '#E8F5E9' : deviation < 15 ? '#FFF8E1' : '#FFEBEE', borderRadius: 16, padding: '16px', marginBottom: 8 }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Deviation from center</div>
-                  <div style={{ fontSize: 40, fontWeight: 900, color: deviation < 5 ? '#2E7D32' : deviation < 15 ? '#E65100' : '#B71C1C', lineHeight: 1 }}>
-                    {deviation}°
-                  </div>
-                  <div style={{ fontSize: 13, color: deviation < 5 ? '#2E7D32' : deviation < 15 ? '#E65100' : '#B71C1C', fontWeight: 700, marginTop: 6 }}>
-                    {deviation < 2 ? '🏆 Perfect!' : deviation < 5 ? '🔥 Excellent!' : deviation < 15 ? '⚡ Good' : '💪 Keep training'}
-                  </div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: deviation < 2 ? '#2E7D32' : deviation < 5 ? '#2E7D32' : deviation < 15 ? '#E65100' : '#B71C1C' }}>
+                  {deviation < 2 ? '🏆 Perfect!' : deviation < 5 ? '🔥 Excellent!' : deviation < 15 ? '⚡ Good' : '💪 Keep training'}
                 </div>
                 {bestScore !== null && (
-                  <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700 }}>Best: {bestScore}°</div>
+                  <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700, marginTop: 6 }}>Best: {bestScore}°</div>
                 )}
               </div>
               {/* World ranking */}
