@@ -101,22 +101,13 @@ export default function StopClient() {
      }
 
      // Check WOD completion and redirect
-     try {
-       const { getTodayPlays } = await import('@/lib/wod')
-       const todayPlays = await getTodayPlays(profile.name, '/precision/stopwatch')
-       const { data: planData } = await supabase.from('brain_plans').select('start_date').eq('player_name', profile.name).order('created_at', { ascending: false }).limit(1)
-       if (planData?.[0]) {
-         const planDiff = Math.floor((new Date().getTime() - new Date(planData[0].start_date).getTime()) / 86400000)
-         const wodDay = Math.min(7, Math.max(1, planDiff + 1))
-         const { data: wodData } = await supabase.from('wod').select('exercises').eq('day_number', wodDay).limit(1)
-         if (wodData?.[0]) {
-           const ex = wodData[0].exercises.find((e: any) => e.href === '/precision/stopwatch')
-           if (ex && todayPlays >= ex.reps) {
-             setTimeout(() => { window.location.href = '/my-plan' }, 1500)
-           }
+       try {
+         const { checkAndSaveWodCompletion } = await import('@/lib/wod')
+         const shouldRedirect = await checkAndSaveWodCompletion(profile.name, '/precision/stopwatch')
+         if (shouldRedirect) {
+           setTimeout(() => { window.location.href = '/my-plan' }, 1500)
          }
-       }
-     } catch(e) {}
+       } catch(e) {}
    }
  }
 
