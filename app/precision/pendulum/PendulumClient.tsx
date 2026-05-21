@@ -276,18 +276,26 @@ export default function PendulumClient() {
 
           {/* Result */}
           {phase === 'result' && (
-            <div style={{ textAlign: 'center', animation: 'fadeUp 0.4s ease' }}>
-              <div style={{ fontSize: 48, fontWeight: 900, color: deviation < 50 ? '#2E7D32' : deviation < 150 ? GOLD : '#B71C1C', lineHeight: 1 }}>
-                {deviation}ms
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Degrees from center</div>
+                <div style={{ fontSize: 72, fontWeight: 900, color: BROWN, lineHeight: 1 }}>
+                  {deviation}°
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 800, marginTop: 8, color: deviation < 5 ? '#2E7D32' : deviation < 15 ? GOLD : '#B71C1C' }}>
+                  {deviation < 3 ? '🏆 Perfect!' : deviation < 8 ? '🔥 Excellent!' : deviation < 15 ? '⚡ Good' : '💪 Keep training'}
+                </div>
+                {bestScore !== null && (
+                  <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>Best: {bestScore}°</div>
+                )}
               </div>
-
-               {worldRank && (
-               <div style={{ background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', borderRadius: 16, padding: '16px', marginTop: 8, textAlign: 'center' }}>
-                 <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
-                 <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
-                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
-               </div>
-             )}
+              {worldRank && (
+                <div style={{ width: '100%', background: 'linear-gradient(135deg, #0D2B5E, #1565C0)', borderRadius: 20, padding: '20px', textAlign: 'center', boxShadow: '0 8px 0 #0D2B5E60' }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
+                  <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
+                </div>
+              )}
             </div>
           )}
 
