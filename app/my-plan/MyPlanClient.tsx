@@ -54,7 +54,7 @@ const AREA_NAMES: Record<string, string> = {
 
 const GAME_ICONS: Record<string, string> = {
   '/precision/stopwatch': `${BASE}/precision.png`,
-  '/precision/formula1': `${BASE}/formula1.png`,
+  '/precision/formula1': `${BASE}/f1.png`,
   '/precision/pendulum': `${BASE}/pendulum.png`,
   '/ace': `${BASE}/padel.png`,
   '/nback': `${BASE}/nback.png`,
@@ -141,16 +141,6 @@ export default function MyPlanClient() {
     return () => clearInterval(timer)
   }, [])
 
-  // Fire confetti when session complete
-  useEffect(() => {
-    if (allDone && !confettiFired.current) {
-      confettiFired.current = true
-      launchConfetti()
-      launchConfetti()
-      playWinSound()
-    }
-  }, [allDone])
-
   // Refresh when user comes back to tab
   useEffect(() => {
     const handleFocus = () => loadData()
@@ -193,6 +183,16 @@ export default function MyPlanClient() {
   const totalReps = exProgress.reduce((sum: number, ex: any) => sum + ex.reps, 0)
   const doneReps = exProgress.reduce((sum: number, ex: any) => sum + ex.done, 0)
   const allDone = exProgress.length > 0 && exProgress.every((ex: any) => ex.complete)
+
+  // Fire confetti when session complete
+  useEffect(() => {
+    if (allDone && !confettiFired.current) {
+      confettiFired.current = true
+      launchConfetti()
+      launchConfetti()
+      playWinSound()
+    }
+  }, [allDone])
   const nextEx = exProgress.find((ex: any) => !ex.complete)
 
   return (
