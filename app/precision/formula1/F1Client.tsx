@@ -275,37 +275,43 @@ export default function F1Client() {
 
         {phase === 'result' && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, width: '100%' }}>
+
+            {/* Card 1: reaction + world rank this game */}
             <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Your reaction time</div>
-              <div style={{ fontSize: 72, fontWeight: 900, color: BROWN, letterSpacing: -2, lineHeight: 1 }}>
-                {reactionMs}ms
-              </div>
-              <div style={{ fontSize: 13, color: reactionMs < 200 ? '#2E7D32' : reactionMs < 300 ? GOLD : RED, fontWeight: 800, marginTop: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Your reaction time</div>
+              <div style={{ fontSize: 64, fontWeight: 900, color: BROWN, letterSpacing: -2, lineHeight: 1 }}>{reactionMs}ms</div>
+              <div style={{ fontSize: 13, color: reactionMs < 200 ? '#2E7D32' : reactionMs < 300 ? GOLD : RED, fontWeight: 800, marginTop: 6 }}>
                 {reactionMs < 150 ? '🏆 Incredible!' : reactionMs < 200 ? '🔥 Elite!' : reactionMs < 250 ? '⚡ Fast!' : reactionMs < 350 ? '👍 Good' : '💪 Keep training'}
               </div>
-              {bestScore !== null && (
-                <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
-                  Best: {bestScore}ms
+              {worldRank && (
+                <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${BROWN}10` }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}30`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>This game · World Ranking</div>
+                  <div style={{ fontSize: 36, fontWeight: 900, color: '#0D2B5E', lineHeight: 1 }}>#{worldRank}</div>
                 </div>
               )}
             </div>
 
-            {worldRank && (
-              <div style={{ width: '100%', background: 'linear-gradient(135deg, #0D2B5E, #1565C0)', borderRadius: 20, padding: '20px', textAlign: 'center', boxShadow: '0 8px 0 #0D2B5E60' }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
-                <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
+            {/* Card 2: best + try again */}
+            {bestScore !== null && (
+              <div style={{ width: '100%', background: `linear-gradient(135deg, ${GOLD}22, ${GOLD}08)`, border: `1.5px solid ${GOLD}40`, borderRadius: 24, padding: '20px 24px', textAlign: 'center' }}>
+                <div style={{ fontSize: 10, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Your best</div>
+                <div style={{ fontSize: 36, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{bestScore}ms</div>
+                <button onClick={reset} style={{
+                  width: '100%', marginTop: 16, padding: '14px', borderRadius: 14, border: 'none',
+                  background: '#2E7D32', color: '#fff', fontSize: 15, fontWeight: 900,
+                  fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #1B5E2060',
+                }}>Try again</button>
               </div>
             )}
 
+            {/* Buttons */}
             <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-              <button onClick={reset} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#E8002D', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #E8002D60' }}>Play again</button>
-              <button onClick={() => window.location.href = '/precision/ranking'} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#0D2B5E', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #0D2B5E60' }}>🏆 Ranking</button>
+              <button onClick={() => window.location.href = '/my-plan'} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: '#0D2B5E', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #0D2B5E60' }}>My Plan</button>
+              <button onClick={() => window.location.href = '/precision/formula1/ranking'} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: GOLD, color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}60`, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.webp" alt="" style={{ width: 18, height: 18, objectFit: 'contain' }} />Ranking</button>
             </div>
 
           </div>
         )}
-
         {/* Tap anywhere when GO */}
         {(phase === 'lighting' || phase === 'waiting') && (
           <button onClick={handlePress} style={{
