@@ -304,22 +304,8 @@ export default function PendulumClient() {
             <>
               <CreateGroupBanner playerName={profile?.name || ''} />
               <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-                <button onClick={() => {
-                  const url = `${window.location.origin}/challenge?game=pendulum&score=${deviation}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-                  const text = `${profile?.name} stopped the pendulum at ${deviation}ms on MemGenius! Can you beat them? ${url}`
-                  if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-                }} style={{
-                  flex: 2, padding: '16px', borderRadius: 16, border: 'none',
-                  background: '#25D366', color: '#fff',
-                  fontSize: 15, fontWeight: 900, fontFamily: 'inherit',
-                  cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
-                }}>Share</button>
-                <button onClick={reset} style={{
-                  flex: 1, padding: '14px', borderRadius: 14, border: 'none',
-                  background: GOLD, color: '#fff',
-                  fontSize: 13, fontWeight: 800, fontFamily: 'inherit',
-                  cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
-                }}>Play again</button>
+                <button onClick={reset} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: PURPLE, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${PURPLE}60` }}>Play again</button>
+                <button onClick={() => window.location.href = '/precision/ranking'} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#0D2B5E', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #0D2B5E60' }}>🏆 Ranking</button>
               </div>
             </>
           )}
