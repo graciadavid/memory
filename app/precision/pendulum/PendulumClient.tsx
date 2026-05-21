@@ -61,18 +61,6 @@ export default function PendulumClient() {
       })
   }, [])
 
-  useEffect(() => {
-    if (!profile?.name) return
-    supabase.from('precision_scores')
-      .select('difference_ms')
-      .eq('player_name', profile.name)
-      .eq('game_type', 'pendulum')
-      .order('difference_ms', { ascending: true })
-      .limit(1)
-      .then(({ data }) => {
-        if (data?.[0]) setBestScore(data[0].difference_ms)
-      })
-  }, [profile?.name])
 
   const startPendulum = useCallback(() => {
     audioCtxRef.current = new AudioContext()
