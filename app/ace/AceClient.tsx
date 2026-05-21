@@ -357,46 +357,29 @@ export default function AceClient() {
           </div>
         )}
 
-        {/* GAME OVER */}
         {phase === 'gameover' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '0 20px', width: '100%' }}>
-            <div style={{
-              background: CREAM, borderRadius: 24, padding: '24px 20px', width: '100%',
-              boxSizing: 'border-box', boxShadow: `0 8px 32px ${BROWN}20`,
-              border: `1px solid ${GOLD}30`, textAlign: 'center',
-            }}>
-              <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: `${BROWN}50`, textTransform: 'uppercase', marginBottom: 6 }}>Your Result</div>
-              <div style={{ fontSize: 56, fontWeight: 900, color: TENNIS, lineHeight: 1 }}>{level}</div>
-              <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 700, marginBottom: 16 }}>aces in a row</div>
-
-
-
+            <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Aces in a row</div>
+              <div style={{ fontSize: 72, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{level}</div>
               {bestLevel !== null && (
-                <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700 }}>
-                  Your best: {bestLevel} aces
-                </div>
+                <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700, marginTop: 8 }}>Best: {bestLevel} aces</div>
               )}
             </div>
+
+            {worldRank && (
+              <div style={{ width: '100%', background: 'linear-gradient(135deg, #0D2B5E, #1565C0)', borderRadius: 20, padding: '20px', textAlign: 'center', boxShadow: '0 8px 0 #0D2B5E60' }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
+                <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
+              </div>
+            )}
 
             <CreateGroupBanner playerName={profile?.name || ''} />
 
             <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-              <button onClick={() => {
-                const url = `${window.location.origin}/challenge?game=ace&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-                const text = `🎾 ${profile?.name} hit ${level} aces in a row on MemGenius! Can you beat them? ${url}`
-                track('challenge_shared')
-                if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-              }} style={{
-                width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-                background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900,
-                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              }}>Share</button>
-              <button onClick={startGame} style={{
-                flex: 1, padding: '16px', borderRadius: 16, border: 'none',
-                background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
-                fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
-              }}>Play again</button>
+              <button onClick={startGame} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: TENNIS, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${TENNIS}60` }}>Play again</button>
+              <button onClick={() => window.location.href = '/ace/ranking'} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#0D2B5E', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #0D2B5E60' }}>🏆 Ranking</button>
             </div>
           </div>
         )}
