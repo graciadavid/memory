@@ -190,11 +190,17 @@ export default function SequenceClient() {
           data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
           const myBest = best[profile.name] || lvl
           setWorldRank(Object.values(best).filter(l => l > myBest).length + 1)
-        }
-        fetchTop()
-      }
-      return
-    }
+       }
+       fetchTop()
+
+       try {
+         const { checkAndSaveWodCompletion } = await import('@/lib/wod')
+         const shouldRedirect = await checkAndSaveWodCompletion(profile.name, '/sequence')
+         if (shouldRedirect) setTimeout(() => { window.location.href = '/my-plan' }, 1500)
+       } catch(e) {}
+     }
+     return
+   }
 
     if (newUser.length === currentSeq.length) {
       playSuccess()

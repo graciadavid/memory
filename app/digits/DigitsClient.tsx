@@ -111,9 +111,15 @@ export default function DigitsClient() {
       const myBest = best[profile.name] || finalLevel
       setWorldRank(Object.values(best).filter(l => l > myBest).length + 1)
       if (!bestLevel || finalLevel > bestLevel) setBestLevel(finalLevel)
-      setTopScores(Object.entries(best).map(([name, level]) => ({ name, level })).sort((a, b) => b.level - a.level))
-    }
-  }
+     setTopScores(Object.entries(best).map(([name, level]) => ({ name, level })).sort((a, b) => b.level - a.level))
+
+     try {
+       const { checkAndSaveWodCompletion } = await import('@/lib/wod')
+       const shouldRedirect = await checkAndSaveWodCompletion(profile.name, '/digits')
+       if (shouldRedirect) setTimeout(() => { window.location.href = '/my-plan' }, 1500)
+     } catch(e) {}
+   }
+ }
 
   useEffect(() => {
     return () => { if (showTimer.current) clearTimeout(showTimer.current) }
