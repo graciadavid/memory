@@ -147,17 +147,17 @@ export default function F1Client() {
   const Semaphore = ({ lit }: { lit: boolean }) => (
     <div style={{
       background: BLACK,
-      borderRadius: 12,
-      padding: '8px 6px',
+      borderRadius: 8,
+      padding: '5px 4px',
       display: 'flex',
       flexDirection: 'column',
-      gap: 6,
+      gap: 4,
       border: '2px solid #333',
     }}>
       {[0, 1, 2].map(i => (
         <div key={i} style={{
-          width: 44,
-          height: 44,
+          width: 28,
+          height: 28,
           borderRadius: '50%',
           background: lit && i >= 1 ? RED : '#2a2a2a',
           boxShadow: lit && i >= 1 ? `0 0 16px ${RED}` : 'none',
