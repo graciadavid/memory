@@ -1,9 +1,42 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 import { getWodProgress } from '@/lib/wod'
 import Link from 'next/link'
+
+function launchConfetti() {
+  const colors = ['#4CAF50','#2196F3','#FF9800','#E91E63','#9C27B0','#FFD600']
+  for (let i = 0; i < 80; i++) {
+    const div = document.createElement('div')
+    const size = Math.random() * 10 + 6 + 'px'
+    const left = Math.random() * 100
+    const duration = Math.random() * 2 + 2
+    const delay = Math.random() * 1.5
+    const rotation = Math.random() * 360
+    div.style.cssText = `position:fixed;width:${size};height:${size};background:${colors[i%colors.length]};border-radius:${Math.random()>0.5?'50%':'2px'};left:${left}vw;top:-10px;z-index:9999;animation:confettiFall ${duration}s ease-in forwards;animation-delay:${delay}s;transform:rotate(${rotation}deg)`
+    document.body.appendChild(div)
+    setTimeout(() => div.remove(), (duration + delay) * 1000)
+  }
+}
+
+function playWinSound() {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
+    const notes = [523, 659, 784, 1047]
+    notes.forEach((freq, i) => {
+      const o = ctx.createOscillator()
+      const g = ctx.createGain()
+      o.connect(g); g.connect(ctx.destination)
+      o.frequency.value = freq
+      o.type = 'sine'
+      g.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.12)
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.3)
+      o.start(ctx.currentTime + i * 0.12)
+      o.stop(ctx.currentTime + i * 0.12 + 0.3)
+    })
+  } catch(e) {}
+}
 
 const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
@@ -48,6 +81,8 @@ export default function MyPlanClient() {
   const [weekHistory, setWeekHistory] = useState<any[]>([])
   const [brainAge, setBrainAge] = useState<number | null>(null)
   const [allWods, setAllWods] = useState<any[]>([])
+  const [countdown, setCountdown] = useState('')
+  const confettiFired = useRef(false)
 
   const loadData = useCallback(async () => {
     if (!profile?.name) { setLoading(false); return }
@@ -90,6 +125,31 @@ export default function MyPlanClient() {
   }, [profile?.name])
 
   useEffect(() => { loadData() }, [loadData])
+
+  // Countdown to midnight
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date()
+      const midnight = new Date()
+      midnight.setHours(24, 0, 0, 0)
+      const diff = midnight.getTime() - now.getTime()
+      const h = Math.floor(diff / 3600000)
+      const m = Math.floor((diff % 3600000) / 60000)
+      const s = Math.floor((diff % 60000) / 1000)
+      setCountdown(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`)
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  // Fire confetti when session complete
+  useEffect(() => {
+    if (allDone && !confettiFired.current) {
+      confettiFired.current = true
+      launchConfetti()
+      launchConfetti()
+      playWinSound()
+    }
+  }, [allDone])
 
   // Refresh when user comes back to tab
   useEffect(() => {
@@ -137,7 +197,7 @@ export default function MyPlanClient() {
 
   return (
     <main style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 100 }}>
-      <style>{`@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }`}</style>
+      <style>{`@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} } @keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }`}</style>
 
       {/* Header */}
       <div style={{ background: `linear-gradient(160deg, ${areaColor}, ${areaColor}BB)`, padding: '40px 24px 24px' }}>
@@ -178,6 +238,17 @@ export default function MyPlanClient() {
                 Start 7-day plan
               </button>
             )}
+          </div>
+        )}
+
+        {/* Countdown + Keep Training — shown when session complete */}
+        {userPlan && allDone && (
+          <div style={{ background: 'linear-gradient(135deg, #0D1B4B, #1565C0)', borderRadius: 20, padding: '20px', textAlign: 'center', boxShadow: '0 4px 20px #0D1B4B40' }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Next workout in</div>
+            <div style={{ fontSize: 48, fontWeight: 900, color: '#FFD600', letterSpacing: 2, marginBottom: 16 }}>{countdown}</div>
+            <Link href="/" style={{ textDecoration: 'none', display: 'block', background: 'rgba(255,255,255,0.15)', color: '#fff', padding: '14px', borderRadius: 14, fontWeight: 900, fontSize: 15 }}>
+              Keep training →
+            </Link>
           </div>
         )}
 
@@ -223,14 +294,7 @@ export default function MyPlanClient() {
 
             {allDone && (
               <div style={{ marginTop: 20, padding: '20px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', borderRadius: 16, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-                <style>{`@keyframes cf { 0%{transform:translateY(-10px) rotate(0deg);opacity:1} 100%{transform:translateY(60px) rotate(360deg);opacity:0} }`}</style>
-                {['🎉','⭐','✨','💪','🧠'].map((e,i) => (
-                  <span key={i} style={{ position:'absolute', top:0, left:`${10+i*18}%`, fontSize:18, animation:`cf ${1+i*0.2}s ease-in ${i*0.15}s infinite` }}>{e}</span>
-                ))}
-                <div style={{ fontSize: 24, marginBottom: 4 }}>🎉</div>
-                <div style={{ fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 4 }}>Session complete!</div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 14 }}>Great work. Come back tomorrow.</div>
-                <Link href="/" style={{ textDecoration: 'none', display: 'inline-block', background: 'rgba(255,255,255,0.2)', color: '#fff', padding: '10px 20px', borderRadius: 10, fontSize: 13, fontWeight: 900 }}>Keep training →</Link>
+  
               </div>
             )}
           </div>
