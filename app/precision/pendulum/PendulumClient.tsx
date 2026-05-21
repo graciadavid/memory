@@ -148,7 +148,7 @@ export default function PendulumClient() {
         const myBest = Math.min(clampedDev, best[profile.name] || clampedDev)
         const rank = Object.values(best).filter(d => d < myBest).length + 1
         setWorldRank(rank)
-        if (!bestScore || clampedDev < bestScore) setBestScore(clampedDev)
+        if (!bestScore || angleDev < bestScore) setBestScore(angleDev)
       }
     }
   }, [phase, profile?.name, bestScore])
