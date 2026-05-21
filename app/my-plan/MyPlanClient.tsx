@@ -181,6 +181,42 @@ export default function MyPlanClient() {
           </div>
         )}
 
+        {/* Week overview */}
+        {userPlan && (
+          <div style={{ background: 'linear-gradient(135deg, #0D1B4B, #1565C0)', borderRadius: 20, padding: '16px 20px', boxShadow: '0 4px 20px #0D1B4B40' }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 14 }}>Your 7-day plan</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {allWods.map((w: any) => {
+                const hist = weekHistory.find((h: any) => h.wod_day === w.day_number)
+                const isToday = w.day_number === wodDay
+                const isPast = w.day_number < wodDay
+                const isFuture = w.day_number > wodDay
+                const done = hist?.completed
+                const partial = hist && !done
+                const color = AREA_COLORS[w.area]
+                return (
+                  <div key={w.day_number} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                    <div style={{
+                      width: '100%', aspectRatio: '1', borderRadius: 12,
+                      background: done ? color : partial ? `${color}60` : isToday ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)',
+                      border: isToday ? '2px solid #FFD600' : '2px solid transparent',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 11, fontWeight: 900,
+                      color: done ? '#fff' : isToday ? '#fff' : 'rgba(255,255,255,0.3)',
+                    }}>
+                      {done ? '✓' : partial ? '~' : w.day_number}
+                    </div>
+                    <div style={{ fontSize: 8, fontWeight: 800, color: isToday ? '#FFD600' : 'rgba(255,255,255,0.4)', textTransform: 'uppercase', textAlign: 'center' }}>
+                      {AREA_NAMES[w.area]?.slice(0, 3)}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+
         {/* Exercises */}
         {userPlan && exercises.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 24, padding: '20px', boxShadow: '0 4px 20px #4A2C0A08' }}>
@@ -232,40 +268,6 @@ export default function MyPlanClient() {
 
 
 
-        {/* Week overview */}
-        {userPlan && (
-          <div style={{ background: 'linear-gradient(135deg, #0D1B4B, #1565C0)', borderRadius: 20, padding: '16px 20px', boxShadow: '0 4px 20px #0D1B4B40' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 14 }}>Your 7-day plan</div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              {allWods.map((w: any) => {
-                const hist = weekHistory.find((h: any) => h.wod_day === w.day_number)
-                const isToday = w.day_number === wodDay
-                const isPast = w.day_number < wodDay
-                const isFuture = w.day_number > wodDay
-                const done = hist?.completed
-                const partial = hist && !done
-                const color = AREA_COLORS[w.area]
-                return (
-                  <div key={w.day_number} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                    <div style={{
-                      width: '100%', aspectRatio: '1', borderRadius: 12,
-                      background: done ? color : partial ? `${color}60` : isToday ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)',
-                      border: isToday ? '2px solid #FFD600' : '2px solid transparent',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 11, fontWeight: 900,
-                      color: done ? '#fff' : isToday ? '#fff' : 'rgba(255,255,255,0.3)',
-                    }}>
-                      {done ? '✓' : partial ? '~' : w.day_number}
-                    </div>
-                    <div style={{ fontSize: 8, fontWeight: 800, color: isToday ? '#FFD600' : 'rgba(255,255,255,0.4)', textTransform: 'uppercase', textAlign: 'center' }}>
-                      {AREA_NAMES[w.area]?.slice(0, 3)}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
 
         {/* No brain test - only show if no plan */}
         {!brainAge && !userPlan && (
