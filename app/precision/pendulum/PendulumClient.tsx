@@ -4,7 +4,6 @@ import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 import { completeWodExercise } from '@/lib/wod'
 import { completePlanDay } from '@/lib/plan'
-import CreateGroupBanner from '@/components/CreateGroupBanner'
 import Link from 'next/link'
 
 const BROWN = '#4A2C0A'

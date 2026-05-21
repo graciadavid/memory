@@ -4,7 +4,6 @@ import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 import { completeWodExercise } from '@/lib/wod'
 import { completePlanDay } from '@/lib/plan'
-import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { useRouter } from 'next/navigation'
 
 const BROWN = '#4A2C0A'
@@ -255,7 +254,6 @@ export default function StopClient() {
            </div>
            <button onClick={() => window.location.href = '/precision/ranking'} style={{ width: '100%', padding: '14px', borderRadius: 16, border: 'none', background: '#4A148C', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #4A148C60' }}>🏆 World Ranking</button>
 
-            <CreateGroupBanner playerName={profile?.name || ''} />
           </>
         )}
       </div>

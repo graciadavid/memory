@@ -3,7 +3,6 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { completeWodExercise } from '@/lib/wod'
 import { completePlanDay } from '@/lib/plan'
-import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { track } from '@vercel/analytics'
 import { usePlayer } from '@/lib/usePlayer'
 import Link from 'next/link'
@@ -312,7 +311,6 @@ export default function NBackClient() {
             )}
           </div>
 
-          <CreateGroupBanner playerName={profile?.name || ''} />
 
           <div style={{ display: 'flex', gap: 10, width: '100%' }}>
             <button onClick={() => {

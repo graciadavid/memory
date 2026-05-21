@@ -2,7 +2,6 @@
 import { getSpainToday } from '@/lib/dailyChallenge'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
-import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { calculateRank } from '@/lib/rankUtils'
 import { usePlayer } from '@/lib/usePlayer'
 import Link from 'next/link'
@@ -155,7 +154,6 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
 
-          <CreateGroupBanner playerName={profile?.name || ''} />
           <div style={{ marginTop: 12 }} />
           <div style={{ display: 'flex', gap: 10 }}>
             <button onClick={onReset} style={{

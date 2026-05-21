@@ -4,7 +4,6 @@ import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 import { completeWodExercise } from '@/lib/wod'
 import { completePlanDay } from '@/lib/plan'
-import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { track } from '@vercel/analytics'
 
 const BROWN = '#4A2C0A'
@@ -326,7 +325,6 @@ export default function VersusPage() {
               fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${COLOR}60`,
             }}>Play again</button>
 
-            <CreateGroupBanner playerName={profile?.name || ''} />
           </div>
         )}
       </div>

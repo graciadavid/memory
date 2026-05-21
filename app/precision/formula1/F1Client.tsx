@@ -1,5 +1,4 @@
 'use client'
-import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { useState, useRef, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
@@ -304,7 +303,6 @@ export default function F1Client() {
               <button onClick={() => window.location.href = '/precision/ranking'} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#0D2B5E', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #0D2B5E60' }}>🏆 Ranking</button>
             </div>
 
-            <CreateGroupBanner playerName={profile?.name || ''} />
           </div>
         )}
 
