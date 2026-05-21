@@ -1,3 +1,4 @@
+import CreateGroupBanner from '@/components/CreateGroupBanner'
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
