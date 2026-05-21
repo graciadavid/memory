@@ -247,12 +247,11 @@ export default function MyPlanClient() {
               })}
             </div>
 
-            {allDone && (
-              <div style={{ marginTop: 20, padding: '16px', background: '#E8F5E9', borderRadius: 16, textAlign: 'center' }}>
-                <div style={{ fontSize: 16, fontWeight: 900, color: '#2E7D32', marginBottom: 8 }}>Session complete!</div>
-                <Link href="/" style={{ textDecoration: 'none', fontSize: 14, fontWeight: 800, color: '#2E7D32' }}>Keep training today →</Link>
-              </div>
-            )}
+             {allDone && (
+             <div style={{ marginTop: 16, textAlign: 'center' }}>
+               <Link href="/" style={{ textDecoration: 'none', display: 'block', background: '#0D1B4B', color: '#fff', padding: '14px', borderRadius: 14, fontWeight: 900, fontSize: 15 }}>Keep training →</Link>
+             </div>
+           )}
           </div>
         )}
 
