@@ -146,7 +146,8 @@ export default function PendulumClient() {
             best[s.player_name] = s.difference_ms
         })
         const myBest = Math.min(clampedDev, best[profile.name] || clampedDev)
-        setWorldRank(Object.values(best).filter(d => d < myBest).length + 1)
+        const rank = Object.values(best).filter(d => d < myBest).length + 1
+        setWorldRank(rank)
         if (!bestScore || clampedDev < bestScore) setBestScore(clampedDev)
       }
     }
@@ -203,7 +204,7 @@ export default function PendulumClient() {
             <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
               <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
               {bestScore !== null ? (
-                <div style={{ fontSize: 32, fontWeight: 900, color: PURPLE }}>{bestScore}ms</div>
+                <div style={{ fontSize: 32, fontWeight: 900, color: PURPLE }}>{bestScore}°</div>
               ) : (
                 <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
               )}
