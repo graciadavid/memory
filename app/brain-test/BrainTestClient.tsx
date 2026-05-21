@@ -812,32 +812,11 @@ export default function BrainTestClient() {
           {/* Logo watermark */}
           <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: 120, objectFit: 'contain', opacity: 0.6, marginBottom: 32 }} />
 
-          {(() => {
-            const weak = getWeakArea(scores)
-            return (
-              <div style={{ width: '100%', background: 'rgba(255,255,255,0.08)', borderRadius: 20, padding: '16px', border: '1px solid rgba(255,255,255,0.1)', marginBottom: 4 }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Your weakest area</div>
-                <div style={{ fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 4 }}>{weak.icon} {weak.label}</div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginBottom: 12 }}>Train daily for 7 days and retake the test</div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  {weak.hrefs.map((href, i) => (
-                    <a key={i} href={href} style={{ flex: 1, textDecoration: 'none' }}>
-                      <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 12, padding: '10px', textAlign: 'center', fontSize: 13, fontWeight: 800, color: '#fff' }}>
-                        {weak.games[i]} →
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )
-          })()}
-
-                    {/* Buttons */}
-         <div style={{ width: '100%' }}>
+                    <div style={{ width: '100%' }}>
            <button onClick={() => window.location.href = '/my-plan'} style={{
-             width: '100%', padding: '20px', borderRadius: 16, border: 'none',
+             width: '100%', padding: '22px', borderRadius: 16, border: 'none',
              background: 'linear-gradient(135deg, #2E7D32, #1B5E20)',
-             color: '#fff', fontSize: 18, fontWeight: 900,
+             color: '#fff', fontSize: 20, fontWeight: 900,
              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
            }}>Start my training plan →</button>
          </div>
