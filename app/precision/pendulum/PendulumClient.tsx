@@ -279,6 +279,18 @@ export default function PendulumClient() {
                   <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700, marginTop: 6 }}>Best: {bestScore}°</div>
                 )}
               </div>
+
+              {/* Deviation card */}
+              <div style={{ width: '100%', background: deviation < 5 ? '#F1F8E9' : deviation < 15 ? '#FFF8E1' : '#FFEBEE', borderRadius: 20, padding: '20px', textAlign: 'center' }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Deviation from center</div>
+                <div style={{ fontSize: 48, fontWeight: 900, color: deviation < 5 ? '#2E7D32' : deviation < 15 ? '#E65100' : '#B71C1C', lineHeight: 1 }}>
+                  {deviation < 0.1 ? '0.0' : deviation.toFixed(1)}°
+                </div>
+                <div style={{ fontSize: 13, color: `${BROWN}50`, marginTop: 8, fontWeight: 700 }}>
+                  {frozenAngle > 0 ? 'Right of center' : frozenAngle < 0 ? 'Left of center' : 'Perfect center!'}
+                </div>
+              </div>
+
               {/* World ranking */}
               {worldRank && (
                 <div style={{ width: '100%', background: 'linear-gradient(135deg, #0D2B5E, #1565C0)', borderRadius: 20, padding: '20px', textAlign: 'center', boxShadow: '0 8px 0 #0D2B5E60' }}>
