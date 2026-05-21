@@ -171,7 +171,7 @@ export default function F1Client() {
     <>
     <main style={{
       height: '100dvh',
-      background: phase === 'go' ? '#0a0a0a' : `radial-gradient(ellipse at 50% 0%, #fff5f5 0%, ${CREAM} 50%)`,
+      background: `radial-gradient(ellipse at 50% 0%, #fff5f5 0%, ${CREAM} 50%)`,
       display: 'flex', flexDirection: 'column',
       fontFamily: 'var(--font-nunito), sans-serif',
       maxWidth: 430, margin: '0 auto',
@@ -181,17 +181,17 @@ export default function F1Client() {
       <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
         <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/f1.png" alt="" style={{ height: 52, objectFit: 'contain', flexShrink: 0 }} />
         <div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: phase === 'go' ? '#fff' : RED, letterSpacing: -0.5 }}>F1 Reaction</div>
-          <div style={{ fontSize: 11, color: phase === 'go' ? 'rgba(255,255,255,0.5)' : `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>React when the lights go out</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: RED, letterSpacing: -0.5 }}>F1 Reaction</div>
+          <div style={{ fontSize: 11, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>React when the lights go out</div>
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 28 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 16 }}>
 
         {/* Semaphores */}
         {(phase === 'idle' || phase === 'lighting' || phase === 'waiting' || phase === 'go') && (
           <>
-          <div style={{ fontSize: 13, fontWeight: 900, color: phase === 'go' ? 'rgba(255,255,255,0.7)' : `${BROWN}60`, letterSpacing: 3, textTransform: 'uppercase', textAlign: 'center' }}>Reaction Time</div>
+          <div style={{ fontSize: 13, fontWeight: 900, color: `${BROWN}60`, letterSpacing: 3, textTransform: 'uppercase', textAlign: 'center' }}>Reaction Time</div>
           <div style={{ display: 'flex', gap: 8 }}>
             {[1, 2, 3, 4, 5].map(n => (
               <Semaphore key={n} lit={phase === 'waiting' ? true : litCount >= n} />
@@ -247,17 +247,13 @@ export default function F1Client() {
         )}
 
         {phase === 'go' && (
-          <>
-            <div style={{ fontSize: 64, fontWeight: 900, color: '#fff', letterSpacing: 2, animation: 'pulse 0.5s ease-in-out infinite' }}>
-              GO!
-            </div>
-            <button onClick={handlePress} style={{
-              width: '100%', padding: '32px', borderRadius: 24, border: 'none',
-              background: '#00C853', color: '#fff', fontSize: 28, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer',
-              boxShadow: '0 10px 0 #00952060',
-            }}>ACCELERATE</button>
-          </>
+          <button onClick={handlePress} style={{
+            width: '100%', padding: '28px', borderRadius: 24, border: 'none',
+            background: '#00C853', color: '#fff', fontSize: 26, fontWeight: 900,
+            fontFamily: 'inherit', cursor: 'pointer',
+            boxShadow: '0 10px 0 #00952060',
+            animation: 'pulse 0.4s ease-in-out infinite',
+          }}>ACCELERATE!</button>
         )}
 
         {phase === 'jumpstart' && (
