@@ -231,8 +231,8 @@ export default function StopClient() {
               if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
             }} style={{
               width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-              background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
+              background: 'rgba(0,0,0,0.06)', color: '#4A2C0A60', fontSize: 13, fontWeight: 700,
+              fontFamily: 'inherit', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
 

@@ -265,8 +265,8 @@ export default function MyPlanClient() {
           </div>
         )}
 
-        {/* No brain test */}
-        {!brainAge && (
+        {/* No brain test - only show if no plan */}
+        {!brainAge && !userPlan && (
           <div style={{ background: 'linear-gradient(135deg, #0A0A1A, #0D1B2A)', borderRadius: 20, padding: '20px', textAlign: 'center' }}>
             <div style={{ fontSize: 14, fontWeight: 800, color: 'rgba(255,255,255,0.6)', marginBottom: 8 }}>Discover your Brain Age</div>
             <Link href="/brain-test" style={{ textDecoration: 'none', display: 'inline-block', background: '#2E7D32', color: '#fff', padding: '12px 24px', borderRadius: 12, fontWeight: 900, fontSize: 14 }}>
