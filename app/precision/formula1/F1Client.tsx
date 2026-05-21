@@ -219,19 +219,17 @@ export default function F1Client() {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, flex: 1 }}>
             <div style={{ display: 'flex', gap: 6 }}>
               {[1,2,3,4,5].map(n => (
-                <Semaphore key={n} lit={phase === 'waiting' ? true : litCount >= n} />
+                <Semaphore key={n} lit={phase === 'waiting' ? true : phase === 'go' ? false : litCount >= n} />
               ))}
             </div>
-            {phase === 'go' && (
-              <div style={{ fontSize: 32, fontWeight: 900, color: '#00C853', letterSpacing: 2, textAlign: 'center', animation: 'pulse 0.4s ease-in-out infinite' }}>GO!</div>
-            )}
+
             <button onClick={handlePress} style={{
               width: '100%', padding: '24px', borderRadius: 20, border: 'none',
               background: phase === 'go' ? '#00C853' : `${BROWN}20`,
               color: phase === 'go' ? '#fff' : `${BROWN}50`,
               fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
               boxShadow: phase === 'go' ? '0 8px 0 #00952060' : 'none',
-              transition: 'all 0.1s',
+              transition: 'background 0.05s',
             }}>ACCELERATE</button>
           </div>
         )}
