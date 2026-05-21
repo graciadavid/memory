@@ -420,11 +420,11 @@ export default function LandingPage() {
               />
               <button onClick={handleSave} disabled={password.length < 4 || checking} style={{
                 width: '100%', padding: '14px', borderRadius: 14, border: 'none',
-                background: password.length === 4 ? BROWN : '#e0d9cf',
+                background: password.length === 4 ? '#2E7D32' : '#e0d9cf',
                 color: password.length === 4 ? '#fff' : '#aaa',
                 fontSize: 16, fontWeight: 900, fontFamily: 'inherit',
                 cursor: password.length === 4 ? 'pointer' : 'default',
-                boxShadow: password.length === 4 ? `0 6px 0 ${BROWN}50` : 'none',
+                boxShadow: password.length === 4 ? '0 6px 0 #1B5E2060' : 'none',
               }}>{checking ? '...' : "Let's Play!"}</button>
             </>
           )}
