@@ -81,12 +81,88 @@ function confetti() {
   }
 }
 
-type GamePhase = 'intro' | 'ace' | 'nback' | 'stop' | 'geoshape' | 'digits' | 'result'
+const FLAG_COUNTRIES = [
+  { code: 'us', name: 'United States' }, { code: 'gb', name: 'United Kingdom' },
+  { code: 'fr', name: 'France' }, { code: 'de', name: 'Germany' },
+  { code: 'es', name: 'Spain' }, { code: 'it', name: 'Italy' },
+  { code: 'jp', name: 'Japan' }, { code: 'cn', name: 'China' },
+  { code: 'br', name: 'Brazil' }, { code: 'in', name: 'India' },
+  { code: 'ca', name: 'Canada' }, { code: 'au', name: 'Australia' },
+  { code: 'mx', name: 'Mexico' }, { code: 'kr', name: 'South Korea' },
+  { code: 'ru', name: 'Russia' }, { code: 'za', name: 'South Africa' },
+  { code: 'ng', name: 'Nigeria' }, { code: 'ar', name: 'Argentina' },
+  { code: 'se', name: 'Sweden' }, { code: 'no', name: 'Norway' },
+  { code: 'pt', name: 'Portugal' }, { code: 'nl', name: 'Netherlands' },
+  { code: 'ch', name: 'Switzerland' }, { code: 'tr', name: 'Turkey' },
+  { code: 'eg', name: 'Egypt' }, { code: 'th', name: 'Thailand' },
+  { code: 'pl', name: 'Poland' }, { code: 'id', name: 'Indonesia' },
+]
+
+function shuffle<T>(arr: T[]): T[] {
+  return [...arr].sort(() => Math.random() - 0.5)
+}
+
+function FlagsMinigame({ onComplete }: { onComplete: (correct: number) => void }) {
+  const BROWN = '#4A2C0A'
+  const GOLD = '#C8960C'
+  const questions = shuffle(FLAG_COUNTRIES).slice(0, 10)
+  const [idx, setIdx] = useState(0)
+  const [correct, setCorrect] = useState(0)
+  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
+  const [options, setOptions] = useState<string[]>([])
+
+  useEffect(() => {
+    const q = questions[idx]
+    const wrong = shuffle(FLAG_COUNTRIES.filter(c => c.code !== q.code)).slice(0, 3).map(c => c.name)
+    setOptions(shuffle([q.name, ...wrong]))
+    setFeedback(null)
+  }, [idx])
+
+  const handleAnswer = (answer: string) => {
+    if (feedback) return
+    const isCorrect = answer === questions[idx].name
+    const newCorrect = isCorrect ? correct + 1 : correct
+    setFeedback(isCorrect ? 'correct' : 'wrong')
+    if (isCorrect) setCorrect(newCorrect)
+    setTimeout(() => {
+      if (idx + 1 >= questions.length) {
+        onComplete(newCorrect)
+      } else {
+        setIdx(i => i + 1)
+      }
+    }, 600)
+  }
+
+  const q = questions[idx]
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px', gap: 20, minHeight: '90dvh', justifyContent: 'center' }}>
+      <div style={{ fontSize: 13, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase' }}>Game 2 of 5 · Flags</div>
+      <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 700 }}>{idx + 1} / 10</div>
+      <img src={`https://flagcdn.com/w160/${q.code}.png`} alt="" style={{ width: 160, height: 'auto', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }} />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%' }}>
+        {options.map(opt => (
+          <button key={opt} onClick={() => handleAnswer(opt)} style={{
+            width: '100%', padding: '16px', borderRadius: 14, border: 'none',
+            background: feedback
+              ? opt === questions[idx].name ? '#2E7D32' : opt === (feedback === 'wrong' ? opt : '') ? '#B71C1C' : '#fff'
+              : '#fff',
+            color: feedback && (opt === questions[idx].name) ? '#fff' : `${BROWN}`,
+            fontSize: 15, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+            border: `1px solid ${BROWN}10`,
+          }}>{opt}</button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+type GamePhase = 'intro' | 'ace' | 'flags' | 'stop' | 'geoshape' | 'digits' | 'result'
 
 export default function BrainTestClient() {
   const { profile } = usePlayer()
   const [phase, setPhase] = useState<GamePhase>('intro')
-  const [scores, setScores] = useState({ ace: 0, nback: 0, stop: 0, geoshape: 0, digits: 0 })
+  const [scores, setScores] = useState({ ace: 0, flags: 0, stop: 0, geoshape: 0, digits: 0 })
   const [worldPercent, setWorldPercent] = useState<number | null>(null)
   const testStartTimeRef = useRef(0)
   const resultCardRef = useRef<HTMLDivElement>(null)
@@ -146,8 +222,8 @@ export default function BrainTestClient() {
   const calcBrainScore = (s: typeof scores) => {
     // Ace: max 150pts (less weight)
     const aceP = Math.min(150, s.ace * 0.75)
-    // N-Back: max 250pts (more weight)
-    const nbP = Math.min(250, s.nback * 50)
+    // Flags: max 250pts (10 questions, 25pts each)
+    const nbP = Math.min(250, s.flags * 25)
     // Stop: 200pts base, -20pts per 100ms off
     const stopP = Math.max(0, Math.round(200 - (s.stop / 100) * 20))
     // GeoShape: max 200pts
@@ -165,7 +241,7 @@ export default function BrainTestClient() {
     localStorage.setItem('pending_brain_test', JSON.stringify({
       score: total,
       ace_score: finalScores.ace,
-      nback_score: finalScores.nback,
+      nback_score: finalScores.flags,
       stop_score: finalScores.stop,
       geoshape_score: finalScores.geoshape,
       mastermind_score: finalScores.digits,
@@ -173,7 +249,7 @@ export default function BrainTestClient() {
     if (profile?.name) {
       await supabase.from('brain_test_scores').insert({
         player_name: profile.name, score: total,
-        ace_score: finalScores.ace, nback_score: finalScores.nback,
+        ace_score: finalScores.ace, nback_score: finalScores.flags,
         stop_score: finalScores.stop, geoshape_score: finalScores.geoshape,
         mastermind_score: finalScores.digits,
       })
@@ -315,7 +391,7 @@ export default function BrainTestClient() {
       nbIndexRef.current = 0; nbScoreRef.current = 0
       setNbIndex(0); setNbScore(0)
       startNbRound(0, null)
-      setPhase('nback')
+      setPhase('flags')
     }, 1000)
   }, [aceDone])
 
@@ -554,7 +630,7 @@ export default function BrainTestClient() {
 
   const getWeakArea = (s: typeof scores) => {
     const areas = [
-      { key: 'nback', label: 'Working Memory', score: Math.min(200, s.nback * 50), games: ['N-Back', 'Digits'], hrefs: ['/nback', '/digits'], icon: '🧠' },
+      { key: 'flags', label: 'World Knowledge', score: Math.min(250, s.flags * 25), games: ['Flags', 'GeoShape'], hrefs: ['/flags', '/geoshape'], icon: '🌍' },
       { key: 'stop', label: 'Precision', score: Math.max(0, 200 - (s.stop / 100) * 20), games: ['Stop', 'F1 Reaction'], hrefs: ['/precision/stopwatch', '/precision/formula1'], icon: '⏱' },
       { key: 'geoshape', label: 'Spatial Knowledge', score: Math.min(200, s.geoshape * 40), games: ['GeoShape', 'Flags'], hrefs: ['/geoshape', '/flags'], icon: '🌍' },
       { key: 'digits', label: 'Short-term Memory', score: Math.min(200, s.digits), games: ['Digits', 'Simon Says'], hrefs: ['/digits', '/sequence'], icon: '🔢' },
@@ -617,56 +693,12 @@ export default function BrainTestClient() {
         </div>
       )}
 
-      {/* N-BACK */}
-      {phase === 'nback' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '90dvh', padding: '24px', gap: 20 }}>
-          <div style={{ fontSize: 28, fontWeight: 900, color: BROWN }}>N-Back</div>
-
-          {!nbStarted && (
-            <>
-              <div style={{ fontSize: 16, color: `${BROWN}60`, fontWeight: 700, textAlign: 'center', lineHeight: 1.7 }}>
-                A color appears and disappears.<br />Was it the same as the previous one?
-              </div>
-              <button onClick={() => { setNbStarted(true); startNbRound(0, null) }} style={{
-                width: '100%', padding: '20px', borderRadius: 20, border: 'none',
-                background: '#2E7D32', color: '#fff', fontSize: 20, fontWeight: 900,
-                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
-              }}>Start</button>
-            </>
-          )}
-
-          {nbStarted && nbShowCard && (
-            <div style={{
-              width: 260, height: 260, borderRadius: 32,
-              background: NBACK_COLORS[nbCurrent].bg,
-              boxShadow: `0 12px 0 ${NBACK_COLORS[nbCurrent].shadow}`,
-              animation: 'fadeIn 0.15s ease',
-            }} />
-          )}
-
-          {nbStarted && !nbShowCard && nbPhase === 'answer' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%', animation: 'fadeIn 0.2s ease' }}>
-              <button onClick={() => handleNbAnswer(true)} style={{
-                width: '100%', padding: '28px', borderRadius: 20, border: 'none',
-                background: '#43A047', color: '#fff', fontSize: 22, fontWeight: 900,
-                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #2E7D3260',
-              }}>Same color</button>
-              <button onClick={() => handleNbAnswer(false)} style={{
-                width: '100%', padding: '28px', borderRadius: 20, border: 'none',
-                background: '#E53935', color: '#fff', fontSize: 22, fontWeight: 900,
-                fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #B71C1C60',
-              }}>Different color</button>
-            </div>
-          )}
-
-
-
-          {nbFeedback && (
-            <div style={{ fontSize: 28, fontWeight: 900, color: nbFeedback === 'correct' ? '#2E7D32' : '#C62828', animation: 'popIn 0.3s ease' }}>
-              {nbFeedback === 'correct' ? '✓' : '✗'}
-            </div>
-          )}
-        </div>
+      {/* FLAGS */}
+      {phase === 'flags' && (
+        <FlagsMinigame onComplete={(correct: number) => {
+          setScores(s => ({ ...s, flags: correct }))
+          setPhase('stop')
+        }} />
       )}
 
       {/* STOP */}
