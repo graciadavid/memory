@@ -274,40 +274,36 @@ export default function F1Client() {
         )}
 
         {phase === 'result' && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, width: '100%' }}>
             <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Reaction time</div>
-              <div style={{ fontSize: 64, fontWeight: 900, color: reactionMs < 200 ? '#00C853' : reactionMs < 300 ? GOLD : RED, letterSpacing: -2 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Your reaction time</div>
+              <div style={{ fontSize: 72, fontWeight: 900, color: BROWN, letterSpacing: -2, lineHeight: 1 }}>
                 {reactionMs}ms
               </div>
-              <div style={{ fontSize: 13, color: `${BROWN}50`, marginBottom: 12 }}>
+              <div style={{ fontSize: 13, color: reactionMs < 200 ? '#2E7D32' : reactionMs < 300 ? GOLD : RED, fontWeight: 800, marginTop: 8 }}>
                 {reactionMs < 150 ? '🏆 Incredible!' : reactionMs < 200 ? '🔥 Elite!' : reactionMs < 250 ? '⚡ Fast!' : reactionMs < 350 ? '👍 Good' : '💪 Keep training'}
               </div>
-               {worldRank && (
-               <div style={{ background: 'linear-gradient(135deg, #B71C1C, #D32F2F)', borderRadius: 16, padding: '16px', marginBottom: 16, textAlign: 'center' }}>
-                 <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
-                 <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
-                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
-               </div>
-             )}
+              {bestScore !== null && (
+                <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
+                  Best: {bestScore}ms
+                </div>
+              )}
             </div>
 
-            <button onClick={() => {
-              const url = `${window.location.origin}/challenge?game=formula1&score=${reactionMs}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-              const text = `🏎️ ${profile?.name} reacted in ${reactionMs}ms on MemGenius F1! Can you beat them? ${url}`
-              if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-            }} style={{
-              width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-              background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
+            {worldRank && (
+              <div style={{ width: '100%', background: 'linear-gradient(135deg, #0D2B5E, #1565C0)', borderRadius: 20, padding: '20px', textAlign: 'center', boxShadow: '0 8px 0 #0D2B5E60' }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
+                <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
+              </div>
+            )}
 
-            <button onClick={reset} style={{
-              width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-              background: RED, color: '#fff', fontSize: 16, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${RED}60`,
-            }}>Play again</button>
+            <div style={{ display: 'flex', gap: 10, width: '100%' }}>
+              <button onClick={reset} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#E8002D', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #E8002D60' }}>Play again</button>
+              <button onClick={() => window.location.href = '/precision/ranking'} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#0D2B5E', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #0D2B5E60' }}>🏆 Ranking</button>
+            </div>
+
+            <CreateGroupBanner playerName={profile?.name || ''} />
           </div>
         )}
 
