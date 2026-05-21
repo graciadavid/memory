@@ -151,7 +151,7 @@ export default function PendulumClient() {
     lastTickSideRef.current = 0
   }
 
-  const displayAngle = phase === 'result' ? frozenAngle : angle
+  const displayAngle = angle
 
   return (
     <main style={{
@@ -245,7 +245,7 @@ export default function PendulumClient() {
               width: 4, height: 200,
               transformOrigin: '50% 0%',
               transform: `translateX(-50%) rotate(${displayAngle}deg)`,
-              transition: phase === 'result' ? 'transform 0.3s ease-out' : undefined,
+              transition: undefined,
             }}>
               <div style={{
                 width: '100%', height: '100%',
