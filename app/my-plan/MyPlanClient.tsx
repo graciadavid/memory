@@ -156,7 +156,7 @@ export default function MyPlanClient() {
       <style>{`@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }`}</style>
 
           {/* Header */}
-     <div style={{ margin: '12px 16px 0', background: `linear-gradient(160deg, ${areaColor}, ${areaColor}BB)`, padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, borderRadius: 20, boxShadow: `0 4px 20px ${areaColor}40` }}>
+     <div style={{ margin: '48px 16px 0', background: `linear-gradient(160deg, ${areaColor}, ${areaColor}BB)`, padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, borderRadius: 20, boxShadow: `0 4px 20px ${areaColor}40` }}>
        <div>
          <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Day {wodDay} of 7</div>
          <div style={{ fontSize: 26, fontWeight: 900, color: '#fff' }}>{wod?.name || 'My Plan'}</div>

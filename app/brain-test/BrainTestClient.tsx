@@ -832,20 +832,15 @@ export default function BrainTestClient() {
             )
           })()}
 
-          {/* Buttons */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
-            <button onClick={() => window.location.href = '/brain-age'} style={{
-              width: '100%', padding: '20px', borderRadius: 16, border: 'none',
-              background: 'linear-gradient(135deg, #2E7D32, #1B5E20)',
-              color: '#fff', fontSize: 18, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
-            }}>Mejorar mi Brain Age →</button>
-            <button onClick={shareImage} style={{
-              width: '100%', padding: '14px', borderRadius: 16, border: 'none',
-              background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)',
-              fontSize: 14, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
-            }}>Share my Brain Age</button>
-          </div>
+                    {/* Buttons */}
+         <div style={{ width: '100%' }}>
+           <button onClick={() => window.location.href = '/my-plan'} style={{
+             width: '100%', padding: '20px', borderRadius: 16, border: 'none',
+             background: 'linear-gradient(135deg, #2E7D32, #1B5E20)',
+             color: '#fff', fontSize: 18, fontWeight: 900,
+             fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #1B5E2060',
+           }}>Start my training plan →</button>
+         </div>
         </div>
         )
       })()}
