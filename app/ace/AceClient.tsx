@@ -380,7 +380,7 @@ export default function AceClient() {
                  width: '100%', marginTop: 16, padding: '14px', borderRadius: 14, border: 'none',
                  background: '#2E7D32', color: '#fff', fontSize: 15, fontWeight: 900,
                  fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #1B5E2060',
-               }}>Try again</button>
+               }} onClick={() => window.location.href = '/ace'}>Try again</button>
              </div>
            )}
 
