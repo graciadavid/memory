@@ -105,7 +105,7 @@ function shuffle<T>(arr: T[]): T[] {
 function FlagsMinigame({ onComplete }: { onComplete: (correct: number) => void }) {
   const BROWN = '#4A2C0A'
   const GOLD = '#C8960C'
-  const questions = shuffle(FLAG_COUNTRIES).slice(0, 10)
+  const [questions] = useState(() => shuffle(FLAG_COUNTRIES).slice(0, 10))
   const [idx, setIdx] = useState(0)
   const [correct, setCorrect] = useState(0)
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
