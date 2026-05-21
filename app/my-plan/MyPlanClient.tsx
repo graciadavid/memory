@@ -151,13 +151,6 @@ export default function MyPlanClient() {
   const allDone = exProgress.length > 0 && exProgress.every((ex: any) => ex.complete)
 
  useEffect(() => {
-   if (allDone && !confettiFired.current) {
-     confettiFired.current = true
-     launchConfetti()
-     launchConfetti()
-     playWinSound()
-   }
- }, [allDone])
   const nextEx = exProgress.find((ex: any) => !ex.complete)
 
   return (
