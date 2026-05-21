@@ -87,7 +87,7 @@ export default function AceClient() {
   }, [profile?.name])
 
   const fetchTop = async () => {
-    const { data } = await supabase.from('ace_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
+    const { data } = await supabase.from('ace_scores').select('player_name, level').order('level', { ascending: false }).limit(1000)
     if (data) {
       const best: Record<string, number> = {}
       data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
@@ -186,7 +186,7 @@ export default function AceClient() {
             window.dispatchEvent(new Event('game_completed'))
       completeWodExercise(profile?.name || '', '/ace')
       completePlanDay(profile?.name || profile?.name || '', '/ace')
-        const { data } = await supabase.from('ace_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
+        const { data } = await supabase.from('ace_scores').select('player_name, level').order('level', { ascending: false }).limit(1000)
         if (data) {
           const best: Record<string, number> = {}
           data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
