@@ -109,6 +109,7 @@ function FlagsMinigame({ onComplete }: { onComplete: (correct: number) => void }
   const [idx, setIdx] = useState(0)
   const [correct, setCorrect] = useState(0)
   const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
+  const [lastAnswer, setLastAnswer] = useState<string>('')
   const [options, setOptions] = useState<string[]>([])
 
   useEffect(() => {
@@ -122,6 +123,7 @@ function FlagsMinigame({ onComplete }: { onComplete: (correct: number) => void }
     if (feedback) return
     const isCorrect = answer === questions[idx].name
     const newCorrect = isCorrect ? correct + 1 : correct
+    setLastAnswer(answer)
     setFeedback(isCorrect ? 'correct' : 'wrong')
     if (isCorrect) setCorrect(newCorrect)
     setTimeout(() => {
