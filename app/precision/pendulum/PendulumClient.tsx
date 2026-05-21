@@ -219,7 +219,7 @@ export default function PendulumClient() {
       )}
 
       {/* RUNNING + RESULT */}
-      {phase === 'running' && (
+      {(phase === 'running' || phase === 'result') && (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, width: '100%', padding: '0 24px' }}>
 
           {/* Pendulum canvas */}
@@ -245,7 +245,7 @@ export default function PendulumClient() {
               width: 4, height: 200,
               transformOrigin: '50% 0%',
               transform: `translateX(-50%) rotate(${displayAngle}deg)`,
-              transition: undefined,
+              transition: phase === 'result' ? 'transform 0.3s ease-out' : undefined,
             }}>
               <div style={{
                 width: '100%', height: '100%',
@@ -302,6 +302,7 @@ export default function PendulumClient() {
 
           {phase === 'result' && (
             <>
+              <CreateGroupBanner playerName={profile?.name || ''} />
               <div style={{ display: 'flex', gap: 10, width: '100%' }}>
                 <button onClick={reset} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: PURPLE, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${PURPLE}60` }}>Play again</button>
                 <button onClick={() => window.location.href = '/precision/ranking'} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#0D2B5E', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #0D2B5E60' }}>🏆 Ranking</button>
