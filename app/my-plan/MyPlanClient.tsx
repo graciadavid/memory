@@ -48,6 +48,7 @@ export default function MyPlanClient() {
   const [weekHistory, setWeekHistory] = useState<any[]>([])
   const [brainAge, setBrainAge] = useState<number | null>(null)
   const [allWods, setAllWods] = useState<any[]>([])
+  const [countdown, setCountdown] = useState('')
 
   const loadData = useCallback(async () => {
     if (!profile?.name) { setLoading(false); return }
@@ -91,7 +92,22 @@ export default function MyPlanClient() {
 
   useEffect(() => { loadData() }, [loadData])
 
-  // Refresh when user comes back to tab
+  // Countdown to next WOD
+ useEffect(() => {
+   const timer = setInterval(() => {
+     const now = new Date()
+     const midnight = new Date()
+     midnight.setHours(24, 0, 0, 0)
+     const diff = midnight.getTime() - now.getTime()
+     const h = Math.floor(diff / 3600000)
+     const m = Math.floor((diff % 3600000) / 60000)
+     const s = Math.floor((diff % 60000) / 1000)
+     setCountdown(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`)
+   }, 1000)
+   return () => clearInterval(timer)
+ }, [])
+
+ // Refresh when user comes back to tab
   useEffect(() => {
     const handleFocus = () => loadData()
     window.addEventListener('focus', handleFocus)
@@ -188,7 +204,7 @@ export default function MyPlanClient() {
                   <div key={w.day_number} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                     <div style={{
                       width: '100%', aspectRatio: '1', borderRadius: 12,
-                      background: done ? color : partial ? `${color}60` : isToday ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)',
+                      background: done ? '#4CAF50' : partial ? `${color}60` : isToday ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)',
                       border: isToday ? '2px solid #FFD600' : '2px solid transparent',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: 11, fontWeight: 900,
@@ -206,8 +222,15 @@ export default function MyPlanClient() {
           </div>
         )}
 
+       {/* Countdown when session complete */}
+       {userPlan && allDone && (
+         <div style={{ background: 'rgba(255,255,255,0.8)', borderRadius: 16, padding: '12px 20px', textAlign: 'center', border: '1px solid #4A2C0A08' }}>
+           <div style={{ fontSize: 10, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Next workout in</div>
+           <div style={{ fontSize: 32, fontWeight: 900, color: '#0D1B4B', letterSpacing: 2 }}>{countdown}</div>
+         </div>
+       )}
 
-        {/* Exercises */}
+       {/* Exercises */}
         {userPlan && exercises.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 24, padding: '20px', boxShadow: '0 4px 20px #4A2C0A08' }}>
             <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>Today's workout</div>
