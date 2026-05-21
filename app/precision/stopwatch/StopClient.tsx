@@ -227,7 +227,7 @@ export default function StopClient() {
               {worldRank && (
                 <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${BROWN}10` }}>
                   <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}30`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>This game · World Ranking</div>
-                  <div style={{ fontSize: 36, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
+                  <div style={{ fontSize: 36, fontWeight: 900, color: '#0D1B4B', lineHeight: 1 }}>#{worldRank}</div>
                 </div>
               )}
             </div>
