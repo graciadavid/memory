@@ -226,10 +226,13 @@ export default function MyPlanClient() {
         )}
 
        {/* Countdown when session complete */}
-       {userPlan && allDone && (
-         <div style={{ background: 'rgba(255,255,255,0.8)', borderRadius: 16, padding: '12px 20px', textAlign: 'center', border: '1px solid #4A2C0A08' }}>
-           <div style={{ fontSize: 10, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Next workout in</div>
-           <div style={{ fontSize: 32, fontWeight: 900, color: '#0D1B4B', letterSpacing: 2 }}>{countdown}</div>
+               {userPlan && allDone && (
+         <div style={{ background: 'linear-gradient(135deg, #0D1B4B, #1565C0)', borderRadius: 16, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+           <div>
+             <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Next workout in</div>
+             <div style={{ fontSize: 28, fontWeight: 900, color: '#FFD600', letterSpacing: 2 }}>{countdown}</div>
+           </div>
+           <Link href="/" style={{ textDecoration: 'none', background: '#2E7D32', color: '#fff', padding: '12px 20px', borderRadius: 12, fontWeight: 900, fontSize: 14, flexShrink: 0 }}>Keep training →</Link>
          </div>
        )}
 
