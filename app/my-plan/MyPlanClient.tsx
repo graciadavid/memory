@@ -269,11 +269,7 @@ export default function MyPlanClient() {
               })}
             </div>
 
-             {allDone && (
-             <div style={{ marginTop: 16, textAlign: 'center' }}>
-               <Link href="/" style={{ textDecoration: 'none', display: 'block', background: '#0D1B4B', color: '#fff', padding: '14px', borderRadius: 14, fontWeight: 900, fontSize: 15 }}>Keep training →</Link>
-             </div>
-           )}
+             
           </div>
         )}
 
