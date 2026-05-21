@@ -171,7 +171,7 @@ export default function ProfilePage() {
           {/* Stats */}
           <div style={{ display: 'flex', gap: 12 }}>
             <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 16, padding: '12px', textAlign: 'center' }}>
-              <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Brain Age</div>
+              <div style={{ fontSize: 9, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4, whiteSpace: 'nowrap' }}>Brain Age Test</div>
               <div style={{ fontSize: 36, fontWeight: 900, color: brainAge ? '#4CAF50' : 'rgba(255,255,255,0.3)', lineHeight: 1 }}>{brainAge ?? '—'}</div>
               {brainAge && <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 800, textTransform: 'uppercase', marginTop: 2 }}>years old</div>}
               <a href="/brain-test" style={{ textDecoration: 'none', marginTop: 6, display: 'block' }}>
