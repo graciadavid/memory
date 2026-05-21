@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { completeWodExercise } from '@/lib/wod'
 import { completePlanDay } from '@/lib/plan'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
 import Link from 'next/link'
@@ -127,6 +128,7 @@ export default function PendulumClient() {
         game_type: 'pendulum',
       })
         window.dispatchEvent(new Event('game_completed'))
+      completeWodExercise(profile?.name || '', '/precision/pendulum')
       completePlanDay(profile?.name || profile?.name || '', '/precision/pendulum')
 
       const { data } = await supabase

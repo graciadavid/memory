@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { completeWodExercise } from '@/lib/wod'
 import { completePlanDay } from '@/lib/plan'
 import Link from 'next/link'
 

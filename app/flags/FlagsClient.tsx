@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
+import { completeWodExercise } from '@/lib/wod'
 import { completePlanDay } from '@/lib/plan'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { track } from '@vercel/analytics'
@@ -191,6 +192,7 @@ export default function FlagsClient() {
         if (profile?.name) {
           await supabase.from('flag_scores').insert({ player_name: profile.name, level })
         window.dispatchEvent(new Event('game_completed'))
+      completeWodExercise(profile?.name || '', '/flags')
       completePlanDay(profile?.name || profile?.name || '', '/flags')
           revalidateRanking('flags')
           const { data } = await supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(200)

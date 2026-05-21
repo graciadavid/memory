@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { completeWodExercise } from '@/lib/wod'
 import { completePlanDay } from '@/lib/plan'
 import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { useRouter } from 'next/navigation'
@@ -80,6 +81,7 @@ export default function StopClient() {
 
     if (profile?.name) {
         window.dispatchEvent(new Event('game_completed'))
+      completeWodExercise(profile?.name || '', '/precision/stopwatch')
       await completePlanDay(profile.name, '/precision/stopwatch')
       await supabase.from('precision_scores').insert({
         player_name: profile.name,
