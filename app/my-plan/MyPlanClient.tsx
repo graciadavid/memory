@@ -183,6 +183,15 @@ export default function MyPlanClient() {
   const totalReps = exProgress.reduce((sum: number, ex: any) => sum + ex.reps, 0)
   const doneReps = exProgress.reduce((sum: number, ex: any) => sum + ex.done, 0)
   const allDone = exProgress.length > 0 && exProgress.every((ex: any) => ex.complete)
+
+ useEffect(() => {
+   if (allDone && !confettiFired.current) {
+     confettiFired.current = true
+     launchConfetti()
+     launchConfetti()
+     playWinSound()
+   }
+ }, [allDone])
   const nextEx = exProgress.find((ex: any) => !ex.complete)
 
   return (
@@ -282,11 +291,7 @@ export default function MyPlanClient() {
               })}
             </div>
 
-            {allDone && (
-              <div style={{ marginTop: 20, padding: '20px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', borderRadius: 16, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-  
-              </div>
-            )}
+            
           </div>
         )}
 
