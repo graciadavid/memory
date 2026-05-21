@@ -145,8 +145,8 @@ function FlagsMinigame({ onComplete }: { onComplete: (correct: number) => void }
         {options.map(opt => (
           <button key={opt} onClick={() => handleAnswer(opt)} style={{
             width: '100%', padding: '16px', borderRadius: 14, border: `1px solid ${BROWN}10`,
-            background: !feedback ? '#fff' : opt === questions[idx].name ? '#2E7D32' : '#fff',
-            color: (feedback && opt === questions[idx].name) ? '#fff' : BROWN,
+            background: !feedback ? '#fff' : opt === questions[idx].name ? '#2E7D32' : (feedback === 'wrong' && opt === lastAnswer) ? '#B71C1C' : '#fff',
+            color: (feedback && (opt === questions[idx].name || (feedback === 'wrong' && opt === lastAnswer))) ? '#fff' : BROWN,
             fontSize: 15, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
             boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
           }}>{opt}</button>
@@ -236,34 +236,36 @@ export default function BrainTestClient() {
 
   const saveResult = async (finalScores: typeof scores) => {
     const total = calcBrainScore(finalScores)
-    // Always save to localStorage for later use
+    
+    // Show result immediately
+    setScores(finalScores)
+    setPhase('result')
+    setWorldPercent(50) // default while loading
+
+    // Save and calculate percent in background
     localStorage.setItem('pending_brain_test', JSON.stringify({
-      score: total,
-      ace_score: finalScores.ace,
-      nback_score: finalScores.flags,
-      stop_score: finalScores.stop,
-      geoshape_score: finalScores.geoshape,
+      score: total, ace_score: finalScores.ace, nback_score: finalScores.flags,
+      stop_score: finalScores.stop, geoshape_score: finalScores.geoshape,
       mastermind_score: finalScores.digits,
     }))
+    
     if (profile?.name) {
-      await supabase.from('brain_test_scores').insert({
+      supabase.from('brain_test_scores').insert({
         player_name: profile.name, score: total,
         ace_score: finalScores.ace, nback_score: finalScores.flags,
         stop_score: finalScores.stop, geoshape_score: finalScores.geoshape,
         mastermind_score: finalScores.digits,
+      }).then(() => localStorage.removeItem('pending_brain_test'))
+    }
+
+    supabase.from('brain_test_scores').select('score').order('score', { ascending: false })
+      .then(({ data }) => {
+        if (data && data.length > 1) {
+          const arr = data.map((s: any) => s.score)
+          const better = arr.filter((s: number) => s < total).length
+          setWorldPercent(Math.round((better / (arr.length - 1)) * 100))
+        }
       })
-      localStorage.removeItem('pending_brain_test')
-    }
-    const { data } = await supabase.from('brain_test_scores').select('score').order('score', { ascending: false })
-    if (data && data.length > 1) {
-      const arr = data.map((s: any) => s.score)
-      const better = arr.filter((s: number) => s < total).length
-      setWorldPercent(Math.round((better / (arr.length - 1)) * 100))
-    } else {
-      setWorldPercent(50)
-    }
-    setScores(finalScores)
-    setPhase('result')
     setTimeout(() => {
       confetti()
       confetti()
@@ -840,8 +842,6 @@ export default function BrainTestClient() {
             <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', fontWeight: 700 }}>{sub}</div>
           </div>
 
-          {/* Logo watermark */}
-          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ width: 120, objectFit: 'contain', opacity: 0.6, marginBottom: 32 }} />
 
                     <div style={{ width: '100%' }}>
            <button onClick={() => window.location.href = '/my-plan'} style={{
