@@ -156,7 +156,8 @@ export default function MyPlanClient() {
       <style>{`@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }`}</style>
 
       {/* Header */}
-      <div style={{ background: `linear-gradient(160deg, ${areaColor}, ${areaColor}BB)`, padding: '40px 24px 24px' }}>
+      <div style={{ background: `linear-gradient(160deg, ${areaColor}, ${areaColor}BB)`, padding: '40px 24px 24px', position: 'relative' }}>
+        <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/memgeniuslogofull.png" alt="MemGenius" style={{ position: 'absolute', top: 16, right: 16, height: 32, objectFit: 'contain', opacity: 0.85 }} />
         <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6 }}>
           Brain Gym{userPlan ? ` · Day ${wodDay} of 7` : ''}
         </div>
