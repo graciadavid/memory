@@ -219,7 +219,7 @@ export default function PendulumClient() {
       )}
 
       {/* RUNNING + RESULT */}
-      {(phase === 'running' || phase === 'result') && (
+      {phase === 'running' && (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, width: '100%', padding: '0 24px' }}>
 
           {/* Pendulum canvas */}
