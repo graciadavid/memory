@@ -21,7 +21,7 @@ const AREA_NAMES: Record<string, string> = {
 
 const GAME_ICONS: Record<string, string> = {
   '/precision/stopwatch': `${BASE}/precision.png`,
-  '/precision/formula1': `${BASE}/f1.png`,
+  '/precision/formula1': `${BASE}/formula1.png`,
   '/precision/pendulum': `${BASE}/pendulum.png`,
   '/ace': `${BASE}/padel.png`,
   '/nback': `${BASE}/nback.png`,
@@ -48,7 +48,6 @@ export default function MyPlanClient() {
   const [weekHistory, setWeekHistory] = useState<any[]>([])
   const [brainAge, setBrainAge] = useState<number | null>(null)
   const [allWods, setAllWods] = useState<any[]>([])
-  const [countdown, setCountdown] = useState('')
 
   const loadData = useCallback(async () => {
     if (!profile?.name) { setLoading(false); return }
@@ -92,21 +91,6 @@ export default function MyPlanClient() {
 
   useEffect(() => { loadData() }, [loadData])
 
-  // Countdown to midnight
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date()
-      const midnight = new Date()
-      midnight.setHours(24, 0, 0, 0)
-      const diff = midnight.getTime() - now.getTime()
-      const h = Math.floor(diff / 3600000)
-      const m = Math.floor((diff % 3600000) / 60000)
-      const s = Math.floor((diff % 60000) / 1000)
-      setCountdown(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`)
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
-
   // Refresh when user comes back to tab
   useEffect(() => {
     const handleFocus = () => loadData()
@@ -149,13 +133,11 @@ export default function MyPlanClient() {
   const totalReps = exProgress.reduce((sum: number, ex: any) => sum + ex.reps, 0)
   const doneReps = exProgress.reduce((sum: number, ex: any) => sum + ex.done, 0)
   const allDone = exProgress.length > 0 && exProgress.every((ex: any) => ex.complete)
-
- useEffect(() => {
   const nextEx = exProgress.find((ex: any) => !ex.complete)
 
   return (
     <main style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 100 }}>
-      <style>{`@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} } @keyframes confettiFall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }`}</style>
+      <style>{`@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }`}</style>
 
       {/* Header */}
       <div style={{ background: `linear-gradient(160deg, ${areaColor}, ${areaColor}BB)`, padding: '40px 24px 24px' }}>
@@ -199,17 +181,6 @@ export default function MyPlanClient() {
           </div>
         )}
 
-        {/* Countdown + Keep Training — shown when session complete */}
-        {userPlan && allDone && (
-          <div style={{ background: 'linear-gradient(135deg, #0D1B4B, #1565C0)', borderRadius: 20, padding: '20px', textAlign: 'center', boxShadow: '0 4px 20px #0D1B4B40' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Next workout in</div>
-            <div style={{ fontSize: 48, fontWeight: 900, color: '#FFD600', letterSpacing: 2, marginBottom: 16 }}>{countdown}</div>
-            <Link href="/" style={{ textDecoration: 'none', display: 'block', background: 'rgba(255,255,255,0.15)', color: '#fff', padding: '14px', borderRadius: 14, fontWeight: 900, fontSize: 15 }}>
-              Keep training →
-            </Link>
-          </div>
-        )}
-
         {/* Exercises */}
         {userPlan && exercises.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 24, padding: '20px', boxShadow: '0 4px 20px #4A2C0A08' }}>
@@ -250,14 +221,19 @@ export default function MyPlanClient() {
               })}
             </div>
 
-            
+            {allDone && (
+              <div style={{ marginTop: 20, padding: '16px', background: '#E8F5E9', borderRadius: 16, textAlign: 'center' }}>
+                <div style={{ fontSize: 16, fontWeight: 900, color: '#2E7D32', marginBottom: 8 }}>Session complete!</div>
+                <Link href="/" style={{ textDecoration: 'none', fontSize: 14, fontWeight: 800, color: '#2E7D32' }}>Keep training today →</Link>
+              </div>
+            )}
           </div>
         )}
 
         {/* Week overview */}
         {userPlan && (
-          <div style={{ background: 'linear-gradient(135deg, #0D1B4B, #1565C0)', borderRadius: 20, padding: '16px 20px', boxShadow: '0 4px 20px #0D1B4B40' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 14 }}>Your 7-day plan</div>
+          <div style={{ background: '#fff', borderRadius: 20, padding: '16px 20px', boxShadow: '0 2px 8px #4A2C0A06' }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 14 }}>This week</div>
             <div style={{ display: 'flex', gap: 8 }}>
               {allWods.map((w: any) => {
                 const hist = weekHistory.find((h: any) => h.wod_day === w.day_number)
