@@ -1,42 +1,9 @@
 'use client'
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 import { getWodProgress } from '@/lib/wod'
 import Link from 'next/link'
-
-function launchConfetti() {
-  const colors = ['#4CAF50','#2196F3','#FF9800','#E91E63','#9C27B0','#FFD600']
-  for (let i = 0; i < 80; i++) {
-    const div = document.createElement('div')
-    const size = Math.random() * 10 + 6 + 'px'
-    const left = Math.random() * 100
-    const duration = Math.random() * 2 + 2
-    const delay = Math.random() * 1.5
-    const rotation = Math.random() * 360
-    div.style.cssText = `position:fixed;width:${size};height:${size};background:${colors[i%colors.length]};border-radius:${Math.random()>0.5?'50%':'2px'};left:${left}vw;top:-10px;z-index:9999;animation:confettiFall ${duration}s ease-in forwards;animation-delay:${delay}s;transform:rotate(${rotation}deg)`
-    document.body.appendChild(div)
-    setTimeout(() => div.remove(), (duration + delay) * 1000)
-  }
-}
-
-function playWinSound() {
-  try {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
-    const notes = [523, 659, 784, 1047]
-    notes.forEach((freq, i) => {
-      const o = ctx.createOscillator()
-      const g = ctx.createGain()
-      o.connect(g); g.connect(ctx.destination)
-      o.frequency.value = freq
-      o.type = 'sine'
-      g.gain.setValueAtTime(0.3, ctx.currentTime + i * 0.12)
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.3)
-      o.start(ctx.currentTime + i * 0.12)
-      o.stop(ctx.currentTime + i * 0.12 + 0.3)
-    })
-  } catch(e) {}
-}
 
 const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
@@ -54,7 +21,7 @@ const AREA_NAMES: Record<string, string> = {
 
 const GAME_ICONS: Record<string, string> = {
   '/precision/stopwatch': `${BASE}/precision.png`,
-  '/precision/formula1': `${BASE}/formula1.png`,
+  '/precision/formula1': `${BASE}/f1.png`,
   '/precision/pendulum': `${BASE}/pendulum.png`,
   '/ace': `${BASE}/padel.png`,
   '/nback': `${BASE}/nback.png`,
@@ -82,7 +49,6 @@ export default function MyPlanClient() {
   const [brainAge, setBrainAge] = useState<number | null>(null)
   const [allWods, setAllWods] = useState<any[]>([])
   const [countdown, setCountdown] = useState('')
-  const confettiFired = useRef(false)
 
   const loadData = useCallback(async () => {
     if (!profile?.name) { setLoading(false); return }
