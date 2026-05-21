@@ -52,16 +52,7 @@ export default function BottomNav() {
         <div style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
         }}>
-          <div style={{
-            width: 56, height: 56, borderRadius: '50%',
-            background: path === '/my-plan' ? 'linear-gradient(135deg, #1B5E20, #4CAF50)' : 'linear-gradient(135deg, #2E7D32, #66BB6A)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 4px 12px rgba(76,175,80,0.4)',
-            animation: 'brainPulse 2.5s ease-in-out infinite',
-            marginBottom: 4,
-          }}>
-            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/myplan.png" alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} />
-          </div>
+          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/myplan.png" alt="" style={{ width: 44, height: 44, objectFit: 'contain', opacity: path === '/my-plan' ? 1 : 0.7 }} />
           <div style={{ fontSize: 9, fontWeight: 800, color: '#2E7D32', letterSpacing: 0.5 }}>MY PLAN</div>
         </div>
       </Link>
