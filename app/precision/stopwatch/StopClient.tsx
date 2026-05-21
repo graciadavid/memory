@@ -218,31 +218,23 @@ export default function StopClient() {
           </>
         )}
 
-        {phase === 'result' && (
-          <>
-            <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '18px 20px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>You stopped at</div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: BROWN, letterSpacing: -2, marginBottom: 2 }}>{fmt(elapsed)}</div>
-              <div style={{ marginBottom: 12 }} />
+                {phase === 'result' && (
+         <>
+           <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
+             <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>You stopped at</div>
+             <div style={{ fontSize: 64, fontWeight: 900, color: BROWN, letterSpacing: -2, lineHeight: 1 }}>{fmt(elapsed)}</div>
+             {bestScore !== null && (
+               <div style={{ fontSize: 13, color: `${BROWN}40`, fontWeight: 700, marginTop: 8 }}>Your best: {(bestScore/1000).toFixed(3)}s</div>
+             )}
+           </div>
 
-              <div style={{ background: Math.abs(difference) < 100 ? '#E8F5E9' : Math.abs(difference) < 500 ? '#FFF8E1' : '#FFEBEE', borderRadius: 16, padding: '10px 16px', marginBottom: 10 }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}60`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Difference</div>
-                <div style={{ fontSize: 28, fontWeight: 900, color: Math.abs(difference) < 100 ? '#2E7D32' : Math.abs(difference) < 500 ? GOLD : '#B71C1C' }}>
-                  {difference === 0 ? '🎯 PERFECT!' : `${difference > 0 ? '+' : ''}${(difference / 1000).toFixed(3)}s`}
-                </div>
-                <div style={{ fontSize: 12, color: `${BROWN}50`, marginTop: 4 }}>
-                  {difference > 0 ? 'Too slow' : difference < 0 ? 'Too fast' : 'Perfect!'}
-                </div>
-              </div>
-
-               {worldRank && (
-                <div style={{ background: 'linear-gradient(135deg, #0D1B4B, #1565C0)', borderRadius: 16, padding: '16px', marginBottom: 16, textAlign: 'center' }}>
-                  <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
-                  <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
-                </div>
-              )}
-            </div>
+           {worldRank && (
+             <div style={{ width: '100%', background: 'linear-gradient(135deg, #0D1B4B, #1565C0)', borderRadius: 20, padding: '20px', textAlign: 'center', boxShadow: '0 8px 0 #0D1B4B60' }}>
+               <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World Ranking</div>
+               <div style={{ fontSize: 52, fontWeight: 900, color: '#FFD600', lineHeight: 1 }}>#{worldRank}</div>
+               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontWeight: 700, marginTop: 4 }}>out of all players worldwide</div>
+             </div>
+           )}
 
             
 
