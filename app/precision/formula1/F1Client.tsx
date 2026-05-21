@@ -186,45 +186,27 @@ export default function F1Client() {
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 16 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px 24px 24px', gap: 16 }}>
 
-        {/* Semaphores */}
-        {(phase === 'idle' || phase === 'lighting' || phase === 'waiting' || phase === 'go') && (
-          <>
-          <div style={{ fontSize: 13, fontWeight: 900, color: `${BROWN}60`, letterSpacing: 3, textTransform: 'uppercase', textAlign: 'center' }}>Reaction Time</div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {[1, 2, 3, 4, 5].map(n => (
-              <Semaphore key={n} lit={phase === 'waiting' ? true : litCount >= n} />
-            ))}
-          </div>
-          </>
-        )}
-
+        {/* IDLE */}
         {phase === 'idle' && (
           <>
-            <div style={{ textAlign: 'center', color: `${BROWN}60`, fontSize: 14, fontWeight: 700, lineHeight: 1.6 }}>
-              Wait for the lights to go out,<br />then react as fast as possible!
-            </div>
             <div style={{ display: 'flex', gap: 12, width: '100%' }}>
-              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
-                <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
-                {bestScore !== null ? (
-                  <div style={{ fontSize: 32, fontWeight: 900, color: RED }}>{bestScore}ms</div>
-                ) : (
-                  <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
-                )}
+              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '14px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+                <div style={{ fontSize: 9, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Your best</div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: RED }}>{bestScore !== null ? `${bestScore}ms` : '—'}</div>
               </div>
-              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
-                <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
-                {worldRecord ? (
-                  <>
-                    <div style={{ fontSize: 32, fontWeight: 900, color: '#C8960C' }}>{worldRecord.diff}ms</div>
-                    <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{worldRecord.name}</div>
-                  </>
-                ) : (
-                  <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
-                )}
+              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '14px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
+                <div style={{ fontSize: 9, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>World record</div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: '#C8960C' }}>{worldRecord ? `${worldRecord.diff}ms` : '—'}</div>
+                {worldRecord && <div style={{ fontSize: 11, fontWeight: 800, color: '#4A2C0A60' }}>{worldRecord.name}</div>}
               </div>
+            </div>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {[1,2,3,4,5].map(n => <Semaphore key={n} lit={false} />)}
+              </div>
+              <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700, textAlign: 'center' }}>Wait for lights to go out, then react!</div>
             </div>
             <button onClick={startSequence} style={{
               width: '100%', padding: '20px', borderRadius: 20, border: 'none',
@@ -234,26 +216,28 @@ export default function F1Client() {
           </>
         )}
 
-        {phase === 'lighting' && (
-          <div style={{ fontSize: 16, fontWeight: 700, color: `${BROWN}60`, textAlign: 'center' }}>
-            Lights coming on...
-          </div>
-        )}
-
-        {phase === 'waiting' && (
-          <div style={{ fontSize: 18, fontWeight: 900, color: RED, textAlign: 'center', letterSpacing: 1 }}>
-            WAIT...
-          </div>
-        )}
-
-        {phase === 'go' && (
-          <button onClick={handlePress} style={{
-            width: '100%', padding: '28px', borderRadius: 24, border: 'none',
-            background: '#00C853', color: '#fff', fontSize: 26, fontWeight: 900,
-            fontFamily: 'inherit', cursor: 'pointer',
-            boxShadow: '0 10px 0 #00952060',
-            animation: 'pulse 0.4s ease-in-out infinite',
-          }}>ACCELERATE!</button>
+        {/* LIGHTING / WAITING / GO — semaphore top, accelerate bottom */}
+        {(phase === 'lighting' || phase === 'waiting' || phase === 'go') && (
+          <>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {[1,2,3,4,5].map(n => (
+                  <Semaphore key={n} lit={phase === 'waiting' ? true : litCount >= n} />
+                ))}
+              </div>
+              {phase === 'go' && (
+                <div style={{ fontSize: 28, fontWeight: 900, color: '#00C853', letterSpacing: 2, animation: 'pulse 0.4s ease-in-out infinite' }}>GO!</div>
+              )}
+            </div>
+            <button onClick={handlePress} style={{
+              width: '100%', padding: '24px', borderRadius: 20, border: 'none',
+              background: phase === 'go' ? '#00C853' : `${BROWN}20`,
+              color: phase === 'go' ? '#fff' : `${BROWN}50`,
+              fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer',
+              boxShadow: phase === 'go' ? '0 8px 0 #00952060' : 'none',
+              transition: 'all 0.1s',
+            }}>ACCELERATE</button>
+          </>
         )}
 
         {phase === 'jumpstart' && (
