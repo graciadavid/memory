@@ -1,5 +1,5 @@
-import CreateGroupBanner from '@/components/CreateGroupBanner'
 'use client'
+import CreateGroupBanner from '@/components/CreateGroupBanner'
 import { useState, useRef, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
