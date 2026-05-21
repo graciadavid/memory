@@ -231,6 +231,7 @@ export default function MyPlanClient() {
         )}
 
 
+
         {/* Week overview */}
         {userPlan && (
           <div style={{ background: 'linear-gradient(135deg, #0D1B4B, #1565C0)', borderRadius: 20, padding: '16px 20px', boxShadow: '0 4px 20px #0D1B4B40' }}>
