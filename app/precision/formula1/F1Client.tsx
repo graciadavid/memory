@@ -280,9 +280,7 @@ export default function F1Client() {
             <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
               <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Your reaction time</div>
               <div style={{ fontSize: 64, fontWeight: 900, color: BROWN, letterSpacing: -2, lineHeight: 1 }}>{reactionMs}ms</div>
-              <div style={{ fontSize: 13, color: reactionMs < 200 ? '#2E7D32' : reactionMs < 300 ? GOLD : RED, fontWeight: 800, marginTop: 6 }}>
-                {reactionMs < 150 ? '🏆 Incredible!' : reactionMs < 200 ? '🔥 Elite!' : reactionMs < 250 ? '⚡ Fast!' : reactionMs < 350 ? '👍 Good' : '💪 Keep training'}
-              </div>
+
               {worldRank && (
                 <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${BROWN}10` }}>
                   <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}30`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>This game · World Ranking</div>
