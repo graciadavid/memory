@@ -50,3 +50,8 @@ export async function getWodProgress(playerName: string, exercises: any[]): Prom
  }))
  return progress
 }
+
+export async function completeWodExercise(playerName: string, gameHref: string) {
+  // This function is kept for backward compatibility
+  // Progress is now calculated from actual plays via getTodayPlays
+}
