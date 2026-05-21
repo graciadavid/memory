@@ -223,7 +223,45 @@ export default function PendulumClient() {
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 24, width: '100%', padding: '0 24px' }}>
 
           {/* Pendulum canvas */}
-
+          <div style={{ position: 'relative', width: 200, height: 240, display: 'flex', justifyContent: 'center' }}>
+            {/* Center line */}
+            <div style={{
+              position: 'absolute', left: '50%', top: 0, bottom: 0,
+              width: 1, background: `${BROWN}20`,
+              transform: 'translateX(-50%)',
+            }} />
+            {/* Pivot point */}
+            <div style={{
+              position: 'absolute', top: 0, left: '50%',
+              width: 14, height: 14, borderRadius: 7,
+              background: PURPLE,
+              transform: 'translate(-50%, -50%)',
+              boxShadow: `0 2px 8px ${PURPLE}60`,
+              zIndex: 2,
+            }} />
+            {/* Pendulum rod + bob */}
+            <div style={{
+              position: 'absolute', top: 0, left: '50%',
+              width: 4, height: 200,
+              transformOrigin: '50% 0%',
+              transform: `translateX(-50%) rotate(${displayAngle}deg)`,
+              transition: phase === 'result' ? 'transform 0.3s ease-out' : undefined,
+            }}>
+              <div style={{
+                width: '100%', height: '100%',
+                background: `linear-gradient(180deg, ${PURPLE}, ${PURPLE}AA)`,
+                borderRadius: 2,
+              }} />
+              {/* Bob */}
+              <div style={{
+                position: 'absolute', bottom: -20, left: '50%',
+                width: 40, height: 40, borderRadius: 20,
+                background: `linear-gradient(135deg, ${GOLD}, ${GOLD}AA)`,
+                transform: 'translateX(-50%)',
+                boxShadow: `0 4px 16px ${GOLD}60`,
+              }} />
+            </div>
+          </div>
 
           {/* Result */}
           {phase === 'result' && (
