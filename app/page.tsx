@@ -127,6 +127,7 @@ export default function LandingPage() {
   const [needsNewPin, setNeedsNewPin] = useState(false)
   const [showStreak, setShowStreak] = useState(false)
   const [hasBrainTest, setHasBrainTest] = useState(false)
+  const [hasBrainTest, setHasBrainTest] = useState(false)
   const [activeCategory, setActiveCategory] = useState('memory')
   const [hasPlayedAce, setHasPlayedAce] = useState(() => {
     if (typeof window === 'undefined') return false
@@ -167,6 +168,7 @@ export default function LandingPage() {
     supabase.from('brain_test_scores').select('id').eq('player_name', profile.name).limit(1).then(({ data }) => {
       if (data?.[0]) setHasBrainTest(true)
     })
+    supabase.from('brain_test_scores').select('id').eq('player_name', profile.name).limit(1).then(({ data }) => { if (data?.[0]) setHasBrainTest(true) })
     const seen = sessionStorage.getItem('splash_done')
     if (!seen) {
       sessionStorage.setItem('splash_done', '1')
@@ -319,8 +321,6 @@ export default function LandingPage() {
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {/* Logo */}
           <img src={LOGO} alt="MemGenius" style={{ height: 110, objectFit: 'contain', marginBottom: 8 }} />
-          <div style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', textAlign: 'center', marginBottom: 4 }}>Improve your Brain Age in 7 days.</div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(74,44,10,0.5)', textAlign: 'center', marginBottom: 20 }}>Always free.</div>
 
           {!nameExists && !needsNewPin ? (
             <>
@@ -489,7 +489,8 @@ export default function LandingPage() {
 
           {/* Claim */}
           <div style={{ fontSize: 12, color: `${BROWN}55`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginBottom: 16, letterSpacing: 0.3 }}>
-
+            Your daily brain workout
+          </div>
 
 
 
@@ -565,4 +566,28 @@ export default function LandingPage() {
     </main>
     </>
   )
-}
+}          {!hasBrainTest ? (
+            <a href="/brain-test" style={{ textDecoration: 'none', width: '100%', marginBottom: 16, display: 'block' }}>
+              <div style={{ background: 'linear-gradient(135deg, #0A0A1A, #0D1B2A)', borderRadius: 20, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 16, boxShadow: '0 8px 0 #00000040', position: 'relative', overflow: 'hidden' }}>
+                <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain-logo.webp" alt="Brain Age" style={{ width: 64, height: 64, objectFit: 'contain', flexShrink: 0 }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Free Test</div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 2 }}>Brain Age Test</div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 700 }}>How old is your brain?</div>
+                </div>
+                <div style={{ background: '#2E7D32', color: '#fff', fontWeight: 900, fontSize: 14, padding: '10px 18px', borderRadius: 12 }}>Start</div>
+              </div>
+            </a>
+          ) : (
+            <a href="/precision/stopwatch" style={{ textDecoration: 'none', width: '100%', marginBottom: 16, display: 'block' }}>
+              <div style={{ background: 'linear-gradient(135deg, #1565C0 0%, #0D47A1 50%, #1976D2 100%)', borderRadius: 20, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 16, boxShadow: '0 8px 0 #0D47A160', position: 'relative', overflow: 'hidden' }}>
+                <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png" alt="Stop" style={{ width: 64, height: 64, objectFit: 'contain', flexShrink: 0 }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Featured Game</div>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 2 }}>Stop</div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', fontWeight: 700 }}>Stop at exactly 5 seconds</div>
+                </div>
+                <div style={{ background: '#2E7D32', color: '#fff', fontWeight: 900, fontSize: 14, padding: '10px 18px', borderRadius: 12 }}>Play</div>
+              </div>
+            </a>
+          )}
