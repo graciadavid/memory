@@ -186,7 +186,7 @@ export default function F1Client() {
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px 24px 24px', gap: 16 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '8px 20px 16px', gap: 10 }}>
 
         {/* IDLE */}
         {phase === 'idle' && (
@@ -202,12 +202,10 @@ export default function F1Client() {
                 {worldRecord && <div style={{ fontSize: 11, fontWeight: 800, color: '#4A2C0A60' }}>{worldRecord.name}</div>}
               </div>
             </div>
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-              <div style={{ display: 'flex', gap: 6 }}>
-                {[1,2,3,4,5].map(n => <Semaphore key={n} lit={false} />)}
-              </div>
-              <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700, textAlign: 'center' }}>Wait for lights to go out, then react!</div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 6 }}>
+              {[1,2,3,4,5].map(n => <Semaphore key={n} lit={false} />)}
             </div>
+            <div style={{ fontSize: 12, color: `${BROWN}50`, fontWeight: 700, textAlign: 'center' }}>Wait for lights to go out, then react!</div>
             <button onClick={startSequence} style={{
               width: '100%', padding: '20px', borderRadius: 20, border: 'none',
               background: RED, color: '#fff', fontSize: 20, fontWeight: 900,
@@ -219,16 +217,15 @@ export default function F1Client() {
         {/* LIGHTING / WAITING / GO — semaphore top, accelerate bottom */}
         {(phase === 'lighting' || phase === 'waiting' || phase === 'go') && (
           <>
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-              <div style={{ display: 'flex', gap: 6 }}>
-                {[1,2,3,4,5].map(n => (
-                  <Semaphore key={n} lit={phase === 'waiting' ? true : litCount >= n} />
-                ))}
-              </div>
-              {phase === 'go' && (
-                <div style={{ fontSize: 28, fontWeight: 900, color: '#00C853', letterSpacing: 2, animation: 'pulse 0.4s ease-in-out infinite' }}>GO!</div>
-              )}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 8 }}>
+              {[1,2,3,4,5].map(n => (
+                <Semaphore key={n} lit={phase === 'waiting' ? true : litCount >= n} />
+              ))}
             </div>
+            {phase === 'go' && (
+              <div style={{ fontSize: 32, fontWeight: 900, color: '#00C853', letterSpacing: 2, textAlign: 'center', animation: 'pulse 0.4s ease-in-out infinite' }}>GO!</div>
+            )}
+            <div style={{ flex: 1 }} />
             <button onClick={handlePress} style={{
               width: '100%', padding: '24px', borderRadius: 20, border: 'none',
               background: phase === 'go' ? '#00C853' : `${BROWN}20`,
