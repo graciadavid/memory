@@ -186,7 +186,7 @@ export default function F1Client() {
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '8px 20px 16px', gap: 12, justifyContent: 'space-between' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '8px 20px 16px', gap: 12 }}>
 
         {/* IDLE */}
         {phase === 'idle' && (
@@ -214,10 +214,10 @@ export default function F1Client() {
           </>
         )}
 
-        {/* LIGHTING / WAITING / GO — semaphore top, accelerate bottom */}
+        {/* LIGHTING / WAITING / GO */}
         {(phase === 'lighting' || phase === 'waiting' || phase === 'go') && (
-          <>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, flex: 1 }}>
+            <div style={{ display: 'flex', gap: 6 }}>
               {[1,2,3,4,5].map(n => (
                 <Semaphore key={n} lit={phase === 'waiting' ? true : litCount >= n} />
               ))}
@@ -233,7 +233,7 @@ export default function F1Client() {
               boxShadow: phase === 'go' ? '0 8px 0 #00952060' : 'none',
               transition: 'all 0.1s',
             }}>ACCELERATE</button>
-          </>
+          </div>
         )}
 
         {phase === 'jumpstart' && (
