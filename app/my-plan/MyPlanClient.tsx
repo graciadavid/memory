@@ -21,7 +21,7 @@ const AREA_NAMES: Record<string, string> = {
 
 const GAME_ICONS: Record<string, string> = {
   '/precision/stopwatch': `${BASE}/precision.png`,
-  '/precision/formula1': `${BASE}/formula1.png`,
+  '/precision/formula1': `${BASE}/f1.png`,
   '/precision/pendulum': `${BASE}/pendulum.png`,
   '/ace': `${BASE}/padel.png`,
   '/nback': `${BASE}/nback.png`,
