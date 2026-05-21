@@ -4,7 +4,6 @@ import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 import { getWodProgress } from '@/lib/wod'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
 
 const BROWN = '#4A2C0A'
 const CREAM = '#FAF7F2'
@@ -182,10 +181,65 @@ export default function MyPlanClient() {
           </div>
         )}
 
+        {/* Exercises */}
+        {userPlan && exercises.length > 0 && (
+          <div style={{ background: '#fff', borderRadius: 24, padding: '20px', boxShadow: '0 4px 20px #4A2C0A08' }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>Today's workout</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {exProgress.map((ex: any, i: number) => {
+                const isNext = ex === nextEx
+                const icon = GAME_ICONS[ex.href]
+                return (
+                  <div key={i} style={{ opacity: (!ex.complete && !isNext) ? 0.4 : 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+                      {icon && <img src={icon} style={{ width: 32, height: 32, objectFit: 'contain', flexShrink: 0 }} />}
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 15, fontWeight: 900, color: ex.complete ? '#2E7D32' : BROWN }}>{ex.game}</div>
+                        <div style={{ fontSize: 11, color: `${BROWN}50`, fontWeight: 700 }}>{ex.description}</div>
+                      </div>
+                      {ex.complete && (
+                        <div style={{ fontSize: 12, fontWeight: 900, color: '#2E7D32', background: '#E8F5E9', padding: '4px 10px', borderRadius: 8 }}>Done ✓</div>
+                      )}
+                      {isNext && (
+                        <a href={ex.href} style={{ textDecoration: 'none', background: areaColor, color: '#fff', padding: '10px 18px', borderRadius: 12, fontSize: 13, fontWeight: 900, boxShadow: `0 4px 0 ${areaColor}60`, animation: 'pulse 2s ease-in-out infinite' }}>
+                          Go →
+                        </a>
+                      )}
+                    </div>
+                    {/* Reps dots */}
+                    <div style={{ display: 'flex', gap: 6, paddingLeft: 44 }}>
+                      {Array.from({ length: ex.reps }, (_, j) => (
+                        <div key={j} style={{
+                          width: 10, height: 10, borderRadius: '50%',
+                          background: j < ex.done ? '#4CAF50' : '#E0E0E0',
+                          transition: 'background 0.3s',
+                        }} />
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {allDone && (
+              <div style={{ marginTop: 20, padding: '20px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', borderRadius: 16, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+                <style>{`@keyframes cf { 0%{transform:translateY(-10px) rotate(0deg);opacity:1} 100%{transform:translateY(60px) rotate(360deg);opacity:0} }`}</style>
+                {['🎉','⭐','✨','💪','🧠'].map((e,i) => (
+                  <span key={i} style={{ position:'absolute', top:0, left:`${10+i*18}%`, fontSize:18, animation:`cf ${1+i*0.2}s ease-in ${i*0.15}s infinite` }}>{e}</span>
+                ))}
+                <div style={{ fontSize: 24, marginBottom: 4 }}>🎉</div>
+                <div style={{ fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 4 }}>Session complete!</div>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', marginBottom: 14 }}>Great work. Come back tomorrow.</div>
+                <Link href="/" style={{ textDecoration: 'none', display: 'inline-block', background: 'rgba(255,255,255,0.2)', color: '#fff', padding: '10px 20px', borderRadius: 10, fontSize: 13, fontWeight: 900 }}>Keep training →</Link>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Week overview */}
         {userPlan && (
-          <div style={{ background: '#fff', borderRadius: 20, padding: '16px 20px', boxShadow: '0 2px 8px #4A2C0A06' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 14 }}>Your 7-day plan</div>
+          <div style={{ background: 'linear-gradient(135deg, #0D1B4B, #1565C0)', borderRadius: 20, padding: '16px 20px', boxShadow: '0 4px 20px #0D1B4B40' }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 14 }}>Your 7-day plan</div>
             <div style={{ display: 'flex', gap: 8 }}>
               {allWods.map((w: any) => {
                 const hist = weekHistory.find((h: any) => h.wod_day === w.day_number)
@@ -231,53 +285,3 @@ export default function MyPlanClient() {
     </main>
   )
 }
-        {/* Exercises */}
-        {userPlan && exercises.length > 0 && (
-          <div style={{ background: '#fff', borderRadius: 24, padding: '20px', boxShadow: '0 4px 20px #4A2C0A08' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 16 }}>Today's workout</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              {exProgress.map((ex: any, i: number) => {
-                const isNext = ex === nextEx
-                const icon = GAME_ICONS[ex.href]
-                return (
-                  <div key={i} style={{ opacity: (!ex.complete && !isNext) ? 0.4 : 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                      {icon && <img src={icon} style={{ width: 32, height: 32, objectFit: 'contain', flexShrink: 0 }} />}
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 15, fontWeight: 900, color: ex.complete ? '#2E7D32' : BROWN }}>{ex.game}</div>
-                        <div style={{ fontSize: 11, color: `${BROWN}50`, fontWeight: 700 }}>{ex.description}</div>
-                      </div>
-                      {ex.complete && (
-                        <div style={{ fontSize: 12, fontWeight: 900, color: '#2E7D32', background: '#E8F5E9', padding: '4px 10px', borderRadius: 8 }}>Done ✓</div>
-                      )}
-                      {isNext && (
-                        <a href={ex.href} style={{ textDecoration: 'none', background: areaColor, color: '#fff', padding: '10px 18px', borderRadius: 12, fontSize: 13, fontWeight: 900, boxShadow: `0 4px 0 ${areaColor}60`, animation: 'pulse 2s ease-in-out infinite' }}>
-                          Go →
-                        </a>
-                      )}
-                    </div>
-                    {/* Reps dots */}
-                    <div style={{ display: 'flex', gap: 6, paddingLeft: 44 }}>
-                      {Array.from({ length: ex.reps }, (_, j) => (
-                        <div key={j} style={{
-                          width: 10, height: 10, borderRadius: '50%',
-                          background: j < ex.done ? '#4CAF50' : '#E0E0E0',
-                          transition: 'background 0.3s',
-                        }} />
-                      ))}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-
-            {allDone && (
-              <div style={{ marginTop: 20, padding: '16px', background: '#E8F5E9', borderRadius: 16, textAlign: 'center' }}>
-                <div style={{ fontSize: 16, fontWeight: 900, color: '#2E7D32', marginBottom: 8 }}>Session complete!</div>
-                <Link href="/" style={{ textDecoration: 'none', fontSize: 14, fontWeight: 800, color: '#2E7D32' }}>Keep training today →</Link>
-              </div>
-            )}
-          </div>
-        )}
-
-
