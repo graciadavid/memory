@@ -245,7 +245,7 @@ export default function PendulumClient() {
               width: 4, height: 200,
               transformOrigin: '50% 0%',
               transform: `translateX(-50%) rotate(${displayAngle}deg)`,
-              transition: phase === 'result' ? 'transform 0.3s ease-out' : undefined,
+              transition: undefined,
             }}>
               <div style={{
                 width: '100%', height: '100%',
