@@ -29,7 +29,8 @@ export default function ProfilePage() {
   const [pin, setPin] = useState(['', '', '', ''])
   const [passwordSaved, setPasswordSaved] = useState(false)
   const [groupsOpen, setGroupsOpen] = useState(false)
-  const [records, setRecords] = useState<any[]>([])
+  const [records, setRecords] = useState<Record<string, any[]>>({ memory: [], agility: [], knowledge: [], logic: [] })
+  const [openArea, setOpenArea] = useState<string | null>(null)
 
   useEffect(() => {
     if (!profile?.name) return
@@ -54,25 +55,48 @@ export default function ProfilePage() {
   }, [profile?.name])
 
   const fetchRecords = async (name: string) => {
-    const results: any[] = []
-
-    const [digits, flags, stop, f1, pendulum, nback] = await Promise.all([
+    const [digits, nback, seq, memory, stop, f1, pendulum, ace, flags, geo, versus, sudoku, wordly, mm, g2048] = await Promise.all([
       supabase.from('number_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
-      supabase.from('flag_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('nback_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('sequence_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').eq('player_name', name).is('game_type', null).order('difference_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').eq('player_name', name).eq('game_type', 'formula1').order('difference_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').eq('player_name', name).eq('game_type', 'pendulum').order('difference_ms', { ascending: true }).limit(1),
-      supabase.from('nback_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('ace_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('flag_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('shape_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('higher_lower_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('sudoku_scores').select('time_ms, difficulty').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('wordle_scores').select('time_ms, attempts').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('mastermind_scores').select('time_ms, attempts').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('game2048_scores').select('best_tile').eq('player_name', name).order('best_tile', { ascending: false }).limit(1),
     ])
 
-    if (digits.data?.[0]) results.push({ game: 'Digits', href: '/digits', value: `${digits.data[0].level} digits`, color: '#1565C0' })
-    if (flags.data?.[0]) results.push({ game: 'Flags', href: '/flags', value: `${flags.data[0].level} in a row`, color: '#1565C0' })
-    if (stop.data?.[0]) results.push({ game: 'Stop', href: '/precision/stopwatch', value: `${stop.data[0].difference_ms}ms off`, color: '#4A148C' })
-    if (f1.data?.[0]) results.push({ game: 'F1 Reaction', href: '/precision/formula1', value: `${f1.data[0].difference_ms}ms`, color: '#B71C1C' })
-    if (pendulum.data?.[0]) results.push({ game: 'Pendulum', href: '/precision/pendulum', value: `${pendulum.data[0].difference_ms}ms off`, color: '#1B5E20' })
-    if (nback.data?.[0]) results.push({ game: 'N-Back', href: '/nback', value: `${nback.data[0].level} correct`, color: '#6A1B9A' })
+    const grouped: Record<string, any[]> = {
+      memory: [], agility: [], knowledge: [], logic: []
+    }
 
-    setRecords(results)
+    if (nback.data?.[0]) grouped.memory.push({ game: 'N-Back', href: '/nback', value: `${nback.data[0].level} correct` })
+    if (digits.data?.[0]) grouped.memory.push({ game: 'Digits', href: '/digits', value: `${digits.data[0].level} digits` })
+    if (seq.data?.[0]) grouped.memory.push({ game: 'Simon Says', href: '/sequence', value: `${seq.data[0].level} in a row` })
+    if (memory.data?.[0]) grouped.memory.push({ game: 'Memory', href: '/memory', value: fmt(memory.data[0].time_ms) })
+
+    if (stop.data?.[0]) grouped.agility.push({ game: 'Stop', href: '/precision/stopwatch', value: `${stop.data[0].difference_ms}ms off` })
+    if (f1.data?.[0]) grouped.agility.push({ game: 'F1 Reaction', href: '/precision/formula1', value: `${f1.data[0].difference_ms}ms` })
+    if (pendulum.data?.[0]) grouped.agility.push({ game: 'Pendulum', href: '/precision/pendulum', value: `${pendulum.data[0].difference_ms}ms off` })
+    if (ace.data?.[0]) grouped.agility.push({ game: 'Ace', href: '/ace', value: `Level ${ace.data[0].level}` })
+
+    if (flags.data?.[0]) grouped.knowledge.push({ game: 'Flags', href: '/flags', value: `${flags.data[0].level} in a row` })
+    if (geo.data?.[0]) grouped.knowledge.push({ game: 'GeoShape', href: '/geoshape', value: `${geo.data[0].level} in a row` })
+    if (versus.data?.[0]) grouped.knowledge.push({ game: 'Higher or Lower', href: '/versus', value: `${versus.data[0].level} in a row` })
+
+    if (sudoku.data?.[0]) grouped.logic.push({ game: 'Sudoku', href: '/sudoku', value: fmt(sudoku.data[0].time_ms) })
+    if (wordly.data?.[0]) grouped.logic.push({ game: 'Wordly', href: '/wordly', value: `${wordly.data[0].attempts} tries` })
+    if (mm.data?.[0]) grouped.logic.push({ game: 'Mastermind', href: '/mastermind', value: `${mm.data[0].attempts} tries` })
+    if (g2048.data?.[0]) grouped.logic.push({ game: '2048', href: '/2048', value: `Tile ${g2048.data[0].best_tile}` })
+
+    setRecords(grouped)
   }
 
   const saveName = async () => {
@@ -192,20 +216,39 @@ export default function ProfilePage() {
           )}
         </div>
 
-        {/* Records */}
-        {records.length > 0 && (
-          <div style={{ background: '#fff', borderRadius: 20, padding: '16px 20px', marginBottom: 12, boxShadow: '0 2px 12px #4A2C0A08' }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>My Records</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {records.map((r, i) => (
-                <a key={i} href={r.href} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 12, background: '#F5F5F5' }}>
-                  <div style={{ fontSize: 14, fontWeight: 900, color: BROWN }}>{r.game}</div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: r.color }}>{r.value}</div>
-                </a>
-              ))}
+        {/* Records by area */}
+        {[
+          { key: 'memory', label: 'Memory', color: '#E91E63', icon: '🧠' },
+          { key: 'agility', label: 'Agility', color: '#FF6F00', icon: '⚡' },
+          { key: 'knowledge', label: 'Knowledge', color: '#1565C0', icon: '🌍' },
+          { key: 'logic', label: 'Logic', color: '#6A1B9A', icon: '🎯' },
+        ].map(area => {
+          const areaRecords = records[area.key] || []
+          if (areaRecords.length === 0) return null
+          const isOpen = openArea === area.key
+          return (
+            <div key={area.key} style={{ background: '#fff', borderRadius: 20, padding: '14px 20px', marginBottom: 10, boxShadow: '0 2px 12px #4A2C0A08' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => setOpenArea(isOpen ? null : area.key)}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 18 }}>{area.icon}</span>
+                  <div style={{ fontSize: 14, fontWeight: 900, color: BROWN }}>{area.label}</div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: area.color }}>{areaRecords.length} games</div>
+                </div>
+                <span style={{ fontSize: 14, color: `${BROWN}40` }}>{isOpen ? '▲' : '▼'}</span>
+              </div>
+              {isOpen && (
+                <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {areaRecords.map((r: any, i: number) => (
+                    <a key={i} href={r.href} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 12, background: '#F5F5F5' }}>
+                      <div style={{ fontSize: 14, fontWeight: 900, color: BROWN }}>{r.game}</div>
+                      <div style={{ fontSize: 13, fontWeight: 800, color: area.color }}>{r.value}</div>
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          )
+        })}
 
         {/* Blog */}
         <a href='/blog' style={{ textDecoration: 'none' }}>
