@@ -262,9 +262,10 @@ export default function PendulumClient() {
               }} />
             </div>
           </div>
+        )}
 
-          {/* Result */}
-          {phase === 'result' && (
+        {/* Result */}
+        {phase === 'result' && (
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 12 }}>
               {/* Main result card */}
               <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
