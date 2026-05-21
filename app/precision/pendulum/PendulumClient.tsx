@@ -57,7 +57,7 @@ export default function PendulumClient() {
       .order('difference_ms', { ascending: true })
       .limit(1)
       .then(({ data }) => {
-        if (data?.[0]) setWorldRecord({ diff: data[0].difference_ms, name: data[0].player_name })
+        if (data?.[0]) setWorldRecord({ diff: Math.round(data[0].difference_ms) / 10, name: data[0].player_name })
       })
   }, [])
 
@@ -113,7 +113,7 @@ export default function PendulumClient() {
     if (profile?.name) {
       await supabase.from('precision_scores').insert({
         player_name: profile.name,
-        difference_ms: clampedDev,  // keep ms for ranking consistency
+        difference_ms: Math.round(angleDev * 10),  // store as tenths of degree * 10 for precision
         game_type: 'pendulum',
       })
         window.dispatchEvent(new Event('game_completed'))
@@ -201,7 +201,7 @@ export default function PendulumClient() {
               <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
               {worldRecord ? (
                 <>
-                  <div style={{ fontSize: 32, fontWeight: 900, color: '#C8960C' }}>{worldRecord.diff}ms</div>
+                  <div style={{ fontSize: 32, fontWeight: 900, color: '#C8960C' }}>{worldRecord.diff}°</div>
                   <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{worldRecord.name}</div>
                 </>
               ) : (
