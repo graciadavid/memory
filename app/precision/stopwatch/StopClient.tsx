@@ -222,8 +222,13 @@ export default function StopClient() {
           <>
             {/* Card 1: This game result + world rank */}
             <div style={{ width: '100%', background: '#fff', borderRadius: 24, padding: '24px', boxShadow: `0 8px 32px ${BROWN}15`, textAlign: 'center' }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>You stopped at</div>
-              <div style={{ fontSize: 64, fontWeight: 900, color: BROWN, letterSpacing: -2, lineHeight: 1 }}>{fmt(elapsed)}</div>
+              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}40`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Difference from 5s</div>
+              <div style={{ fontSize: 64, fontWeight: 900, letterSpacing: -2, lineHeight: 1, color: difference === 0 ? '#2E7D32' : Math.abs(difference) < 100 ? '#2E7D32' : Math.abs(difference) < 500 ? '#E65100' : '#B71C1C' }}>
+                {difference === 0 ? '🎯 0.000s' : `${difference > 0 ? '+' : ''}${(difference / 1000).toFixed(3)}s`}
+              </div>
+              <div style={{ fontSize: 12, color: `${BROWN}40`, fontWeight: 700, marginTop: 4 }}>
+                {difference > 0 ? 'Too slow' : difference < 0 ? 'Too fast' : 'Perfect!'}
+              </div>
               {worldRank && (
                 <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${BROWN}10` }}>
                   <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}30`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>This game · World Ranking</div>
