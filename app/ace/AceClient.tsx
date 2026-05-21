@@ -376,11 +376,11 @@ export default function AceClient() {
              <div style={{ width: '100%', background: `linear-gradient(135deg, ${GOLD}22, ${GOLD}08)`, border: `1.5px solid ${GOLD}40`, borderRadius: 24, padding: '20px 24px', textAlign: 'center' }}>
                <div style={{ fontSize: 10, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Your best</div>
                <div style={{ fontSize: 36, fontWeight: 900, color: BROWN, lineHeight: 1 }}>{bestLevel} aces</div>
-               <button onClick={startGame} style={{
+               <button onClick={() => window.location.href = '/ace'} style={{
                  width: '100%', marginTop: 16, padding: '14px', borderRadius: 14, border: 'none',
                  background: '#2E7D32', color: '#fff', fontSize: 15, fontWeight: 900,
                  fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #1B5E2060',
-               }} onClick={() => window.location.href = '/ace'}>Try again</button>
+               }}>Try again</button>
              </div>
            )}
 
