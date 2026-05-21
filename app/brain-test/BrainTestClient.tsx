@@ -143,10 +143,8 @@ function FlagsMinigame({ onComplete }: { onComplete: (correct: number) => void }
         {options.map(opt => (
           <button key={opt} onClick={() => handleAnswer(opt)} style={{
             width: '100%', padding: '16px', borderRadius: 14, border: 'none',
-            background: feedback
-              ? opt === questions[idx].name ? '#2E7D32' : opt === (feedback === 'wrong' ? opt : '') ? '#B71C1C' : '#fff'
-              : '#fff',
-            color: feedback && (opt === questions[idx].name) ? '#fff' : `${BROWN}`,
+            background: !feedback ? '#fff' : opt === questions[idx].name ? '#2E7D32' : '#fff',
+            color: (feedback && opt === questions[idx].name) ? '#fff' : BROWN,
             fontSize: 15, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer',
             boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
             border: `1px solid ${BROWN}10`,
