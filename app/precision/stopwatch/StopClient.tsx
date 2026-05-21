@@ -21,6 +21,7 @@ export default function StopClient() {
   const [elapsed, setElapsed] = useState(0)
   const [difference, setDifference] = useState(0)
   const [worldRank, setWorldRank] = useState<number | null>(null)
+  const [wodReps, setWodReps] = useState<{ done: number, total: number } | null>(null)
   const [bestScore, setBestScore] = useState<number | null>(null)
   const [worldRecord, setWorldRecord] = useState<{ diff: number, name: string } | null>(null)
   const startRef = useRef<number>(0)
@@ -243,22 +244,23 @@ export default function StopClient() {
               )}
             </div>
 
-            <button onClick={() => {
-              const url = `${window.location.origin}/challenge?game=precision&score=${Math.abs(difference)}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-              const text = `${profile?.name} stopped at ${(difference / 1000).toFixed(3)}s off on MemGenius Stop! Can you be more precise? ${url}`
-              if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-            }} style={{
-              width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-              background: 'rgba(0,0,0,0.06)', color: '#4A2C0A60', fontSize: 13, fontWeight: 700,
-              fontFamily: 'inherit', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
+            
 
-            <button onClick={reset} style={{
-              width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-              background: PURPLE, color: '#fff', fontSize: 16, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${PURPLE}60`,
-            }}>Play again</button>
+                        {/* WOD progress dots */}
+           {wodReps && (
+             <div style={{ textAlign: 'center' }}>
+               <div style={{ fontSize: 11, fontWeight: 800, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Stop progress</div>
+               <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 16 }}>
+                 {Array.from({ length: wodReps.total }, (_, i) => (
+                   <div key={i} style={{ width: 14, height: 14, borderRadius: '50%', background: i < wodReps.done ? '#4CAF50' : '#E0E0E0' }} />
+                 ))}
+               </div>
+             </div>
+           )}
+           <div style={{ display: 'flex', gap: 10, width: '100%' }}>
+             <button onClick={reset} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#0D1B4B', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #08103060' }}>Train more</button>
+             <button onClick={() => window.location.href = '/my-plan'} style={{ flex: 1, padding: '16px', borderRadius: 16, border: 'none', background: '#2E7D32', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #1B5E2060' }}>My Plan</button>
+           </div>
 
             <CreateGroupBanner playerName={profile?.name || ''} />
           </>
