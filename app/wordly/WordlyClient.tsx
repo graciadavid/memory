@@ -151,9 +151,8 @@ export default function WordlyClient() {
         setFinalTime(t)
         if (timerRef.current) clearInterval(timerRef.current)
         setPhase('won')
-        const pName = (() => { try { const s = localStorage.getItem('memgenius_profile'); return s ? JSON.parse(s).name : null } catch { return null } })()
-        if (pName) {
-          await supabase.from('wordle_scores').insert({player_name:pName, attempts:newGuesses.length, time_ms:t})
+        if (profile?.name) {
+          await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:t})
           const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
           setWorldRank((count??0)+1)
           if (myBest===null || newGuesses.length<myBest) setMyBest(newGuesses.length)
@@ -168,7 +167,7 @@ export default function WordlyClient() {
       const next = currentRef.current + key
       setCurrent(next); currentRef.current = next
     }
-  }, [myBest])
+  }, [myBest, profile?.name])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => handleKey(e.key.toUpperCase())
