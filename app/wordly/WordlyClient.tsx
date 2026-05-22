@@ -139,6 +139,7 @@ export default function WordlyClient() {
         setFinalTime(t)
         if (timerRef.current) clearInterval(timerRef.current)
         setPhase('won')
+        console.log('SAVE attempt, profile:', profile?.name)
         if (profile?.name) {
           await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:t})
           const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
