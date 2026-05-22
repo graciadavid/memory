@@ -88,7 +88,7 @@ export default function AceClient() {
    ctx.font = '900 48px sans-serif'
    ctx.fillStyle = TENNIS
    ctx.textAlign = 'center'
-   ctx.fillText(String(levelRef.current), TARGET_X, TARGET_Y - TARGET_R - 20)
+   ctx.fillText('Level ' + String(levelRef.current), CANVAS_W/2, 40)
 
    // Target zone
    const dist = Math.sqrt((x - TARGET_X) ** 2 + (y - TARGET_Y) ** 2)
