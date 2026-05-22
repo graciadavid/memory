@@ -27,7 +27,19 @@ export default function StopPage() {
  const startRef = useRef(0)
  const rafRef = useRef(0)
 
- const startCountdown = () => {
+ useEffect(() => { loadData() }, [])
+
+const loadData = async () => {
+  const {data:wr} = await supabase.from('precision_scores').select('player_name,difference_ms').is('game_type',null).order('difference_ms',{ascending:true}).limit(1)
+  if (wr?.[0]) setWorldRecord({diff:wr[0].difference_ms,name:wr[0].player_name})
+  const {data:all} = await supabase.from('precision_scores').select('player_name,difference_ms').is('game_type',null).order('difference_ms',{ascending:true}).limit(200)
+  if (all) {
+    const best:Record<string,number>={}
+    setTop5(Object.entries(best).map(([n,d])=>({name:n,diff:d as number})).sort((a,b)=>a.diff-b.diff).slice(0,5))
+  }
+}
+
+const startCountdown = () => {
    setPhase('countdown')
    setCountdown(3)
    let c = 3
