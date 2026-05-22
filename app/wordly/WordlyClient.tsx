@@ -59,9 +59,9 @@ export default function WordlyClient() {
   const [finalTime, setFinalTime] = useState(0)
   const [elapsed, setElapsed] = useState(0)
   const [worldRank, setWorldRank] = useState<number|null>(null)
-  const [worldRecord, setWorldRecord] = useState<{attempts:number,name:string}|null>(null)
+  const [worldRecord, setWorldRecord] = useState<{attempts:number,time_ms:number,name:string}|null>(null)
   const [myBest, setMyBest] = useState<number|null>(null)
-  const [top5, setTop5] = useState<{name:string,attempts:number}[]>([])
+  const [top5, setTop5] = useState<{name:string,attempts:number,time_ms:number}[]>([])
   const [name, setName] = useState('')
   const [pin, setPin] = useState(['','','',''])
   const [saved, setSaved] = useState(false)
@@ -76,13 +76,17 @@ export default function WordlyClient() {
   }, [profile?.name])
 
   const loadData = async () => {
-    const { data } = await supabase.from('wordle_scores').select('player_name,attempts').order('attempts', { ascending: true }).limit(500)
+    const { data } = await supabase.from('wordle_scores').select('player_name,attempts,time_ms').order('attempts', { ascending: true }).order('time_ms', { ascending: true }).limit(500)
     if (!data) return
-    const best: Record<string,number> = {}
-    data.forEach((s:any) => { if (!best[s.player_name] || s.attempts < best[s.player_name]) best[s.player_name] = s.attempts })
-    const sorted = Object.entries(best).map(([n,a]) => ({name:n, attempts:a as number})).sort((a,b) => a.attempts-b.attempts)
+    const best: Record<string,{attempts:number,time_ms:number}> = {}
+    data.forEach((s:any) => {
+      const e = best[s.player_name]
+      if (!e || s.attempts < e.attempts || (s.attempts === e.attempts && s.time_ms < e.time_ms))
+        best[s.player_name] = {attempts:s.attempts, time_ms:s.time_ms}
+    })
+    const sorted = Object.entries(best).map(([n,v]) => ({name:n, attempts:v.attempts, time_ms:v.time_ms})).sort((a,b) => a.attempts !== b.attempts ? a.attempts-b.attempts : a.time_ms-b.time_ms)
     setTop5(sorted.slice(0,5))
-    if (sorted[0]) setWorldRecord({attempts:sorted[0].attempts, name:sorted[0].name})
+    if (sorted[0]) setWorldRecord({attempts:sorted[0].attempts, time_ms:(sorted[0] as any).time_ms, name:sorted[0].name})
     if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
   }
 
@@ -227,7 +231,10 @@ export default function WordlyClient() {
           <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
             <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
             <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
-            <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.attempts} tries</div>
+            <div style={{ textAlign:'right' }}>
+              <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.attempts} tries</div>
+              {p.time_ms > 0 && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>{fmtTime(p.time_ms)}</div>}
+            </div>
           </div>
         ))}
       </div>
