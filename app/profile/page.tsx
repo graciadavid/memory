@@ -55,6 +55,34 @@ export default function ProfilePage() {
    const { data: sudoku } = await supabase.from('sudoku_scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1)
    if (sudoku?.[0]) r.sudoku = `${Math.floor(sudoku[0].time_ms/60000)}:${String(Math.floor((sudoku[0].time_ms%60000)/1000)).padStart(2,'0')}`
 
+
+   // Pendulum best
+   const { data: pendulum } = await supabase.from('precision_scores').select('difference_ms').eq('game_type', 'pendulum').eq('player_name', name).order('difference_ms', { ascending: true }).limit(1)
+   if (pendulum?.[0]) r.pendulum = `${(pendulum[0].difference_ms/10).toFixed(1)}°`
+
+   // N-Back best
+   const { data: nback } = await supabase.from('nback_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1)
+   if (nback?.[0]) r.nback = `Level ${nback[0].level}`
+
+   // Versus Pop
+   const { data: vPop } = await supabase.from('higher_lower_scores').select('score').eq('category', 'population').eq('player_name', name).order('score', { ascending: false }).limit(1)
+   if (vPop?.[0]) r.versusPop = `${vPop[0].score} pts`
+
+   // Versus Area
+   const { data: vArea } = await supabase.from('higher_lower_scores').select('score').eq('category', 'area').eq('player_name', name).order('score', { ascending: false }).limit(1)
+   if (vArea?.[0]) r.versusArea = `${vArea[0].score} pts`
+
+   // Mastermind best
+   const { data: master } = await supabase.from('mastermind_scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1)
+   if (master?.[0]) r.mastermind = `${Math.floor(master[0].time_ms/60000)}:${String(Math.floor((master[0].time_ms%60000)/1000)).padStart(2,'0')}`
+
+   // 2048 best
+   const { data: g2048 } = await supabase.from('game2048_scores').select('score').eq('player_name', name).order('score', { ascending: false }).limit(1)
+   if (g2048?.[0]) r.game2048 = `${g2048[0].score} pts`
+
+   // Wordly best
+   const { data: wordly } = await supabase.from('wordle_scores').select('attempts').eq('player_name', name).order('attempts', { ascending: true }).limit(1)
+   if (wordly?.[0]) r.wordly = `${wordly[0].attempts} tries`
    setRecords(r)
  }
 
