@@ -1,17 +1,12 @@
 'use client'
-// v3
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
-import Onboarding from './Onboarding'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-const LOGO = `${BASE}/memory.webp`
-const TROPHY = `${BASE}/nav-trophy.webp`
-const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
-const CREAM = '#FAF7F2'
+const GREEN = '#2E7D32'
+const RED = '#C62828'
 
 interface Props {
   easy: string | null
@@ -19,14 +14,47 @@ interface Props {
   hard: string | null
 }
 
+type View = 'rules' | 'categories'
+
 export default function HomeClient({ easy, medium, hard }: Props) {
-  const { profile, loaded, createProfile } = usePlayer()
+  const { profile, loaded } = usePlayer()
+  const [view, setView] = useState<View>('rules')
+  const [worldRecord, setWorldRecord] = useState<{time_ms:number,name:string}|null>(null)
+  const [myBest, setMyBest] = useState<number|null>(null)
+  const [top5, setTop5] = useState<{name:string,time_ms:number}[]>([])
+  const [name, setName] = useState('')
+  const [pin, setPin] = useState('')
+  const [saveError, setSaveError] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [pendingSlug, setPendingSlug] = useState<string|null>(null)
   const [showRegister, setShowRegister] = useState(false)
-  const [pendingSlug, setPendingSlug] = useState<string | null>(null)
-  const [regName, setRegName] = useState('')
-  const [regPin, setRegPin] = useState('')
-  const [regError, setRegError] = useState('')
-  const [regSaving, setRegSaving] = useState(false)
+  const [packs, setPacks] = useState<{slug:string,name:string,difficulty:number}[]>([])
+
+  useEffect(() => {
+    if (profile?.name) setName(profile.name)
+    loadData()
+  }, [profile?.name])
+
+  const loadData = async () => {
+    const { data } = await supabase.from('scores').select('player_name,time_ms').order('time_ms', { ascending: true }).limit(500)
+    if (!data) return
+    const best: Record<string,number> = {}
+    data.forEach((s:any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name]) best[s.player_name] = s.time_ms })
+    const sorted = Object.entries(best).map(([n,t]) => ({name:n, time_ms:t as number})).sort((a,b) => a.time_ms-b.time_ms)
+    setTop5(sorted.slice(0,5))
+    if (sorted[0]) setWorldRecord({time_ms:sorted[0].time_ms, name:sorted[0].name})
+    if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
+  }
+
+  const loadPacks = async () => {
+    const { data } = await supabase.from('packs').select('slug,name,difficulty').order('difficulty').order('name')
+    if (data) setPacks(data)
+  }
+
+  const fmt = (ms: number) => {
+    const s = Math.floor(ms / 1000)
+    return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`
+  }
 
   const handlePlay = (slug: string) => {
     if (profile?.name) {
@@ -38,173 +66,110 @@ export default function HomeClient({ easy, medium, hard }: Props) {
   }
 
   const handleRegister = async () => {
-    if (!regName.trim()) { setRegError('Enter a name'); return }
-    if (regPin.length !== 4 || !/^\d{4}$/.test(regPin)) { setRegError('PIN must be 4 digits'); return }
-    setRegSaving(true)
-    const { data: existing } = await supabase.from('profiles').select('player_name').eq('player_name', regName.trim()).limit(1)
-    if (existing && existing.length > 0) { setRegError('Name taken'); setRegSaving(false); return }
-    await supabase.from('profiles').upsert({ player_name: regName.trim(), password_hash: regPin })
-    localStorage.setItem('memgenius_profile', JSON.stringify({ name: regName.trim(), pin: regPin }))
-    setRegSaving(false)
+    if (!name.trim()) { setSaveError('Enter a name'); return }
+    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { setSaveError('PIN must be 4 digits'); return }
+    setSaving(true)
+    const { data: existing } = await supabase.from('profiles').select('player_name').eq('player_name', name.trim()).limit(1)
+    if (existing && existing.length > 0) { setSaveError('Name taken'); setSaving(false); return }
+    await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: btoa(pin) })
+    localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
+    setSaving(false)
     setShowRegister(false)
     if (pendingSlug) window.location.href = `/play/${pendingSlug}`
   }
 
   if (!loaded) return null
 
-  const levels = [
-    { slug: easy, label: 'Easy', bg: '#2E7D32', shadow: '#1B5E2060' },
-    { slug: medium, label: 'Medium', bg: '#E65100', shadow: '#BF360C60' },
-    { slug: hard, label: 'Hard', bg: '#B71C1C', shadow: '#7F000060' },
+  const LEVELS = [
+    { slug: easy, label: 'Easy', color: GREEN },
+    { slug: medium, label: 'Medium', color: '#E65100' },
+    { slug: hard, label: 'Hard', color: RED },
   ]
 
+  const diffLabel = (d: number) => d === 1 ? 'Easy' : d === 2 ? 'Medium' : 'Hard'
+  const diffColor = (d: number) => d === 1 ? GREEN : d === 2 ? '#E65100' : RED
+
+  // Register modal
+  if (showRegister) return (
+    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px' }}>
+      <div style={{ width:'100%', background:'rgba(255,255,255,0.06)', borderRadius:24, padding:'28px' }}>
+        <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:4 }}>Create account</div>
+        <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:20 }}>To save your scores and compete worldwide</div>
+        <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
+        <input value={pin} onChange={e=>setPin(e.target.value.replace(/\D/,'').slice(0,4))} placeholder="4-digit PIN" type="tel" maxLength={4} style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:16, boxSizing:'border-box' }} />
+        {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, marginBottom:10 }}>{saveError}</div>}
+        <button onClick={handleRegister} disabled={saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:10 }}>
+          {saving ? 'Saving...' : 'Play →'}
+        </button>
+        <button onClick={() => setShowRegister(false)} style={{ width:'100%', padding:'10px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.06)', color:'rgba(255,255,255,0.4)', fontSize:13, fontWeight:800, fontFamily:'inherit', cursor:'pointer' }}>Cancel</button>
+      </div>
+    </main>
+  )
+
+  // Categories view
+  if (view === 'categories') return (
+    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:24 }}>
+        <button onClick={() => setView('rules')} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:14, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>← Back</button>
+        <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>Categories</div>
+      </div>
+      <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+        {packs.map(p => (
+          <button key={p.slug} onClick={() => handlePlay(p.slug)} style={{ width:'100%', padding:'16px 20px', borderRadius:16, border:'1px solid rgba(255,255,255,0.08)', background:'rgba(255,255,255,0.05)', display:'flex', alignItems:'center', justifyContent:'space-between', cursor:'pointer', fontFamily:'inherit' }}>
+            <div style={{ fontSize:15, fontWeight:800, color:'#fff', textAlign:'left' }}>{p.name}</div>
+            <div style={{ fontSize:11, fontWeight:800, color:diffColor(p.difficulty), background:`${diffColor(p.difficulty)}20`, padding:'4px 10px', borderRadius:20 }}>{diffLabel(p.difficulty)}</div>
+          </button>
+        ))}
+        {packs.length === 0 && <div style={{ fontSize:14, color:'rgba(255,255,255,0.3)', fontWeight:700, textAlign:'center', marginTop:40 }}>Loading...</div>}
+      </div>
+    </main>
+  )
+
+  // Rules view
   return (
-    <>
-
-
-      <main style={{
-        height: '100dvh',
-        background: `radial-gradient(ellipse at 50% 0%, #fff8ee 0%, ${CREAM} 40%, #EDE5D8 100%)`,
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center',
-        fontFamily: 'var(--font-nunito), sans-serif',
-        maxWidth: 430, margin: '0 auto',
-        overflow: 'hidden', paddingBottom: 80,
-      }}>
-
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', width: '100%', gap: 12 }}>
-          <img
-            src={LOGO}
-            alt="Memory"
-            style={{
-              height: 70, objectFit: 'contain',
-              
-              filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.1))',
-              flexShrink: 0,
-            }}
-          />
-          <div>
-            <div style={{ fontSize: 28, fontWeight: 900, color: BROWN, letterSpacing: -0.5, lineHeight: 1 }}>Memory</div>
-            <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Match pairs by connection</div>
-          </div>
+    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
+        <img src={`${BASE}/brain-logo.webp`} style={{ width:60, height:60, objectFit:'contain' }} />
+        <div>
+          <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Memory</div>
+          <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Match pairs by connection</div>
         </div>
+      </div>
 
-        {/* Greeting */}
-        <div style={{
-          flex: 1, display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          padding: '0 20px', gap: 12, width: '100%',
-        }}>
-
-          <div style={{ textAlign: 'center', marginBottom: 4 }}>
-            <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 6 }}>Find the matching pairs</div>
-            <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.6 }}>
-              Cards are connected, not identical.<br />The Eiffel Tower goes with Paris.<br />How fast can you match them all?
-            </div>
-          </div>
-
-          {/* Level buttons */}
-          <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-            {levels.map(level => (
-              <div key={level.label} onClick={() => handlePlay(level.slug || '')} style={{ textDecoration: 'none', flex: 1, cursor: 'pointer' }}>
-                <div style={{
-                  padding: '20px 8px', borderRadius: 20,
-                  background: level.bg,
-                  boxShadow: `0 8px 0 ${level.shadow}`,
-                  textAlign: 'center', cursor: 'pointer',
-                }}>
-                  <div style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>{level.label}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Categories */}
-          <Link href="/categories" style={{ textDecoration: 'none', width: '100%' }}>
-            <div style={{
-              width: '100%', padding: '18px', borderRadius: 20,
-              background: '#1565C0',
-              boxShadow: '0 8px 0 #0D47A160',
-              textAlign: 'center', cursor: 'pointer',
-              boxSizing: 'border-box',
-            }}>
-              <span style={{ fontSize: 16, fontWeight: 900, color: '#fff' }}>Categories</span>
-            </div>
-          </Link>
-
-          {/* Rankings */}
-          <Link href="/ranking/memory" style={{ textDecoration: 'none', width: '100%' }}>
-            <div style={{
-              width: '100%', padding: '16px', borderRadius: 18,
-              background: '#fff',
-              border: `1.5px solid ${BROWN}20`,
-              textAlign: 'center', cursor: 'pointer',
-              boxSizing: 'border-box',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              boxShadow: `0 4px 12px ${BROWN}08`,
-            }}>
-              <img src={TROPHY} alt="" style={{ width: 26, height: 26, objectFit: 'contain' }} />
-              <span style={{ fontSize: 15, fontWeight: 800, color: `${BROWN}70` }}>World Ranking</span>
-            </div>
-          </Link>
-
-          {/* Footer */}
-          <div style={{ textAlign: 'center', paddingTop: 4 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: `${BROWN}30`, letterSpacing: 1 }}>
-              Always free · No login required
-            </div>
-            <a href="/privacy" style={{ fontSize: 10, color: `${BROWN}20`, textDecoration: 'none', fontWeight: 600 }}>
-              Privacy Policy
-            </a>
-          </div>
-
+      <div style={{ display:'flex', gap:10, marginBottom:20 }}>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+          <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
+          <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? fmt(worldRecord.time_ms) : '—'}</div>
+          {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
         </div>
-      </main>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+          <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
+          <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest ? fmt(myBest) : '—'}</div>
+        </div>
+      </div>
 
-    {/* SEO Content */}
-    <section style={{
-      maxWidth: 430, margin: '0 auto',
-      padding: '48px 24px 120px',
-      fontFamily: 'var(--font-nunito), sans-serif',
-      background: '#FAF7F2',
-    }}>
-      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
-        Memory — Card Matching Brain Game
-      </h2>
-      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
-        Memory is a card matching game with a twist — the pairs are not identical, they are connected. The Eiffel Tower matches with Paris. A guitar matches with music. To win you need to think associatively, not just visually. Choose your difficulty, flip the cards, and find all the pairs as fast as possible.
-      </p>
-      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
-        Unlike traditional memory games, MemGenius Memory trains semantic memory — the part of your brain that stores knowledge and meaning. Connecting concepts rather than matching identical images is a more powerful cognitive workout. Play daily across different categories to keep your brain sharp.
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        {[
-          { q: 'How does Memory work?', a: 'Cards are laid face down. Flip two at a time to find connected pairs — not identical ones. The Eiffel Tower pairs with Paris, a piano pairs with music. Find all pairs to complete the board.' },
-          { q: 'What are the difficulty levels?', a: 'Easy, Medium, and Hard. Higher difficulties have more cards on the board and more complex associations between pairs, requiring deeper knowledge and sharper memory.' },
-          { q: 'What categories are available?', a: 'Memory includes dozens of categories covering geography, science, food, history, sports, and more. New packs are added regularly so there is always something new to discover.' },
-          { q: 'Does Memory help with brain training?', a: 'Yes. Associative memory — linking related concepts — is one of the most important cognitive skills. Memory specifically trains this by requiring you to connect meanings rather than match images.' },
-          { q: 'Is Memory free to play?', a: 'Completely free, no login required. Play any category at any difficulty and track your time on the world ranking.' },
-        ].map((item, i) => (
-          <details key={i} style={{
-            background: '#fff', borderRadius: 14,
-            border: '1px solid #4A2C0A15',
-            padding: '14px 18px',
-          }}>
-            <summary style={{
-              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
-              cursor: 'pointer', listStyle: 'none',
-            }}>
-              {item.q}
-            </summary>
-            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
-              {item.a}
-            </p>
-          </details>
+      <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:20 }}>
+        <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
+        {top5.map((p,i) => (
+          <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+            <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
+            <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
+            <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{fmt(p.time_ms)}</div>
+          </div>
         ))}
       </div>
-    </section>
 
-    </>
+      {/* Difficulty buttons */}
+      <div style={{ display:'flex', flexDirection:'column', gap:10, marginTop:'auto' }}>
+        {LEVELS.map(l => l.slug && (
+          <button key={l.label} onClick={() => handlePlay(l.slug!)} style={{ width:'100%', padding:'16px', borderRadius:16, border:'none', background:l.color, color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 6px 0 ${l.color}80` }}>
+            {l.label} →
+          </button>
+        ))}
+        <button onClick={() => { setView('categories'); loadPacks() }} style={{ width:'100%', padding:'14px', borderRadius:16, border:'1px solid rgba(255,255,255,0.15)', background:'transparent', color:'rgba(255,255,255,0.6)', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+          Browse Categories →
+        </button>
+      </div>
+    </main>
   )
 }
