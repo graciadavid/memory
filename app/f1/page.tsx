@@ -1,226 +1,86 @@
-'use client'
-import { useState, useRef, useCallback, useEffect } from 'react'
-import { usePlayer } from '@/lib/usePlayer'
-import { supabase } from '@/lib/supabase'
+import F1Client from './F1Client'
+import RelatedGames from '@/components/RelatedGames'
 
-const GOLD = '#C8960C'
-const GREEN = '#2E7D32'
-const RED = '#E8002D'
-const BLACK = '#1a1a1a'
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-
-type Phase = 'rules' | 'lighting' | 'waiting' | 'go' | 'result' | 'jumpstart'
+export const metadata = {
+ title: 'F1 Reaction Test — How Fast Are Your Reflexes? | MemGenius',
+ description: 'React when the Formula 1 lights go out. Free online reaction time test with world ranking. Measure your reflexes in milliseconds. No login required.',
+}
 
 export default function F1Page() {
- const { profile } = usePlayer()
- const [phase, setPhase] = useState<Phase>('rules')
- const [litCount, setLitCount] = useState(0)
- const [reactionMs, setReactionMs] = useState(0)
- const [worldRecord, setWorldRecord] = useState<{diff:number,name:string}|null>(null)
- const [myBest, setMyBest] = useState<number|null>(null)
- const [top5, setTop5] = useState<{name:string,diff:number}[]>([])
- const [worldRank, setWorldRank] = useState<number|null>(null)
- const [name, setName] = useState('')
- const [pin, setPin] = useState(['','','',''])
- const [saved, setSaved] = useState(false)
- const [saving, setSaving] = useState(false)
- const [saveError, setSaveError] = useState('')
- const goTimeRef = useRef(0)
- const timeoutRef = useRef<NodeJS.Timeout|null>(null)
-
- useEffect(() => {
-   if (profile?.name) setName(profile.name)
-   loadData()
- }, [profile?.name])
-
- const loadData = async () => {
-   const {data:all} = await supabase.from('precision_scores').select('player_name,difference_ms').eq('game_type','formula1').order('difference_ms',{ascending:true}).limit(500)
-   if (!all) return
-   const best:Record<string,number> = {}
-   all.forEach((s:any) => { if (!best[s.player_name] || s.difference_ms < best[s.player_name]) best[s.player_name] = s.difference_ms })
-   const sorted = Object.entries(best).map(([n,d]) => ({name:n, diff:d as number})).sort((a,b) => a.diff-b.diff)
-   setTop5(sorted.slice(0,5))
-   if (sorted[0]) setWorldRecord({diff:sorted[0].diff, name:sorted[0].name})
-   if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
- }
-
- const startSequence = () => {
-   setPhase('lighting')
-   setLitCount(0)
-   let count = 0
-   const lightUp = () => {
-     count++
-     setLitCount(count)
-     if (count < 5) {
-       timeoutRef.current = setTimeout(lightUp, 800)
-     } else {
-       setPhase('waiting')
-       const waitMs = 500 + Math.random() * 2500
-       timeoutRef.current = setTimeout(() => { setPhase('go'); goTimeRef.current = Date.now() }, waitMs)
-     }
-   }
-   timeoutRef.current = setTimeout(lightUp, 600)
- }
-
- const handlePress = useCallback(async () => {
-   if (phase === 'lighting' || phase === 'waiting') {
-     if (timeoutRef.current) clearTimeout(timeoutRef.current)
-     setPhase('jumpstart')
-     return
-   }
-   if (phase === 'go') {
-     const reaction = Date.now() - goTimeRef.current
-     setReactionMs(reaction)
-     setPhase('result')
-     if (profile?.name) {
-       await supabase.from('precision_scores').insert({player_name:profile.name, difference_ms:reaction, game_type:'formula1'})
-       const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).eq('game_type','formula1').lt('difference_ms',reaction)
-       setWorldRank((count??0)+1)
-       if (myBest===null || reaction<myBest) setMyBest(reaction)
-     }
-   }
- }, [phase, profile?.name, myBest])
-
- const saveScore = async () => {
-   if (!name.trim() || pin.join('').length!==4) return
-   setSaving(true)
-   setSaveError('')
-   const pinHash = btoa(pin.join(''))
-   const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name',name.trim()).maybeSingle()
-   if (existing) {
-     if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN for this name'); setSaving(false); return }
-   } else {
-     await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
-   }
-   await supabase.from('precision_scores').insert({player_name:name.trim(), difference_ms:reactionMs, game_type:'formula1'})
-   const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).eq('game_type','formula1').lt('difference_ms',reactionMs)
-   setWorldRank((count??0)+1)
-   setSaving(false)
-   setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
-   setTimeout(() => window.location.reload(), 1500)
- }
-
- const reset = () => {
-   if (timeoutRef.current) clearTimeout(timeoutRef.current)
-   setPhase('rules')
-   setLitCount(0)
-   setSaved(false)
-   loadData()
- }
-
- const Semaphore = ({ lit }: { lit: boolean }) => (
-   <div style={{ background: BLACK, borderRadius: 8, padding: '5px 4px', display: 'flex', flexDirection: 'column', gap: 4, border: '2px solid #333' }}>
-     {[0,1,2].map(i => (
-       <div key={i} style={{ width: 28, height: 28, borderRadius: '50%', background: lit && i >= 1 ? RED : '#2a2a2a', boxShadow: lit && i >= 1 ? `0 0 10px ${RED}` : 'none', transition: 'all 0.15s' }} />
-     ))}
-   </div>
- )
-
- const resultColor = reactionMs < 200 ? '#00C853' : reactionMs < 300 ? '#FF6F00' : '#D32F2F'
- const bgResult = reactionMs < 200 ? '#0D3320' : reactionMs < 300 ? '#2D1A00' : '#1A0000'
-
- // RULES
- if (phase === 'rules') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
-     <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
-       <img src={`${BASE}/f1.png`} style={{ width:60, height:60, objectFit:'contain' }} />
-       <div>
-         <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>F1 Reaction</div>
-         <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>React when the lights go out</div>
-       </div>
-     </div>
-     <div style={{ display:'flex', gap:10, marginBottom:20 }}>
-       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
-         <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
-         <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${worldRecord.diff}ms` : '—'}</div>
-         {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
-       </div>
-       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
-         <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
-         <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest!==null ? `${myBest}ms` : '—'}</div>
-       </div>
-     </div>
-     <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
-       <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
-       {top5.map((p,i) => (
-         <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
-           <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
-           <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
-           <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.diff}ms</div>
-         </div>
-       ))}
-     </div>
-     <button onClick={startSequence} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:RED, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 8px 0 ${RED}80`, marginTop:'auto' }}>
-       Get Ready →
-     </button>
-   </main>
- )
-
- // JUMPSTART
- if (phase === 'jumpstart') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:24, padding:'32px 24px' }}>
-     <div style={{ fontSize:64 }}>🚩</div>
-     <div style={{ fontSize:32, fontWeight:900, color:RED }}>Jump Start!</div>
-     <div style={{ fontSize:15, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>You pressed too early</div>
-     <button onClick={reset} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:RED, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 8px 0 ${RED}80` }}>Try again →</button>
-   </main>
- )
-
- // GAME
- if (phase === 'lighting' || phase === 'waiting' || phase === 'go') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:60, padding:'40px 24px' }}>
-     <div style={{ display:'flex', gap:6 }}>
-       {[1,2,3,4,5].map(n => (
-         <Semaphore key={n} lit={phase === 'waiting' ? true : phase === 'go' ? false : litCount >= n} />
-       ))}
-     </div>
-     <button onClick={handlePress} style={{ width:'100%', padding:'24px', borderRadius:20, border:'none', background:phase==='go'?'#00C853':'rgba(255,255,255,0.08)', color:phase==='go'?'#fff':'rgba(255,255,255,0.3)', fontSize:22, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:phase==='go'?'0 8px 0 #00952080':'none', transition:'all 0.1s' }}>
-       ACCELERATE
-     </button>
-   </main>
- )
-
- // RESULT
  return (
-   <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
-     <div style={{ textAlign:'center' }}>
-       <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Reaction Time</div>
-       <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{reactionMs}ms</div>
-       {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
-     </div>
+   <>
+     <F1Client />
+     <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
+       <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>How fast are your reflexes?</h2>
+       <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>F1 Reaction is a pure reflex test inspired by the Formula 1 starting procedure. Five red lights illuminate one by one. When they go out, tap as fast as you can. Your reaction time is measured to the millisecond and compared against players from all over the world.</p>
+       <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 24 }}>The average human reaction time to a visual stimulus is around 250 milliseconds. Elite Formula 1 drivers consistently react in under 200ms. Where do you rank?</p>
 
-     {!profile?.name && !saved && (
-       <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
-         <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
-         <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
-         <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
-         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
-         <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
-           {pin.map((d,i) => (
-             <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
-               onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
-               style={{ width:48, height:56, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
-           ))}
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           How to play
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Five red lights illuminate one by one, just like the start of a real Formula 1 race. After all five are lit, there is a random delay of between 0.5 and 3 seconds before they go out. The moment they go out, tap the Accelerate button as fast as you can. Your reaction time in milliseconds is your score — lower is better.</p>
+           <p style={{ marginBottom: 10 }}>If you tap before the lights go out, it counts as a jump start — just like in real F1, where a jump start results in a penalty. The random delay prevents you from anticipating the moment and ensures your score reflects true reaction speed rather than timing skill.</p>
+           <p>Save your score with a name and PIN to track your personal best and see your global ranking. Results update in real time as players compete worldwide.</p>
          </div>
-         {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:10 }}>{saveError}</div>}
-         <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.15)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-           {saving?'Saving...':'Save →'}
-         </button>
-       </div>
-     )}
+       </details>
 
-     {saved && (
-       <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
-         <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
-         <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:4 }}>#{worldRank} in the world</div>
-       </div>
-     )}
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           The science of reaction time
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Simple reaction time — the time to respond to a single expected stimulus — is one of the most studied measures in cognitive psychology. It reflects the total speed of the perception-decision-action chain: how fast your visual cortex detects the lights going out, how fast your motor cortex fires the command, and how fast the nerve signal travels to your finger muscles.</p>
+           <p style={{ marginBottom: 10 }}>The theoretical minimum for human simple reaction time is around 100ms — the time required for a neural signal to travel from the retina to the motor cortex and back to the hand. In practice, even elite athletes rarely achieve this under real conditions. The world record for a controlled simple reaction time test is approximately 101ms, held by a trained athlete under laboratory conditions.</p>
+           <p style={{ marginBottom: 10 }}>Age significantly affects reaction time. Simple reaction time is fastest in the mid-twenties and declines gradually thereafter — by roughly 1 millisecond per year after the age of 24. Regular practice can partially offset this decline by optimizing the neural pathways involved in rapid response, even if it cannot reverse the underlying biological process.</p>
+           <p>Caffeine, sleep and arousal level all affect reaction time measurably. A well-rested, moderately caffeinated person in a state of alert attention will consistently outperform the same person when tired or distracted — which is why F1 drivers manage their sleep and nutrition so carefully before race day.</p>
+         </div>
+       </details>
 
-     <div style={{ display:'flex', gap:10, width:'100%' }}>
-       <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
-       <button onClick={()=>{setSaved(false);startSequence()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:RED, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 5px 0 ${RED}80` }}>Play again →</button>
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Reaction time in Formula 1
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>In Formula 1, reaction time at the start is one of the most critical performance factors. The FIA measures every driver's reaction time at each race start to the millisecond. A jump start — any reaction faster than 100ms — is automatically detected by sensors in the car and results in a drive-through penalty, since a reaction faster than 100ms is physically impossible without anticipating the lights.</p>
+           <p style={{ marginBottom: 10 }}>The fastest legitimate F1 start reactions are typically in the range of 150 to 200 milliseconds. Lewis Hamilton and Max Verstappen have both recorded starts in the 150ms range, which is exceptionally fast for a real-world high-pressure environment. By comparison, the average untrained person reacts in 250 to 300ms to a visual stimulus under controlled conditions.</p>
+           <p style={{ marginBottom: 10 }}>F1 drivers train their reaction time extensively using dedicated reaction trainers, video games and mental visualization exercises. The sport has contributed significantly to the scientific understanding of how reaction time can be trained — particularly the role of anticipatory attention, which allows drivers to be in a state of peak readiness the moment the lights go out.</p>
+           <p>The five-light starting procedure was introduced in 1994 and has remained essentially unchanged since. Before that, F1 used a single red light, which was easier to anticipate and led to more jump starts. The sequential illumination of five lights builds tension and makes pure anticipation harder, creating a fairer test of reaction speed.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Can you improve your reaction time?
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Yes — but with important caveats. The raw speed of neural transmission is largely fixed by biology and age. What can be improved is the efficiency of the preparation phase — the state of readiness your nervous system is in when the stimulus arrives. A highly prepared nervous system responds faster than an unprepared one, even if the underlying transmission speed is identical.</p>
+           <p style={{ marginBottom: 10 }}>Regular practice with reaction time games measurably reduces response times over weeks of training, primarily by reducing the cognitive overhead involved in the decision to respond. Early in training, your brain must consciously decide to press the button. With practice, this decision becomes more automatic and the conscious component shrinks, reducing the total response time.</p>
+           <p style={{ marginBottom: 10 }}>Physical fitness also plays a role. Cardiovascular exercise improves blood flow to the brain and has been shown in multiple studies to reduce simple reaction time by 10 to 20 milliseconds on average. This is one reason why F1 drivers maintain rigorous fitness regimens — reaction time is not just a mental ability but a physical one.</p>
+           <p>The most reliable short-term improvements come from optimizing your state before playing. Being well rested, moderately caffeinated, physically warm and in a state of focused alertness will produce your best times. Learning to reliably enter this state on demand is itself a valuable skill — one that transfers to sports, driving and any other activity where fast reactions matter.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Tips to improve your score
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Focus your attention on the lights rather than the button. The bottleneck in reaction time is almost always the visual detection phase, not the motor execution phase. Keep your eyes locked on the lights and let your finger press automatically — do not look at the button or think about pressing it.</p>
+           <p style={{ marginBottom: 10 }}>Keep your finger hovering just above the screen, not resting on it. A finger that is already in contact with the screen has to lift slightly before it can press, which adds a small but measurable delay. A finger hovering 2 to 3 millimetres above the screen is ready to press with minimal travel time.</p>
+           <p style={{ marginBottom: 10 }}>Play when you are alert and focused, not when you are tired or distracted. Reaction time is highly sensitive to fatigue and attention. Your best scores will come during periods of peak alertness — typically mid-morning for most people, or shortly after moderate physical exercise.</p>
+           <p>Do not try to anticipate. The random delay of 0.5 to 3 seconds is specifically designed to prevent timing strategies. Players who try to anticipate the lights going out perform worse on average than those who simply wait and react. Trust your reflexes and focus on the quality of your attention rather than trying to second-guess the timing.</p>
+         </div>
+       </details>
+
+       <RelatedGames category="agility" current="F1 Reaction" />
      </div>
-   </main>
+   </>
  )
 }
