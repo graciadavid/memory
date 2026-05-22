@@ -232,8 +232,8 @@ export default function Game2048Client() {
 
   return (
     <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'12px 20px', overflow:'hidden' }}
-      onTouchStart={e => setTouchStart({x:e.touches[0].clientX, y:e.touches[0].clientY})}
-      onTouchEnd={e => {
+      onTouchStart={e => { e.preventDefault(); setTouchStart({x:e.touches[0].clientX, y:e.touches[0].clientY}) }}
+      onTouchEnd={e => { e.preventDefault();
         if (!touchStart) return
         const dx = e.changedTouches[0].clientX - touchStart.x
         const dy = e.changedTouches[0].clientY - touchStart.y
