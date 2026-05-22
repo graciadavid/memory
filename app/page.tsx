@@ -2,7 +2,6 @@
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const GREEN = '#2E7D32'
 
-// Today's game — change daily
 const TODAY = { href: '/stop', label: 'Stop' }
 
 export default function HomePage() {
@@ -18,12 +17,12 @@ export default function HomePage() {
      alignItems: 'center',
      justifyContent: 'center',
      padding: '0 32px',
-     gap: 48,
+     gap: 40,
    }}>
      <div style={{ textAlign: 'center' }}>
-       <img src={`${BASE}/brain-logo.webp`} style={{ width: 90, height: 90, objectFit: 'contain', marginBottom: 24 }} />
-       <div style={{ fontSize: 42, fontWeight: 900, color: '#fff', letterSpacing: -1, marginBottom: 12 }}>MemGenius</div>
-       <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', fontWeight: 700, lineHeight: 1.6 }}>Your daily brain gym.</div>
+       <img src={`${BASE}/memgeniuslogofull.png`} alt="MemGenius" style={{ width: '100%', maxWidth: 280, objectFit: 'contain', marginBottom: 16 }} />
+       <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', fontWeight: 700 }}>Train your brain daily.</div>
+       <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', fontWeight: 700 }}>Compete with the world.</div>
      </div>
 
      <a href={TODAY.href} style={{ textDecoration: 'none', width: '100%' }}>
