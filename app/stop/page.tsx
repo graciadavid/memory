@@ -81,7 +81,8 @@ const startCountdown = () => {
    setWorldRank((count ?? 0) + 1)
    setSaving(false)
    setSaved(true)
-   setTimeout(() => window.location.reload(), 1500)
+   localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
+   setTimeout(() => window.location.href = '/profile', 1500)
  }
 
  const fmt = (ms: number) => `${Math.floor(ms/1000)}.${String(Math.floor(ms%1000)).padStart(3,'0')}`
