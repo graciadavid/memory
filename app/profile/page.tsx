@@ -122,21 +122,19 @@ export default function ProfilePage() {
  return (
    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', paddingBottom:100 }}>
 
-     {/* Header */}
+      {/* Header */}
      <div style={{ padding:'40px 24px 24px' }}>
        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
          <div>
-           <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:4 }}>{profile?.name ?? 'Guest'}</div>
-           {streak > 0 && (
-             <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-               <img src={`${BASE}/streak.png`} style={{ width:20, height:20, objectFit:'contain' }} />
-               <span style={{ fontSize:15, fontWeight:900, color:'#FF6D00' }}>{streak} days</span>
-             </div>
-           )}
+           <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:6 }}>{profile?.name ?? 'Guest'}</div>
+           <button onClick={() => { setEditing(!editing); setEditMode(null); setEditError(''); setEditSuccess('') }} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'6px 14px', color:'rgba(255,255,255,0.5)', fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>
+             {editing ? 'Done' : 'Edit Profile'}
+           </button>
          </div>
-         <button onClick={() => { setEditing(!editing); setEditMode(null); setEditError(''); setEditSuccess('') }} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, padding:'8px 16px', color:'rgba(255,255,255,0.6)', fontSize:13, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>
-           {editing ? 'Done' : 'Edit Profile'}
-         </button>
+         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+           <img src={`${BASE}/streak.png`} style={{ width:64, height:64, objectFit:'contain' }} />
+           {streak > 0 && <span style={{ fontSize:48, fontWeight:900, color:'#FF6D00', lineHeight:1 }}>{streak}</span>}
+         </div>
        </div>
 
        {/* Edit panel */}
