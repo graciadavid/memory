@@ -643,6 +643,650 @@ export default function ProfilePage() {
             </div>
           )}
 
+port { useState, useEffect, useRef } from 'react'
+import { supabase } from '@/lib/supabase'
+import { usePlayer } from '@/lib/usePlayer'
+import Link from 'next/link'
+
+const BROWN = '#4A2C0A'
+const GOLD = '#C8960C'
+const CREAM = '#FAF7F2'
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+
+function fmt(ms: number) {
+  const s = Math.floor(ms / 1000)
+  const m = Math.floor(s / 60)
+  const c = Math.floor((ms % 1000) / 10)
+  return m > 0 ? `${m}:${String(s % 60).padStart(2,'0')}` : `${s}.${String(c).padStart(2,'0')}s`
+}
+
+export default function ProfilePage() {
+  const { profile, loaded, save } = usePlayer()
+  const [myGroups, setMyGroups] = useState<any[]>([])
+  const [hasPassword, setHasPassword] = useState(false)
+  const [editingName, setEditingName] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [nameError, setNameError] = useState('')
+  const [nameSaving, setNameSaving] = useState(false)
+  const [editingPassword, setEditingPassword] = useState(false)
+  const [pin, setPin] = useState(['', '', '', ''])
+  const [passwordSaved, setPasswordSaved] = useState(false)
+  const [groupsOpen, setGroupsOpen] = useState(false)
+  const [records, setRecords] = useState<Record<string, any[]>>({ memory: [], agility: [], knowledge: [], logic: [] })
+  const [openArea, setOpenArea] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!profile?.name) return
+
+    // Groups
+    supabase.from('group_members').select('group_id, groups(id, name)').eq('player_name', profile.name)
+      .then(({ data }) => { if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean)) })
+
+    // Password
+    supabase.from('profiles').select('password_hash').eq('player_name', profile.name).single()
+      .then(({ data }) => { if (data?.password_hash) setHasPassword(true) })
+
+    // Records — fetch best scores per game
+    fetchRecords(profile.name)
+  }, [profile?.name])
+
+  const fetchRecords = async (name: string) => {
+    const [digits, nback, seq, memory, stop, f1, pendulum, ace, flags, geo, versus, sudoku, wordly, mm, g2048] = await Promise.all([
+      supabase.from('number_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('nback_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('sequence_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).is('game_type', null).order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).eq('game_type', 'formula1').order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).eq('game_type', 'pendulum').order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('ace_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('flag_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('shape_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('higher_lower_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('sudoku_scores').select('time_ms, difficulty').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('wordle_scores').select('time_ms, attempts').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('mastermind_scores').select('time_ms, attempts').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('game2048_scores').select('best_tile').eq('player_name', name).order('best_tile', { ascending: false }).limit(1),
+    ])
+
+    const grouped: Record<string, any[]> = {
+      memory: [], agility: [], knowledge: [], logic: []
+    }
+
+    if (nback.data?.[0]) grouped.memory.push({ game: 'N-Back', href: '/nback', value: `${nback.data[0].level} correct` })
+    if (digits.data?.[0]) grouped.memory.push({ game: 'Digits', href: '/digits', value: `${digits.data[0].level} digits` })
+    if (seq.data?.[0]) grouped.memory.push({ game: 'Simon Says', href: '/sequence', value: `${seq.data[0].level} in a row` })
+    if (memory.data?.[0]) grouped.memory.push({ game: 'Memory', href: '/memory', value: fmt(memory.data[0].time_ms) })
+
+    if (stop.data?.[0]) grouped.agility.push({ game: 'Stop', href: '/precision/stopwatch', value: `${stop.data[0].difference_ms}ms off` })
+    if (f1.data?.[0]) grouped.agility.push({ game: 'F1 Reaction', href: '/precision/formula1', value: `${f1.data[0].difference_ms}ms` })
+    if (pendulum.data?.[0]) grouped.agility.push({ game: 'Pendulum', href: '/precision/pendulum', value: `${(pendulum.data[0].difference_ms/10).toFixed(1)}° off` })
+    if (ace.data?.[0]) grouped.agility.push({ game: 'Ace', href: '/ace', value: `Level ${ace.data[0].level}` })
+
+    if (flags.data?.[0]) grouped.knowledge.push({ game: 'Flags', href: '/flags', value: `${flags.data[0].level} in a row` })
+    if (geo.data?.[0]) grouped.knowledge.push({ game: 'GeoShape', href: '/geoshape', value: `${geo.data[0].level} in a row` })
+    if (versus.data?.[0]) grouped.knowledge.push({ game: 'Higher or Lower', href: '/versus', value: `${versus.data[0].level} in a row` })
+
+    if (sudoku.data?.[0]) grouped.logic.push({ game: 'Sudoku', href: '/sudoku', value: fmt(sudoku.data[0].time_ms) })
+    if (wordly.data?.[0]) grouped.logic.push({ game: 'Wordly', href: '/wordly', value: `${wordly.data[0].attempts} tries` })
+    if (mm.data?.[0]) grouped.logic.push({ game: 'Mastermind', href: '/mastermind', value: `${mm.data[0].attempts} tries` })
+    if (g2048.data?.[0]) grouped.logic.push({ game: '2048', href: '/2048', value: `Tile ${g2048.data[0].best_tile}` })
+
+    setRecords(grouped)
+  }
+
+  const saveName = async () => {
+    if (!newName.trim() || !profile?.name) return
+    setNameSaving(true)
+    const { data } = await supabase.from('profiles').select('player_name').eq('player_name', newName.trim()).maybeSingle()
+    if (data) { setNameError('Name already taken'); setNameSaving(false); return }
+    await supabase.from('profiles').update({ player_name: newName.trim() }).eq('player_name', profile.name)
+    save({ ...profile, name: newName.trim() })
+    setEditingName(false)
+    setNameSaving(false)
+  }
+
+  const savePin = async () => {
+    const p = pin.join('')
+    if (p.length !== 4) return
+    await supabase.from('profiles').upsert({ player_name: profile!.name, password_hash: p, updated_at: new Date().toISOString() })
+    setHasPassword(true)
+    setPasswordSaved(true)
+    setTimeout(() => { setPasswordSaved(false); setEditingPassword(false) }, 1500)
+  }
+
+  if (!loaded) return null
+  if (!profile?.name) { if (typeof window !== 'undefined') window.location.href = '/'; return null }
+
+  return (
+    <main style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 100 }}>
+
+      {/* Header card */}
+      <div style={{ padding: '16px 16px 0' }}>
+        <div style={{ background: 'linear-gradient(135deg, #0A1628, #0D2B5E, #1565C0)', padding: '20px 24px', borderRadius: 24, boxShadow: '0 8px 32px rgba(13,43,94,0.5)' }}>
+
+          {/* Name row */}
+          <div style={{ marginBottom: 20 }}>
+            {editingName ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <input type="text" value={newName} onChange={e => { setNewName(e.target.value); setNameError('') }} onKeyDown={e => e.key === 'Enter' && saveName()} maxLength={20} autoFocus
+                    style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 16, fontWeight: 800, fontFamily: 'inherit', outline: 'none' }} />
+                  <button onClick={saveName} style={{ padding: '8px 12px', borderRadius: 10, border: 'none', background: GOLD, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>{nameSaving ? '...' : 'Save'}</button>
+                  <button onClick={() => { setEditingName(false); setNameError('') }} style={{ padding: '8px 10px', borderRadius: 10, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
+                </div>
+                {nameError && <div style={{ fontSize: 10, color: '#FFB3B3', fontWeight: 700 }}>{nameError}</div>}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
+                <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
+                <button onClick={() => setEditingPassword(!editingPassword)} style={{ padding: '3px 8px', borderRadius: 6, border: 'none', cursor: 'pointer', fontFamily: 'inherit', background: hasPassword ? 'rgba(46,125,50,0.4)' : 'rgba(230,81,0,0.8)', color: '#fff', fontSize: 9, fontWeight: 800 }}>
+                  {hasPassword ? '🔒' : '⚠️ Protect'}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* PIN editor */}
+          {editingPassword && (
+            <div style={{ marginBottom: 16 }}>
+              {passwordSaved && <div style={{ fontSize: 13, color: '#81C784', fontWeight: 800, textAlign: 'center', marginBottom: 8 }}>✓ PIN saved!</div>}
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', textAlign: 'center', marginBottom: 8 }}>Set your 4-digit PIN</div>
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 12 }}>
+                {pin.map((d, i) => (
+                  <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
+                    onChange={e => { const v = e.target.value.replace(/\D/,''); const p=[...pin]; p[i]=v; setPin(p); if(v && i<3) (document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus() }}
+                    style={{ width: 44, height: 52, textAlign: 'center', fontSize: 24, fontWeight: 900, borderRadius: 12, border: '2px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontFamily: 'inherit', outline: 'none' }} />
+                ))}
+              </div>
+              <button onClick={savePin} disabled={pin.join('').length !== 4} style={{ width: '100%', padding: '12px', borderRadius: 12, border: 'none', background: pin.join('').length === 4 ? GOLD : 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>Save PIN</button>
+            </div>
+          )}
+
+import { useState, useEffect, useRef } from 'react'
+import { supabase } from '@/lib/supabase'
+import { usePlayer } from '@/lib/usePlayer'
+import Link from 'next/link'
+
+const BROWN = '#4A2C0A'
+const GOLD = '#C8960C'
+const CREAM = '#FAF7F2'
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+
+function fmt(ms: number) {
+  const s = Math.floor(ms / 1000)
+  const m = Math.floor(s / 60)
+  const c = Math.floor((ms % 1000) / 10)
+  return m > 0 ? `${m}:${String(s % 60).padStart(2,'0')}` : `${s}.${String(c).padStart(2,'0')}s`
+}
+
+export default function ProfilePage() {
+  const { profile, loaded, save } = usePlayer()
+  const [myGroups, setMyGroups] = useState<any[]>([])
+  const [hasPassword, setHasPassword] = useState(false)
+  const [editingName, setEditingName] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [nameError, setNameError] = useState('')
+  const [nameSaving, setNameSaving] = useState(false)
+  const [editingPassword, setEditingPassword] = useState(false)
+  const [pin, setPin] = useState(['', '', '', ''])
+  const [passwordSaved, setPasswordSaved] = useState(false)
+  const [groupsOpen, setGroupsOpen] = useState(false)
+  const [records, setRecords] = useState<Record<string, any[]>>({ memory: [], agility: [], knowledge: [], logic: [] })
+  const [openArea, setOpenArea] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!profile?.name) return
+
+    // Groups
+    supabase.from('group_members').select('group_id, groups(id, name)').eq('player_name', profile.name)
+      .then(({ data }) => { if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean)) })
+
+    // Password
+    supabase.from('profiles').select('password_hash').eq('player_name', profile.name).single()
+      .then(({ data }) => { if (data?.password_hash) setHasPassword(true) })
+
+    // Records — fetch best scores per game
+    fetchRecords(profile.name)
+  }, [profile?.name])
+
+  const fetchRecords = async (name: string) => {
+    const [digits, nback, seq, memory, stop, f1, pendulum, ace, flags, geo, versus, sudoku, wordly, mm, g2048] = await Promise.all([
+      supabase.from('number_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('nback_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('sequence_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).is('game_type', null).order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).eq('game_type', 'formula1').order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).eq('game_type', 'pendulum').order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('ace_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('flag_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('shape_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('higher_lower_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('sudoku_scores').select('time_ms, difficulty').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('wordle_scores').select('time_ms, attempts').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('mastermind_scores').select('time_ms, attempts').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('game2048_scores').select('best_tile').eq('player_name', name).order('best_tile', { ascending: false }).limit(1),
+    ])
+
+    const grouped: Record<string, any[]> = {
+      memory: [], agility: [], knowledge: [], logic: []
+    }
+
+    if (nback.data?.[0]) grouped.memory.push({ game: 'N-Back', href: '/nback', value: `${nback.data[0].level} correct` })
+    if (digits.data?.[0]) grouped.memory.push({ game: 'Digits', href: '/digits', value: `${digits.data[0].level} digits` })
+    if (seq.data?.[0]) grouped.memory.push({ game: 'Simon Says', href: '/sequence', value: `${seq.data[0].level} in a row` })
+    if (memory.data?.[0]) grouped.memory.push({ game: 'Memory', href: '/memory', value: fmt(memory.data[0].time_ms) })
+
+    if (stop.data?.[0]) grouped.agility.push({ game: 'Stop', href: '/precision/stopwatch', value: `${stop.data[0].difference_ms}ms off` })
+    if (f1.data?.[0]) grouped.agility.push({ game: 'F1 Reaction', href: '/precision/formula1', value: `${f1.data[0].difference_ms}ms` })
+    if (pendulum.data?.[0]) grouped.agility.push({ game: 'Pendulum', href: '/precision/pendulum', value: `${(pendulum.data[0].difference_ms/10).toFixed(1)}° off` })
+    if (ace.data?.[0]) grouped.agility.push({ game: 'Ace', href: '/ace', value: `Level ${ace.data[0].level}` })
+
+    if (flags.data?.[0]) grouped.knowledge.push({ game: 'Flags', href: '/flags', value: `${flags.data[0].level} in a row` })
+    if (geo.data?.[0]) grouped.knowledge.push({ game: 'GeoShape', href: '/geoshape', value: `${geo.data[0].level} in a row` })
+    if (versus.data?.[0]) grouped.knowledge.push({ game: 'Higher or Lower', href: '/versus', value: `${versus.data[0].level} in a row` })
+
+    if (sudoku.data?.[0]) grouped.logic.push({ game: 'Sudoku', href: '/sudoku', value: fmt(sudoku.data[0].time_ms) })
+    if (wordly.data?.[0]) grouped.logic.push({ game: 'Wordly', href: '/wordly', value: `${wordly.data[0].attempts} tries` })
+    if (mm.data?.[0]) grouped.logic.push({ game: 'Mastermind', href: '/mastermind', value: `${mm.data[0].attempts} tries` })
+    if (g2048.data?.[0]) grouped.logic.push({ game: '2048', href: '/2048', value: `Tile ${g2048.data[0].best_tile}` })
+
+    setRecords(grouped)
+  }
+
+  const saveName = async () => {
+    if (!newName.trim() || !profile?.name) return
+    setNameSaving(true)
+    const { data } = await supabase.from('profiles').select('player_name').eq('player_name', newName.trim()).maybeSingle()
+    if (data) { setNameError('Name already taken'); setNameSaving(false); return }
+    await supabase.from('profiles').update({ player_name: newName.trim() }).eq('player_name', profile.name)
+    save({ ...profile, name: newName.trim() })
+    setEditingName(false)
+    setNameSaving(false)
+  }
+
+  const savePin = async () => {
+    const p = pin.join('')
+    if (p.length !== 4) return
+    await supabase.from('profiles').upsert({ player_name: profile!.name, password_hash: p, updated_at: new Date().toISOString() })
+    setHasPassword(true)
+    setPasswordSaved(true)
+    setTimeout(() => { setPasswordSaved(false); setEditingPassword(false) }, 1500)
+  }
+
+  if (!loaded) return null
+  if (!profile?.name) { if (typeof window !== 'undefined') window.location.href = '/'; return null }
+
+  return (
+    <main style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 100 }}>
+
+      {/* Header card */}
+      <div style={{ padding: '16px 16px 0' }}>
+        <div style={{ background: 'linear-gradient(135deg, #0A1628, #0D2B5E, #1565C0)', padding: '20px 24px', borderRadius: 24, boxShadow: '0 8px 32px rgba(13,43,94,0.5)' }}>
+
+          {/* Name row */}
+          <div style={{ marginBottom: 20 }}>
+            {editingName ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <input type="text" value={newName} onChange={e => { setNewName(e.target.value); setNameError('') }} onKeyDown={e => e.key === 'Enter' && saveName()} maxLength={20} autoFocus
+                    style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 16, fontWeight: 800, fontFamily: 'inherit', outline: 'none' }} />
+                  <button onClick={saveName} style={{ padding: '8px 12px', borderRadius: 10, border: 'none', background: GOLD, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>{nameSaving ? '...' : 'Save'}</button>
+                  <button onClick={() => { setEditingName(false); setNameError('') }} style={{ padding: '8px 10px', borderRadius: 10, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
+                </div>
+                {nameError && <div style={{ fontSize: 10, color: '#FFB3B3', fontWeight: 700 }}>{nameError}</div>}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
+                <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
+                <button onClick={() => setEditingPassword(!editingPassword)} style={{ padding: '3px 8px', borderRadius: 6, border: 'none', cursor: 'pointer', fontFamily: 'inherit', background: hasPassword ? 'rgba(46,125,50,0.4)' : 'rgba(230,81,0,0.8)', color: '#fff', fontSize: 9, fontWeight: 800 }}>
+                  {hasPassword ? '🔒' : '⚠️ Protect'}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* PIN editor */}
+          {editingPassword && (
+            <div style={{ marginBottom: 16 }}>
+              {passwordSaved && <div style={{ fontSize: 13, color: '#81C784', fontWeight: 800, textAlign: 'center', marginBottom: 8 }}>✓ PIN saved!</div>}
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', textAlign: 'center', marginBottom: 8 }}>Set your 4-digit PIN</div>
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 12 }}>
+                {pin.map((d, i) => (
+                  <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
+                    onChange={e => { const v = e.target.value.replace(/\D/,''); const p=[...pin]; p[i]=v; setPin(p); if(v && i<3) (document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus() }}
+                    style={{ width: 44, height: 52, textAlign: 'center', fontSize: 24, fontWeight: 900, borderRadius: 12, border: '2px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontFamily: 'inherit', outline: 'none' }} />
+                ))}
+              </div>
+              <button onClick={savePin} disabled={pin.join('').length !== 4} style={{ width: '100%', padding: '12px', borderRadius: 12, border: 'none', background: pin.join('').length === 4 ? GOLD : 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>Save PIN</button>
+            </div>
+          )}
+
+port { useState, useEffect, useRef } from 'react'
+import { supabase } from '@/lib/supabase'
+import { usePlayer } from '@/lib/usePlayer'
+import Link from 'next/link'
+
+const BROWN = '#4A2C0A'
+const GOLD = '#C8960C'
+const CREAM = '#FAF7F2'
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+
+function fmt(ms: number) {
+  const s = Math.floor(ms / 1000)
+  const m = Math.floor(s / 60)
+  const c = Math.floor((ms % 1000) / 10)
+  return m > 0 ? `${m}:${String(s % 60).padStart(2,'0')}` : `${s}.${String(c).padStart(2,'0')}s`
+}
+
+export default function ProfilePage() {
+  const { profile, loaded, save } = usePlayer()
+  const [myGroups, setMyGroups] = useState<any[]>([])
+  const [hasPassword, setHasPassword] = useState(false)
+  const [editingName, setEditingName] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [nameError, setNameError] = useState('')
+  const [nameSaving, setNameSaving] = useState(false)
+  const [editingPassword, setEditingPassword] = useState(false)
+  const [pin, setPin] = useState(['', '', '', ''])
+  const [passwordSaved, setPasswordSaved] = useState(false)
+  const [groupsOpen, setGroupsOpen] = useState(false)
+  const [records, setRecords] = useState<Record<string, any[]>>({ memory: [], agility: [], knowledge: [], logic: [] })
+  const [openArea, setOpenArea] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!profile?.name) return
+
+    // Groups
+    supabase.from('group_members').select('group_id, groups(id, name)').eq('player_name', profile.name)
+      .then(({ data }) => { if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean)) })
+
+    // Password
+    supabase.from('profiles').select('password_hash').eq('player_name', profile.name).single()
+      .then(({ data }) => { if (data?.password_hash) setHasPassword(true) })
+
+    // Records — fetch best scores per game
+    fetchRecords(profile.name)
+  }, [profile?.name])
+
+  const fetchRecords = async (name: string) => {
+    const [digits, nback, seq, memory, stop, f1, pendulum, ace, flags, geo, versus, sudoku, wordly, mm, g2048] = await Promise.all([
+      supabase.from('number_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('nback_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('sequence_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).is('game_type', null).order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).eq('game_type', 'formula1').order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).eq('game_type', 'pendulum').order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('ace_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('flag_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('shape_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('higher_lower_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('sudoku_scores').select('time_ms, difficulty').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('wordle_scores').select('time_ms, attempts').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('mastermind_scores').select('time_ms, attempts').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('game2048_scores').select('best_tile').eq('player_name', name).order('best_tile', { ascending: false }).limit(1),
+    ])
+
+    const grouped: Record<string, any[]> = {
+      memory: [], agility: [], knowledge: [], logic: []
+    }
+
+    if (nback.data?.[0]) grouped.memory.push({ game: 'N-Back', href: '/nback', value: `${nback.data[0].level} correct` })
+    if (digits.data?.[0]) grouped.memory.push({ game: 'Digits', href: '/digits', value: `${digits.data[0].level} digits` })
+    if (seq.data?.[0]) grouped.memory.push({ game: 'Simon Says', href: '/sequence', value: `${seq.data[0].level} in a row` })
+    if (memory.data?.[0]) grouped.memory.push({ game: 'Memory', href: '/memory', value: fmt(memory.data[0].time_ms) })
+
+    if (stop.data?.[0]) grouped.agility.push({ game: 'Stop', href: '/precision/stopwatch', value: `${stop.data[0].difference_ms}ms off` })
+    if (f1.data?.[0]) grouped.agility.push({ game: 'F1 Reaction', href: '/precision/formula1', value: `${f1.data[0].difference_ms}ms` })
+    if (pendulum.data?.[0]) grouped.agility.push({ game: 'Pendulum', href: '/precision/pendulum', value: `${(pendulum.data[0].difference_ms/10).toFixed(1)}° off` })
+    if (ace.data?.[0]) grouped.agility.push({ game: 'Ace', href: '/ace', value: `Level ${ace.data[0].level}` })
+
+    if (flags.data?.[0]) grouped.knowledge.push({ game: 'Flags', href: '/flags', value: `${flags.data[0].level} in a row` })
+    if (geo.data?.[0]) grouped.knowledge.push({ game: 'GeoShape', href: '/geoshape', value: `${geo.data[0].level} in a row` })
+    if (versus.data?.[0]) grouped.knowledge.push({ game: 'Higher or Lower', href: '/versus', value: `${versus.data[0].level} in a row` })
+
+    if (sudoku.data?.[0]) grouped.logic.push({ game: 'Sudoku', href: '/sudoku', value: fmt(sudoku.data[0].time_ms) })
+    if (wordly.data?.[0]) grouped.logic.push({ game: 'Wordly', href: '/wordly', value: `${wordly.data[0].attempts} tries` })
+    if (mm.data?.[0]) grouped.logic.push({ game: 'Mastermind', href: '/mastermind', value: `${mm.data[0].attempts} tries` })
+    if (g2048.data?.[0]) grouped.logic.push({ game: '2048', href: '/2048', value: `Tile ${g2048.data[0].best_tile}` })
+
+    setRecords(grouped)
+  }
+
+  const saveName = async () => {
+    if (!newName.trim() || !profile?.name) return
+    setNameSaving(true)
+    const { data } = await supabase.from('profiles').select('player_name').eq('player_name', newName.trim()).maybeSingle()
+    if (data) { setNameError('Name already taken'); setNameSaving(false); return }
+    await supabase.from('profiles').update({ player_name: newName.trim() }).eq('player_name', profile.name)
+    save({ ...profile, name: newName.trim() })
+    setEditingName(false)
+    setNameSaving(false)
+  }
+
+  const savePin = async () => {
+    const p = pin.join('')
+    if (p.length !== 4) return
+    await supabase.from('profiles').upsert({ player_name: profile!.name, password_hash: p, updated_at: new Date().toISOString() })
+    setHasPassword(true)
+    setPasswordSaved(true)
+    setTimeout(() => { setPasswordSaved(false); setEditingPassword(false) }, 1500)
+  }
+
+  if (!loaded) return null
+  if (!profile?.name) { if (typeof window !== 'undefined') window.location.href = '/'; return null }
+
+  return (
+    <main style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 100 }}>
+
+      {/* Header card */}
+      <div style={{ padding: '16px 16px 0' }}>
+        <div style={{ background: 'linear-gradient(135deg, #0A1628, #0D2B5E, #1565C0)', padding: '20px 24px', borderRadius: 24, boxShadow: '0 8px 32px rgba(13,43,94,0.5)' }}>
+
+          {/* Name row */}
+          <div style={{ marginBottom: 20 }}>
+            {editingName ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <input type="text" value={newName} onChange={e => { setNewName(e.target.value); setNameError('') }} onKeyDown={e => e.key === 'Enter' && saveName()} maxLength={20} autoFocus
+                    style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 16, fontWeight: 800, fontFamily: 'inherit', outline: 'none' }} />
+                  <button onClick={saveName} style={{ padding: '8px 12px', borderRadius: 10, border: 'none', background: GOLD, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>{nameSaving ? '...' : 'Save'}</button>
+                  <button onClick={() => { setEditingName(false); setNameError('') }} style={{ padding: '8px 10px', borderRadius: 10, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
+                </div>
+                {nameError && <div style={{ fontSize: 10, color: '#FFB3B3', fontWeight: 700 }}>{nameError}</div>}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
+                <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
+                <button onClick={() => setEditingPassword(!editingPassword)} style={{ padding: '3px 8px', borderRadius: 6, border: 'none', cursor: 'pointer', fontFamily: 'inherit', background: hasPassword ? 'rgba(46,125,50,0.4)' : 'rgba(230,81,0,0.8)', color: '#fff', fontSize: 9, fontWeight: 800 }}>
+                  {hasPassword ? '🔒' : '⚠️ Protect'}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* PIN editor */}
+          {editingPassword && (
+            <div style={{ marginBottom: 16 }}>
+              {passwordSaved && <div style={{ fontSize: 13, color: '#81C784', fontWeight: 800, textAlign: 'center', marginBottom: 8 }}>✓ PIN saved!</div>}
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', textAlign: 'center', marginBottom: 8 }}>Set your 4-digit PIN</div>
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 12 }}>
+                {pin.map((d, i) => (
+                  <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
+                    onChange={e => { const v = e.target.value.replace(/\D/,''); const p=[...pin]; p[i]=v; setPin(p); if(v && i<3) (document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus() }}
+                    style={{ width: 44, height: 52, textAlign: 'center', fontSize: 24, fontWeight: 900, borderRadius: 12, border: '2px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontFamily: 'inherit', outline: 'none' }} />
+                ))}
+              </div>
+              <button onClick={savePin} disabled={pin.join('').length !== 4} style={{ width: '100%', padding: '12px', borderRadius: 12, border: 'none', background: pin.join('').length === 4 ? GOLD : 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>Save PIN</button>
+            </div>
+          )}
+
+import { useState, useEffect, useRef } from 'react'
+import { supabase } from '@/lib/supabase'
+import { usePlayer } from '@/lib/usePlayer'
+import Link from 'next/link'
+
+const BROWN = '#4A2C0A'
+const GOLD = '#C8960C'
+const CREAM = '#FAF7F2'
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+
+function fmt(ms: number) {
+  const s = Math.floor(ms / 1000)
+  const m = Math.floor(s / 60)
+  const c = Math.floor((ms % 1000) / 10)
+  return m > 0 ? `${m}:${String(s % 60).padStart(2,'0')}` : `${s}.${String(c).padStart(2,'0')}s`
+}
+
+export default function ProfilePage() {
+  const { profile, loaded, save } = usePlayer()
+  const [myGroups, setMyGroups] = useState<any[]>([])
+  const [hasPassword, setHasPassword] = useState(false)
+  const [editingName, setEditingName] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [nameError, setNameError] = useState('')
+  const [nameSaving, setNameSaving] = useState(false)
+  const [editingPassword, setEditingPassword] = useState(false)
+  const [pin, setPin] = useState(['', '', '', ''])
+  const [passwordSaved, setPasswordSaved] = useState(false)
+  const [groupsOpen, setGroupsOpen] = useState(false)
+  const [records, setRecords] = useState<Record<string, any[]>>({ memory: [], agility: [], knowledge: [], logic: [] })
+  const [openArea, setOpenArea] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!profile?.name) return
+
+    // Groups
+    supabase.from('group_members').select('group_id, groups(id, name)').eq('player_name', profile.name)
+      .then(({ data }) => { if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean)) })
+
+    // Password
+    supabase.from('profiles').select('password_hash').eq('player_name', profile.name).single()
+      .then(({ data }) => { if (data?.password_hash) setHasPassword(true) })
+
+    // Records — fetch best scores per game
+    fetchRecords(profile.name)
+  }, [profile?.name])
+
+  const fetchRecords = async (name: string) => {
+    const [digits, nback, seq, memory, stop, f1, pendulum, ace, flags, geo, versus, sudoku, wordly, mm, g2048] = await Promise.all([
+      supabase.from('number_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('nback_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('sequence_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).is('game_type', null).order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).eq('game_type', 'formula1').order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('precision_scores').select('difference_ms').eq('player_name', name).eq('game_type', 'pendulum').order('difference_ms', { ascending: true }).limit(1),
+      supabase.from('ace_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('flag_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('shape_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('higher_lower_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('sudoku_scores').select('time_ms, difficulty').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('wordle_scores').select('time_ms, attempts').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('mastermind_scores').select('time_ms, attempts').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+      supabase.from('game2048_scores').select('best_tile').eq('player_name', name).order('best_tile', { ascending: false }).limit(1),
+    ])
+
+    const grouped: Record<string, any[]> = {
+      memory: [], agility: [], knowledge: [], logic: []
+    }
+
+    if (nback.data?.[0]) grouped.memory.push({ game: 'N-Back', href: '/nback', value: `${nback.data[0].level} correct` })
+    if (digits.data?.[0]) grouped.memory.push({ game: 'Digits', href: '/digits', value: `${digits.data[0].level} digits` })
+    if (seq.data?.[0]) grouped.memory.push({ game: 'Simon Says', href: '/sequence', value: `${seq.data[0].level} in a row` })
+    if (memory.data?.[0]) grouped.memory.push({ game: 'Memory', href: '/memory', value: fmt(memory.data[0].time_ms) })
+
+    if (stop.data?.[0]) grouped.agility.push({ game: 'Stop', href: '/precision/stopwatch', value: `${stop.data[0].difference_ms}ms off` })
+    if (f1.data?.[0]) grouped.agility.push({ game: 'F1 Reaction', href: '/precision/formula1', value: `${f1.data[0].difference_ms}ms` })
+    if (pendulum.data?.[0]) grouped.agility.push({ game: 'Pendulum', href: '/precision/pendulum', value: `${(pendulum.data[0].difference_ms/10).toFixed(1)}° off` })
+    if (ace.data?.[0]) grouped.agility.push({ game: 'Ace', href: '/ace', value: `Level ${ace.data[0].level}` })
+
+    if (flags.data?.[0]) grouped.knowledge.push({ game: 'Flags', href: '/flags', value: `${flags.data[0].level} in a row` })
+    if (geo.data?.[0]) grouped.knowledge.push({ game: 'GeoShape', href: '/geoshape', value: `${geo.data[0].level} in a row` })
+    if (versus.data?.[0]) grouped.knowledge.push({ game: 'Higher or Lower', href: '/versus', value: `${versus.data[0].level} in a row` })
+
+    if (sudoku.data?.[0]) grouped.logic.push({ game: 'Sudoku', href: '/sudoku', value: fmt(sudoku.data[0].time_ms) })
+    if (wordly.data?.[0]) grouped.logic.push({ game: 'Wordly', href: '/wordly', value: `${wordly.data[0].attempts} tries` })
+    if (mm.data?.[0]) grouped.logic.push({ game: 'Mastermind', href: '/mastermind', value: `${mm.data[0].attempts} tries` })
+    if (g2048.data?.[0]) grouped.logic.push({ game: '2048', href: '/2048', value: `Tile ${g2048.data[0].best_tile}` })
+
+    setRecords(grouped)
+  }
+
+  const saveName = async () => {
+    if (!newName.trim() || !profile?.name) return
+    setNameSaving(true)
+    const { data } = await supabase.from('profiles').select('player_name').eq('player_name', newName.trim()).maybeSingle()
+    if (data) { setNameError('Name already taken'); setNameSaving(false); return }
+    await supabase.from('profiles').update({ player_name: newName.trim() }).eq('player_name', profile.name)
+    save({ ...profile, name: newName.trim() })
+    setEditingName(false)
+    setNameSaving(false)
+  }
+
+  const savePin = async () => {
+    const p = pin.join('')
+    if (p.length !== 4) return
+    await supabase.from('profiles').upsert({ player_name: profile!.name, password_hash: p, updated_at: new Date().toISOString() })
+    setHasPassword(true)
+    setPasswordSaved(true)
+    setTimeout(() => { setPasswordSaved(false); setEditingPassword(false) }, 1500)
+  }
+
+  if (!loaded) return null
+  if (!profile?.name) { if (typeof window !== 'undefined') window.location.href = '/'; return null }
+
+  return (
+    <main style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 100 }}>
+
+      {/* Header card */}
+      <div style={{ padding: '16px 16px 0' }}>
+        <div style={{ background: 'linear-gradient(135deg, #0A1628, #0D2B5E, #1565C0)', padding: '20px 24px', borderRadius: 24, boxShadow: '0 8px 32px rgba(13,43,94,0.5)' }}>
+
+          {/* Name row */}
+          <div style={{ marginBottom: 20 }}>
+            {editingName ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <input type="text" value={newName} onChange={e => { setNewName(e.target.value); setNameError('') }} onKeyDown={e => e.key === 'Enter' && saveName()} maxLength={20} autoFocus
+                    style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontSize: 16, fontWeight: 800, fontFamily: 'inherit', outline: 'none' }} />
+                  <button onClick={saveName} style={{ padding: '8px 12px', borderRadius: 10, border: 'none', background: GOLD, color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>{nameSaving ? '...' : 'Save'}</button>
+                  <button onClick={() => { setEditingName(false); setNameError('') }} style={{ padding: '8px 10px', borderRadius: 10, border: 'none', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 12, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>✕</button>
+                </div>
+                {nameError && <div style={{ fontSize: 10, color: '#FFB3B3', fontWeight: 700 }}>{nameError}</div>}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>{profile.name}</div>
+                <button onClick={() => { setNewName(profile.name); setEditingName(true) }} style={{ padding: '3px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', fontSize: 9, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Edit</button>
+                <button onClick={() => setEditingPassword(!editingPassword)} style={{ padding: '3px 8px', borderRadius: 6, border: 'none', cursor: 'pointer', fontFamily: 'inherit', background: hasPassword ? 'rgba(46,125,50,0.4)' : 'rgba(230,81,0,0.8)', color: '#fff', fontSize: 9, fontWeight: 800 }}>
+                  {hasPassword ? '🔒' : '⚠️ Protect'}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* PIN editor */}
+          {editingPassword && (
+            <div style={{ marginBottom: 16 }}>
+              {passwordSaved && <div style={{ fontSize: 13, color: '#81C784', fontWeight: 800, textAlign: 'center', marginBottom: 8 }}>✓ PIN saved!</div>}
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', textAlign: 'center', marginBottom: 8 }}>Set your 4-digit PIN</div>
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 12 }}>
+                {pin.map((d, i) => (
+                  <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
+                    onChange={e => { const v = e.target.value.replace(/\D/,''); const p=[...pin]; p[i]=v; setPin(p); if(v && i<3) (document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus() }}
+                    style={{ width: 44, height: 52, textAlign: 'center', fontSize: 24, fontWeight: 900, borderRadius: 12, border: '2px solid rgba(255,255,255,0.3)', background: 'rgba(255,255,255,0.15)', color: '#fff', fontFamily: 'inherit', outline: 'none' }} />
+                ))}
+              </div>
+              <button onClick={savePin} disabled={pin.join('').length !== 4} style={{ width: '100%', padding: '12px', borderRadius: 12, border: 'none', background: pin.join('').length === 4 ? GOLD : 'rgba(255,255,255,0.2)', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>Save PIN</button>
+            </div>
+          )}
+
           {/* Stats */}
           <div style={{ display: 'flex', gap: 12 }}>
             <div style={{ flex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 16, padding: '12px', textAlign: 'center' }}>
