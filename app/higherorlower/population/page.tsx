@@ -228,7 +228,7 @@ export default function HolPopPage() {
      <div style={{ display:'flex', gap:10, marginBottom:20 }}>
        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
          <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
-         <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? worldRecord.score : '—'}</div>
+         <div style={{ fontSize:18, fontWeight:900, color:GOLD }}>{worldRecord ? worldRecord.score : '—'}</div>
          {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
        </div>
        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
@@ -261,10 +261,10 @@ export default function HolPopPage() {
 
      {/* Top country — fixed */}
      {top && (
-       <div style={{ flex:1, background:'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:12, padding:'16px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
-         <img src={`${FLAG_CDN}/${top.code}.png`} style={{ maxWidth:140, maxHeight:90, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
-         <div style={{ fontSize:18, fontWeight:900, color:'#fff' }}>{top.name}</div>
-         <div style={{ fontSize:24, fontWeight:900, color:GOLD }}>{formatPop(top.pop)}</div>
+       <div style={{ flex:1, background:'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, padding:'10px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
+         <img src={`${FLAG_CDN}/${top.code}.png`} style={{ maxWidth:110, maxHeight:70, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
+         <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>{top.name}</div>
+         <div style={{ fontSize:20, fontWeight:900, color:GOLD }}>{formatPop(top.pop)}</div>
        </div>
      )}
 
@@ -273,9 +273,9 @@ export default function HolPopPage() {
 
      {/* Bottom country — guess */}
      {bottom && (
-       <div style={{ flex:1, background: feedback === 'correct' ? 'rgba(76,175,80,0.15)' : feedback === 'wrong' ? 'rgba(211,47,47,0.15)' : 'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:12, padding:'16px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
-         <img src={`${FLAG_CDN}/${bottom.code}.png`} style={{ maxWidth:140, maxHeight:90, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
-         <div style={{ fontSize:18, fontWeight:900, color:'#fff' }}>{bottom.name}</div>
+       <div style={{ flex:1, background: feedback === 'correct' ? 'rgba(76,175,80,0.15)' : feedback === 'wrong' ? 'rgba(211,47,47,0.15)' : 'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, padding:'10px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
+         <img src={`${FLAG_CDN}/${bottom.code}.png`} style={{ maxWidth:110, maxHeight:70, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
+         <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>{bottom.name}</div>
          {showPop ? (
            <div style={{ fontSize:24, fontWeight:900, color: feedback==='correct'?'#69F0AE':'#FF5252' }}>{formatPop(bottom.pop)}</div>
          ) : (
