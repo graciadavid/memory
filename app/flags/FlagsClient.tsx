@@ -258,7 +258,7 @@ export default function FlagsClient() {
               src={`${FLAG_CDN}/${question.code}.png`}
               alt=""
               onLoad={() => setImgLoaded(true)}
-              style={{ maxWidth:'100%', maxHeight:140, objectFit:'contain', borderRadius:8, display:imgLoaded?'block':'none', boxShadow:'0 4px 20px rgba(0,0,0,0.4)' }}
+              style={{ maxWidth:'100%', maxHeight:140, objectFit:'contain', borderRadius:8, display:imgLoaded?'block':'none', boxShadow:'0 0 0 2px rgba(255,255,255,0.15), 0 4px 20px rgba(0,0,0,0.4)' }}
             />
           </div>
           <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
