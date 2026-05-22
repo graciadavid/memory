@@ -9,107 +9,103 @@ const TEAL = '#00796B'
 const FLAG_CDN = 'https://flagcdn.com/w320'
 
 const COUNTRIES = [
- { code: 'cn', name: 'China', pop: 1412000000 },
- { code: 'in', name: 'India', pop: 1380000000 },
- { code: 'us', name: 'United States', pop: 331000000 },
- { code: 'id', name: 'Indonesia', pop: 273000000 },
- { code: 'pk', name: 'Pakistan', pop: 220000000 },
- { code: 'br', name: 'Brazil', pop: 213000000 },
- { code: 'ng', name: 'Nigeria', pop: 206000000 },
- { code: 'bd', name: 'Bangladesh', pop: 167000000 },
- { code: 'ru', name: 'Russia', pop: 145000000 },
- { code: 'mx', name: 'Mexico', pop: 130000000 },
- { code: 'et', name: 'Ethiopia', pop: 120000000 },
- { code: 'jp', name: 'Japan', pop: 125000000 },
- { code: 'ph', name: 'Philippines', pop: 111000000 },
- { code: 'eg', name: 'Egypt', pop: 102000000 },
- { code: 'cd', name: 'DR Congo', pop: 99000000 },
- { code: 'vn', name: 'Vietnam', pop: 97000000 },
- { code: 'ir', name: 'Iran', pop: 84000000 },
- { code: 'tr', name: 'Turkey', pop: 84000000 },
- { code: 'de', name: 'Germany', pop: 83000000 },
- { code: 'th', name: 'Thailand', pop: 70000000 },
- { code: 'gb', name: 'United Kingdom', pop: 67000000 },
- { code: 'fr', name: 'France', pop: 67000000 },
- { code: 'tz', name: 'Tanzania', pop: 63000000 },
- { code: 'za', name: 'South Africa', pop: 60000000 },
- { code: 'mm', name: 'Myanmar', pop: 54000000 },
- { code: 'ke', name: 'Kenya', pop: 54000000 },
- { code: 'kr', name: 'South Korea', pop: 52000000 },
- { code: 'co', name: 'Colombia', pop: 51000000 },
- { code: 'es', name: 'Spain', pop: 47000000 },
- { code: 'ug', name: 'Uganda', pop: 47000000 },
- { code: 'ar', name: 'Argentina', pop: 45000000 },
- { code: 'ua', name: 'Ukraine', pop: 44000000 },
- { code: 'dz', name: 'Algeria', pop: 44000000 },
- { code: 'sd', name: 'Sudan', pop: 44000000 },
- { code: 'iq', name: 'Iraq', pop: 40000000 },
- { code: 'pl', name: 'Poland', pop: 38000000 },
- { code: 'ca', name: 'Canada', pop: 38000000 },
- { code: 'ma', name: 'Morocco', pop: 37000000 },
- { code: 'pe', name: 'Peru', pop: 33000000 },
- { code: 'ao', name: 'Angola', pop: 33000000 },
- { code: 'gh', name: 'Ghana', pop: 32000000 },
- { code: 'mz', name: 'Mozambique', pop: 32000000 },
- { code: 'ye', name: 'Yemen', pop: 30000000 },
- { code: 'np', name: 'Nepal', pop: 29000000 },
- { code: 've', name: 'Venezuela', pop: 28000000 },
- { code: 'au', name: 'Australia', pop: 26000000 },
- { code: 'cm', name: 'Cameroon', pop: 27000000 },
- { code: 'nl', name: 'Netherlands', pop: 17000000 },
- { code: 'cl', name: 'Chile', pop: 19000000 },
- { code: 'ro', name: 'Romania', pop: 19000000 },
- { code: 'ec', name: 'Ecuador', pop: 18000000 },
- { code: 'kz', name: 'Kazakhstan', pop: 19000000 },
- { code: 'gt', name: 'Guatemala', pop: 17000000 },
- { code: 'zm', name: 'Zambia', pop: 18000000 },
- { code: 'sy', name: 'Syria', pop: 17000000 },
- { code: 'se', name: 'Sweden', pop: 10000000 },
- { code: 'be', name: 'Belgium', pop: 11000000 },
- { code: 'pt', name: 'Portugal', pop: 10000000 },
- { code: 'gr', name: 'Greece', pop: 10000000 },
- { code: 'cz', name: 'Czech Republic', pop: 10000000 },
- { code: 'il', name: 'Israel', pop: 9000000 },
- { code: 'ch', name: 'Switzerland', pop: 8600000 },
- { code: 'at', name: 'Austria', pop: 9000000 },
- { code: 'sa', name: 'Saudi Arabia', pop: 35000000 },
- { code: 'ae', name: 'UAE', pop: 10000000 },
- { code: 'no', name: 'Norway', pop: 5400000 },
- { code: 'dk', name: 'Denmark', pop: 5900000 },
- { code: 'fi', name: 'Finland', pop: 5500000 },
- { code: 'sg', name: 'Singapore', pop: 5900000 },
- { code: 'nz', name: 'New Zealand', pop: 5000000 },
- { code: 'ie', name: 'Ireland', pop: 5000000 },
- { code: 'cr', name: 'Costa Rica', pop: 5100000 },
- { code: 'pa', name: 'Panama', pop: 4300000 },
- { code: 'hr', name: 'Croatia', pop: 4000000 },
- { code: 'bo', name: 'Bolivia', pop: 12000000 },
- { code: 'hn', name: 'Honduras', pop: 10000000 },
- { code: 'py', name: 'Paraguay', pop: 7200000 },
- { code: 'jo', name: 'Jordan', pop: 10000000 },
- { code: 'lk', name: 'Sri Lanka', pop: 22000000 },
+ { code: 'ru', name: 'Russia', area: 17098242 },
+ { code: 'ca', name: 'Canada', area: 9984670 },
+ { code: 'us', name: 'United States', area: 9833517 },
+ { code: 'cn', name: 'China', area: 9596960 },
+ { code: 'br', name: 'Brazil', area: 8515767 },
+ { code: 'au', name: 'Australia', area: 7692024 },
+ { code: 'in', name: 'India', area: 3287263 },
+ { code: 'ar', name: 'Argentina', area: 2780400 },
+ { code: 'kz', name: 'Kazakhstan', area: 2724900 },
+ { code: 'dz', name: 'Algeria', area: 2381741 },
+ { code: 'cd', name: 'DR Congo', area: 2344858 },
+ { code: 'sa', name: 'Saudi Arabia', area: 2149690 },
+ { code: 'mx', name: 'Mexico', area: 1964375 },
+ { code: 'id', name: 'Indonesia', area: 1904569 },
+ { code: 'sd', name: 'Sudan', area: 1861484 },
+ { code: 'ly', name: 'Libya', area: 1759540 },
+ { code: 'ir', name: 'Iran', area: 1648195 },
+ { code: 'mn', name: 'Mongolia', area: 1564116 },
+ { code: 'pe', name: 'Peru', area: 1285216 },
+ { code: 'td', name: 'Chad', area: 1284000 },
+ { code: 'ng', name: 'Nigeria', area: 923768 },
+ { code: 'et', name: 'Ethiopia', area: 1104300 },
+ { code: 'bo', name: 'Bolivia', area: 1098581 },
+ { code: 'co', name: 'Colombia', area: 1141748 },
+ { code: 'za', name: 'South Africa', area: 1219090 },
+ { code: 'ml', name: 'Mali', area: 1240192 },
+ { code: 'ao', name: 'Angola', area: 1246700 },
+ { code: 'ne', name: 'Niger', area: 1267000 },
+ { code: 'pk', name: 'Pakistan', area: 881913 },
+ { code: 'tr', name: 'Turkey', area: 783356 },
+ { code: 'cl', name: 'Chile', area: 756102 },
+ { code: 'zm', name: 'Zambia', area: 752618 },
+ { code: 'mm', name: 'Myanmar', area: 676578 },
+ { code: 'af', name: 'Afghanistan', area: 652230 },
+ { code: 'so', name: 'Somalia', area: 637657 },
+ { code: 'cf', name: 'Central African Republic', area: 622984 },
+ { code: 'ua', name: 'Ukraine', area: 603550 },
+ { code: 'mz', name: 'Mozambique', area: 801590 },
+ { code: 'mg', name: 'Madagascar', area: 587041 },
+ { code: 'fr', name: 'France', area: 551695 },
+ { code: 'ye', name: 'Yemen', area: 527968 },
+ { code: 'th', name: 'Thailand', area: 513120 },
+ { code: 'es', name: 'Spain', area: 505990 },
+ { code: 'tz', name: 'Tanzania', area: 945087 },
+ { code: 'ke', name: 'Kenya', area: 580367 },
+ { code: 'se', name: 'Sweden', area: 450295 },
+ { code: 'ug', name: 'Uganda', area: 241038 },
+ { code: 'de', name: 'Germany', area: 357114 },
+ { code: 'jp', name: 'Japan', area: 377975 },
+ { code: 'no', name: 'Norway', area: 385207 },
+ { code: 'pl', name: 'Poland', area: 312696 },
+ { code: 'fi', name: 'Finland', area: 338145 },
+ { code: 'vn', name: 'Vietnam', area: 331212 },
+ { code: 'my', name: 'Malaysia', area: 329847 },
+ { code: 'gb', name: 'United Kingdom', area: 243610 },
+ { code: 'gh', name: 'Ghana', area: 238533 },
+ { code: 'ro', name: 'Romania', area: 238397 },
+ { code: 'ec', name: 'Ecuador', area: 283561 },
+ { code: 'vc', name: 'Venezuela', area: 912050 },
+ { code: 'gt', name: 'Guatemala', area: 108889 },
+ { code: 'gr', name: 'Greece', area: 131957 },
+ { code: 'pt', name: 'Portugal', area: 92212 },
+ { code: 'nl', name: 'Netherlands', area: 41543 },
+ { code: 'be', name: 'Belgium', area: 30528 },
+ { code: 'ch', name: 'Switzerland', area: 41285 },
+ { code: 'at', name: 'Austria', area: 83871 },
+ { code: 'il', name: 'Israel', area: 20770 },
+ { code: 'sg', name: 'Singapore', area: 728 },
+ { code: 'nz', name: 'New Zealand', area: 268838 },
+ { code: 'ie', name: 'Ireland', area: 70273 },
+ { code: 'dk', name: 'Denmark', area: 42924 },
+ { code: 'kr', name: 'South Korea', area: 100210 },
+ { code: 'ph', name: 'Philippines', area: 300000 },
+ { code: 'pg', name: 'Papua New Guinea', area: 462840 },
+ { code: 'iq', name: 'Iraq', area: 438317 },
+ { code: 'ma', name: 'Morocco', area: 446550 },
 ]
 
 function shuffle<T>(arr: T[]): T[] {
  return [...arr].sort(() => Math.random() - 0.5)
 }
 
-function formatPop(n: number): string {
- if (n >= 1000000000) return `${(n/1000000000).toFixed(1)}B`
- if (n >= 1000000) return `${(n/1000000).toFixed(0)}M`
- return `${(n/1000).toFixed(0)}K`
+function formatArea(n: number): string {
+ if (n >= 1000000) return `${(n/1000000).toFixed(1)}M km²`
+ return `${n.toLocaleString()} km²`
 }
 
 type Phase = 'rules' | 'playing' | 'result'
 
-export default function HolPopPage() {
+export default function HolAreaPage() {
  const { profile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
  const [score, setScore] = useState(0)
  const [top, setTop] = useState<typeof COUNTRIES[0] | null>(null)
  const [bottom, setBottom] = useState<typeof COUNTRIES[0] | null>(null)
  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
- const [showPop, setShowPop] = useState(false)
+ const [showArea, setShowArea] = useState(false)
  const [worldRecord, setWorldRecord] = useState<{score:number,name:string}|null>(null)
  const [myBest, setMyBest] = useState<number|null>(null)
  const [top5, setTop5] = useState<{name:string,score:number}[]>([])
@@ -127,7 +123,7 @@ export default function HolPopPage() {
  }, [profile?.name])
 
  const loadData = async () => {
-   const { data } = await supabase.from('higher_lower_scores').select('player_name,level').eq('category','population').order('level', { ascending: false }).limit(500)
+   const { data } = await supabase.from('higher_lower_scores').select('player_name,level').eq('category','area').order('level', { ascending: false }).limit(500)
    if (!data) return
    const best: Record<string,number> = {}
    data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
@@ -139,21 +135,20 @@ export default function HolPopPage() {
 
  const nextRound = useCallback((currentTop: typeof COUNTRIES[0]) => {
    const available = COUNTRIES.filter(c => !usedRef.has(c.code) && c.code !== currentTop.code)
-   if (available.length === 0) { usedRef.clear() }
    const pool = available.length > 0 ? available : COUNTRIES.filter(c => c.code !== currentTop.code)
    const next = shuffle(pool)[0]
    usedRef.add(next.code)
    setTop(currentTop)
    setBottom(next)
    setFeedback(null)
-   setShowPop(false)
+   setShowArea(false)
  }, [usedRef])
 
  const startGame = () => {
    usedRef.clear()
    setScore(0)
    setFeedback(null)
-   setShowPop(false)
+   setShowArea(false)
    const shuffled = shuffle(COUNTRIES)
    usedRef.add(shuffled[0].code)
    usedRef.add(shuffled[1].code)
@@ -162,11 +157,11 @@ export default function HolPopPage() {
    setPhase('playing')
  }
 
- const handleAnswer = useCallback(async (higher: boolean) => {
+ const handleAnswer = useCallback(async (bigger: boolean) => {
    if (feedback || !top || !bottom) return
-   const bottomIsHigher = bottom.pop > top.pop
-   const correct = higher === bottomIsHigher
-   setShowPop(true)
+   const bottomIsBigger = bottom.area > top.area
+   const correct = bigger === bottomIsBigger
+   setShowArea(true)
    setFeedback(correct ? 'correct' : 'wrong')
 
    if (correct) {
@@ -178,8 +173,8 @@ export default function HolPopPage() {
        const finalScore = score
        setPhase('result')
        if (profile?.name) {
-         await supabase.from('higher_lower_scores').insert({player_name:profile.name, level:finalScore, category:'population'})
-         const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','population').gt('level',finalScore)
+         await supabase.from('higher_lower_scores').insert({player_name:profile.name, level:finalScore, category:'area'})
+         const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','area').gt('level',finalScore)
          setWorldRank((count??0)+1)
          if (myBest===null || finalScore>myBest) setMyBest(finalScore)
        }
@@ -198,8 +193,8 @@ export default function HolPopPage() {
    } else {
      await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
    }
-   await supabase.from('higher_lower_scores').insert({player_name:name.trim(), score, category:'population'})
-   const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','population').gt('level',score)
+   await supabase.from('higher_lower_scores').insert({player_name:name.trim(), score, category:'area'})
+   const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','area').gt('level',score)
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
@@ -207,11 +202,7 @@ export default function HolPopPage() {
    setTimeout(() => window.location.reload(), 1500)
  }
 
- const reset = () => {
-   setPhase('rules')
-   setSaved(false)
-   loadData()
- }
+ const reset = () => { setPhase('rules'); setSaved(false); loadData() }
 
  const resultColor = score >= 15 ? '#00C853' : score >= 8 ? '#FF6F00' : '#D32F2F'
  const bgResult = score >= 15 ? '#0D3320' : score >= 8 ? '#2D1A00' : '#1A0000'
@@ -219,10 +210,10 @@ export default function HolPopPage() {
  if (phase === 'rules') return (
    <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
-       <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/population.png" style={{ width:60, height:60, objectFit:'contain' }} />
+       <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/area.png" style={{ width:60, height:60, objectFit:'contain' }} />
        <div>
          <div style={{ fontSize:26, fontWeight:900, color:'#fff' }}>Higher or Lower</div>
-         <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Which country has more population?</div>
+         <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Which country is bigger?</div>
        </div>
      </div>
      <div style={{ display:'flex', gap:10, marginBottom:20 }}>
@@ -254,34 +245,25 @@ export default function HolPopPage() {
 
  if (phase === 'playing') return (
    <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden' }}>
-     {/* Score */}
-     <div style={{ padding:'16px 24px', textAlign:'center', fontSize:13, fontWeight:900, color:GOLD }}>
-       {score} correct
-     </div>
-
-     {/* Top country — fixed */}
+     <div style={{ padding:'16px 24px', textAlign:'center', fontSize:13, fontWeight:900, color:GOLD }}>{score} correct</div>
      {top && (
        <div style={{ background:'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:6, padding:'12px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
          <img src={`${FLAG_CDN}/${top.code}.png`} style={{ maxWidth:120, maxHeight:75, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
          <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>{top.name}</div>
-         <div style={{ fontSize:20, fontWeight:900, color:GOLD }}>{formatPop(top.pop)}</div>
+         <div style={{ fontSize:18, fontWeight:900, color:GOLD }}>{formatArea(top.area)}</div>
        </div>
      )}
-
-     {/* VS divider */}
      <div style={{ background:'#0A0A0A', padding:'8px', textAlign:'center', fontSize:12, fontWeight:900, color:'rgba(255,255,255,0.2)', letterSpacing:3 }}>VS</div>
-
-     {/* Bottom country — guess */}
      {bottom && (
        <div style={{ background: feedback === 'correct' ? 'rgba(76,175,80,0.15)' : feedback === 'wrong' ? 'rgba(211,47,47,0.15)' : 'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, padding:'10px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
          <img src={`${FLAG_CDN}/${bottom.code}.png`} style={{ maxWidth:120, maxHeight:75, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
          <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>{bottom.name}</div>
-         {showPop ? (
-           <div style={{ fontSize:24, fontWeight:900, color: feedback==='correct'?'#69F0AE':'#FF5252' }}>{formatPop(bottom.pop)}</div>
+         {showArea ? (
+           <div style={{ fontSize:22, fontWeight:900, color: feedback==='correct'?'#69F0AE':'#FF5252' }}>{formatArea(bottom.area)}</div>
          ) : (
            <div style={{ display:'flex', gap:12 }}>
-             <button onClick={() => handleAnswer(true)} style={{ padding:'14px 28px', borderRadius:14, border:'none', background:'rgba(76,175,80,0.3)', color:'#69F0AE', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Higher ↑</button>
-             <button onClick={() => handleAnswer(false)} style={{ padding:'14px 28px', borderRadius:14, border:'none', background:'rgba(211,47,47,0.3)', color:'#FF5252', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Lower ↓</button>
+             <button onClick={() => handleAnswer(true)} style={{ padding:'14px 28px', borderRadius:14, border:'none', background:'rgba(76,175,80,0.3)', color:'#69F0AE', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Bigger ↑</button>
+             <button onClick={() => handleAnswer(false)} style={{ padding:'14px 28px', borderRadius:14, border:'none', background:'rgba(211,47,47,0.3)', color:'#FF5252', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Smaller ↓</button>
            </div>
          )}
        </div>
@@ -296,7 +278,6 @@ export default function HolPopPage() {
        <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{score}</div>
        {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
      </div>
-
      {!profile?.name && !saved && (
        <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
          <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
@@ -316,14 +297,12 @@ export default function HolPopPage() {
          </button>
        </div>
      )}
-
      {saved && (
        <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
          <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
          <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:4 }}>#{worldRank} in the world</div>
        </div>
      )}
-
      <div style={{ display:'flex', gap:10, width:'100%' }}>
        <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
        <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:TEAL, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 5px 0 ${TEAL}80` }}>Play again →</button>
