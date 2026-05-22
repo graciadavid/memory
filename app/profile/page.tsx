@@ -18,7 +18,6 @@ function fmt(ms: number) {
 
 export default function ProfilePage() {
   const { profile, loaded, save } = usePlayer()
-  const [brainAge, setBrainAge] = useState<number | null>(null)
   const [myGroups, setMyGroups] = useState<any[]>([])
   const [hasPassword, setHasPassword] = useState(false)
   const [editingName, setEditingName] = useState(false)
@@ -35,7 +34,6 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!profile?.name) return
 
-    // Brain Age
     supabase.from('brain_test_scores').select('score').eq('player_name', profile.name)
       .order('created_at', { ascending: false }).limit(1)
       .then(({ data }) => {
