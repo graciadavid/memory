@@ -213,10 +213,10 @@ export default function SudokuClient() {
   )
 
   if (phase === 'playing' || phase === 'result') return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'12px 12px 0', overflow:'hidden' }}>
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 12px 80px', overflowY:'auto' }}>
 
       {/* Timer */}
-      <div style={{ textAlign:'center', marginBottom:8 }}>
+      <div style={{ textAlign:'center', marginBottom:4 }}>
         <div style={{ fontSize:36, fontWeight:900, color: phase==='result'?GOLD:'#fff', fontVariantNumeric:'tabular-nums' }}>{fmt(elapsed)}</div>
         {bestScore && <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>Best: {fmt(bestScore)}</div>}
       </div>
@@ -279,7 +279,7 @@ export default function SudokuClient() {
                     style={{ width:44, height:52, textAlign:'center', fontSize:22, fontWeight:900, borderRadius:10, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
                 ))}
               </div>
-              {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:8 }}>{saveError}</div>}
+              {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:4 }}>{saveError}</div>}
               <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
                 {saving?'Saving...':'Save →'}
               </button>
