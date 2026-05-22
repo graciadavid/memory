@@ -102,17 +102,24 @@ export default function ProfilePage() {
      { label: 'Memory', value: records.memory },
      { label: 'Digits', value: records.digits },
      { label: 'Simon Says', value: records.sequence },
+     { label: 'N-Back', value: records.nback },
    ]},
    { label: 'Agility', color: '#4A148C', games: [
      { label: 'Stop', value: records.stop },
      { label: 'F1 Reaction', value: records.f1 },
+     { label: 'Pendulum', value: records.pendulum },
      { label: 'Ace', value: records.ace },
    ]},
    { label: 'Knowledge', color: '#00796B', games: [
      { label: 'Flags', value: records.flags },
+     { label: 'Versus Pop', value: records.versusPop },
+     { label: 'Versus Area', value: records.versusArea },
    ]},
    { label: 'Logic', color: '#E65100', games: [
      { label: 'Sudoku', value: records.sudoku },
+     { label: 'Mastermind', value: records.mastermind },
+     { label: '2048', value: records.game2048 },
+     { label: 'Wordly', value: records.wordly },
    ]},
  ]
 
