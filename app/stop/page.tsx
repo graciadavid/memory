@@ -81,8 +81,8 @@ export default function StopPage() {
     if (!name.trim() || pin.join('').length!==4) return
     setSaving(true)
     setSaveError('')
-    const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name', name.trim()).single()
-    if (existing) {
+    const {data:existing, error:existErr} = await supabase.from('profiles').select('password_hash').eq('player_name', name.trim()).maybeSingle()
+    if (existing && !existErr) {
       if (existing.password_hash !== btoa(pin.join(''))) {
         setSaveError('Wrong PIN for this name')
         setSaving(false)
