@@ -149,7 +149,7 @@ export default function AceClient() {
    didHitRef.current = false
    setHitResult(null)
    startTimeRef.current = Date.now()
-   durationRef.current = Math.max(700, 2200 - (levelRef.current - 1) * 80)
+   durationRef.current = Math.max(500, 2200 - (levelRef.current - 1) * 120)
    animRef.current = requestAnimationFrame(drawFrame)
  }, [drawFrame])
 
