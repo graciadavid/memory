@@ -6,9 +6,9 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 
 const GAMES = [
   { label: 'Flags', icon: `${BASE}/flags.png`, href: '/flags', unlocked: true },
-  { label: 'Versus Pop', icon: `${BASE}/flags.png`, href: '/versus/population', unlocked: false },
-  { label: 'Versus Area', icon: `${BASE}/flags.png`, href: '/versus/area', unlocked: false },
-  { label: 'GeoShape', icon: `${BASE}/geoshape.png`, href: '/geoshape', unlocked: false },
+  { label: 'Versus Pop', icon: `${BASE}/flags.png`, href: '/versus/population', unlocked: true },
+  { label: 'Versus Area', icon: `${BASE}/flags.png`, href: '/versus/area', unlocked: true },
+  { label: 'GeoShape', icon: `${BASE}/geoshape.png`, href: '/geoshape', unlocked: true },
 ]
 
 export default function KnowledgePage() {

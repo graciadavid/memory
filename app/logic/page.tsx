@@ -6,9 +6,9 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 
 const GAMES = [
   { label: 'Sudoku', icon: `${BASE}/sudoku.png`, href: '/sudoku', unlocked: true },
-  { label: 'Mastermind', icon: `${BASE}/mastermind.png`, href: '/mastermind', unlocked: false },
-  { label: '2048', icon: `${BASE}/2048.png`, href: '/2048', unlocked: false },
-  { label: 'Wordly', icon: `${BASE}/wordly.png`, href: '/wordly', unlocked: false },
+  { label: 'Mastermind', icon: `${BASE}/mastermind.png`, href: '/mastermind', unlocked: true },
+  { label: '2048', icon: `${BASE}/2048.png`, href: '/2048', unlocked: true },
+  { label: 'Wordly', icon: `${BASE}/wordly.png`, href: '/wordly', unlocked: true },
 ]
 
 export default function LogicPage() {

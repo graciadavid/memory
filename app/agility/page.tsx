@@ -6,9 +6,9 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 
 const GAMES = [
   { label: 'Stop', icon: `${BASE}/precision.png`, href: '/precision/stopwatch', unlocked: true },
-  { label: 'F1 Reaction', icon: `${BASE}/f1.png`, href: '/precision/formula1', unlocked: false },
-  { label: 'Pendulum', icon: `${BASE}/pendulum.png`, href: '/precision/pendulum', unlocked: false },
-  { label: 'Ace', icon: `${BASE}/padel.png`, href: '/ace', unlocked: false },
+  { label: 'F1 Reaction', icon: `${BASE}/f1.png`, href: '/precision/formula1', unlocked: true },
+  { label: 'Pendulum', icon: `${BASE}/pendulum.png`, href: '/precision/pendulum', unlocked: true },
+  { label: 'Ace', icon: `${BASE}/padel.png`, href: '/ace', unlocked: true },
 ]
 
 export default function AgilityPage() {
