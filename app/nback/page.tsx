@@ -1,266 +1,86 @@
-'use client'
-import { useState, useEffect, useRef } from 'react'
-import { usePlayer } from '@/lib/usePlayer'
-import { supabase } from '@/lib/supabase'
+import NBackClient from './NBackClient'
+import RelatedGames from '@/components/RelatedGames'
 
-const GOLD = '#C8960C'
-const GREEN = '#2E7D32'
-const PURPLE = '#7B1FA2'
-
-const COLORS = [
- { color: '#E53935' },
- { color: '#43A047' },
- { color: '#1E88E5' },
- { color: '#FDD835' },
- { color: '#FB8C00' },
-]
-
-type Phase = 'rules' | 'show_first' | 'show' | 'answer' | 'feedback' | 'result'
+export const metadata = {
+ title: 'N-Back — Working Memory Training Game | MemGenius',
+ description: 'Is the color the same as the previous one? Free online N-Back working memory game with world ranking. Train your cognitive flexibility and attention. No login required.',
+}
 
 export default function NBackPage() {
- const { profile } = usePlayer()
- const [phase, setPhase] = useState<Phase>('rules')
- const [prevColor, setPrevColor] = useState<number>(0)
- const [currColor, setCurrColor] = useState<number>(0)
- const [streak, setStreak] = useState(0)
- const [finalStreak, setFinalStreak] = useState(0)
- const [feedbackResult, setFeedbackResult] = useState<'correct'|'wrong'>('correct')
- const [worldRecord, setWorldRecord] = useState<{level:number,name:string}|null>(null)
- const [myBest, setMyBest] = useState<number|null>(null)
- const [top5, setTop5] = useState<{name:string,level:number}[]>([])
- const [worldRank, setWorldRank] = useState<number|null>(null)
- const [name, setName] = useState('')
- const [pin, setPin] = useState(['','','',''])
- const [saved, setSaved] = useState(false)
- const [saving, setSaving] = useState(false)
- const [saveError, setSaveError] = useState('')
-
- // Use refs to avoid stale closure issues
- const prevRef = useRef(0)
- const currRef = useRef(0)
- const streakRef = useRef(0)
-
- useEffect(() => {
-   if (profile?.name) setName(profile.name)
-   loadData()
- }, [profile?.name])
-
- const loadData = async () => {
-   const { data } = await supabase.from('nback_scores').select('player_name,level').order('level', { ascending: false }).limit(500)
-   if (!data) return
-   const best: Record<string,number> = {}
-   data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-   const sorted = Object.entries(best).map(([n,l]) => ({name:n, level:l as number})).sort((a,b) => b.level-a.level)
-   setTop5(sorted.slice(0,5))
-   if (sorted[0]) setWorldRecord({level:sorted[0].level, name:sorted[0].name})
-   if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
- }
-
- const randomColor = () => Math.floor(Math.random() * COLORS.length)
-
- const startGame = () => {
-   streakRef.current = 0
-   setStreak(0)
-   // Show first color — no question yet
-   const first = randomColor()
-   prevRef.current = first
-   setPrevColor(first)
-   setCurrColor(first)
-   setPhase('show_first')
-   // After 1.5s show second color with question
-   setTimeout(() => {
-     const second = randomColor()
-     currRef.current = second
-     setCurrColor(second)
-     setPhase('answer')
-   }, 1500)
- }
-
- const handleAnswer = async (userSaysMatch: boolean) => {
-   const prev = prevRef.current
-   const curr = currRef.current
-   const isMatch = prev === curr
-   const correct = userSaysMatch === isMatch
-
-   if (correct) {
-     streakRef.current++
-     setStreak(streakRef.current)
-     setFeedbackResult('correct')
-     setPhase('feedback')
-     // Show next after brief feedback
-     setTimeout(() => {
-       prevRef.current = curr
-       setPrevColor(curr)
-       const next = randomColor()
-       currRef.current = next
-       setCurrColor(next)
-       setPhase('answer')
-     }, 800)
-   } else {
-     setFeedbackResult('wrong')
-     setFinalStreak(streakRef.current)
-     setPhase('feedback')
-     setTimeout(async () => {
-       const fl = streakRef.current
-       setPhase('result')
-       if (profile?.name && fl > 0) {
-         await supabase.from('nback_scores').insert({player_name:profile.name, level:fl})
-         const {count} = await supabase.from('nback_scores').select('*',{count:'exact',head:true}).gt('level',fl)
-         setWorldRank((count??0)+1)
-         if (myBest===null || fl>myBest) setMyBest(fl)
-       }
-     }, 1000)
-   }
- }
-
- const saveScore = async () => {
-   if (!name.trim() || pin.join('').length!==4) return
-   setSaving(true)
-   setSaveError('')
-   const pinHash = btoa(pin.join(''))
-   const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name',name.trim()).maybeSingle()
-   if (existing) {
-     if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN'); setSaving(false); return }
-   } else {
-     await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
-   }
-   await supabase.from('nback_scores').insert({player_name:name.trim(), level:finalStreak})
-   const {count} = await supabase.from('nback_scores').select('*',{count:'exact',head:true}).gt('level',finalStreak)
-   setWorldRank((count??0)+1)
-   setSaving(false)
-   setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
-   setTimeout(() => window.location.reload(), 1500)
- }
-
- const reset = () => { setPhase('rules'); setSaved(false); loadData() }
-
- const resultColor = finalStreak >= 10 ? '#00C853' : finalStreak >= 5 ? '#FF6F00' : '#D32F2F'
- const bgResult = finalStreak >= 10 ? '#0D3320' : finalStreak >= 5 ? '#2D1A00' : '#1A0000'
-
- // RULES
- if (phase === 'rules') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
-     <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}>
-       <div style={{ width:60, height:60, background:'rgba(255,255,255,0.06)', borderRadius:16, display:'flex', alignItems:'center', justifyContent:'center', fontSize:32 }}>🧠</div>
-       <div>
-         <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>N-Back</div>
-         <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Same color as the previous one?</div>
-       </div>
-     </div>
-     <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:16, padding:'16px', marginBottom:20 }}>
-       <div style={{ fontSize:14, color:'rgba(255,255,255,0.6)', fontWeight:700, lineHeight:1.8 }}>
-         A color appears. Then another.<br/>
-         Press <span style={{ color:'#69F0AE', fontWeight:900 }}>Match</span> if it's the same as the previous.<br/>
-         Press <span style={{ color:'#FF5252', fontWeight:900 }}>Different</span> if not.<br/>
-         How many can you get right in a row?
-       </div>
-     </div>
-     <div style={{ display:'flex', gap:10, marginBottom:20 }}>
-       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
-         <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
-         <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${worldRecord.level}` : '—'}</div>
-         {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
-       </div>
-       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
-         <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
-         <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest!==null ? myBest : '—'}</div>
-       </div>
-     </div>
-     <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
-       <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
-       {top5.map((p,i) => (
-         <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
-           <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
-           <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
-           <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.level} streak</div>
-         </div>
-       ))}
-     </div>
-     <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:PURPLE, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 8px 0 ${PURPLE}80`, marginTop:'auto' }}>
-       Play →
-     </button>
-   </main>
- )
-
- // SHOW FIRST COLOR
- if (phase === 'show_first') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:32, padding:'24px' }}>
-     <div style={{ fontSize:16, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase' }}>Memorize this color</div>
-     <div style={{ width:180, height:180, borderRadius:40, background:COLORS[currColor].color, boxShadow:`0 0 60px ${COLORS[currColor].color}60` }} />
-     <div style={{ fontSize:14, color:'rgba(255,255,255,0.2)', fontWeight:700 }}>Next color coming...</div>
-   </main>
- )
-
- // ANSWER
- if (phase === 'answer' || phase === 'feedback') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:28, padding:'24px' }}>
-     
-     <div style={{ fontSize:28, fontWeight:900, color:GOLD }}>{streak}</div>
-
-     {/* Previous color — small above */}
-     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
-       <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.3)', textTransform:'uppercase', letterSpacing:2 }}>Previous</div>
-       <div style={{ width:64, height:64, borderRadius:18, background:COLORS[prevColor].color, opacity:0.6 }} />
-     </div>
-
-     {/* Current color — big */}
-     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
-       <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.3)', textTransform:'uppercase', letterSpacing:2 }}>Now</div>
-       <div style={{ width:160, height:160, borderRadius:36, background:COLORS[currColor].color, boxShadow:`0 0 50px ${COLORS[currColor].color}60` }} />
-     </div>
-
-     {phase === 'feedback' && (
-       <div style={{ fontSize:36, fontWeight:900, color:feedbackResult==='correct'?'#69F0AE':'#FF5252' }}>
-         {feedbackResult==='correct'?'✓ Correct!':'✗ Wrong!'}
-       </div>
-     )}
-
-     {phase === 'answer' && (
-       <div style={{ display:'flex', gap:12, width:'100%' }}>
-         <button onClick={() => handleAnswer(true)} style={{ flex:1, padding:'22px', borderRadius:18, border:'2px solid rgba(105,240,174,0.4)', background:'rgba(105,240,174,0.12)', color:'#69F0AE', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-           Match ✓
-         </button>
-         <button onClick={() => handleAnswer(false)} style={{ flex:1, padding:'22px', borderRadius:18, border:'2px solid rgba(255,82,82,0.4)', background:'rgba(255,82,82,0.12)', color:'#FF5252', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-           Different ✗
-         </button>
-       </div>
-     )}
-   </main>
- )
-
- // RESULT
  return (
-   <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
-     <div style={{ textAlign:'center' }}>
-       <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Streak</div>
-       <div style={{ fontSize:96, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{finalStreak}</div>
-       {worldRank && <div style={{ fontSize:16, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
-     </div>
-     {!profile?.name && !saved && (
-       <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
-         <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
-         <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
-         <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
-         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
-         <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
-           {pin.map((d,i) => (
-             <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
-               onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
-               style={{ width:48, height:56, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
-           ))}
+   <>
+     <NBackClient />
+     <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
+       <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>Is it the same color as before?</h2>
+       <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>N-Back is a working memory game where a color appears on screen and you must decide whether it matches the color shown immediately before it. Match or Different — simple in concept, surprisingly demanding in practice. Each correct answer extends your streak. One mistake ends the game.</p>
+       <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 24 }}>N-Back is one of the most studied cognitive training tasks in neuroscience. Research suggests it is one of the few brain training activities that produces genuine improvements in fluid intelligence — the ability to reason and solve novel problems — rather than just improving performance on the specific task practiced.</p>
+
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           How to play
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>A colored circle appears on screen. Study it carefully. Then a second color appears. Your question: is this new color the same as the previous one? Tap Match if yes, Different if no. If you are correct, the current color becomes the new previous color and a new color appears. If you are wrong, the game ends and shows your streak.</p>
+           <p style={{ marginBottom: 10 }}>The challenge is that you must continuously update your memory — the previous color changes with every correct answer. You cannot rely on remembering a fixed item. You must hold the most recent color in mind while simultaneously evaluating the new one and deciding whether they match.</p>
+           <p>Save your score with a name and PIN to track your personal best and see your global ranking. The world leaderboard shows the longest streaks achieved by players worldwide.</p>
          </div>
-         {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:10 }}>{saveError}</div>}
-         <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.15)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-           {saving?'Saving...':'Save →'}
-         </button>
-       </div>
-     )}
-     {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}><div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div></div>}
-     <div style={{ display:'flex', gap:10, width:'100%' }}>
-       <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
-       <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:PURPLE, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 5px 0 ${PURPLE}80` }}>Play again →</button>
+       </details>
+
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           The science behind N-Back
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>The N-Back task was originally developed by Wayne Kirchner in 1958 as a laboratory measure of working memory. The name refers to the number of steps back in a sequence you must compare against the current item. In a 1-Back task — the version on MemGenius — you compare each item with the one immediately preceding it. In a 2-Back task, you compare with the item two steps back, and so on.</p>
+           <p style={{ marginBottom: 10 }}>N-Back gained enormous scientific attention after a landmark 2008 study by Susanne Jaeggi and colleagues published in the Proceedings of the National Academy of Sciences. The study reported that training on a dual N-Back task — tracking both visual position and auditory sounds simultaneously — produced significant improvements in fluid intelligence, as measured by standard IQ test components.</p>
+           <p style={{ marginBottom: 10 }}>This was remarkable because fluid intelligence had long been considered largely fixed and untrainable. The Jaeggi findings sparked a wave of follow-up research and commercial brain training products. While subsequent studies produced mixed results — with some finding transfer effects and others not — N-Back remains the most scientifically credible cognitive training task for working memory improvement.</p>
+           <p>The neural basis of N-Back performance has been studied extensively using fMRI. The task activates the dorsolateral prefrontal cortex, the parietal lobe and the anterior cingulate cortex — a network associated with working memory, cognitive control and attention. Trained individuals show more efficient activation of this network, accomplishing the same cognitive work with less neural effort.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Working memory and fluid intelligence
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Working memory is the cognitive system that temporarily holds and manipulates information during mental tasks. It is what you use when you do mental arithmetic, follow a complex argument, hold a phone number in mind while dialing, or keep track of the thread of a conversation. Working memory capacity is one of the strongest predictors of academic and professional performance across virtually every domain.</p>
+           <p style={{ marginBottom: 10 }}>Fluid intelligence — the ability to reason logically and solve novel problems without relying on previously learned knowledge — is closely linked to working memory capacity. People with larger working memory can hold more intermediate results in mind while solving a problem, consider more alternatives simultaneously and resist distraction more effectively. This is why working memory training has attracted so much interest as a route to improving general cognitive ability.</p>
+           <p style={{ marginBottom: 10 }}>The relationship between N-Back training and fluid intelligence improvement remains debated in the scientific literature. A 2014 meta-analysis found modest but significant transfer effects from N-Back training to measures of fluid intelligence. A 2019 meta-analysis found larger effects for studies using active control groups. The current scientific consensus is cautiously optimistic — N-Back training probably produces some genuine improvements in fluid intelligence, though the effect size and durability vary.</p>
+           <p>What is not debated is that N-Back directly trains the updating function of working memory — the ability to continuously revise the contents of working memory as new information arrives. This updating function is highly relevant to everyday cognitive demands and is specifically impaired in conditions such as ADHD, depression and age-related cognitive decline.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Tips to improve your score
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Name the color explicitly as it appears. Saying the color name to yourself — even silently — engages your verbal working memory system and gives you a second encoding channel beyond the visual one. When the next color appears, you have both a visual memory and a verbal label to compare against. This dual encoding significantly reduces error rates.</p>
+           <p style={{ marginBottom: 10 }}>Do not overthink. The most common mistake for beginners is second-guessing a correct initial judgment. Your first impression of whether the colors match is usually correct. Hesitation and deliberate reasoning introduce doubt that leads to errors. Trust your immediate visual judgment and act on it quickly rather than deliberating.</p>
+           <p style={{ marginBottom: 10 }}>Stay focused between rounds. The brief moment between colors is when attention tends to wander — and wandering attention during the transition causes you to encode the new color poorly. Keep your eyes on the screen and your attention on the task during the entire inter-stimulus interval, not just when the new color appears.</p>
+           <p>Play in short, focused sessions rather than long fatigued ones. N-Back performance degrades significantly with mental fatigue. Ten focused minutes will produce better scores and better training effects than thirty distracted minutes. Stop playing when you notice your concentration slipping — continuing in a fatigued state produces poor performance and may reinforce bad cognitive habits rather than good ones.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           N-Back vs other memory games
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>N-Back differs fundamentally from Simon Says and Digits in what it demands from memory. Simon Says and Digits require you to hold a fixed, growing sequence in mind and recall it in order — this trains sequential working memory and long-term sequence encoding. N-Back requires continuous updating of a single item in memory — always replacing the old with the new. This trains the updating function of working memory specifically.</p>
+           <p style={{ marginBottom: 10 }}>The updating function is arguably more important for everyday cognition than sequential recall. Most real-world tasks require you to continuously integrate new information with existing knowledge — following a conversation, tracking multiple variables in a problem, monitoring a changing situation. N-Back trains exactly this continuous update process in its purest form.</p>
+           <p style={{ marginBottom: 10 }}>N-Back is also the most cognitively demanding game per session on MemGenius relative to its duration. A 10-minute N-Back session is significantly more mentally taxing than 10 minutes of Simon Says or Digits, because N-Back requires constant active engagement with no pause or rest between items. This intensity is part of what makes it effective as a training tool.</p>
+           <p>Among all the games on MemGenius, N-Back has the strongest scientific evidence base for producing genuine improvements in cognitive ability beyond the specific task. If you are looking for brain training with the best research support, N-Back is the place to start — and the world ranking system gives you a meaningful measure of your progress over time.</p>
+         </div>
+       </details>
+
+       <RelatedGames category="memory" current="N-Back" />
      </div>
-   </main>
+   </>
  )
 }

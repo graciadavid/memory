@@ -1,343 +1,266 @@
 'use client'
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { supabase } from '@/lib/supabase'
-import { completeWodExercise } from '@/lib/wod'
-import { completePlanDay } from '@/lib/plan'
-import { track } from '@vercel/analytics'
+import { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
 
-const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
-const CREAM = '#FAF7F2'
-const PURPLE = '#6A1B9A'
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-const TROPHY = `${BASE}/nav-trophy.webp`
-const LOGO = `${BASE}/nback.png`
+const GREEN = '#2E7D32'
+const PURPLE = '#7B1FA2'
 
 const COLORS = [
-  { name: 'Red', bg: '#E53935', shadow: '#B71C1C' },
-  { name: 'Blue', bg: '#1E88E5', shadow: '#1565C0' },
-  { name: 'Green', bg: '#43A047', shadow: '#2E7D32' },
-  { name: 'Yellow', bg: '#FDD835', shadow: '#F9A825' },
-  { name: 'Orange', bg: '#FB8C00', shadow: '#E65100' },
-  { name: 'Purple', bg: '#8E24AA', shadow: '#6A1B9A' },
+ { color: '#E53935' },
+ { color: '#43A047' },
+ { color: '#1E88E5' },
+ { color: '#FDD835' },
+ { color: '#FB8C00' },
 ]
 
-type Phase = 'intro' | 'first' | 'show' | 'answer' | 'feedback' | 'gameover'
+type Phase = 'rules' | 'show_first' | 'show' | 'answer' | 'feedback' | 'result'
 
-function playSound(freq: number, duration: number, correct: boolean) {
-  try {
-    const ctx = new AudioContext()
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.type = 'sine'
-    osc.frequency.setValueAtTime(freq, ctx.currentTime)
-    gain.gain.setValueAtTime(0.2, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
-    osc.connect(gain); gain.connect(ctx.destination)
-    osc.start(); osc.stop(ctx.currentTime + duration)
-  } catch(e) {}
-}
+export default function NBackPage() {
+ const { profile } = usePlayer()
+ const [phase, setPhase] = useState<Phase>('rules')
+ const [prevColor, setPrevColor] = useState<number>(0)
+ const [currColor, setCurrColor] = useState<number>(0)
+ const [streak, setStreak] = useState(0)
+ const [finalStreak, setFinalStreak] = useState(0)
+ const [feedbackResult, setFeedbackResult] = useState<'correct'|'wrong'>('correct')
+ const [worldRecord, setWorldRecord] = useState<{level:number,name:string}|null>(null)
+ const [myBest, setMyBest] = useState<number|null>(null)
+ const [top5, setTop5] = useState<{name:string,level:number}[]>([])
+ const [worldRank, setWorldRank] = useState<number|null>(null)
+ const [name, setName] = useState('')
+ const [pin, setPin] = useState(['','','',''])
+ const [saved, setSaved] = useState(false)
+ const [saving, setSaving] = useState(false)
+ const [saveError, setSaveError] = useState('')
 
-export default function NBackClient() {
-  const { profile } = usePlayer()
-  const [phase, setPhase] = useState<Phase>('intro')
-  const [level, setLevel] = useState(0)
-  const [current, setCurrent] = useState(0)
-  const [previous, setPrevious] = useState<number | null>(null)
-  const [showCard, setShowCard] = useState(false)
-  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
-  const [worldRank, setWorldRank] = useState<number | null>(null)
-  const [topScores, setTopScores] = useState<{ name: string, level: number }[]>([])
-  const [bestLevel, setBestLevel] = useState<number | null>(null)
-  const levelRef = useRef(0)
-  const previousRef = useRef<number | null>(null)
-  const currentRef = useRef(0)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+ // Use refs to avoid stale closure issues
+ const prevRef = useRef(0)
+ const currRef = useRef(0)
+ const streakRef = useRef(0)
 
-  useEffect(() => { fetchTop() }, [])
+ useEffect(() => {
+   if (profile?.name) setName(profile.name)
+   loadData()
+ }, [profile?.name])
 
-  useEffect(() => {
-    if (!profile?.name) return
-    supabase.from('nback_scores').select('level').eq('player_name', profile.name)
-      .order('level', { ascending: false }).limit(1)
-      .then(({ data }) => { if (data?.[0]) setBestLevel(data[0].level) })
-  }, [profile?.name])
+ const loadData = async () => {
+   const { data } = await supabase.from('nback_scores').select('player_name,level').order('level', { ascending: false }).limit(500)
+   if (!data) return
+   const best: Record<string,number> = {}
+   data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+   const sorted = Object.entries(best).map(([n,l]) => ({name:n, level:l as number})).sort((a,b) => b.level-a.level)
+   setTop5(sorted.slice(0,5))
+   if (sorted[0]) setWorldRecord({level:sorted[0].level, name:sorted[0].name})
+   if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
+ }
 
-  const fetchTop = async () => {
-    const { data } = await supabase.from('nback_scores').select('player_name, level')
-      .order('level', { ascending: false }).limit(200)
-    if (data) {
-      const best: Record<string, number> = {}
-      data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-      setTopScores(Object.entries(best).map(([name, level]) => ({ name, level })).sort((a, b) => b.level - a.level))
-    }
-  }
+ const randomColor = () => Math.floor(Math.random() * COLORS.length)
 
-  const showNextCard = useCallback((prev: number | null) => {
-    const next = Math.floor(Math.random() * COLORS.length)
-    currentRef.current = next
-    previousRef.current = prev
-    setCurrent(next)
-    setPrevious(prev)
-    setShowCard(true)
-    setFeedback(null)
+ const startGame = () => {
+   streakRef.current = 0
+   setStreak(0)
+   // Show first color — no question yet
+   const first = randomColor()
+   prevRef.current = first
+   setPrevColor(first)
+   setCurrColor(first)
+   setPhase('show_first')
+   // After 1.5s show second color with question
+   setTimeout(() => {
+     const second = randomColor()
+     currRef.current = second
+     setCurrColor(second)
+     setPhase('answer')
+   }, 1500)
+ }
 
-    timerRef.current = setTimeout(() => {
-      setShowCard(false)
-      setPhase('answer')
-    }, 2000)
-  }, [])
+ const handleAnswer = async (userSaysMatch: boolean) => {
+   const prev = prevRef.current
+   const curr = currRef.current
+   const isMatch = prev === curr
+   const correct = userSaysMatch === isMatch
 
-  const startGame = useCallback(() => {
-    levelRef.current = 0
-    setLevel(0)
-    setFeedback(null)
-    setWorldRank(null)
-
-    // Show first card - no answer needed
-    const first = Math.floor(Math.random() * COLORS.length)
-    currentRef.current = first
-    previousRef.current = null
-    setCurrent(first)
-    setShowCard(true)
-    setPhase('first')
-
-    timerRef.current = setTimeout(() => {
-      setShowCard(false)
-      // Show second card
-      setTimeout(() => {
-        const second = Math.floor(Math.random() * COLORS.length)
-        previousRef.current = first
-        currentRef.current = second
-        setCurrent(second)
-        setPrevious(first)
-        setShowCard(true)
-        setPhase('show')
-        timerRef.current = setTimeout(() => {
-          setShowCard(false)
-          setPhase('answer')
-        }, 2000)
-      }, 500)
-    }, 2000)
-  }, [])
-
-  const handleAnswer = useCallback(async (same: boolean) => {
-    if (phase !== 'answer') return
-    if (timerRef.current) clearTimeout(timerRef.current)
-
-    const isSame = currentRef.current === previousRef.current
-    const correct = same === isSame
-
-    if (correct) {
-      playSound(660, 0.15, true)
-      setFeedback('correct')
-      const newLevel = levelRef.current + 1
-      levelRef.current = newLevel
-      setLevel(newLevel)
-
-      timerRef.current = setTimeout(() => {
-        setFeedback(null)
-        showNextCard(currentRef.current)
-        setPhase('show')
-      }, 400)
-    } else {
-      playSound(220, 0.3, false)
-      setFeedback('wrong')
-      const finalLevel = levelRef.current
-
-      timerRef.current = setTimeout(async () => {
-        setPhase('gameover')
-        if (profile?.name) {
-          await supabase.from('nback_scores').insert({ player_name: profile.name, level: finalLevel })
-                window.dispatchEvent(new Event('game_completed'))
-      completeWodExercise(profile?.name || '', '/nback')
-      completePlanDay(profile?.name || profile?.name || '', '/nback')
-          const { data } = await supabase.from('nback_scores').select('player_name, level')
-            .order('level', { ascending: false }).limit(200)
-          if (data) {
-            const best: Record<string, number> = {}
-            data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-            const myBest = best[profile.name] || finalLevel
-            setWorldRank(Object.values(best).filter(l => l > myBest).length + 1)
-            if (!bestLevel || finalLevel > bestLevel) setBestLevel(finalLevel)
-           fetchTop()
-
-           // Check WOD completion and redirect
-           try {
-             const { checkAndSaveWodCompletion } = await import('@/lib/wod')
-             const shouldRedirect = await checkAndSaveWodCompletion(profile.name, '/nback')
-             if (shouldRedirect) setTimeout(() => { window.location.href = '/my-plan' }, 1500)
-           } catch(e) {}
-         }
+   if (correct) {
+     streakRef.current++
+     setStreak(streakRef.current)
+     setFeedbackResult('correct')
+     setPhase('feedback')
+     // Show next after brief feedback
+     setTimeout(() => {
+       prevRef.current = curr
+       setPrevColor(curr)
+       const next = randomColor()
+       currRef.current = next
+       setCurrColor(next)
+       setPhase('answer')
+     }, 800)
+   } else {
+     setFeedbackResult('wrong')
+     setFinalStreak(streakRef.current)
+     setPhase('feedback')
+     setTimeout(async () => {
+       const fl = streakRef.current
+       setPhase('result')
+       if (profile?.name && fl > 0) {
+         await supabase.from('nback_scores').insert({player_name:profile.name, level:fl})
+         const {count} = await supabase.from('nback_scores').select('*',{count:'exact',head:true}).gt('level',fl)
+         setWorldRank((count??0)+1)
+         if (myBest===null || fl>myBest) setMyBest(fl)
        }
-     }, 600)
-    }
-  }, [phase, profile?.name, bestLevel, showNextCard])
+     }, 1000)
+   }
+ }
 
-  useEffect(() => {
-    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
-  }, [])
+ const saveScore = async () => {
+   if (!name.trim() || pin.join('').length!==4) return
+   setSaving(true)
+   setSaveError('')
+   const pinHash = btoa(pin.join(''))
+   const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name',name.trim()).maybeSingle()
+   if (existing) {
+     if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN'); setSaving(false); return }
+   } else {
+     await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
+   }
+   await supabase.from('nback_scores').insert({player_name:name.trim(), level:finalStreak})
+   const {count} = await supabase.from('nback_scores').select('*',{count:'exact',head:true}).gt('level',finalStreak)
+   setWorldRank((count??0)+1)
+   setSaving(false)
+   setSaved(true)
+   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+   setTimeout(() => window.location.reload(), 1500)
+ }
 
-  const currentColor = COLORS[current]
+ const reset = () => { setPhase('rules'); setSaved(false); loadData() }
 
-  return (
-    <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #EDE7F6 0%, ${CREAM} 100%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 80 }}>
-      <style>{`@keyframes floatLogo { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} } @keyframes fadeIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} } @keyframes popIn { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.2)} 100%{transform:scale(1);opacity:1} }`}</style>
+ const resultColor = finalStreak >= 10 ? '#00C853' : finalStreak >= 5 ? '#FF6F00' : '#D32F2F'
+ const bgResult = finalStreak >= 10 ? '#0D3320' : finalStreak >= 5 ? '#2D1A00' : '#1A0000'
 
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
-        <img src={LOGO} alt="N-Back" style={{ height: 52, objectFit: 'contain', animation: 'floatLogo 3s ease-in-out infinite', flexShrink: 0 }} />
-        <div>
-          <div style={{ fontSize: 26, fontWeight: 900, color: PURPLE, letterSpacing: -0.5 }}>N-Back</div>
-          <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Is it the same color as before?</div>
-        </div>
-        {(phase === 'first' || phase === 'show' || phase === 'answer' || phase === 'feedback') && (
-          <div style={{ marginLeft: 'auto', fontSize: 22, fontWeight: 900, color: PURPLE }}>{level}</div>
-        )}
-      </div>
+ // RULES
+ if (phase === 'rules') return (
+   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+     <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}>
+       <div style={{ width:60, height:60, background:'rgba(255,255,255,0.06)', borderRadius:16, display:'flex', alignItems:'center', justifyContent:'center', fontSize:32 }}>🧠</div>
+       <div>
+         <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>N-Back</div>
+         <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Same color as the previous one?</div>
+       </div>
+     </div>
+     <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:16, padding:'16px', marginBottom:20 }}>
+       <div style={{ fontSize:14, color:'rgba(255,255,255,0.6)', fontWeight:700, lineHeight:1.8 }}>
+         A color appears. Then another.<br/>
+         Press <span style={{ color:'#69F0AE', fontWeight:900 }}>Match</span> if it's the same as the previous.<br/>
+         Press <span style={{ color:'#FF5252', fontWeight:900 }}>Different</span> if not.<br/>
+         How many can you get right in a row?
+       </div>
+     </div>
+     <div style={{ display:'flex', gap:10, marginBottom:20 }}>
+       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+         <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
+         <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${worldRecord.level}` : '—'}</div>
+         {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
+       </div>
+       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+         <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
+         <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest!==null ? myBest : '—'}</div>
+       </div>
+     </div>
+     <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
+       <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
+       {top5.map((p,i) => (
+         <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+           <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
+           <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
+           <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.level} streak</div>
+         </div>
+       ))}
+     </div>
+     <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:PURPLE, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 8px 0 ${PURPLE}80`, marginTop:'auto' }}>
+       Play →
+     </button>
+   </main>
+ )
 
-      {/* INTRO */}
-      {phase === 'intro' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 24px', gap: 16 }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 8 }}>Is it the same color as before?</div>
-            <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.7 }}>
-              A color appears for 2 seconds.<br />
-              Then disappears.<br />
-              Was it the same as the previous one?<br />
-              Each correct answer adds to your streak.
-            </div>
-          </div>
+ // SHOW FIRST COLOR
+ if (phase === 'show_first') return (
+   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:32, padding:'24px' }}>
+     <div style={{ fontSize:16, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase' }}>Memorize this color</div>
+     <div style={{ width:180, height:180, borderRadius:40, background:COLORS[currColor].color, boxShadow:`0 0 60px ${COLORS[currColor].color}60` }} />
+     <div style={{ fontSize:14, color:'rgba(255,255,255,0.2)', fontWeight:700 }}>Next color coming...</div>
+   </main>
+ )
 
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-            {COLORS.map((c, i) => (
-              <div key={i} style={{ width: 36, height: 36, borderRadius: 8, background: c.bg, boxShadow: `0 4px 0 ${c.shadow}` }} />
-            ))}
-          </div>
+ // ANSWER
+ if (phase === 'answer' || phase === 'feedback') return (
+   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:28, padding:'24px' }}>
+     
+     <div style={{ fontSize:28, fontWeight:900, color:GOLD }}>{streak}</div>
 
-          <div style={{ display: 'flex', gap: 12, width: '100%' }}>
-            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
-              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
-              {bestLevel !== null ? (
-                <div style={{ fontSize: 32, fontWeight: 900, color: PURPLE }}>{bestLevel}</div>
-              ) : (
-                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
-              )}
-            </div>
-            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
-              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
-              {topScores[0] ? (
-                <>
-                  <div style={{ fontSize: 32, fontWeight: 900, color: GOLD }}>{topScores[0].level}</div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{topScores[0].name}</div>
-                </>
-              ) : (
-                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
-              )}
-            </div>
-          </div>
+     {/* Previous color — small above */}
+     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
+       <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.3)', textTransform:'uppercase', letterSpacing:2 }}>Previous</div>
+       <div style={{ width:64, height:64, borderRadius:18, background:COLORS[prevColor].color, opacity:0.6 }} />
+     </div>
 
-          <button onClick={startGame} style={{
-            width: '100%', padding: '18px', borderRadius: 20, border: 'none',
-            background: PURPLE, color: '#fff', fontSize: 18, fontWeight: 900,
-            fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #4A148C60',
-          }}>Play</button>
+     {/* Current color — big */}
+     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
+       <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.3)', textTransform:'uppercase', letterSpacing:2 }}>Now</div>
+       <div style={{ width:160, height:160, borderRadius:36, background:COLORS[currColor].color, boxShadow:`0 0 50px ${COLORS[currColor].color}60` }} />
+     </div>
 
-          <Link href="/nback/ranking" style={{ textDecoration: 'none', width: '100%' }}>
-            <div style={{ width: '100%', padding: '14px', borderRadius: 16, background: '#fff', border: `1.5px solid ${BROWN}20`, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxSizing: 'border-box' }}>
-              <img src={TROPHY} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-              <span style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>World Ranking</span>
-            </div>
-          </Link>
-        </div>
-      )}
+     {phase === 'feedback' && (
+       <div style={{ fontSize:36, fontWeight:900, color:feedbackResult==='correct'?'#69F0AE':'#FF5252' }}>
+         {feedbackResult==='correct'?'✓ Correct!':'✗ Wrong!'}
+       </div>
+     )}
 
-      {/* FIRST CARD - no answer */}
-      {phase === 'first' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '70dvh', gap: 24, padding: '24px' }}>
-          <div style={{ fontSize: 16, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 1 }}>Remember this color</div>
-          {showCard && (
-            <div style={{ width: 260, height: 260, borderRadius: 32, background: currentColor.bg, boxShadow: `0 12px 0 ${currentColor.shadow}`, animation: 'fadeIn 0.2s ease' }} />
-          )}
-        </div>
-      )}
+     {phase === 'answer' && (
+       <div style={{ display:'flex', gap:12, width:'100%' }}>
+         <button onClick={() => handleAnswer(true)} style={{ flex:1, padding:'22px', borderRadius:18, border:'2px solid rgba(105,240,174,0.4)', background:'rgba(105,240,174,0.12)', color:'#69F0AE', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+           Match ✓
+         </button>
+         <button onClick={() => handleAnswer(false)} style={{ flex:1, padding:'22px', borderRadius:18, border:'2px solid rgba(255,82,82,0.4)', background:'rgba(255,82,82,0.12)', color:'#FF5252', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+           Different ✗
+         </button>
+       </div>
+     )}
+   </main>
+ )
 
-      {/* SHOW + ANSWER */}
-      {(phase === 'show' || phase === 'answer') && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '70dvh', gap: 24, padding: '24px' }}>
-
-          {showCard ? (
-            <>
-              <div style={{ fontSize: 16, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 1 }}>Same as before?</div>
-              <div style={{ width: 260, height: 260, borderRadius: 32, background: currentColor.bg, boxShadow: `0 12px 0 ${currentColor.shadow}`, animation: 'fadeIn 0.2s ease' }} />
-            </>
-          ) : (
-            <>
-              {feedback && (
-                <div style={{ fontSize: 32, fontWeight: 900, color: feedback === 'correct' ? '#2E7D32' : '#C62828', animation: 'popIn 0.3s ease' }}>
-                  {feedback === 'correct' ? '✓' : '✗'}
-                </div>
-              )}
-              {phase === 'answer' && !feedback && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%', animation: 'fadeIn 0.2s ease' }}>
-                  <button onClick={() => handleAnswer(true)} style={{
-                    width: '100%', padding: '28px', borderRadius: 20, border: 'none',
-                    background: '#43A047', color: '#fff', fontSize: 22, fontWeight: 900,
-                    fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #2E7D3260',
-                  }}>Same color</button>
-                  <button onClick={() => handleAnswer(false)} style={{
-                    width: '100%', padding: '28px', borderRadius: 20, border: 'none',
-                    background: '#E53935', color: '#fff', fontSize: 22, fontWeight: 900,
-                    fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 8px 0 #B71C1C60',
-                  }}>Different color</button>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      )}
-
-      {/* GAMEOVER */}
-      {phase === 'gameover' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '0 20px' }}>
-          <div style={{
-            background: CREAM, borderRadius: 24, padding: '24px 20px', width: '100%',
-            boxSizing: 'border-box', boxShadow: `0 8px 32px ${BROWN}20`,
-            border: `1px solid ${GOLD}30`, textAlign: 'center',
-          }}>
-            <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: `${BROWN}50`, textTransform: 'uppercase', marginBottom: 6 }}>Your Result</div>
-            <div style={{ fontSize: 72, fontWeight: 900, color: PURPLE, lineHeight: 1 }}>{level}</div>
-            <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 700, marginBottom: 16 }}>correct in a row</div>
-            {worldRank && (
-              <div style={{ background: `${GOLD}10`, border: `1px solid ${GOLD}20`, borderRadius: 12, padding: '10px' }}>
-                <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>World Ranking</div>
-                <div style={{ fontSize: 28, fontWeight: 900, color: GOLD }}>#{worldRank}</div>
-              </div>
-            )}
-          </div>
-
-
-          <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-            <button onClick={() => {
-              const url = `${window.location.origin}/challenge?game=nback&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-              const text = `🧠 ${profile?.name} got ${level} correct in N-Back on MemGenius! Can you beat them? ${url}`
-              track('challenge_shared')
-              if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-            }} style={{
-              width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-              background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
-            }}>Share</button>
-            <button onClick={startGame} style={{
-              flex: 1, padding: '16px', borderRadius: 16, border: 'none',
-              background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
-            }}>Play again</button>
-          </div>
-        </div>
-      )}
-    </main>
-  )
+ // RESULT
+ return (
+   <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
+     <div style={{ textAlign:'center' }}>
+       <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Streak</div>
+       <div style={{ fontSize:96, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{finalStreak}</div>
+       {worldRank && <div style={{ fontSize:16, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
+     </div>
+     {!profile?.name && !saved && (
+       <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
+         <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
+         <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
+         <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
+         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
+         <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
+           {pin.map((d,i) => (
+             <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
+               onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
+               style={{ width:48, height:56, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
+           ))}
+         </div>
+         {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:10 }}>{saveError}</div>}
+         <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.15)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+           {saving?'Saving...':'Save →'}
+         </button>
+       </div>
+     )}
+     {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}><div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div></div>}
+     <div style={{ display:'flex', gap:10, width:'100%' }}>
+       <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
+       <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:PURPLE, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 5px 0 ${PURPLE}80` }}>Play again →</button>
+     </div>
+   </main>
+ )
 }
