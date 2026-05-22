@@ -23,7 +23,7 @@ export default function StreakBadge() {
 
  return (
    <div style={{
-     position: 'fixed', top: 12, left: 12,
+     position: 'fixed', top: 12, right: 12,
      display: 'flex', alignItems: 'center', gap: 4,
      background: 'rgba(255,109,0,0.15)',
      border: '1px solid rgba(255,109,0,0.3)',
