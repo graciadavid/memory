@@ -253,7 +253,7 @@ export default function AceClient() {
       `}</style>
 
       <main style={{
-        height: '100dvh', background: `linear-gradient(180deg, #E8F5E9 0%, ${CREAM} 100%)`,
+        height: '100dvh', background: '#0A0A0A',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto',
         overflow: 'auto', paddingBottom: 80,
@@ -270,63 +270,43 @@ export default function AceClient() {
         </div>
 
         {/* INTRO */}
-        {phase === 'intro' && (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 16, width: '100%' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 6 }}>Tap when the ball hits the sweet spot</div>
-              <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.6 }}>
-                The ball crosses the court in an arc.<br />
-                Tap when it passes through the circle.<br />
-                Each ace gets faster. How many can you hit?
-              </div>
-            </div>
+              {phase === 'intro' && (
+         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0 24px', gap: 14, width: '100%', justifyContent: 'center' }}>
+           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 8 }}>
+             <img src={LOGO} style={{ width: 56, height: 56, objectFit: 'contain' }} />
+             <div>
+               <div style={{ fontSize: 26, fontWeight: 900, color: '#fff' }}>Ace</div>
+               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', fontWeight: 700 }}>Tap when the ball hits the sweet spot</div>
+             </div>
+           </div>
+           <div style={{ display: 'flex', gap: 10 }}>
+             <div style={{ flex: 1, background: 'rgba(255,255,255,0.06)', borderRadius: 16, padding: '14px', textAlign: 'center' }}>
+               <div style={{ fontSize: 9, fontWeight: 900, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World Record</div>
+               {topScores[0] ? (
+                 <><div style={{ fontSize: 22, fontWeight: 900, color: GOLD }}>{topScores[0].level} aces</div>
+                 <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', fontWeight: 700, marginTop: 2 }}>{topScores[0].name}</div></>
+               ) : <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.2)', fontWeight: 700 }}>—</div>}
+             </div>
+             <div style={{ flex: 1, background: 'rgba(255,255,255,0.06)', borderRadius: 16, padding: '14px', textAlign: 'center' }}>
+               <div style={{ fontSize: 9, fontWeight: 900, color: 'rgba(255,255,255,0.4)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your Best</div>
+               <div style={{ fontSize: 22, fontWeight: 900, color: '#fff' }}>{bestLevel !== null ? `${bestLevel} aces` : '—'}</div>
+             </div>
+           </div>
+           <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: '14px' }}>
+             <div style={{ fontSize: 9, fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>Top Players</div>
+             {topScores.slice(0,5).map((p,i) => (
+               <div key={p.name} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                 <div style={{ fontSize: 12, fontWeight: 900, color: i===0?GOLD:'rgba(255,255,255,0.25)', width: 18 }}>{i+1}</div>
+                 <div style={{ flex: 1, fontSize: 14, fontWeight: 800, color: i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
+                 <div style={{ fontSize: 14, fontWeight: 900, color: i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.level} aces</div>
+               </div>
+             ))}
+           </div>
+           <button onClick={startGame} style={{ width: '100%', padding: '18px', borderRadius: 20, border: 'none', background: TENNIS, color: '#fff', fontSize: 18, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 8px 0 ${TENNIS}60`, marginTop: 'auto' }}>Start</button>
+         </div>
+       )}
 
-            <div style={{ display: 'flex', gap: 12, width: '100%' }}>
-              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
-                <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
-                {bestLevel !== null ? (
-                  <div style={{ fontSize: 32, fontWeight: 900, color: TENNIS }}>{bestLevel}</div>
-                ) : (
-                  <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
-                )}
-              </div>
-              <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
-                <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
-                {topScores[0] ? (
-                  <>
-                    <div style={{ fontSize: 32, fontWeight: 900, color: '#C8960C' }}>{topScores[0].level}</div>
-                    <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{topScores[0].name}</div>
-                  </>
-                ) : (
-                  <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
-                )}
-              </div>
-            </div>
-
-
-            <button onClick={startGame} style={{
-              padding: '18px', borderRadius: 20, border: 'none',
-              background: TENNIS, color: '#fff',
-              fontSize: 18, fontWeight: 900, fontFamily: 'inherit',
-              cursor: 'pointer', boxShadow: `0 8px 0 ${TENNIS}60`, width: '100%',
-            }}>Start</button>
-
-            <Link href="/ace/ranking" style={{ textDecoration: 'none', width: '100%' }}>
-              <div style={{
-                width: '100%', padding: '14px', borderRadius: 16,
-                background: '#fff', border: `1.5px solid ${BROWN}20`,
-                textAlign: 'center', cursor: 'pointer', boxSizing: 'border-box',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              }}>
-                <img src={TROPHY} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-                <span style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>World Ranking</span>
-              </div>
-            </Link>
-          </div>
-        )}
-
-        {/* PLAYING */}
-        {phase === 'playing' && (
+{phase === 'playing' && (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '0 0', position: 'relative' }}
 >
 
