@@ -149,10 +149,12 @@ export default function PendulumPage() {
    <main onClick={handleTap} style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor:'pointer', userSelect:'none', gap:24 }}>
      <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.25)', letterSpacing:3, textTransform:'uppercase' }}>Tap when vertical</div>
      <div style={{ position:'relative', width:240, height:220, display:'flex', alignItems:'flex-start', justifyContent:'center' }}>
-       <div style={{ position:'absolute', top:0, left:'50%', width:3, height:160, background:'rgba(255,255,255,0.2)', transformOrigin:'top center', transform:`rotate(${angle}deg)`, transition:'none' }}>
-         <div style={{ position:'absolute', bottom:-20, left:'50%', transform:'translateX(-50%)', width:40, height:40, borderRadius:'50%', background:BLUE, boxShadow:`0 0 20px ${BLUE}` }} />
+       <div style={{ position:'absolute', top:0, left:'50%', transform:'translateX(-50%)', width:1, height:190, background:'rgba(255,255,255,0.2)' }} />
+       <div style={{ position:'absolute', bottom:0, left:'50%', transform:'translateX(-50%)', fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.35)' }}>0°</div>
+       <div style={{ position:'absolute', top:0, left:'50%', width:3, height:160, background:'rgba(255,255,255,0.7)', transformOrigin:'top center', transform:`translateX(-50%) rotate(${angle}deg)`, transition:'none' }}>
+         <div style={{ position:'absolute', bottom:-22, left:'50%', transform:'translateX(-50%)', width:44, height:44, borderRadius:'50%', background:BLUE, boxShadow:`0 0 20px ${BLUE}` }} />
        </div>
-       <div style={{ position:'absolute', top:0, left:'50%', width:12, height:12, borderRadius:'50%', background:'rgba(255,255,255,0.5)', transform:'translateX(-50%)' }} />
+       <div style={{ position:'absolute', top:-6, left:'50%', width:14, height:14, borderRadius:'50%', background:'rgba(255,255,255,0.7)', transform:'translateX(-50%)' }} />
      </div>
      <div style={{ fontSize:13, color:'rgba(255,255,255,0.15)', fontWeight:700 }}>Tap anywhere</div>
    </main>
