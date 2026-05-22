@@ -17,6 +17,18 @@ export default function StopClient() {
   const { profile } = usePlayer()
   const router = useRouter()
   const [phase, setPhase] = useState<'idle' | 'running' | 'result'>('idle')
+ const [countdown, setCountdown] = useState<number | null>(null)
+
+ useEffect(() => {
+   const params = new URLSearchParams(window.location.search)
+   if (params.get('autostart') === 'true') {
+     setCountdown(3)
+     const t1 = setTimeout(() => setCountdown(2), 1000)
+     const t2 = setTimeout(() => setCountdown(1), 2000)
+     const t3 = setTimeout(() => { setCountdown(null); startStop() }, 3000)
+     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+   }
+ }, [])
   const [elapsed, setElapsed] = useState(0)
   const [difference, setDifference] = useState(0)
   const [worldRank, setWorldRank] = useState<number | null>(null)
@@ -99,6 +111,9 @@ export default function StopClient() {
       if (bestScore === null || Math.abs(diff) < bestScore) {
        setBestScore(Math.abs(diff))
      }
+     // Store result and redirect to rules
+     sessionStorage.setItem('stop_last_result', JSON.stringify({ difference: diff }))
+     setTimeout(() => { window.location.href = '/precision/stopwatch/rules' }, 1500)
 
      // Check WOD completion and redirect
        try {
@@ -244,11 +259,11 @@ export default function StopClient() {
               </div>
             )}
 
-            {/* Buttons */}
-            <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-              <button onClick={() => window.location.href = '/my-plan'} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: '#0D1B4B', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #08103060' }}>My Plan</button>
-              <button onClick={() => window.location.href = '/precision/stopwatch/ranking'} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: GOLD, color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}60`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.webp" alt="" style={{ width: 18, height: 18, objectFit: 'contain', marginRight: 6 }} />Ranking</button>
-            </div>
+           {/* Buttons */}
+           <div style={{ display: 'flex', gap: 10, width: '100%' }}>
+             <button onClick={reset} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: PURPLE, color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${PURPLE}60` }}>Play again</button>
+             <button onClick={() => window.location.href = '/precision/stopwatch/rules'} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: '#0D1B4B', color: '#fff', fontSize: 14, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #08103060' }}>See results</button>
+           </div>
           </>
         )}
       </div>

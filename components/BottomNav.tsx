@@ -2,73 +2,39 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+const BROWN = '#4A2C0A'
 
-const ITEMS_LEFT = [
-  { href: '/', img: `${BASE}/nav-home.webp`, label: 'Home' },
+const ITEMS = [
+ { href: '/trainyourbrain?cat=memory', label: 'Memory', color: '#C62828', icon: '🧠' },
+ { href: '/trainyourbrain?cat=agility', label: 'Agility', color: '#4A148C', icon: '⚡' },
+ { href: '/trainyourbrain?cat=knowledge', label: 'Knowledge', color: '#00796B', icon: '🌍' },
+ { href: '/trainyourbrain?cat=logic', label: 'Logic', color: '#E65100', icon: '🔷' },
+ { href: '/profile', label: 'Profile', color: BROWN, icon: '👤' },
 ]
-
-const ITEMS_RIGHT = [
-  { href: '/profile', img: `${BASE}/nav-profile.webp`, label: 'Profile' },
-]
-
-const PULSE_STYLE = `
-  @keyframes brainPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.08); }
-  }
-`
 
 export default function BottomNav() {
-  const path = usePathname()
+ const path = usePathname()
 
-  return (
-    <>
-    <style>{PULSE_STYLE}</style>
-    <nav style={{
-      position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
-      width: '100%', maxWidth: 430,
-      background: 'rgba(250,247,242,0.97)',
-      backdropFilter: 'blur(20px)',
-      borderTop: '1px solid rgba(74,44,10,0.08)',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-      padding: '4px 0 8px',
-      zIndex: 50,
-    }}>
-      {ITEMS_LEFT.map(item => (
-        <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-            <img src={item.img} alt={item.label} style={{
-              width: 44, height: 44, objectFit: 'contain',
-              opacity: path === item.href ? 1 : 0.5,
-              transition: 'opacity 0.2s',
-            }} />
-          </div>
-        </Link>
-      ))}
-
-      {/* My Plan — center button */}
-      <Link href="/my-plan" style={{ textDecoration: 'none' }}>
-        <div style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
-        }}>
-          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/myplan.png" alt="" style={{ width: 44, height: 44, objectFit: 'contain', opacity: path === '/my-plan' ? 1 : 0.7 }} />
-          <div style={{ fontSize: 9, fontWeight: 800, color: '#2E7D32', letterSpacing: 0.5 }}>MY PLAN</div>
-        </div>
-      </Link>
-
-      {ITEMS_RIGHT.map(item => (
-        <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-            <img src={item.img} alt={item.label} style={{
-              width: 44, height: 44, objectFit: 'contain',
-              opacity: path === item.href ? 1 : 0.5,
-              transition: 'opacity 0.2s',
-            }} />
-          </div>
-        </Link>
-      ))}
-    </nav>
-    </>
-  )
+ return (
+   <nav style={{
+     position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
+     width: '100%', maxWidth: 430,
+     background: 'rgba(250,247,242,0.97)',
+     backdropFilter: 'blur(20px)',
+     borderTop: '1px solid rgba(74,44,10,0.08)',
+     display: 'flex', alignItems: 'center', justifyContent: 'space-around',
+     padding: '6px 0 10px',
+     zIndex: 50,
+   }}>
+     {ITEMS.map(item => {
+       const active = path.startsWith(item.href.split('?')[0]) && (item.href === '/profile' ? path === '/profile' : true)
+       return (
+         <Link key={item.href} href={item.href} style={{ textDecoration: 'none', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+           <div style={{ fontSize: 22, opacity: active ? 1 : 0.35 }}>{item.icon}</div>
+           <div style={{ fontSize: 9, fontWeight: 900, color: active ? item.color : `${BROWN}50`, letterSpacing: 0.5, textTransform: 'uppercase' }}>{item.label}</div>
+         </Link>
+       )
+     })}
+   </nav>
+ )
 }
