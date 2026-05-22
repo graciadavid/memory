@@ -1,4 +1,5 @@
-'use client'undefinedimport Link from 'next/link'
+'use client'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
@@ -492,21 +493,7 @@ export default function LandingPage() {
 
 
 
-          {/* Featured Banner - Brain Age Test only for new users */}
-         {!hasBrainTest && (
-           <a href="/brain-test" style={{ textDecoration: 'none', width: '100%', marginBottom: 16, display: 'block' }}>
-             <div style={{ background: 'linear-gradient(135deg, #0A0A1A, #0D1B2A)', borderRadius: 20, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 16, boxShadow: '0 8px 0 #00000040', position: 'relative', overflow: 'hidden' }}>
-               <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/brain-logo.webp" alt="Brain Age" style={{ width: 64, height: 64, objectFit: 'contain', flexShrink: 0 }} />
-               <div style={{ flex: 1 }}>
-                 <div style={{ fontSize: 10, fontWeight: 800, color: 'rgba(255,255,255,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Free Test</div>
-                 <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 2 }}>Brain Age Test</div>
-                 <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 700 }}>How old is your brain?</div>
-               </div>
-               <div style={{ background: '#2E7D32', color: '#fff', fontWeight: 900, fontSize: 14, padding: '10px 18px', borderRadius: 12 }}>Start</div>
-             </div>
-           </a>
-         )}
-          {/* Category tabs */}
+                    {/* Category tabs */}
           <div style={{ display: 'flex', gap: 8, width: '100%', marginBottom: 16 }}>
             {CATEGORIES.map(cat => (
               <button key={cat.key} onClick={() => setActiveCategory(cat.key)} style={{
