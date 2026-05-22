@@ -160,7 +160,7 @@ export default function SudokuClient() {
   }
 
   if (phase === 'rules') return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+    <main style={{ height:'100dvh', background:'#111318', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
         <img src={`${BASE}/sudoku.png`} style={{ width:60, height:60, objectFit:'contain' }} />
         <div>
@@ -211,7 +211,7 @@ export default function SudokuClient() {
   )
 
   if (phase === 'playing' || phase === 'result') return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 12px 80px', overflowY:'auto' }}>
+    <main style={{ height:'100dvh', background:'#111318', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 12px 80px', overflowY:'auto' }}>
 
       {/* Timer */}
       <div style={{ textAlign:'center', marginBottom:4 }}>
