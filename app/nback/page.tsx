@@ -21,6 +21,7 @@ export default function NBackPage() {
   const { profile } = usePlayer()
   const [phase, setPhase] = useState<Phase>('rules')
   const [history, setHistory] = useState<number[]>([])
+  const historyRef = useRef<number[]>([])
   const [current, setCurrent] = useState<number>(0)
   const [streak, setStreak] = useState(0)
   const [nLevel] = useState(1) // 1-back
@@ -55,6 +56,7 @@ export default function NBackPage() {
   const nextColor = useCallback((hist: number[], s: number) => {
     const next = Math.floor(Math.random() * COLORS.length)
     const newHist = [...hist, next]
+    historyRef.current = newHist
     setCurrent(next)
     setHistory(newHist)
     setFeedback(null)
@@ -74,14 +76,15 @@ export default function NBackPage() {
 
   const handleAnswer = useCallback(async (isMatch: boolean) => {
     if (phase !== 'answer') return
-    const isActualMatch = history.length >= 2 && history[history.length - 1] === history[history.length - 2]
+    const h = historyRef.current
+    const isActualMatch = h.length >= 2 && h[h.length - 1] === h[h.length - 2]
     const correct = isMatch === isActualMatch
 
     if (correct) {
       const newStreak = streak + 1
       setStreak(newStreak)
       setFeedback('correct')
-      setTimeout(() => nextColor(history, newStreak), 600)
+      setTimeout(() => nextColor(historyRef.current, newStreak), 600)
     } else {
       setFeedback('wrong')
       setFinalStreak(streak)
