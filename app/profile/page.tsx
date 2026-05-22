@@ -1287,16 +1287,6 @@ export default function ProfilePage() {
             </div>
           )}
 
-
-      <div style={{ padding: '16px' }}>
-
-        {/* Groups */}
-        <div style={{ background: '#fff', borderRadius: 20, padding: '16px 20px', marginBottom: 12, boxShadow: '0 2px 12px #4A2C0A08' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => setGroupsOpen(!groupsOpen)}>
-            <div style={{ fontSize: 14, fontWeight: 900, color: BROWN }}>My Groups</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <a href="/create-group" onClick={e => e.stopPropagation()} style={{ padding: '4px 12px', borderRadius: 8, background: '#2E7D32', color: '#fff', fontSize: 11, fontWeight: 800, textDecoration: 'none' }}>+ New</a>
-              <span style={{ fontSize: 16, color: `${BROWN}40` }}>{groupsOpen ? '▲' : '▼'}</span>
             </div>
           </div>
           {groupsOpen && (
