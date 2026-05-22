@@ -168,8 +168,8 @@ export default function FlagsClient() {
         const finalScore = score
         setPhase('result')
         if (profile?.name) {
-          await supabase.from('flag_levels').insert({player_name:profile.name, score:finalScore})
-          const {count} = await supabase.from('flag_levels').select('*',{count:'exact',head:true}).gt('score',finalScore)
+          await supabase.from('flag_scores').insert({player_name:profile.name, level:finalScore})
+          const {count} = await supabase.from('flag_scores').select('*',{count:'exact',head:true}).gt('level',finalScore)
           setWorldRank((count??0)+1)
           if (myBest===null || finalScore>myBest) setMyBest(finalScore)
         }
