@@ -220,7 +220,7 @@ export default function SudokuClient() {
       </div>
 
       {/* Board */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:1, background:'#999', padding:1, borderRadius:4, marginBottom:8, maxWidth:360, width:'100%', margin:'0 auto 8px' }}>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:1, background:'#ccc', padding:1, borderRadius:4, marginBottom:8, maxWidth:360, width:'100%', margin:'0 auto 8px' }}>
         {board.map((row, r) => row.map((val, c) => {
           const isSelected = selected?.[0] === r && selected?.[1] === c
           const isFixed = fixed[r]?.[c]
