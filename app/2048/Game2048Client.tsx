@@ -114,6 +114,20 @@ export default function Game2048Client() {
   const [touchStart, setTouchStart] = useState<{x:number,y:number}|null>(null)
 
   useEffect(() => {
+    if (phase === 'playing') {
+      document.body.style.overflow = 'hidden'
+      document.body.style.touchAction = 'none'
+    } else {
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+    }
+  }, [phase])
+
+  useEffect(() => {
     if (profile?.name) setName(profile.name)
     loadData()
   }, [profile?.name])

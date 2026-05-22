@@ -228,6 +228,8 @@ export default function SudokuClient() {
           const isHighlight = selected && (selected[0] === r || selected[1] === c || (Math.floor(selected[0]/3) === Math.floor(r/3) && Math.floor(selected[1]/3) === Math.floor(c/3)))
           const borderR = (c + 1) % 3 === 0 && c !== 8
           const borderB = (r + 1) % 3 === 0 && r !== 8
+              const borderL = c % 3 === 0 && c !== 0
+              const borderT = r % 3 === 0 && r !== 0
           return (
             <div key={`${r}-${c}`} onClick={() => handleCell(r, c)} style={{
               height:36, display:'flex', alignItems:'center', justifyContent:'center',
@@ -235,8 +237,10 @@ export default function SudokuClient() {
               fontSize:14, fontWeight: isFixed ? 900 : 700,
               color: isError ? '#FF5252' : isFixed ? '#fff' : GOLD,
               cursor: isFixed ? 'default' : 'pointer',
-              borderRight: borderR ? '2px solid rgba(255,255,255,0.2)' : undefined,
-              borderBottom: borderB ? '2px solid rgba(255,255,255,0.2)' : undefined,
+              borderRight: borderR ? '3px solid #444' : '1px solid #ccc',
+              borderBottom: borderB ? '3px solid #444' : '1px solid #ccc',
+              borderLeft: borderL ? '3px solid #444' : undefined,
+              borderTop: borderT ? '3px solid #444' : undefined,
               borderRadius:3, transition:'background 0.1s',
             }}>
               {val !== 0 ? val : ''}
