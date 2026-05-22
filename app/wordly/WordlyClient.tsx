@@ -70,6 +70,7 @@ export default function WordlyClient() {
   const [keyStates, setKeyStates] = useState<Record<string,LetterState>>({})
   const [startTime, setStartTime] = useState(0)
   const [finalTime, setFinalTime] = useState(0)
+  const [finalGuesses, setFinalGuesses] = useState(0)
   const [elapsed, setElapsed] = useState(0)
   const [worldRank, setWorldRank] = useState<number|null>(null)
   const [worldRecord, setWorldRecord] = useState<{attempts:number,time_ms:number,name:string}|null>(null)
@@ -107,6 +108,19 @@ export default function WordlyClient() {
     if (sorted[0]) setWorldRecord({attempts:sorted[0].attempts, time_ms:sorted[0].time_ms, name:sorted[0].name})
     if (profile?.name && best[profile.name]) setMyBest(best[profile.name].attempts)
   }
+
+
+  // Save score when won — separate from handleKey to avoid stale closure
+  useEffect(() => {
+    if (phase !== 'won' || !profile?.name || finalGuesses === 0 || finalTime === 0) return
+    const doSave = async () => {
+      await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:finalGuesses, time_ms:finalTime})
+      const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',finalGuesses)
+      setWorldRank((count??0)+1)
+      setMyBest(prev => prev===null || finalGuesses<prev ? finalGuesses : prev)
+    }
+    doSave()
+  }, [phase, profile?.name, finalGuesses, finalTime])
 
   const startGame = () => {
     const w = WORDS[Math.floor(Math.random() * WORDS.length)]
@@ -150,13 +164,9 @@ export default function WordlyClient() {
         const t = Date.now() - startTimeRef.current
         setFinalTime(t)
         if (timerRef.current) clearInterval(timerRef.current)
+        setFinalGuesses(newGuesses.length)
         setPhase('won')
-        if (profile?.name) {
-          await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:t})
-          const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
-          setWorldRank((count??0)+1)
-          if (myBest===null || newGuesses.length<myBest) setMyBest(newGuesses.length)
-        }
+
       } else if (newGuesses.length >= 6) {
         if (timerRef.current) clearInterval(timerRef.current)
         setPhase('lost')
