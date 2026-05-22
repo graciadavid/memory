@@ -47,8 +47,8 @@ export default function HomeClient({ easy, medium, hard }: Props) {
   }
 
   const loadPacks = async () => {
-    const { data } = await supabase.from('packs').select('slug,name,difficulty').order('difficulty').order('name')
-    if (data) setPacks(data)
+    const { data } = await supabase.from('packs').select('slug,title,difficulty,emoji').order('difficulty').order('title')
+    if (data) setPacks(data.map((p:any) => ({...p, name: p.title})))
   }
 
   const fmt = (ms: number) => {
