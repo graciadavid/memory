@@ -75,10 +75,22 @@ export default function StopPage() {
     }
   }, [phase, profile?.name, myBest])
 
+  const [saveError, setSaveError] = useState('')
+
   const saveScore = async () => {
     if (!name.trim() || pin.join('').length!==4) return
     setSaving(true)
-    await supabase.from('profiles').upsert({player_name:name.trim(), password_hash:btoa(pin.join(''))})
+    setSaveError('')
+    const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name', name.trim()).single()
+    if (existing) {
+      if (existing.password_hash !== btoa(pin.join(''))) {
+        setSaveError('Wrong PIN for this name')
+        setSaving(false)
+        return
+      }
+    } else {
+      await supabase.from('profiles').insert({player_name:name.trim(), password_hash:btoa(pin.join(''))})
+    }
     await supabase.from('precision_scores').insert({player_name:name.trim(), difference_ms:Math.abs(difference), game_type:null})
     const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(difference))
     setWorldRank((count??0)+1)
