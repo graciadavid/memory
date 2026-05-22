@@ -96,14 +96,6 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
 
          <button onClick={() => {
            const url = `${window.location.origin}/challenge?game=memory&score=${pack?.slug}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-           if (navigator.share) navigator.share({ title: 'MemGenius Challenge', text: `${profile?.name} challenges you to Memory!`, url })
-           else navigator.clipboard.writeText(url).then(() => alert('Copied!'))
-         }} style={{
-           width:'100%', padding:'14px', borderRadius:14, border:'none',
-           background:'#25D366', color:'#fff', fontSize:15, fontWeight:900,
-           fontFamily:'inherit', cursor:'pointer', marginBottom:10,
-           display:'flex', alignItems:'center', justifyContent:'center', gap:8,
-         }}>📲 Share on WhatsApp</button>
 
          <div style={{ display:'flex', gap:10 }}>
            <button onClick={onReset} style={{
