@@ -21,9 +21,9 @@ export default function StreakBadge() {
   }, [])
 
   return (
-    <Link href="/" style={{ textDecoration:'none', position:'fixed', top:12, right:12, zIndex:999, display:'flex', alignItems:'center', gap:5, background:'rgba(0,0,0,0.3)', borderRadius:20, padding:'4px 10px 4px 6px', backdropFilter:'blur(8px)' }}>
-      <img src={`${BASE}/brain-logo.webp`} style={{ width:30, height:30, objectFit:'contain' }} />
-      {streak > 0 && <span style={{ fontSize:16, fontWeight:900, color:'#FF6D00', fontFamily:'var(--font-nunito), sans-serif' }}>{streak}</span>}
+    <Link href="/" style={{ textDecoration:'none', position:'fixed', top:12, right:12, zIndex:999, display:'flex', alignItems:'center', gap:5, background:'rgba(0,0,0,0.3)', borderRadius:20, padding:'6px 14px 6px 8px', backdropFilter:'blur(8px)' }}>
+      <img src={`${BASE}/brain-logo.webp`} style={{ width:44, height:44, objectFit:'contain' }} />
+      {streak > 0 && <span style={{ fontSize:22, fontWeight:900, color:'#FF6D00', fontFamily:'var(--font-nunito), sans-serif' }}>{streak}</span>}
     </Link>
   )
 }
