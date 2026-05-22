@@ -1,295 +1,237 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
-import { supabase } from '@/lib/supabase'
-import { completeWodExercise } from '@/lib/wod'
-import { completePlanDay } from '@/lib/plan'
-import { track } from '@vercel/analytics'
+import { useState, useEffect, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
 
-const BROWN = '#4A2C0A'
-const BLUE = '#1565C0'
 const GOLD = '#C8960C'
-const CREAM = '#FAF7F2'
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-const LOGO = `${BASE}/digits.webp`
-const TROPHY = `${BASE}/nav-trophy.webp`
+const GREEN = '#2E7D32'
+const BLUE = '#1565C0'
 
-type Phase = 'intro' | 'show' | 'input' | 'result' | 'gameover'
+type Phase = 'rules' | 'show' | 'input' | 'result'
 
-function generateDigits(count: number): number[] {
-  return Array.from({ length: count }, () => Math.floor(Math.random() * 10))
-}
-
-function playSound(freq1: number, freq2: number, duration: number, vol: number) {
-  try {
-    const ctx = new AudioContext()
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.type = 'sine'
-    osc.frequency.setValueAtTime(freq1, ctx.currentTime)
-    osc.frequency.setValueAtTime(freq2, ctx.currentTime + 0.1)
-    gain.gain.setValueAtTime(vol, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
-    osc.connect(gain); gain.connect(ctx.destination)
-    osc.start(); osc.stop(ctx.currentTime + duration)
-  } catch(e) {}
+function generateDigits(length: number): number[] {
+ return Array.from({ length }, () => Math.floor(Math.random() * 10))
 }
 
 export default function DigitsClient() {
-  const { profile } = usePlayer()
-  const [phase, setPhase] = useState<Phase>('intro')
-  const [level, setLevel] = useState(3)
-  const [sequence, setSequence] = useState<number[]>([])
-  const [input, setInput] = useState<number[]>([])
-  const [worldRank, setWorldRank] = useState<number | null>(null)
-  const [topScores, setTopScores] = useState<{ name: string, level: number }[]>([])
-  const [bestLevel, setBestLevel] = useState<number | null>(null)
-  const showTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+ const { profile } = usePlayer()
+ const [phase, setPhase] = useState<Phase>('rules')
+ const [level, setLevel] = useState(3)
+ const [digits, setDigits] = useState<number[]>([])
+ const [input, setInput] = useState<number[]>([])
+ const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
+ const [finalLevel, setFinalLevel] = useState(0)
+ const [worldRecord, setWorldRecord] = useState<{level:number,name:string}|null>(null)
+ const [myBest, setMyBest] = useState<number|null>(null)
+ const [top5, setTop5] = useState<{name:string,level:number}[]>([])
+ const [worldRank, setWorldRank] = useState<number|null>(null)
+ const [name, setName] = useState('')
+ const [pin, setPin] = useState(['','','',''])
+ const [saved, setSaved] = useState(false)
+ const [saving, setSaving] = useState(false)
+ const [saveError, setSaveError] = useState('')
 
-  useEffect(() => { fetchTop() }, [])
+ useEffect(() => {
+   if (profile?.name) setName(profile.name)
+   loadData()
+ }, [profile?.name])
 
-  useEffect(() => {
-    if (!profile?.name) return
-    supabase.from('number_scores').select('level').eq('player_name', profile.name)
-      .order('level', { ascending: false }).limit(1)
-      .then(({ data }) => { if (data?.[0]) setBestLevel(data[0].level) })
-  }, [profile?.name])
-
-  const fetchTop = async () => {
-    const { data } = await supabase.from('number_scores').select('player_name, level')
-      .order('level', { ascending: false }).limit(200)
-    if (data) {
-      const best: Record<string, number> = {}
-      data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-      setTopScores(Object.entries(best).map(([name, level]) => ({ name, level })).sort((a, b) => b.level - a.level))
-    }
-  }
-
-  const startGame = (lvl: number) => {
-    const seq = generateDigits(lvl)
-    setSequence(seq)
-    setInput([])
-    setLevel(lvl)
-    setPhase('show')
-    if (showTimer.current) clearTimeout(showTimer.current)
-    showTimer.current = setTimeout(() => setPhase('input'), 2500)
-  }
-
-  const handleDigit = (n: number) => {
-    if (phase !== 'input') return
-    const next = [...input, n]
-    setInput(next)
-    if (next.length === level) {
-      const correct = next.every((d, i) => d === sequence[i])
-      if (correct) {
-        playSound(660, 880, 0.3, 0.2)
-        setPhase('result')
-        setTimeout(() => startGame(level + 1), 1200)
-      } else {
-        playSound(220, 150, 0.4, 0.2)
-        setPhase('gameover')
-        saveScore(level - 1)
-      }
-    }
-  }
-
-  const handleDelete = () => {
-    if (phase !== 'input') return
-    setInput(prev => prev.slice(0, -1))
-  }
-
-  const saveScore = async (finalLevel: number) => {
-    if (!profile?.name || finalLevel < 1) return
-    await supabase.from('number_scores').insert({ player_name: profile.name, level: finalLevel })
-    window.dispatchEvent(new Event('game_completed'))
-    const { data } = await supabase.from('number_scores').select('player_name, level')
-      .order('level', { ascending: false }).limit(200)
-    if (data) {
-      const best: Record<string, number> = {}
-      data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-      const myBest = best[profile.name] || finalLevel
-      setWorldRank(Object.values(best).filter(l => l > myBest).length + 1)
-      if (!bestLevel || finalLevel > bestLevel) setBestLevel(finalLevel)
-     setTopScores(Object.entries(best).map(([name, level]) => ({ name, level })).sort((a, b) => b.level - a.level))
-
-     try {
-       const { checkAndSaveWodCompletion } = await import('@/lib/wod')
-       const shouldRedirect = await checkAndSaveWodCompletion(profile.name, '/digits')
-       if (shouldRedirect) setTimeout(() => { window.location.href = '/my-plan' }, 1500)
-     } catch(e) {}
-   }
+ const loadData = async () => {
+   const { data } = await supabase.from('number_scores').select('player_name,level').order('level', { ascending: false }).limit(500)
+   if (!data) return
+   const best: Record<string,number> = {}
+   data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+   const sorted = Object.entries(best).map(([n,l]) => ({name:n, level:l as number})).sort((a,b) => b.level-a.level)
+   setTop5(sorted.slice(0,5))
+   if (sorted[0]) setWorldRecord({level:sorted[0].level, name:sorted[0].name})
+   if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
  }
 
-  useEffect(() => {
-    return () => { if (showTimer.current) clearTimeout(showTimer.current) }
-  }, [])
+ const startGame = () => {
+   setLevel(3)
+   setInput([])
+   setFeedback(null)
+   showLevel(3)
+ }
 
-  return (
-    <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #E3F2FD 0%, ${CREAM} 100%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 80 }}>
-      <style>{`@keyframes floatLogo { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} } @keyframes popIn { 0%{transform:scale(0.5);opacity:0} 70%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }`}</style>
+ const showLevel = (l: number) => {
+   const d = generateDigits(l)
+   setDigits(d)
+   setInput([])
+   setFeedback(null)
+   setPhase('show')
+   setTimeout(() => setPhase('input'), l * 700 + 500)
+ }
 
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
-        <img src={LOGO} alt="Digits" style={{ height: 52, objectFit: 'contain', animation: 'floatLogo 3s ease-in-out infinite', flexShrink: 0 }} />
-        <div>
-          <div style={{ fontSize: 26, fontWeight: 900, color: BLUE, letterSpacing: -0.5 }}>Digits</div>
-          <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>How many digits can you remember?</div>
-        </div>
-        {(phase === 'show' || phase === 'input' || phase === 'result') && (
-          <div style={{ marginLeft: 'auto', fontSize: 22, fontWeight: 900, color: BLUE }}>{level}</div>
-        )}
-      </div>
+ const handleDigit = useCallback((d: number) => {
+   if (phase !== 'input') return
+   const newInput = [...input, d]
+   setInput(newInput)
+   if (newInput.length === digits.length) {
+     const correct = newInput.every((v, i) => v === digits[i])
+     setFeedback(correct ? 'correct' : 'wrong')
+     if (correct) {
+       const nextLevel = level + 1
+       setLevel(nextLevel)
+       setTimeout(() => showLevel(nextLevel), 800)
+     } else {
+       setFinalLevel(level - 1)
+       setTimeout(async () => {
+         const fl = level - 1
+         setPhase('result')
+         if (profile?.name && fl > 0) {
+           await supabase.from('number_scores').insert({player_name:profile.name, level:fl})
+           const {count} = await supabase.from('number_scores').select('*',{count:'exact',head:true}).gt('level',fl)
+           setWorldRank((count??0)+1)
+           if (myBest===null || fl>myBest) setMyBest(fl)
+         }
+       }, 1000)
+     }
+   }
+ }, [phase, input, digits, level, profile?.name, myBest])
 
-      {/* INTRO */}
-      {phase === 'intro' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', gap: 16 }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 8 }}>Memorize the digits, then type them in order</div>
-            <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.7 }}>
-              You have 2.5 seconds to memorize.<br />
-              Each correct round adds one digit.<br />
-              One mistake and it's over.
-            </div>
-          </div>
+ const saveScore = async () => {
+   if (!name.trim() || pin.join('').length!==4) return
+   setSaving(true)
+   setSaveError('')
+   const pinHash = btoa(pin.join(''))
+   const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name',name.trim()).maybeSingle()
+   if (existing) {
+     if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN for this name'); setSaving(false); return }
+   } else {
+     await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
+   }
+   await supabase.from('number_scores').insert({player_name:name.trim(), level:finalLevel})
+   const {count} = await supabase.from('number_scores').select('*',{count:'exact',head:true}).gt('level',finalLevel)
+   setWorldRank((count??0)+1)
+   setSaving(false)
+   setSaved(true)
+   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+   setTimeout(() => window.location.reload(), 1500)
+ }
 
-          <div style={{ display: 'flex', gap: 12, width: '100%' }}>
-            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
-              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
-              {bestLevel ? (
-                <div style={{ fontSize: 32, fontWeight: 900, color: BLUE }}>{bestLevel}</div>
-              ) : (
-                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
-              )}
-            </div>
-            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
-              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
-              {topScores[0] ? (
-                <>
-                  <div style={{ fontSize: 32, fontWeight: 900, color: GOLD }}>{topScores[0].level}</div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{topScores[0].name}</div>
-                </>
-              ) : (
-                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
-              )}
-            </div>
-          </div>
+ const reset = () => { setPhase('rules'); setSaved(false); loadData() }
 
-          <button onClick={() => startGame(3)} style={{
-            width: '100%', padding: '18px', borderRadius: 20, border: 'none',
-            background: BLUE, color: '#fff', fontSize: 18, fontWeight: 900,
-            fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 8px 0 ${BLUE}60`,
-          }}>Play</button>
+ const resultColor = finalLevel >= 8 ? '#00C853' : finalLevel >= 5 ? '#FF6F00' : '#D32F2F'
+ const bgResult = finalLevel >= 8 ? '#0D3320' : finalLevel >= 5 ? '#2D1A00' : '#1A0000'
 
-          <Link href="/digits/ranking" style={{ textDecoration: 'none', width: '100%' }}>
-            <div style={{ width: '100%', padding: '14px', borderRadius: 16, background: '#fff', border: `1.5px solid ${BROWN}20`, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxSizing: 'border-box' }}>
-              <img src={TROPHY} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-              <span style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>World Ranking</span>
-            </div>
-          </Link>
-        </div>
-      )}
+ if (phase === 'rules') return (
+   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+     <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
+       <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/digits.png" style={{ width:60, height:60, objectFit:'contain' }} />
+       <div>
+         <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Digits</div>
+         <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Memorize and repeat the sequence</div>
+       </div>
+     </div>
+     <div style={{ display:'flex', gap:10, marginBottom:20 }}>
+       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+         <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
+         <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${worldRecord.level} digits` : '—'}</div>
+         {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
+       </div>
+       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+         <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
+         <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest!==null ? `${myBest} digits` : '—'}</div>
+       </div>
+     </div>
+     <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
+       <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
+       {top5.map((p,i) => (
+         <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+           <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
+           <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
+           <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.level} digits</div>
+         </div>
+       ))}
+     </div>
+     <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:BLUE, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 8px 0 ${BLUE}80`, marginTop:'auto' }}>
+       Play →
+     </button>
+   </main>
+ )
 
-      {/* SHOW */}
-      {phase === 'show' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', gap: 24 }}>
-          <div style={{ fontSize: 16, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase' }}>Memorize</div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {sequence.map((d, i) => (
-              <div key={i} style={{
-                width: 52, height: 64, borderRadius: 14,
-                background: BLUE, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 32, fontWeight: 900, color: '#fff',
-                boxShadow: `0 6px 0 ${BLUE}60`,
-                animation: 'popIn 0.3s ease',
-                animationDelay: `${i * 0.05}s`,
-              }}>{d}</div>
-            ))}
-          </div>
-          <div style={{ fontSize: 13, color: `${BROWN}40`, fontWeight: 700 }}>Disappears in 2.5s...</div>
-        </div>
-      )}
+ if (phase === 'show') return (
+   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:24 }}>
+     <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase' }}>Level {level} — Memorize</div>
+     <div style={{ display:'flex', gap:12, flexWrap:'wrap', justifyContent:'center' }}>
+       {digits.map((d, i) => (
+         <div key={i} style={{ width:64, height:80, background:'rgba(255,255,255,0.08)', borderRadius:16, display:'flex', alignItems:'center', justifyContent:'center', fontSize:40, fontWeight:900, color:'#fff', border:'1px solid rgba(255,255,255,0.1)' }}>
+           {d}
+         </div>
+       ))}
+     </div>
+   </main>
+ )
 
-      {/* INPUT */}
-      {phase === 'input' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px', gap: 16 }}>
-          <div style={{ fontSize: 16, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase' }}>Type them in order</div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {sequence.map((_, i) => (
-              <div key={i} style={{
-                width: 48, height: 60, borderRadius: 12,
-                background: input[i] !== undefined ? BLUE : '#E3F2FD',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 28, fontWeight: 900,
-                color: input[i] !== undefined ? '#fff' : `${BROWN}20`,
-                border: `2px solid ${input[i] !== undefined ? BLUE : '#90CAF9'}`,
-              }}>{input[i] !== undefined ? input[i] : ''}</div>
-            ))}
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, width: '100%', maxWidth: 300, marginTop: 8 }}>
-            {[1,2,3,4,5,6,7,8,9,'⌫',0,''].map((n, i) => (
-              n === '' ? <div key={i} /> :
-              n === '⌫' ? (
-                <button key={i} onClick={handleDelete} style={{ padding: '18px', borderRadius: 14, border: 'none', background: '#fff', fontSize: 20, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 3px 0 #4A2C0A10' }}>⌫</button>
-              ) : (
-                <button key={i} onClick={() => handleDigit(n as number)} style={{ padding: '18px', borderRadius: 14, border: 'none', background: '#fff', fontSize: 22, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 3px 0 #4A2C0A10', color: BROWN }}>{n}</button>
-              )
-            ))}
-          </div>
-        </div>
-      )}
+ if (phase === 'input') return (
+   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px', gap:16 }}>
+     <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase', textAlign:'center' }}>Level {level} — Type the sequence</div>
+     
+     {/* Input display */}
+     <div style={{ display:'flex', gap:8, flexWrap:'wrap', justifyContent:'center', minHeight:80, alignItems:'center' }}>
+       {Array.from({length: digits.length}).map((_, i) => (
+         <div key={i} style={{ width:52, height:64, background: input[i]!==undefined ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.04)', borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', fontSize:32, fontWeight:900, color: feedback==='wrong' ? '#FF5252' : feedback==='correct' ? '#69F0AE' : '#fff', border:`1px solid ${feedback==='wrong'?'rgba(255,82,82,0.4)':feedback==='correct'?'rgba(105,240,174,0.4)':'rgba(255,255,255,0.08)'}` }}>
+           {input[i]!==undefined ? input[i] : ''}
+         </div>
+       ))}
+     </div>
 
-      {/* RESULT - correct */}
-      {phase === 'result' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', gap: 16 }}>
-          <div style={{ fontSize: 48, }}>✓</div>
-          <div style={{ fontSize: 24, fontWeight: 900, color: '#2E7D32' }}>Correct!</div>
-          <div style={{ fontSize: 16, color: `${BROWN}50`, fontWeight: 700 }}>Get ready for {level + 1} digits...</div>
-        </div>
-      )}
+     {/* Numpad */}
+     <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10, marginTop:'auto' }}>
+       {[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map((d, i) => (
+         <button key={i} onClick={() => {
+           if (d === '⌫') { setInput(prev => prev.slice(0,-1)); return }
+           if (d === '') return
+           handleDigit(Number(d))
+         }} style={{ padding:'20px', borderRadius:16, border:'none', background: d===''?'transparent':'rgba(255,255,255,0.08)', color:'#fff', fontSize:24, fontWeight:900, fontFamily:'inherit', cursor: d===''?'default':'pointer', border:'1px solid rgba(255,255,255,0.06)' }}>
+           {d}
+         </button>
+       ))}
+     </div>
+   </main>
+ )
 
-      {/* GAMEOVER */}
-      {phase === 'gameover' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '0 20px' }}>
-          <div style={{
-            background: CREAM, borderRadius: 24, padding: '24px 20px', width: '100%',
-            boxSizing: 'border-box', boxShadow: `0 8px 32px ${BROWN}20`,
-            border: `1px solid ${GOLD}30`, textAlign: 'center',
-          }}>
-            <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: `${BROWN}50`, textTransform: 'uppercase', marginBottom: 6 }}>Game Over</div>
-            <div style={{ fontSize: 72, fontWeight: 900, color: BLUE, lineHeight: 1 }}>{level - 1}</div>
-            <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 700, marginBottom: 8 }}>digits remembered</div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: `${BROWN}60`, marginBottom: 16 }}>
-              The sequence was: <span style={{ color: BLUE }}>{sequence.join(' ')}</span>
-            </div>
-            {worldRank && (
-              <div style={{ background: `${GOLD}10`, border: `1px solid ${GOLD}20`, borderRadius: 12, padding: '10px' }}>
-                <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>World Ranking</div>
-                <div style={{ fontSize: 28, fontWeight: 900, color: GOLD }}>#{worldRank}</div>
-              </div>
-            )}
-          </div>
+ return (
+   <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
+     <div style={{ textAlign:'center' }}>
+       <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Best level reached</div>
+       <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{finalLevel}</div>
+       <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:4 }}>digits</div>
+       {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
+     </div>
 
+     {!profile?.name && !saved && (
+       <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
+         <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
+         <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
+         <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
+         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
+         <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
+           {pin.map((d,i) => (
+             <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
+               onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
+               style={{ width:48, height:56, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
+           ))}
+         </div>
+         {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:10 }}>{saveError}</div>}
+         <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.15)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+           {saving?'Saving...':'Save →'}
+         </button>
+       </div>
+     )}
 
-          <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-            <button onClick={() => {
-              const url = `${window.location.origin}/challenge?game=digits&score=${level - 1}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-              const text = `🔢 ${profile?.name} remembered ${level - 1} digits in a row on MemGenius! Can you beat them? ${url}`
-              track('challenge_shared')
-              if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-            }} style={{
-              width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-              background: '#25D366', color: '#fff', fontSize: 16, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: '0 6px 0 #128C7E60',
-            }}>Share</button>
-            <button onClick={() => startGame(3)} style={{
-              flex: 1, padding: '16px', borderRadius: 16, border: 'none',
-              background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
-              fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
-            }}>Play again</button>
-          </div>
-        </div>
-      )}
-    </main>
-  )
+     {saved && (
+       <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
+         <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
+         <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:4 }}>#{worldRank} in the world</div>
+       </div>
+     )}
+
+     <div style={{ display:'flex', gap:10, width:'100%' }}>
+       <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
+       <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:BLUE, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 5px 0 ${BLUE}80` }}>Play again →</button>
+     </div>
+   </main>
+ )
 }
