@@ -217,12 +217,12 @@ export default function SudokuClient() {
 
       {/* Timer */}
       <div style={{ textAlign:'center', marginBottom:4 }}>
-        <div style={{ fontSize:36, fontWeight:900, color: phase==='result'?GOLD:'#fff', fontVariantNumeric:'tabular-nums' }}>{fmt(elapsed)}</div>
+        <div style={{ fontSize:28, fontWeight:900, color: phase==='result'?GOLD:'#fff', fontVariantNumeric:'tabular-nums' }}>{fmt(elapsed)}</div>
         {bestScore && <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>Best: {fmt(bestScore)}</div>}
       </div>
 
       {/* Board */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:2, background:'rgba(255,255,255,0.1)', padding:2, borderRadius:12, marginBottom:10 }}>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:1, background:'rgba(255,255,255,0.1)', padding:2, borderRadius:12, marginBottom:8 }}>
         {board.map((row, r) => row.map((val, c) => {
           const isSelected = selected?.[0] === r && selected?.[1] === c
           const isFixed = fixed[r]?.[c]
@@ -234,7 +234,7 @@ export default function SudokuClient() {
             <div key={`${r}-${c}`} onClick={() => handleCell(r, c)} style={{
               aspectRatio:'1', display:'flex', alignItems:'center', justifyContent:'center',
               background: isSelected ? 'rgba(74,20,140,0.6)' : isError ? 'rgba(211,47,47,0.3)' : isHighlight ? 'rgba(255,255,255,0.06)' : '#111',
-              fontSize:16, fontWeight: isFixed ? 900 : 700,
+              fontSize:14, fontWeight: isFixed ? 900 : 700,
               color: isError ? '#FF5252' : isFixed ? '#fff' : GOLD,
               cursor: isFixed ? 'default' : 'pointer',
               borderRight: borderR ? '2px solid rgba(255,255,255,0.2)' : undefined,
