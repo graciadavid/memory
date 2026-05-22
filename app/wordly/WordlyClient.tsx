@@ -114,7 +114,7 @@ export default function WordlyClient() {
   useEffect(() => {
     if (phase !== 'won' || !profile?.name || finalGuesses === 0 || finalTime === 0) return
     const doSave = async () => {
-      await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:finalGuesses, time_ms:finalTime})
+      await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:finalGuesses, time_ms:finalTime, word_date:new Date().toISOString().split('T')[0]})
       const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',finalGuesses)
       setWorldRank((count??0)+1)
       setMyBest(prev => prev===null || finalGuesses<prev ? finalGuesses : prev)
@@ -191,7 +191,7 @@ export default function WordlyClient() {
     } else {
       await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
     }
-    await supabase.from('wordle_scores').insert({player_name:name.trim(), attempts:guesses.length, time_ms:finalTime})
+    await supabase.from('wordle_scores').insert({player_name:name.trim(), attempts:guesses.length, time_ms:finalTime, word_date:new Date().toISOString().split('T')[0]})
     const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',guesses.length)
     setWorldRank((count??0)+1)
     setSaving(false); setSaved(true)
