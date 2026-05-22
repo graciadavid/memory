@@ -1,333 +1,99 @@
-'use client'
-import { useState, useEffect, useCallback } from 'react'
-import { usePlayer } from '@/lib/usePlayer'
-import { supabase } from '@/lib/supabase'
+import PopulationClient from './PopulationClient'
+import RelatedGames from '@/components/RelatedGames'
 
-const GOLD = '#C8960C'
-const GREEN = '#2E7D32'
-const TEAL = '#00796B'
-const FLAG_CDN = 'https://flagcdn.com/w320'
-
-const COUNTRIES = [
- { code: 'cn', name: 'China', pop: 1412000000 },
- { code: 'in', name: 'India', pop: 1380000000 },
- { code: 'us', name: 'United States', pop: 331000000 },
- { code: 'id', name: 'Indonesia', pop: 273000000 },
- { code: 'pk', name: 'Pakistan', pop: 220000000 },
- { code: 'br', name: 'Brazil', pop: 213000000 },
- { code: 'ng', name: 'Nigeria', pop: 206000000 },
- { code: 'bd', name: 'Bangladesh', pop: 167000000 },
- { code: 'ru', name: 'Russia', pop: 145000000 },
- { code: 'mx', name: 'Mexico', pop: 130000000 },
- { code: 'et', name: 'Ethiopia', pop: 120000000 },
- { code: 'jp', name: 'Japan', pop: 125000000 },
- { code: 'ph', name: 'Philippines', pop: 111000000 },
- { code: 'eg', name: 'Egypt', pop: 102000000 },
- { code: 'cd', name: 'DR Congo', pop: 99000000 },
- { code: 'vn', name: 'Vietnam', pop: 97000000 },
- { code: 'ir', name: 'Iran', pop: 84000000 },
- { code: 'tr', name: 'Turkey', pop: 84000000 },
- { code: 'de', name: 'Germany', pop: 83000000 },
- { code: 'th', name: 'Thailand', pop: 70000000 },
- { code: 'gb', name: 'United Kingdom', pop: 67000000 },
- { code: 'fr', name: 'France', pop: 67000000 },
- { code: 'tz', name: 'Tanzania', pop: 63000000 },
- { code: 'za', name: 'South Africa', pop: 60000000 },
- { code: 'mm', name: 'Myanmar', pop: 54000000 },
- { code: 'ke', name: 'Kenya', pop: 54000000 },
- { code: 'kr', name: 'South Korea', pop: 52000000 },
- { code: 'co', name: 'Colombia', pop: 51000000 },
- { code: 'es', name: 'Spain', pop: 47000000 },
- { code: 'ug', name: 'Uganda', pop: 47000000 },
- { code: 'ar', name: 'Argentina', pop: 45000000 },
- { code: 'ua', name: 'Ukraine', pop: 44000000 },
- { code: 'dz', name: 'Algeria', pop: 44000000 },
- { code: 'sd', name: 'Sudan', pop: 44000000 },
- { code: 'iq', name: 'Iraq', pop: 40000000 },
- { code: 'pl', name: 'Poland', pop: 38000000 },
- { code: 'ca', name: 'Canada', pop: 38000000 },
- { code: 'ma', name: 'Morocco', pop: 37000000 },
- { code: 'pe', name: 'Peru', pop: 33000000 },
- { code: 'ao', name: 'Angola', pop: 33000000 },
- { code: 'gh', name: 'Ghana', pop: 32000000 },
- { code: 'mz', name: 'Mozambique', pop: 32000000 },
- { code: 'ye', name: 'Yemen', pop: 30000000 },
- { code: 'np', name: 'Nepal', pop: 29000000 },
- { code: 've', name: 'Venezuela', pop: 28000000 },
- { code: 'au', name: 'Australia', pop: 26000000 },
- { code: 'cm', name: 'Cameroon', pop: 27000000 },
- { code: 'nl', name: 'Netherlands', pop: 17000000 },
- { code: 'cl', name: 'Chile', pop: 19000000 },
- { code: 'ro', name: 'Romania', pop: 19000000 },
- { code: 'ec', name: 'Ecuador', pop: 18000000 },
- { code: 'kz', name: 'Kazakhstan', pop: 19000000 },
- { code: 'gt', name: 'Guatemala', pop: 17000000 },
- { code: 'zm', name: 'Zambia', pop: 18000000 },
- { code: 'sy', name: 'Syria', pop: 17000000 },
- { code: 'se', name: 'Sweden', pop: 10000000 },
- { code: 'be', name: 'Belgium', pop: 11000000 },
- { code: 'pt', name: 'Portugal', pop: 10000000 },
- { code: 'gr', name: 'Greece', pop: 10000000 },
- { code: 'cz', name: 'Czech Republic', pop: 10000000 },
- { code: 'il', name: 'Israel', pop: 9000000 },
- { code: 'ch', name: 'Switzerland', pop: 8600000 },
- { code: 'at', name: 'Austria', pop: 9000000 },
- { code: 'sa', name: 'Saudi Arabia', pop: 35000000 },
- { code: 'ae', name: 'UAE', pop: 10000000 },
- { code: 'no', name: 'Norway', pop: 5400000 },
- { code: 'dk', name: 'Denmark', pop: 5900000 },
- { code: 'fi', name: 'Finland', pop: 5500000 },
- { code: 'sg', name: 'Singapore', pop: 5900000 },
- { code: 'nz', name: 'New Zealand', pop: 5000000 },
- { code: 'ie', name: 'Ireland', pop: 5000000 },
- { code: 'cr', name: 'Costa Rica', pop: 5100000 },
- { code: 'pa', name: 'Panama', pop: 4300000 },
- { code: 'hr', name: 'Croatia', pop: 4000000 },
- { code: 'bo', name: 'Bolivia', pop: 12000000 },
- { code: 'hn', name: 'Honduras', pop: 10000000 },
- { code: 'py', name: 'Paraguay', pop: 7200000 },
- { code: 'jo', name: 'Jordan', pop: 10000000 },
- { code: 'lk', name: 'Sri Lanka', pop: 22000000 },
-]
-
-function shuffle<T>(arr: T[]): T[] {
- return [...arr].sort(() => Math.random() - 0.5)
+export const metadata = {
+ title: 'Higher or Lower Population — Country Quiz | MemGenius',
+ description: 'Which country has more people? Free online population quiz with world ranking. Test your knowledge of world demographics. No login required.',
 }
 
-function formatPop(n: number): string {
- if (n >= 1000000000) return `${(n/1000000000).toFixed(1)}B`
- if (n >= 1000000) return `${(n/1000000).toFixed(0)}M`
- return `${(n/1000).toFixed(0)}K`
-}
-
-type Phase = 'rules' | 'playing' | 'result'
-
-export default function HolPopPage() {
- const { profile } = usePlayer()
- const [phase, setPhase] = useState<Phase>('rules')
- const [score, setScore] = useState(0)
- const [top, setTop] = useState<typeof COUNTRIES[0] | null>(null)
- const [bottom, setBottom] = useState<typeof COUNTRIES[0] | null>(null)
- const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
- const [showPop, setShowPop] = useState(false)
- const [worldRecord, setWorldRecord] = useState<{score:number,name:string}|null>(null)
- const [myBest, setMyBest] = useState<number|null>(null)
- const [top5, setTop5] = useState<{name:string,score:number}[]>([])
- const [worldRank, setWorldRank] = useState<number|null>(null)
- const [name, setName] = useState('')
- const [pin, setPin] = useState(['','','',''])
- const [saved, setSaved] = useState(false)
- const [saving, setSaving] = useState(false)
- const [saveError, setSaveError] = useState('')
- const usedRef = useState<Set<string>>(() => new Set())[0]
-
- useEffect(() => {
-   if (profile?.name) setName(profile.name)
-   loadData()
- }, [profile?.name])
-
- const loadData = async () => {
-   const { data } = await supabase.from('higher_lower_scores').select('player_name,level').eq('category','population').order('level', { ascending: false }).limit(500)
-   if (!data) return
-   const best: Record<string,number> = {}
-   data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-   const sorted = Object.entries(best).map(([n,l]) => ({name:n, score:l as number})).sort((a,b) => b.score-a.score)
-   setTop5(sorted.slice(0,5))
-   if (sorted[0]) setWorldRecord({score:sorted[0].score, name:sorted[0].name})
-   if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
- }
-
- const nextRound = useCallback((currentTop: typeof COUNTRIES[0]) => {
-   const available = COUNTRIES.filter(c => !usedRef.has(c.code) && c.code !== currentTop.code)
-   if (available.length === 0) { usedRef.clear() }
-   const pool = available.length > 0 ? available : COUNTRIES.filter(c => c.code !== currentTop.code)
-   const next = shuffle(pool)[0]
-   usedRef.add(next.code)
-   setTop(currentTop)
-   setBottom(next)
-   setFeedback(null)
-   setShowPop(false)
- }, [usedRef])
-
- const startGame = () => {
-   usedRef.clear()
-   setScore(0)
-   setFeedback(null)
-   setShowPop(false)
-   const shuffled = shuffle(COUNTRIES)
-   usedRef.add(shuffled[0].code)
-   usedRef.add(shuffled[1].code)
-   setTop(shuffled[0])
-   setBottom(shuffled[1])
-   setPhase('playing')
- }
-
- const handleAnswer = useCallback(async (higher: boolean) => {
-   if (feedback || !top || !bottom) return
-   const bottomIsHigher = bottom.pop > top.pop
-   const correct = higher === bottomIsHigher
-   setShowPop(true)
-   setFeedback(correct ? 'correct' : 'wrong')
-
-   if (correct) {
-     const newScore = score + 1
-     setScore(newScore)
-     setTimeout(() => nextRound(bottom), 1200)
-   } else {
-     setTimeout(async () => {
-       const finalScore = score
-       setPhase('result')
-       if (profile?.name) {
-         await supabase.from('higher_lower_scores').insert({player_name:profile.name, level:finalScore, category:'population'})
-         const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','population').gt('level',finalScore)
-         setWorldRank((count??0)+1)
-         if (myBest===null || finalScore>myBest) setMyBest(finalScore)
-       }
-     }, 1200)
-   }
- }, [feedback, top, bottom, score, profile?.name, myBest, nextRound])
-
- const saveScore = async () => {
-   if (!name.trim() || pin.join('').length!==4) return
-   setSaving(true)
-   setSaveError('')
-   const pinHash = btoa(pin.join(''))
-   const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name',name.trim()).maybeSingle()
-   if (existing) {
-     if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN for this name'); setSaving(false); return }
-   } else {
-     await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
-   }
-   await supabase.from('higher_lower_scores').insert({player_name:name.trim(), score, category:'population'})
-   const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','population').gt('level',score)
-   setWorldRank((count??0)+1)
-   setSaving(false)
-   setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
-   setTimeout(() => window.location.reload(), 1500)
- }
-
- const reset = () => {
-   setPhase('rules')
-   setSaved(false)
-   loadData()
- }
-
- const resultColor = score >= 15 ? '#00C853' : score >= 8 ? '#FF6F00' : '#D32F2F'
- const bgResult = score >= 15 ? '#0D3320' : score >= 8 ? '#2D1A00' : '#1A0000'
-
- if (phase === 'rules') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
-     <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
-       <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/population.png" style={{ width:60, height:60, objectFit:'contain' }} />
-       <div>
-         <div style={{ fontSize:26, fontWeight:900, color:'#fff' }}>Higher or Lower</div>
-         <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Which country has more population?</div>
-       </div>
-     </div>
-     <div style={{ display:'flex', gap:10, marginBottom:20 }}>
-       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
-         <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
-         <div style={{ fontSize:18, fontWeight:900, color:GOLD }}>{worldRecord ? worldRecord.score : '—'}</div>
-         {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
-       </div>
-       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
-         <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
-         <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest!==null ? myBest : '—'}</div>
-       </div>
-     </div>
-     <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
-       <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
-       {top5.map((p,i) => (
-         <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
-           <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
-           <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
-           <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.score} streak</div>
-         </div>
-       ))}
-     </div>
-     <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:TEAL, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 8px 0 ${TEAL}80`, marginTop:'auto' }}>
-       Play →
-     </button>
-   </main>
- )
-
- if (phase === 'playing') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden' }}>
-     {/* Score */}
-     <div style={{ padding:'16px 24px', textAlign:'center', fontSize:13, fontWeight:900, color:GOLD }}>
-       {score} correct
-     </div>
-
-     {/* Top country — fixed */}
-     {top && (
-       <div style={{ background:'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:6, padding:'12px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
-         <img src={`${FLAG_CDN}/${top.code}.png`} style={{ maxWidth:120, maxHeight:75, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
-         <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>{top.name}</div>
-         <div style={{ fontSize:20, fontWeight:900, color:GOLD }}>{formatPop(top.pop)}</div>
-       </div>
-     )}
-
-     {/* VS divider */}
-     <div style={{ background:'#0A0A0A', padding:'8px', textAlign:'center', fontSize:12, fontWeight:900, color:'rgba(255,255,255,0.2)', letterSpacing:3 }}>VS</div>
-
-     {/* Bottom country — guess */}
-     {bottom && (
-       <div style={{ background: feedback === 'correct' ? 'rgba(76,175,80,0.15)' : feedback === 'wrong' ? 'rgba(211,47,47,0.15)' : 'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, padding:'10px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
-         <img src={`${FLAG_CDN}/${bottom.code}.png`} style={{ maxWidth:120, maxHeight:75, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
-         <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>{bottom.name}</div>
-         {showPop ? (
-           <div style={{ fontSize:24, fontWeight:900, color: feedback==='correct'?'#69F0AE':'#FF5252' }}>{formatPop(bottom.pop)}</div>
-         ) : (
-           <div style={{ display:'flex', gap:12 }}>
-             <button onClick={() => handleAnswer(true)} style={{ padding:'14px 28px', borderRadius:14, border:'none', background:'rgba(76,175,80,0.3)', color:'#69F0AE', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Higher ↑</button>
-             <button onClick={() => handleAnswer(false)} style={{ padding:'14px 28px', borderRadius:14, border:'none', background:'rgba(211,47,47,0.3)', color:'#FF5252', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Lower ↓</button>
-           </div>
-         )}
-       </div>
-     )}
-   </main>
- )
-
+export default function PopulationPage() {
  return (
-   <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
-     <div style={{ textAlign:'center' }}>
-       <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Correct answers</div>
-       <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{score}</div>
-       {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
-     </div>
+   <>
+     <PopulationClient />
+     <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
+       <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>How well do you know world population?</h2>
+       <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Higher or Lower Population shows you two countries side by side and asks you a simple question: which one has more people? It sounds easy until you face pairs like Vietnam vs Germany, or Canada vs Australia. Intuitions built on size, wealth or fame constantly mislead you.</p>
+       <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 24 }}>The game covers over 80 countries across all continents. Each correct answer keeps your streak alive. One wrong answer ends the game and shows your world ranking among all players.</p>
 
-     {!profile?.name && !saved && (
-       <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
-         <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
-         <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
-         <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
-         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
-         <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
-           {pin.map((d,i) => (
-             <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
-               onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
-               style={{ width:48, height:56, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
-           ))}
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           How to play
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Two countries are shown on screen, each with their flag. The top country shows its population. Your job is to decide whether the bottom country has a higher or lower population. Tap Higher or Lower. The correct population is revealed immediately and your streak continues or ends.</p>
+           <p style={{ marginBottom: 10 }}>There is no time limit. Study the flags, think about what you know about each country, and make your best guess. Your score is the number of consecutive correct answers before your first mistake.</p>
+           <p>To save your score you only need a name and a four-digit PIN. No email, no account required. Your result is stored instantly and your ranking updates in real time.</p>
          </div>
-         {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:10 }}>{saveError}</div>}
-         <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.15)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-           {saving?'Saving...':'Save →'}
-         </button>
-       </div>
-     )}
+       </details>
 
-     {saved && (
-       <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
-         <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
-         <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:4 }}>#{worldRank} in the world</div>
-       </div>
-     )}
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           The most populated countries in the world
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>India overtook China in 2023 to become the most populous country on Earth, with over 1.4 billion people. This was a historic milestone — China had held the top position for centuries. India is projected to keep growing until around 2060, while China's population is already declining due to decades of its one-child policy.</p>
+           <p style={{ marginBottom: 10 }}>The United States is third with 331 million people, followed by Indonesia with 273 million — a figure that surprises most players because Indonesia receives far less media attention than its population size would suggest. Pakistan, Brazil and Nigeria complete the top seven, all with over 200 million people each.</p>
+           <p style={{ marginBottom: 10 }}>Nigeria deserves special attention. It is currently the seventh most populous country in the world, but it has one of the highest birth rates on Earth. By 2100, demographers project that Nigeria could have a population of 700 to 800 million people, potentially making it the second or third most populous country in the world after India.</p>
+           <p>At the other extreme, the least populous countries are tiny island and landlocked nations. Vatican City has around 800 permanent residents. Nauru, the smallest island nation, has fewer than 12,000 people. San Marino, the world's oldest republic, has just 34,000 inhabitants despite being entirely surrounded by Italy.</p>
+         </div>
+       </details>
 
-     <div style={{ display:'flex', gap:10, width:'100%' }}>
-       <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
-       <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:TEAL, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 5px 0 ${TEAL}80` }}>Play again →</button>
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Surprising population facts
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Canada is the second largest country in the world by area but has a smaller population than the state of California. Its entire population of 38 million people would fit inside Greater Tokyo with room to spare. This extreme contrast between size and population makes Canada one of the most counterintuitive countries in the game.</p>
+           <p style={{ marginBottom: 10 }}>Australia presents a similar paradox. It is roughly the same size as the continental United States but has only 26 million people — fewer than Texas alone. The reason is simple: most of Australia's interior is desert, almost entirely uninhabitable. Over 85% of Australians live within 50 kilometres of the coast.</p>
+           <p style={{ marginBottom: 10 }}>Bangladesh is one of the most shocking data points in the game. It is roughly the size of the state of Iowa, yet it contains 167 million people — more than Russia, which is 120 times larger by area. Bangladesh is one of the most densely populated countries on Earth, with over 1,100 people per square kilometre.</p>
+           <p>Japan's population is aging faster than almost any other country. It currently has 125 million people but is projected to fall below 100 million by 2050 and could halve by the end of the century. Japan has more people aged over 65 than under 15 — a demographic structure with profound implications for its economy and society.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Why population is hard to guess
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Human intuition about population is systematically biased by media exposure. Countries that appear frequently in news, sports and entertainment feel more important and therefore larger than they are. This is why most people dramatically overestimate the populations of the United States and Western Europe, and underestimate those of sub-Saharan Africa and South Asia.</p>
+           <p style={{ marginBottom: 10 }}>Geographic size is another major source of error. Russia is the largest country in the world by area but has only 145 million people — fewer than Bangladesh. Kazakhstan is nine times the size of Germany but has a fraction of its population. Size and population are almost entirely uncorrelated at the global level.</p>
+           <p style={{ marginBottom: 10 }}>Wealth also misleads. The Gulf states — Saudi Arabia, UAE, Kuwait — are wealthy and prominent in global affairs but have relatively small populations. Saudi Arabia has 35 million people, less than Canada. The UAE has just 10 million, of whom only about 1 million are citizens. The rest are migrant workers.</p>
+           <p>Playing Higher or Lower Population regularly recalibrates these biases. After a few weeks of practice, players report significantly better intuitions about world demographics — a genuinely useful form of knowledge for understanding global news, business and geopolitics.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           World population growth
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>The world population reached 8 billion people in November 2022, a milestone that took only 12 years after reaching 7 billion in 2011. For most of human history, population growth was imperceptibly slow — it took until 1804 for the world to reach its first billion. The second billion took another 123 years. The third billion arrived in just 33 years.</p>
+           <p style={{ marginBottom: 10 }}>This acceleration was driven by improvements in medicine, sanitation, agriculture and economic development that dramatically reduced child mortality while birth rates remained high. The resulting population explosion of the 20th century transformed every aspect of human civilization, from cities and food systems to climate and biodiversity.</p>
+           <p style={{ marginBottom: 10 }}>The growth rate is now slowing. As countries develop economically and women gain access to education and reproductive healthcare, birth rates fall. Europe and East Asia are already below replacement rate. The United Nations projects that world population will peak at around 10.4 billion sometime in the 2080s before beginning a slow decline.</p>
+           <p>Almost all future population growth will occur in sub-Saharan Africa, which is the only major region still in the early stages of its demographic transition. Understanding this shift is essential for understanding the geopolitics, economics and culture of the 21st century — and it starts with knowing which countries are actually the most populous.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Tips to improve your score
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Memorize the top 20 most populous countries in rough order. If you know that Nigeria has around 206 million people and that puts it in the top ten, you can immediately judge almost any comparison involving Nigeria correctly. The top 20 covers the vast majority of pairs you will encounter in the game.</p>
+           <p style={{ marginBottom: 10 }}>Be especially careful with African countries. Nigeria, Ethiopia, DR Congo and Tanzania all have larger populations than many European countries that receive far more global attention. Ethiopia with 120 million people is larger than Germany. DR Congo with 99 million is larger than France. These are the comparisons that catch most players off guard.</p>
+           <p style={{ marginBottom: 10 }}>Remember the counterintuitive cases. Canada smaller than California. Australia smaller than Texas. Russia smaller than Bangladesh. Kazakhstan smaller than Morocco. These specific surprises come up repeatedly and are worth memorizing explicitly rather than trying to reason about them each time.</p>
+           <p>Use round numbers rather than precise figures. You do not need to know that Germany has exactly 83 million people — knowing it is roughly 80 million is enough to beat almost any European comparison. Precision is less important than having a reliable mental map of which countries fall in which population range.</p>
+         </div>
+       </details>
+
+       <RelatedGames category="knowledge" current="Higher or Lower Population" />
      </div>
-   </main>
+   </>
  )
 }
