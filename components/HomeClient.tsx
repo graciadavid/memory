@@ -159,17 +159,18 @@ export default function HomeClient({ easy, medium, hard }: Props) {
         ))}
       </div>
 
-      {/* Difficulty buttons */}
-      <div style={{ display:'flex', flexDirection:'column', gap:10, marginTop:'auto' }}>
-        {LEVELS.map(l => l.slug && (
-          <button key={l.label} onClick={() => handlePlay(l.slug!)} style={{ width:'100%', padding:'16px', borderRadius:16, border:'none', background:l.color, color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 6px 0 ${l.color}80` }}>
-            {l.label} →
-          </button>
-        ))}
-        <button onClick={() => { setView('categories'); loadPacks() }} style={{ width:'100%', padding:'14px', borderRadius:16, border:'1px solid rgba(255,255,255,0.15)', background:'transparent', color:'rgba(255,255,255,0.6)', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-          Browse Categories →
-        </button>
-      </div>
-    </main>
-  )
+      <div style={{ marginTop:'auto', display:'flex', flexDirection:'column', gap:10 }}>
+       <div style={{ display:'flex', gap:10 }}>
+         {LEVELS.map(l => l.slug && (
+           <button key={l.label} onClick={() => handlePlay(l.slug!)} style={{ flex:1, padding:'16px 0', borderRadius:16, border:'none', background:l.color, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 6px 0 ${l.color}80` }}>
+             {l.label}
+           </button>
+         ))}
+       </div>
+       <button onClick={() => { setView('categories'); loadPacks() }} style={{ width:'100%', padding:'14px', borderRadius:16, border:'1px solid rgba(255,255,255,0.15)', background:'transparent', color:'rgba(255,255,255,0.6)', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+         Browse Categories →
+       </button>
+     </div>
+   </main>
+ )
 }
