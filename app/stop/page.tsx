@@ -23,6 +23,7 @@ export default function StopPage() {
   const [pin, setPin] = useState(['','','',''])
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const startRef = useRef(0)
   const rafRef = useRef(0)
 
@@ -36,13 +37,10 @@ export default function StopPage() {
     if (!all) return
     const best:Record<string,number> = {}
     all.forEach((s:any) => { if (!best[s.player_name] || s.difference_ms < best[s.player_name]) best[s.player_name] = s.difference_ms })
-    const sorted = Object.entries(best).map(([n,d]) => ({name:n, diff:d as number})).sort((a,b) => a.diff - b.diff)
+    const sorted = Object.entries(best).map(([n,d]) => ({name:n, diff:d as number})).sort((a,b) => a.diff-b.diff)
     setTop5(sorted.slice(0,5))
     if (sorted[0]) setWorldRecord({diff:sorted[0].diff, name:sorted[0].name})
-    if (profile?.name) {
-      const mb = best[profile.name]
-      if (mb) setMyBest(mb)
-    }
+    if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
   }
 
   const startCountdown = () => {
@@ -75,8 +73,6 @@ export default function StopPage() {
     }
   }, [phase, profile?.name, myBest])
 
-  const [saveError, setSaveError] = useState('')
-
   const saveScore = async () => {
     if (!name.trim() || pin.join('').length!==4) return
     setSaving(true)
@@ -84,20 +80,13 @@ export default function StopPage() {
     const pinHash = btoa(pin.join(''))
     const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name', name.trim()).maybeSingle()
     if (existing) {
-      if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN'); setSaving(false); return }
+      if (existing.password_hash !== pinHash) {
+        setSaveError('Wrong PIN for this name')
+        setSaving(false)
+        return
+      }
     } else {
       await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
-    }
-    await supabase.from('precision_scores').insert({player_name:name.trim(), difference_ms:Math.abs(difference), game_type:null})
-    const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(difference))
-    setWorldRank((count??0)+1)
-    setSaving(false)
-    setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
-    setTimeout(() => window.location.reload(), 1500)
-  }
-    } else {
-      await supabase.from('profiles').insert({player_name:name.trim(), password_hash:btoa(pin.join(''))})
     }
     await supabase.from('precision_scores').insert({player_name:name.trim(), difference_ms:Math.abs(difference), game_type:null})
     const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(difference))
@@ -113,10 +102,8 @@ export default function StopPage() {
   const resultColor = absDiff < 200 ? '#00C853' : absDiff < 500 ? '#FF6F00' : '#D32F2F'
   const bgResult = absDiff < 200 ? '#0D3320' : absDiff < 500 ? '#2D1A00' : '#1A0000'
 
-  // RULES
   if (phase === 'rules') return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'20px 24px 100px', overflowY:'auto' }}>
-      {/* Header */}
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
         <img src={`${BASE}/precision.png`} style={{ width:60, height:60, objectFit:'contain' }} />
         <div>
@@ -124,8 +111,6 @@ export default function StopPage() {
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Stop at exactly 5.000s</div>
         </div>
       </div>
-
-      {/* WR + My Best */}
       <div style={{ display:'flex', gap:10, marginBottom:20 }}>
         <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
           <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
@@ -137,8 +122,6 @@ export default function StopPage() {
           <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest!==null ? `${(myBest/1000).toFixed(3)}s` : '—'}</div>
         </div>
       </div>
-
-      {/* Top 5 */}
       <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
         <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
         {top5.map((p,i) => (
@@ -149,21 +132,18 @@ export default function StopPage() {
           </div>
         ))}
       </div>
-
-      <button onClick={startCountdown} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080' }}>
+      <button onClick={startCountdown} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080', marginTop:'auto' }}>
         Play →
       </button>
     </main>
   )
 
-  // COUNTDOWN
   if (phase === 'countdown') return (
     <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'center' }}>
       <div style={{ fontSize:160, fontWeight:900, color:'#fff' }}>{countdown}</div>
     </main>
   )
 
-  // RUNNING
   if (phase === 'running') return (
     <main onClick={stopGame} style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor:'pointer', userSelect:'none', gap:8 }}>
       <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.25)', letterSpacing:3, textTransform:'uppercase' }}>Target</div>
@@ -174,7 +154,6 @@ export default function StopPage() {
     </main>
   )
 
-  // RESULT
   return (
     <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
       <div style={{ textAlign:'center' }}>
@@ -186,18 +165,19 @@ export default function StopPage() {
       </div>
 
       {!profile?.name && !saved && (
-        <div style={{ width:'100%', background:'rgba(255,255,255,0.08)', borderRadius:20, padding:'20px' }}>
-          <div style={{ fontSize:14, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
-          <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>Create your free account</div>
-          <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:10, boxSizing:'border-box' }} />
+        <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
+          <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
+          <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
+          <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
           <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
-          <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:12 }}>
+          <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
             {pin.map((d,i) => (
               <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
                 onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
-                style={{ width:44, height:52, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
+                style={{ width:48, height:56, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
             ))}
           </div>
+          {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:10 }}>{saveError}</div>}
           <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.15)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
             {saving?'Saving...':'Save →'}
           </button>
@@ -205,8 +185,8 @@ export default function StopPage() {
       )}
 
       {saved && (
-        <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'14px 20px', textAlign:'center' }}>
-          <div style={{ fontSize:15, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
+        <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
+          <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
           <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:4 }}>#{worldRank} in the world</div>
         </div>
       )}
