@@ -12,11 +12,15 @@ export default function ProfilePage() {
  const [editingPin, setEditingPin] = useState(false)
  const [pinSaved, setPinSaved] = useState(false)
  const [records, setRecords] = useState<any>({})
+ const [streak, setStreak] = useState<number>(0)
 
  useEffect(() => {
-   if (!profile?.name) return
-   fetchRecords(profile.name)
- }, [profile?.name])
+  if (!profile?.name) return
+  fetchRecords(profile.name)
+  supabase.from('profiles').select('streak').eq('player_name', profile.name).single().then(({data}:any) => {
+    if (data?.streak) setStreak(data.streak)
+  })
+}, [profile?.name])
 
  const fetchRecords = async (name: string) => {
    const r: any = {}
@@ -103,6 +107,12 @@ export default function ProfilePage() {
          {profile?.name?.[0]?.toUpperCase() ?? '?'}
        </div>
        <div style={{ fontSize:24, fontWeight:900, color:'#fff', marginBottom:8 }}>{profile?.name ?? 'Guest'}</div>
+      {streak > 0 && (
+        <div style={{ display:'flex', alignItems:'center', gap:6, justifyContent:'center', marginBottom:8 }}>
+          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" style={{ width:24, height:24, objectFit:'contain' }} />
+          <span style={{ fontSize:18, fontWeight:900, color:'#FF6D00' }}>{streak} day streak</span>
+        </div>
+      )}
        <button onClick={() => setEditingPin(!editingPin)} style={{ background:'rgba(255,255,255,0.08)', border:'none', borderRadius:10, padding:'6px 14px', color:'rgba(255,255,255,0.5)', fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>
          {editingPin ? 'Cancel' : '🔑 Change PIN'}
        </button>
