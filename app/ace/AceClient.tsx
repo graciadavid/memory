@@ -11,23 +11,23 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 const CANVAS_W = 390
 const CANVAS_H = 320
 const TARGET_X = CANVAS_W * 0.5
-const TARGET_Y = CANVAS_H * 0.42
+const TARGET_Y = CANVAS_H * 0.5
 const TARGET_R = 42
 const BALL_R = 14
 
 type Phase = 'rules' | 'playing' | 'result'
 
 function getBallPos(t: number) {
- const x = CANVAS_W * 0.1 + (CANVAS_W * 0.8) * t
- const h = CANVAS_H * 0.7
- const y = h - h * 4 * t * (1 - t) * 0.7
+ const x = CANVAS_W * 0.05 + (CANVAS_W * 0.9) * t
+ const startY = CANVAS_H * 0.88
+ const y = startY - (startY - TARGET_Y) * Math.sin(t * Math.PI)
  return { x, y }
 }
 
 export default function AceClient() {
  const { profile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
- const [level, setLevel] = useState(1)
+ const [level, setLevel] = useState(0)
  const [worldRecord, setWorldRecord] = useState<{level:number,name:string}|null>(null)
  const [myBest, setMyBest] = useState<number|null>(null)
  const [top5, setTop5] = useState<{name:string,level:number}[]>([])
@@ -42,7 +42,7 @@ export default function AceClient() {
  const animRef = useRef(0)
  const startTimeRef = useRef(0)
  const levelRef = useRef(1)
- const durationRef = useRef(2000)
+ const durationRef = useRef(2200)
  const didHitRef = useRef(false)
 
  useEffect(() => {
@@ -71,40 +71,65 @@ export default function AceClient() {
    const { x, y } = getBallPos(t)
 
    ctx.clearRect(0, 0, CANVAS_W, CANVAS_H)
-
-   // Background
    ctx.fillStyle = '#0A0A0A'
    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
 
-   // Court line
+   // Level label
+   ctx.font = '800 13px sans-serif'
+   ctx.fillStyle = 'rgba(255,255,255,0.3)'
+   ctx.textAlign = 'center'
+   ctx.fillText('LEVEL ' + String(levelRef.current), CANVAS_W / 2, 22)
+
+   // Floor line
    ctx.strokeStyle = 'rgba(255,255,255,0.06)'
    ctx.lineWidth = 1
    ctx.beginPath()
-   ctx.moveTo(0, CANVAS_H * 0.85)
-   ctx.lineTo(CANVAS_W, CANVAS_H * 0.85)
+   ctx.moveTo(0, CANVAS_H * 0.92)
+   ctx.lineTo(CANVAS_W, CANVAS_H * 0.92)
    ctx.stroke()
 
-   // Level number
-   ctx.font = '900 48px sans-serif'
-   ctx.fillStyle = TENNIS
-   ctx.textAlign = 'center'
-   ctx.fillText('Level ' + String(levelRef.current), CANVAS_W/2, 40)
-
-   // Target zone
    const dist = Math.sqrt((x - TARGET_X) ** 2 + (y - TARGET_Y) ** 2)
    const inTarget = dist < TARGET_R
+   const tc = inTarget ? TENNIS : 'rgba(255,255,255,0.35)'
+
+   // Crosshair lines
+   ctx.strokeStyle = tc
+   ctx.lineWidth = 1
    ctx.beginPath()
-   ctx.arc(TARGET_X, TARGET_Y, TARGET_R, 0, Math.PI * 2)
-   ctx.fillStyle = inTarget ? 'rgba(76,175,80,0.25)' : 'rgba(255,255,255,0.06)'
-   ctx.fill()
-   ctx.strokeStyle = inTarget ? TENNIS : 'rgba(255,255,255,0.2)'
-   ctx.lineWidth = 2.5
+   ctx.moveTo(TARGET_X - TARGET_R - 14, TARGET_Y)
+   ctx.lineTo(TARGET_X + TARGET_R + 14, TARGET_Y)
+   ctx.stroke()
+   ctx.beginPath()
+   ctx.moveTo(TARGET_X, TARGET_Y - TARGET_R - 14)
+   ctx.lineTo(TARGET_X, TARGET_Y + TARGET_R + 14)
    ctx.stroke()
 
-   // Ball shadow
+   // Outer ring
    ctx.beginPath()
-   ctx.ellipse(x, CANVAS_H * 0.85, BALL_R * 0.7, 4, 0, 0, Math.PI * 2)
-   ctx.fillStyle = 'rgba(255,255,255,0.08)'
+   ctx.arc(TARGET_X, TARGET_Y, TARGET_R, 0, Math.PI * 2)
+   ctx.fillStyle = inTarget ? 'rgba(76,175,80,0.18)' : 'rgba(255,255,255,0.04)'
+   ctx.fill()
+   ctx.strokeStyle = tc
+   ctx.lineWidth = 2
+   ctx.stroke()
+
+   // Inner ring
+   ctx.beginPath()
+   ctx.arc(TARGET_X, TARGET_Y, TARGET_R * 0.45, 0, Math.PI * 2)
+   ctx.strokeStyle = tc
+   ctx.lineWidth = 1.5
+   ctx.stroke()
+
+   // Center dot
+   ctx.beginPath()
+   ctx.arc(TARGET_X, TARGET_Y, 4, 0, Math.PI * 2)
+   ctx.fillStyle = tc
+   ctx.fill()
+
+   // Ball glow
+   ctx.beginPath()
+   ctx.arc(x, y, BALL_R + 6, 0, Math.PI * 2)
+   ctx.fillStyle = 'rgba(200,255,0,0.12)'
    ctx.fill()
 
    // Ball
@@ -116,7 +141,6 @@ export default function AceClient() {
    if (t < 1) {
      animRef.current = requestAnimationFrame(drawFrame)
    } else {
-     // Missed
      if (!didHitRef.current) endGame(false)
    }
  }, [])
@@ -137,17 +161,16 @@ export default function AceClient() {
  }
 
  const endGame = useCallback(async (hit: boolean) => {
+   if (hit) return
    cancelAnimationFrame(animRef.current)
-   if (!hit) {
-     const finalLevel = levelRef.current - 1
-     setLevel(finalLevel)
-     setPhase('result')
-     if (profile?.name && finalLevel > 0) {
-       await supabase.from('ace_scores').insert({player_name:profile.name, level:finalLevel})
-       const {count} = await supabase.from('ace_scores').select('*',{count:'exact',head:true}).gt('level',finalLevel)
-       setWorldRank((count??0)+1)
-       if (myBest===null || finalLevel>myBest) setMyBest(finalLevel)
-     }
+   const finalLevel = levelRef.current - 1
+   setLevel(finalLevel)
+   setPhase('result')
+   if (profile?.name && finalLevel > 0) {
+     await supabase.from('ace_scores').insert({player_name:profile.name, level:finalLevel})
+     const {count} = await supabase.from('ace_scores').select('*',{count:'exact',head:true}).gt('level',finalLevel)
+     setWorldRank((count??0)+1)
+     if (myBest===null || finalLevel>myBest) setMyBest(finalLevel)
    }
  }, [profile?.name, myBest])
 
@@ -157,11 +180,10 @@ export default function AceClient() {
    const t = elapsed / durationRef.current
    const { x, y } = getBallPos(t)
    const dist = Math.sqrt((x - TARGET_X) ** 2 + (y - TARGET_Y) ** 2)
-
    if (dist < TARGET_R) {
      didHitRef.current = true
      cancelAnimationFrame(animRef.current)
-     const isPerfect = dist < TARGET_R * 0.5
+     const isPerfect = dist < TARGET_R * 0.45
      setHitResult(isPerfect ? 'perfect' : 'good')
      levelRef.current += 1
      setLevel(l => l + 1)
@@ -184,9 +206,8 @@ export default function AceClient() {
    } else {
      await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
    }
-   const finalLevel = level
-   await supabase.from('ace_scores').insert({player_name:name.trim(), level:finalLevel})
-   const {count} = await supabase.from('ace_scores').select('*',{count:'exact',head:true}).gt('level',finalLevel)
+   await supabase.from('ace_scores').insert({player_name:name.trim(), level})
+   const {count} = await supabase.from('ace_scores').select('*',{count:'exact',head:true}).gt('level',level)
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
@@ -242,16 +263,14 @@ export default function AceClient() {
  )
 
  if (phase === 'playing') return (
-   <main onClick={handleTap} style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor:'pointer', userSelect:'none', gap:16 }}>
-     <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase' }}>Level {level}</div>
+   <main onClick={handleTap} style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor:'pointer', userSelect:'none', gap:12 }}>
      <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{ width:'100%', maxWidth:CANVAS_W, touchAction:'none' }} />
      {hitResult && (
-       <div style={{ fontSize:32, fontWeight:900, color:hitResult==='perfect'?GOLD:hitResult==='good'?TENNIS:'#D32F2F', animation:'fadeIn 0.2s ease' }}>
+       <div style={{ fontSize:28, fontWeight:900, color:hitResult==='perfect'?GOLD:hitResult==='good'?TENNIS:'#D32F2F' }}>
          {hitResult==='perfect'?'Perfect!':hitResult==='good'?'Good!':'Miss!'}
        </div>
      )}
      <div style={{ fontSize:13, color:'rgba(255,255,255,0.15)', fontWeight:700 }}>Tap anywhere</div>
-     <style>{`@keyframes fadeIn{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}`}</style>
    </main>
  )
 
@@ -262,7 +281,6 @@ export default function AceClient() {
        <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{level}</div>
        {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
      </div>
-
      {!profile?.name && !saved && (
        <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
          <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
@@ -282,14 +300,12 @@ export default function AceClient() {
          </button>
        </div>
      )}
-
      {saved && (
        <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
          <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
          <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:4 }}>#{worldRank} in the world</div>
        </div>
      )}
-
      <div style={{ display:'flex', gap:10, width:'100%' }}>
        <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
        <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:TENNIS, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 5px 0 ${TENNIS}80` }}>Play again →</button>
