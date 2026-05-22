@@ -20,7 +20,7 @@ export default function HomePage() {
      gap: 40,
    }}>
      <div style={{ textAlign: 'center' }}>
-       <img src={`${BASE}/memgeniuslogofull.png`} alt="MemGenius" style={{ width: '100%', maxWidth: 280, objectFit: 'contain', marginBottom: 16 }} />
+       <img src={`${BASE}/logomemgenius.webp`} alt="MemGenius" style={{ width: '100%', maxWidth: 280, objectFit: 'contain', marginBottom: 16 }} />
        <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', fontWeight: 700 }}>Train your brain daily.</div>
        <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', fontWeight: 700 }}>Compete with the world.</div>
      </div>

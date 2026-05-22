@@ -6,10 +6,10 @@ const BROWN = '#4A2C0A'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
 const ITEMS = [
-  { href: '/memory-hub', label: 'Memory', color: '#C62828', icon: `${BASE}/memory.png` },
+  { href: '/memory-hub', label: 'Memory', color: '#C62828', icon: `${BASE}/brain-logo.webp` },
   { href: '/agility', label: 'Agility', color: '#4A148C', icon: `${BASE}/precision.png` },
-  { href: '/knowledge', label: 'Knowledge', color: '#00796B', icon: `${BASE}/flags.png` },
-  { href: '/logic', label: 'Logic', color: '#E65100', icon: `${BASE}/sudoku.png` },
+  { href: '/knowledge', label: 'Knowledge', color: '#00796B', icon: `${BASE}/population.png` },
+  { href: '/logic', label: 'Logic', color: '#E65100', icon: `${BASE}/target.png` },
   { href: '/profile', label: 'Profile', color: BROWN, icon: `${BASE}/nav-profile.webp` },
 ]
 
