@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
-const PURPLE = '#4A148C'
+const PURPLE = '#8B3A2A'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
 function generateSudoku(difficulty: 'easy' | 'medium' | 'hard') {
@@ -233,9 +233,9 @@ export default function SudokuClient() {
           return (
             <div key={`${r}-${c}`} onClick={() => handleCell(r, c)} style={{
               height:36, display:'flex', alignItems:'center', justifyContent:'center',
-              background: isSelected ? '#E8D5FF' : isError ? '#FFE0E0' : isHighlight ? '#F0EBE0' : '#FAF7F2',
+              background: isSelected ? '#F5DDD8' : isError ? '#FFE0E0' : isHighlight ? '#F0EBE0' : '#FAF7F2',
               fontSize:14, fontWeight: isFixed ? 900 : 700,
-              color: isError ? '#C62828' : isFixed ? '#333' : '#6A1B9A',
+              color: isError ? '#C62828' : isFixed ? '#333' : '#8B3A2A',
               cursor: isFixed ? 'default' : 'pointer',
               borderRight: borderR ? '2px solid #999' : '1px solid #ddd',
               borderBottom: borderB ? '2px solid #999' : '1px solid #ddd',
