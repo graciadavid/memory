@@ -26,7 +26,7 @@ export default function ProfilePage() {
      supabase.from('precision_scores').select('difference_ms').eq('game_type', 'formula1').eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
      supabase.from('precision_scores').select('difference_ms').eq('game_type', 'pendulum').eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
      supabase.from('ace_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
-     supabase.from('flag_scores').select('score').eq('player_name', name).order('score', { ascending: false }).limit(1),
+     supabase.from('flag_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('higher_lower_scores').select('score').eq('category', 'population').eq('player_name', name).order('score', { ascending: false }).limit(1),
      supabase.from('higher_lower_scores').select('score').eq('category', 'area').eq('player_name', name).order('score', { ascending: false }).limit(1),
      supabase.from('number_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
@@ -43,7 +43,7 @@ export default function ProfilePage() {
    if (f1.data?.[0]) r.f1 = `${f1.data[0].difference_ms}ms`
    if (pendulum.data?.[0]) r.pendulum = `${(pendulum.data[0].difference_ms/10).toFixed(1)}°`
    if (ace.data?.[0]) r.ace = `${ace.data[0].level} aces`
-   if (flags.data?.[0]) r.flags = `${flags.data[0].score} pts`
+   if (flags.data?.[0]) r.flags = `${flags.data[0].level} flags`
    if (vPop.data?.[0]) r.versusPop = `${vPop.data[0].score} pts`
    if (vArea.data?.[0]) r.versusArea = `${vArea.data[0].score} pts`
    if (digits.data?.[0]) r.digits = `Level ${digits.data[0].level}`

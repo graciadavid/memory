@@ -125,14 +125,14 @@ export default function FlagsClient() {
   }, [profile?.name])
 
   const loadData = async () => {
-    const { data } = await supabase.from('flag_scores').select('player_name,score').order('score', { ascending: false }).limit(500)
+    const { data } = await supabase.from('flag_levels').select('player_name,score').order('score', { ascending: false }).limit(500)
     if (!data) return
     const best: Record<string,number> = {}
-    data.forEach((s:any) => { if (!best[s.player_name] || s.score > best[s.player_name]) best[s.player_name] = s.score })
+    data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
     const sorted = Object.entries(best).map(([n,s]) => ({name:n, score:s as number})).sort((a,b) => b.score-a.score)
     setTop5(sorted.slice(0,5))
     if (sorted[0]) setWorldRecord({score:sorted[0].score, name:sorted[0].name})
-    if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
+    if (profile?.name && best[profile.name] !== undefined) setMyBest(best[profile.name])
   }
 
   const nextQuestion = useCallback(() => {
@@ -168,8 +168,8 @@ export default function FlagsClient() {
         const finalScore = score
         setPhase('result')
         if (profile?.name) {
-          await supabase.from('flag_scores').insert({player_name:profile.name, score:finalScore})
-          const {count} = await supabase.from('flag_scores').select('*',{count:'exact',head:true}).gt('score',finalScore)
+          await supabase.from('flag_levels').insert({player_name:profile.name, score:finalScore})
+          const {count} = await supabase.from('flag_levels').select('*',{count:'exact',head:true}).gt('score',finalScore)
           setWorldRank((count??0)+1)
           if (myBest===null || finalScore>myBest) setMyBest(finalScore)
         }
@@ -188,8 +188,8 @@ export default function FlagsClient() {
     } else {
       await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
     }
-    await supabase.from('flag_scores').insert({player_name:name.trim(), score})
-    const {count} = await supabase.from('flag_scores').select('*',{count:'exact',head:true}).gt('score',score)
+    await supabase.from('flag_levels').insert({player_name:name.trim(), score})
+    const {count} = await supabase.from('flag_levels').select('*',{count:'exact',head:true}).gt('score',score)
     setWorldRank((count??0)+1)
     setSaving(false)
     setSaved(true)
