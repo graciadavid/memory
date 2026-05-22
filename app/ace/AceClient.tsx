@@ -9,10 +9,10 @@ const TENNIS = '#4CAF50'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
 const CANVAS_W = 390
-const CANVAS_H = 300
-const TARGET_X = CANVAS_W * 0.72
-const TARGET_Y = CANVAS_H * 0.55
-const TARGET_R = 36
+const CANVAS_H = 320
+const TARGET_X = CANVAS_W * 0.5
+const TARGET_Y = CANVAS_H * 0.42
+const TARGET_R = 42
 const BALL_R = 14
 
 type Phase = 'rules' | 'playing' | 'result'
