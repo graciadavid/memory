@@ -171,7 +171,6 @@ export default function WordlyClient() {
            const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
            setWorldRank((count??0)+1)
            setMyBest(prev => prev===null || newGuesses.length<prev ? newGuesses.length : prev)
-           setTimeout(() => window.location.reload(), 2000)
          } catch(e) { console.error('Save error:', e) }
        }
      } else if (newGuesses.length >= 6) {
