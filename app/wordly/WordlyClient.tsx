@@ -68,9 +68,10 @@ export default function WordlyClient() {
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
   const timerRef = useRef<NodeJS.Timeout|null>(null)
+  const profileRef = useRef<string|null>(null)
 
   useEffect(() => {
-    if (profile?.name) setName(profile.name)
+    if (profile?.name) { setName(profile.name); profileRef.current = profile.name }
     loadData()
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [profile?.name])
@@ -139,9 +140,9 @@ export default function WordlyClient() {
         setFinalTime(t)
         if (timerRef.current) clearInterval(timerRef.current)
         setPhase('won')
-        console.log('SAVE attempt, profile:', profile?.name)
-        if (profile?.name) {
-          await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:t})
+        const pName = profileRef.current
+        if (pName) {
+          await supabase.from('wordle_scores').insert({player_name:pName, attempts:newGuesses.length, time_ms:t})
           const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
           setWorldRank((count??0)+1)
           setMyBest(prev => prev === null || newGuesses.length < prev ? newGuesses.length : prev)
@@ -153,7 +154,7 @@ export default function WordlyClient() {
       return
     }
     if (/^[A-Z]$/.test(key) && current.length < 5) setCurrent(p => p + key)
-  }, [phase, current, word, guesses, keyStates, startTime, profile?.name])
+  }, [phase, current, word, guesses, keyStates, startTime])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => handleKey(e.key.toUpperCase())
