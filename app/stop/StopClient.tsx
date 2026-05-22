@@ -71,7 +71,7 @@ export default function StopPage() {
       const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(diff))
       setWorldRank((count??0)+1)
       if (myBest===null || Math.abs(diff)<myBest) setMyBest(Math.abs(diff))
-      updateStreak(profile.name)
+      await updateStreak(profile.name)
     }
   }, [phase, profile?.name, myBest])
 
