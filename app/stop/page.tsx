@@ -108,8 +108,6 @@ export default function StopPage() {
   // RULES
   if (phase === 'rules') return (
     <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'20px 24px 100px', overflowY:'auto' }}>
-      <a href="/" style={{ alignSelf:'flex-start', textDecoration:'none', background:'rgba(255,255,255,0.08)', borderRadius:8, padding:'6px 12px', fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.4)', marginBottom:24 }}>← Home</a>
-
       {/* Header */}
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
         <img src={`${BASE}/precision.png`} style={{ width:60, height:60, objectFit:'contain' }} />
