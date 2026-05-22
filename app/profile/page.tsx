@@ -34,7 +34,7 @@ export default function ProfilePage() {
      supabase.from('sequence_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('nback_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('sudoku_scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
-     supabase.from('mastermind_scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
+     supabase.from('mastermind_scores').select('attempts,time_ms').eq('player_name', name).order('attempts', { ascending: true }).order('time_ms', { ascending: true }).limit(1),
      supabase.from('game2048_scores').select('score').eq('player_name', name).order('score', { ascending: false }).limit(1),
      supabase.from('wordle_scores').select('attempts').eq('player_name', name).order('attempts', { ascending: true }).limit(1),
    ])
@@ -52,7 +52,7 @@ export default function ProfilePage() {
    if (seq.data?.[0]) r.sequence = `Level ${seq.data[0].level}`
    if (nback.data?.[0]) r.nback = `Level ${nback.data[0].level}`
    if (sudoku.data?.[0]) r.sudoku = fmt(sudoku.data[0].time_ms)
-   if (master.data?.[0]) r.mastermind = fmt(master.data[0].time_ms)
+   if (master.data?.[0]) r.mastermind = `${master.data[0].attempts} tries · ${fmt(master.data[0].time_ms)}`
    if (g2048.data?.[0]) r.game2048 = `${g2048.data[0].score} pts`
    if (wordly.data?.[0]) r.wordly = `${wordly.data[0].attempts} tries`
    setRecords(r)
