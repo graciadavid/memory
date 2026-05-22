@@ -126,7 +126,8 @@ export default function ProfilePage() {
      <div style={{ padding:'40px 24px 24px' }}>
        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
          <div>
-           <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:6 }}>{profile?.name ?? 'Guest'}</div>
+           <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:4 }}>{profile?.name ?? 'Guest'}</div>
+            <a href="/streak" style={{ textDecoration:'none', fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.35)', letterSpacing:0.5 }}>Learn more about streak levels →</a>
            <button onClick={() => { setEditing(!editing); setEditMode(null); setEditError(''); setEditSuccess('') }} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'6px 14px', color:'rgba(255,255,255,0.5)', fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>
              {editing ? 'Done' : 'Edit Profile'}
            </button>
