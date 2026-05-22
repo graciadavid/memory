@@ -51,7 +51,7 @@ export default function CountriesPage() {
           </div>
         </details>
 
-        <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+        <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
           <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             Did you know?
             <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
@@ -60,6 +60,18 @@ export default function CountriesPage() {
             <p style={{ marginBottom: 10 }}>There are 195 recognized countries in the world today, but their shapes are far from random. Most borders were drawn during the colonial era by European powers who had little knowledge of local geography, culture or ethnic boundaries. This is why many African countries have perfectly straight borders — they were drawn with a ruler on a map in Berlin in 1884.</p>
             <p style={{ marginBottom: 10 }}>Some countries have genuinely bizarre shapes. Chile is 4,300 kilometres long but averages only 177 kilometres wide, making it one of the most elongated countries on Earth. The Gambia is almost entirely surrounded by Senegal, forming a thin strip of land along the Gambia River. Italy is shaped like a boot, which even Italians use as a reference point in everyday conversation.</p>
             <p>The hardest countries to identify by shape are typically small island nations and landlocked African countries with simple rectangular borders. The easiest are usually large countries with distinctive coastlines or very unusual proportions that make them immediately recognizable even without any labels.</p>
+          </div>
+        </details>
+
+        <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+          <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            Countries by shape vs other geography games
+            <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+          </summary>
+          <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+            <p style={{ marginBottom: 10 }}>Most geography games test you on capitals, flags or population — all knowledge you can memorize from lists. Identifying countries by shape is different because it trains pure visual recognition. You cannot look up a silhouette in a textbook. You have to build a mental image library through repeated exposure and practice.</p>
+            <p style={{ marginBottom: 10 }}>This makes Countries one of the most transferable geography games available. Players who train consistently report that they start recognizing country shapes automatically when they see maps in newspapers, on TV or in presentations. The skill becomes unconscious, which is the hallmark of truly learned knowledge rather than surface memorization.</p>
+            <p>Compared to flag quizzes, country shapes are generally considered harder because flags have distinctive colors and symbols that act as memory anchors, while shapes require pure spatial memory. If you can master both, you have built a genuinely impressive foundation of geographical knowledge that very few people possess.</p>
           </div>
         </details>
 
