@@ -295,15 +295,6 @@ export default function Game2048Client() {
         }))}
       </div>
 
-      {/* Arrow buttons for mobile */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginTop:16, maxWidth:200, margin:'16px auto 0' }}>
-        <div />
-        <button onClick={() => handleMove('up')} style={{ aspectRatio:'1', borderRadius:12, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer' }}>↑</button>
-        <div />
-        <button onClick={() => handleMove('left')} style={{ aspectRatio:'1', borderRadius:12, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer' }}>←</button>
-        <button onClick={() => handleMove('down')} style={{ aspectRatio:'1', borderRadius:12, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer' }}>↓</button>
-        <button onClick={() => handleMove('right')} style={{ aspectRatio:'1', borderRadius:12, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer' }}>→</button>
-      </div>
 
       {/* Game over overlay */}
       {phase === 'gameover' && (
