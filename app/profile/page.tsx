@@ -82,6 +82,7 @@ export default function ProfilePage() {
      { label: 'Flags', value: records.flags },
      { label: 'Higher or Lower Pop', value: records.versusPop },
      { label: 'Higher or Lower Area', value: records.versusArea },
+     { label: 'Countries', value: records.countries },
    ]},
    { label: 'Logic', color: '#E65100', games: [
      { label: 'Sudoku', value: records.sudoku },

@@ -262,8 +262,8 @@ export default function HolPopPage() {
      {/* Top country — fixed */}
      {top && (
        <div style={{ background:'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:6, padding:'12px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
-         <img src={`${FLAG_CDN}/${top.code}.png`} style={{ maxWidth:90, maxHeight:55, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
-         <div style={{ fontSize:14, fontWeight:900, color:'#fff' }}>{top.name}</div>
+         <img src={`${FLAG_CDN}/${top.code}.png`} style={{ maxWidth:120, maxHeight:75, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
+         <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>{top.name}</div>
          <div style={{ fontSize:20, fontWeight:900, color:GOLD }}>{formatPop(top.pop)}</div>
        </div>
      )}
@@ -274,8 +274,8 @@ export default function HolPopPage() {
      {/* Bottom country — guess */}
      {bottom && (
        <div style={{ background: feedback === 'correct' ? 'rgba(76,175,80,0.15)' : feedback === 'wrong' ? 'rgba(211,47,47,0.15)' : 'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, padding:'10px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
-         <img src={`${FLAG_CDN}/${bottom.code}.png`} style={{ maxWidth:90, maxHeight:55, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
-         <div style={{ fontSize:14, fontWeight:900, color:'#fff' }}>{bottom.name}</div>
+         <img src={`${FLAG_CDN}/${bottom.code}.png`} style={{ maxWidth:120, maxHeight:75, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />
+         <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>{bottom.name}</div>
          {showPop ? (
            <div style={{ fontSize:24, fontWeight:900, color: feedback==='correct'?'#69F0AE':'#FF5252' }}>{formatPop(bottom.pop)}</div>
          ) : (
@@ -299,7 +299,7 @@ export default function HolPopPage() {
 
      {!profile?.name && !saved && (
        <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
-         <div style={{ fontSize:14, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
+         <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
          <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
          <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
