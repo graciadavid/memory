@@ -34,12 +34,6 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!profile?.name) return
 
-    supabase.from('brain_test_scores').select('score').eq('player_name', profile.name)
-      .order('created_at', { ascending: false }).limit(1)
-      .then(({ data }) => {
-        if (data?.[0]) setBrainAge(Math.min(65, Math.max(18, Math.round(65 - (data[0].score / 1000) * 47))))
-      })
-
     // Groups
     supabase.from('group_members').select('group_id, groups(id, name)').eq('player_name', profile.name)
       .then(({ data }) => { if (data) setMyGroups(data.map((d: any) => d.groups).filter(Boolean)) })
