@@ -1,37 +1,67 @@
-'use client'
-const BROWN = '#4A2C0A'
-const GOLD = '#C8960C'
-const COLOR = '#4A148C'
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+import AgilityClient from './AgilityClient'
 
-const GAMES = [
- { label: 'Stop', icon: `${BASE}/precision.png`, href: '/stop', unlocked: true, desc: 'Stop at exactly 5.000s' },
- { label: 'F1 Reaction', icon: `${BASE}/f1.png`, href: '/f1', unlocked: true, desc: 'React when lights go out' },
- { label: 'Pendulum', icon: `${BASE}/pendulum.png`, href: '/pendulum', unlocked: true, desc: 'Tap when vertical' },
- { label: 'Ace', icon: `${BASE}/padel.png`, href: '/ace', unlocked: true, desc: 'Hit the sweet spot' },
-]
+export const metadata = {
+ title: 'Agility Games — Reaction Time & Precision | MemGenius',
+ description: 'Test your reaction time, timing and precision with 4 free agility games. F1 reaction test, stopwatch precision, pendulum and ace. World rankings. No login required.',
+}
 
 export default function AgilityPage() {
  return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
-     <div style={{ fontSize:11, fontWeight:800, color:COLOR, letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Category</div>
-     <div style={{ fontSize:32, fontWeight:900, color:'#fff', marginBottom:8 }}>Agility</div>
-     <div style={{ fontSize:14, color:'rgba(255,255,255,0.35)', fontWeight:700, marginBottom:32 }}>Train your reaction time and precision</div>
+   <>
+     <AgilityClient />
+     <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
+       <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>Train your reaction time and precision</h2>
+       <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Agility is the ability to perceive, decide and act quickly and accurately. It is one of the most trainable cognitive abilities — elite athletes, surgeons, pilots and gamers all develop exceptional reaction times and timing precision through deliberate practice. The four Agility games on MemGenius each isolate a different dimension of this skill.</p>
+       <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 24 }}>The average human reaction time to a visual stimulus is around 250 milliseconds. Elite Formula 1 drivers react in under 200ms. With consistent daily practice, most people can measurably improve their reaction time within two to three weeks — and the world rankings on each game let you see exactly where you stand globally.</p>
 
-     <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
-       {GAMES.map(g => (
-         <a key={g.label} href={g.href} style={{ textDecoration:'none' }}>
-           <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:20, padding:'16px 20px', display:'flex', alignItems:'center', gap:16, border:'1px solid rgba(255,255,255,0.08)' }}>
-             <img src={g.icon} style={{ width:52, height:52, objectFit:'contain', flexShrink:0 }} />
-             <div style={{ flex:1 }}>
-               <div style={{ fontSize:17, fontWeight:900, color:'#fff', marginBottom:4 }}>{g.label}</div>
-               <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{g.desc}</div>
-             </div>
-             <div style={{ fontSize:18, color:'rgba(255,255,255,0.2)' }}>→</div>
-           </div>
-         </a>
-       ))}
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Stop — internal clock precision
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Stop challenges you to tap a button at exactly 5.000 seconds without any visual aid after the timer starts. No countdown, no progress bar — just your internal sense of time. Your score is how close you get to the exact target, measured in milliseconds.</p>
+           <p style={{ marginBottom: 10 }}>This game trains interval timing — the brain's ability to measure duration internally. This ability is controlled by the basal ganglia and cerebellum, and it underlies musical rhythm, athletic performance and even social timing in conversation. People with strong interval timing tend to be better musicians, dancers and athletes.</p>
+           <p>Most people's first attempts land between 4.5 and 5.5 seconds. With practice, top players consistently hit within 50 milliseconds of the target — a level of precision that requires genuine calibration of your internal clock rather than counting or guessing.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           F1 Reaction — simple reaction time
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Five red lights illuminate one by one, just like the start of a Formula 1 race. When they go out, tap as fast as you can. Your reaction time is measured to the millisecond. React before the lights go out and it counts as a jump start — just like in real F1.</p>
+           <p style={{ marginBottom: 10 }}>This is a pure simple reaction time test — the most studied measure in cognitive psychology. Simple reaction time reflects the speed of the entire perception-decision-action chain: how fast your eyes detect the stimulus, how fast your brain processes it, and how fast your motor system executes the response.</p>
+           <p>The world record for human simple reaction time to a visual stimulus is around 100ms, achieved only by elite athletes under controlled conditions. Most people score between 180ms and 300ms. Anything under 200ms is exceptional. The random delay before lights out prevents anticipation, ensuring the score reflects true reaction speed rather than timing skill.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Pendulum — dynamic timing precision
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>A pendulum swings back and forth on screen. Your challenge is to tap at the exact moment it reaches the vertical position — the center of its arc. The closer to perfectly vertical your tap lands, the higher your score. This is harder than it sounds because you must predict the pendulum's position slightly ahead of time to compensate for your own reaction delay.</p>
+           <p style={{ marginBottom: 10 }}>Pendulum trains anticipatory timing — the ability to synchronize an action with a moving target. This is the same cognitive skill used in hitting a baseball, returning a tennis serve, catching a ball or playing a musical instrument in time with other musicians. It requires your brain to build a predictive model of the pendulum's motion and fire the motor command slightly early.</p>
+           <p>Unlike reaction time games where faster is always better, Pendulum rewards accuracy over speed. It is one of the most nuanced agility challenges on MemGenius and the one where deliberate practice produces the most dramatic improvement over time.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Ace — spatial precision
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Ace challenges you to tap a moving target at the precise moment it passes through the sweet spot. Miss the window and you score nothing. Hit the center perfectly and you score the maximum. It combines the reaction speed of F1 with the timing precision of Pendulum into a single challenge inspired by the serve in padel and tennis.</p>
+           <p style={{ marginBottom: 10 }}>This game trains what sports scientists call coincidence anticipation timing — the ability to coordinate a motor action with the arrival of a moving object at a specific point in space and time. It is one of the most complex agility skills and the one most directly relevant to ball sports, racket sports and any activity requiring hand-eye coordination.</p>
+           <p>Top players on Ace develop a remarkable consistency — hitting the sweet spot repeatedly under time pressure. This consistency is the hallmark of genuine motor skill learning rather than luck, and it is one of the most satisfying forms of improvement to experience firsthand.</p>
+         </div>
+       </details>
      </div>
-   </main>
+   </>
  )
 }
