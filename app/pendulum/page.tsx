@@ -1,204 +1,85 @@
-'use client'
-import { useState, useRef, useCallback, useEffect } from 'react'
-import { usePlayer } from '@/lib/usePlayer'
-import { supabase } from '@/lib/supabase'
+import PendulumClient from './PendulumClient'
+import RelatedGames from '@/components/RelatedGames'
 
-const GOLD = '#C8960C'
-const GREEN = '#2E7D32'
-const BLUE = '#1565C0'
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-
-type Phase = 'rules' | 'playing' | 'result'
+export const metadata = {
+  title: 'Pendulum — Timing Precision Game | MemGenius',
+  description: 'Tap when the pendulum is perfectly vertical. Free online timing precision game with world ranking. Train your anticipatory timing. No login required.',
+}
 
 export default function PendulumPage() {
- const { profile } = usePlayer()
- const [phase, setPhase] = useState<Phase>('rules')
- const [angle, setAngle] = useState(0)
- const [targetAngle, setTargetAngle] = useState(0)
- const [resultDeg, setResultDeg] = useState(0)
- const [worldRecord, setWorldRecord] = useState<{diff:number,name:string}|null>(null)
- const [myBest, setMyBest] = useState<number|null>(null)
- const [top5, setTop5] = useState<{name:string,diff:number}[]>([])
- const [worldRank, setWorldRank] = useState<number|null>(null)
- const [name, setName] = useState('')
- const [pin, setPin] = useState(['','','',''])
- const [saved, setSaved] = useState(false)
- const [saving, setSaving] = useState(false)
- const [saveError, setSaveError] = useState('')
- const animRef = useRef(0)
- const startTimeRef = useRef(0)
- const periodRef = useRef(3000) // pendulum period in ms
+  return (
+    <>
+      <PendulumClient />
+      <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
+        <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>Can you tap at the perfect moment?</h2>
+        <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Pendulum is a timing precision game where a pendulum swings back and forth on screen. Your challenge is to tap at the exact moment it reaches the vertical position — the center of its arc. Your score is the angle between where the pendulum was when you tapped and perfect vertical, measured in degrees.</p>
+        <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 24 }}>Unlike reaction time games where faster is always better, Pendulum rewards accuracy over speed. You must predict the pendulum's motion slightly ahead of time and fire the tap command early enough to compensate for your own reaction delay.</p>
 
- useEffect(() => {
-   if (profile?.name) setName(profile.name)
-   loadData()
- }, [profile?.name])
+        <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+          <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            How to play
+            <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+          </summary>
+          <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+            <p style={{ marginBottom: 10 }}>A pendulum swings back and forth on screen. Tap anywhere at the moment it reaches the vertical position — pointing straight down. The closer to perfectly vertical your tap lands, the lower your score. A score of 0.0° means you tapped at the exact vertical moment. Lower is always better.</p>
+            <p style={{ marginBottom: 10 }}>The pendulum speed varies slightly between rounds, so you cannot rely on pure rhythm. You must track the actual motion and judge the moment dynamically. The challenge increases because your tap registers slightly after you decide to tap — you need to anticipate and act a fraction early.</p>
+            <p>Save your score with a name and PIN to track your personal best and see your global ranking. The world leaderboard shows the most precise tappers from around the world.</p>
+          </div>
+        </details>
 
- const loadData = async () => {
-   const {data:all} = await supabase.from('precision_scores').select('player_name,difference_ms').eq('game_type','pendulum').order('difference_ms',{ascending:true}).limit(500)
-   if (!all) return
-   const best:Record<string,number> = {}
-   all.forEach((s:any) => { if (!best[s.player_name] || s.difference_ms < best[s.player_name]) best[s.player_name] = s.difference_ms })
-   const sorted = Object.entries(best).map(([n,d]) => ({name:n, diff:d as number})).sort((a,b) => a.diff-b.diff)
-   setTop5(sorted.slice(0,5))
-   if (sorted[0]) setWorldRecord({diff:sorted[0].diff, name:sorted[0].name})
-   if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
- }
+        <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+          <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            The physics of a real pendulum
+            <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+          </summary>
+          <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+            <p style={{ marginBottom: 10 }}>A real pendulum moves fastest at the bottom of its arc — the vertical position — and slowest at the extremes of its swing. This is because gravitational potential energy converts to kinetic energy as the pendulum falls toward the center, and back to potential energy as it rises toward the sides. The result is a sinusoidal motion that is fastest exactly where you need to tap.</p>
+            <p style={{ marginBottom: 10 }}>This makes Pendulum deceptively difficult. The pendulum is moving at maximum speed precisely when you need to tap it, giving you the smallest window of opportunity. At the extremes of the swing, it is nearly stationary and easy to tap accurately — but tapping there would give you a very poor score since it is far from vertical.</p>
+            <p style={{ marginBottom: 10 }}>The period of a pendulum — the time for one complete swing — depends only on its length and the strength of gravity. A pendulum one meter long has a period of approximately 2 seconds regardless of how wide it swings, as long as the angle is not too large. This is why pendulums were used in clocks for centuries — their timing is extraordinarily consistent.</p>
+            <p>Galileo Galilei first described the isochronous property of pendulums in 1602, after allegedly observing a swinging chandelier in Pisa Cathedral and timing it against his own pulse. This discovery eventually led to the development of the pendulum clock by Christiaan Huygens in 1656, which remained the world's most accurate timekeeping device for nearly 300 years.</p>
+          </div>
+        </details>
 
- const startGame = () => {
-   const target = Math.random() > 0.5 ? 90 : -90 // swing to left or right
-   setTargetAngle(target)
-   startTimeRef.current = performance.now()
-   periodRef.current = 2000 + Math.random() * 1000
-   setPhase('playing')
-   const animate = () => {
-     const elapsed = performance.now() - startTimeRef.current
-     const a = Math.sin((elapsed / periodRef.current) * Math.PI * 2) * 80
-     setAngle(a)
-     animRef.current = requestAnimationFrame(animate)
-   }
-   animRef.current = requestAnimationFrame(animate)
- }
+        <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+          <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            Anticipatory timing — the key skill
+            <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+          </summary>
+          <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+            <p style={{ marginBottom: 10 }}>Pendulum trains anticipatory timing — also called coincidence anticipation timing in sports science. This is the ability to synchronize a motor action with a moving target arriving at a specific point in space at a specific time. It is fundamentally different from simple reaction time, which responds to something that has already happened.</p>
+            <p style={{ marginBottom: 10 }}>Anticipatory timing requires your brain to build a predictive model of the pendulum's motion and calculate when to fire the motor command so that the physical tap coincides with the target position. Since your tap registers approximately 150 to 250 milliseconds after you decide to tap, you must act before the pendulum reaches vertical — not when it arrives there.</p>
+            <p style={{ marginBottom: 10 }}>This skill is central to ball sports. A cricket batsman timing a pull shot, a tennis player returning a fast serve, a footballer heading a cross — all require the same neural computation that Pendulum trains. The brain must predict where the ball will be and initiate the swing early enough for the bat or foot to arrive at the right place at the right time.</p>
+            <p>Research shows that anticipatory timing improves significantly with practice and that improvements transfer across different tasks. Players who train extensively on Pendulum report better timing in sports, music and other activities that require synchronization with external events. It is one of the most broadly applicable cognitive skills trained by any game on MemGenius.</p>
+          </div>
+        </details>
 
- const handleTap = useCallback(async () => {
-   if (phase !== 'playing') return
-   cancelAnimationFrame(animRef.current)
-   const elapsed = performance.now() - startTimeRef.current
-   const currentAngle = Math.sin((elapsed / periodRef.current) * Math.PI * 2) * 80
-   const diff = Math.round(Math.abs(currentAngle) * 10) // in tenths of degree
-   setResultDeg(diff)
-   setPhase('result')
-   if (profile?.name) {
-     await supabase.from('precision_scores').insert({player_name:profile.name, difference_ms:diff, game_type:'pendulum'})
-     const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).eq('game_type','pendulum').lt('difference_ms',diff)
-     setWorldRank((count??0)+1)
-     if (myBest===null || diff<myBest) setMyBest(diff)
-   }
- }, [phase, profile?.name, myBest])
+        <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+          <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            Tips to improve your score
+            <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+          </summary>
+          <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+            <p style={{ marginBottom: 10 }}>The most important adjustment is to tap slightly early — before the pendulum reaches vertical — to compensate for your reaction delay. Most beginners tap when the pendulum looks vertical, but by that point it has already passed the target. Experiment with tapping when the pendulum is about 10 to 15 degrees before vertical and adjust from there based on your results.</p>
+            <p style={{ marginBottom: 10 }}>Watch the whole arc, not just the center. Tracking the full motion of the pendulum gives your brain more information to build its predictive model. If you only look at the center, you have less time to prepare your response. Watching from the extreme of the swing gives you the full period to calculate when vertical will occur.</p>
+            <p style={{ marginBottom: 10 }}>Relax your tapping hand. Tension in the muscles slows motor execution and increases variability. The most consistent tappers keep their hand relaxed and let the tap happen automatically once the decision is made, rather than consciously forcing the movement.</p>
+            <p>Practice at different pendulum speeds. The game varies the speed slightly between rounds, which prevents you from relying on a fixed rhythm. Learning to adapt your timing to different speeds is the key to achieving consistently low scores rather than occasionally lucky ones.</p>
+          </div>
+        </details>
 
- const saveScore = async () => {
-   if (!name.trim() || pin.join('').length!==4) return
-   setSaving(true)
-   setSaveError('')
-   const pinHash = btoa(pin.join(''))
-   const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name',name.trim()).maybeSingle()
-   if (existing) {
-     if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN for this name'); setSaving(false); return }
-   } else {
-     await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
-   }
-   await supabase.from('precision_scores').insert({player_name:name.trim(), difference_ms:resultDeg, game_type:'pendulum'})
-   const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).eq('game_type','pendulum').lt('difference_ms',resultDeg)
-   setWorldRank((count??0)+1)
-   setSaving(false)
-   setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
-   setTimeout(() => window.location.reload(), 1500)
- }
+        <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+          <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            Pendulum vs other agility games
+            <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+          </summary>
+          <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+            <p style={{ marginBottom: 10 }}>Pendulum is the most cognitively demanding of the four Agility games because it combines prediction, timing and motor control into a single action. Stop tests your internal clock in isolation. F1 Reaction tests pure response speed to an unpredictable stimulus. Pendulum requires all three simultaneously — you must predict the motion, time your response and execute it accurately.</p>
+            <p style={{ marginBottom: 10 }}>Players who excel at F1 Reaction do not necessarily excel at Pendulum, and vice versa. Reaction time and anticipatory timing are distinct cognitive abilities that are only weakly correlated. Some people have fast reflexes but poor predictive timing. Others have average reaction times but exceptional ability to synchronize with moving targets. Pendulum specifically rewards the latter.</p>
+            <p>Among timing games available online, Pendulum is unusual in that it specifically tests anticipatory timing rather than reactive timing. Most online reaction tests measure how fast you respond to something that has already happened. Pendulum measures something fundamentally different — how accurately you can predict when something will happen and coordinate your action accordingly.</p>
+          </div>
+        </details>
 
- const reset = () => {
-   cancelAnimationFrame(animRef.current)
-   setPhase('rules')
-   setSaved(false)
-   loadData()
- }
-
- const absDiff = resultDeg / 10
- const resultColor = absDiff < 5 ? '#00C853' : absDiff < 15 ? '#FF6F00' : '#D32F2F'
- const bgResult = absDiff < 5 ? '#0D3320' : absDiff < 15 ? '#2D1A00' : '#1A0000'
-
- // RULES
- if (phase === 'rules') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
-     <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
-       <img src={`${BASE}/pendulum.png`} style={{ width:60, height:60, objectFit:'contain' }} />
-       <div>
-         <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Pendulum</div>
-         <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Tap when the pendulum is vertical</div>
-       </div>
-     </div>
-     <div style={{ display:'flex', gap:10, marginBottom:20 }}>
-       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
-         <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
-         <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${(worldRecord.diff/10).toFixed(1)}°` : '—'}</div>
-         {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
-       </div>
-       <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
-         <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
-         <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest!==null ? `${(myBest/10).toFixed(1)}°` : '—'}</div>
-       </div>
-     </div>
-     <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
-       <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
-       {top5.map((p,i) => (
-         <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
-           <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
-           <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
-           <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{(p.diff/10).toFixed(1)}°</div>
-         </div>
-       ))}
-     </div>
-     <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:BLUE, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 8px 0 ${BLUE}80`, marginTop:'auto' }}>
-       Play →
-     </button>
-   </main>
- )
-
- // PLAYING
- if (phase === 'playing') return (
-   <main onClick={handleTap} style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor:'pointer', userSelect:'none', gap:24 }}>
-     <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.25)', letterSpacing:3, textTransform:'uppercase' }}>Tap when vertical</div>
-     <div style={{ position:'relative', width:240, height:220, display:'flex', alignItems:'flex-start', justifyContent:'center' }}>
-       <div style={{ position:'absolute', top:0, left:'50%', transform:'translateX(-50%)', width:1, height:190, background:'rgba(255,255,255,0.2)' }} />
-       <div style={{ position:'absolute', bottom:0, left:'50%', transform:'translateX(-50%)', fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.35)' }}>0°</div>
-       <div style={{ position:'absolute', top:0, left:'50%', width:3, height:160, background:'rgba(255,255,255,0.7)', transformOrigin:'top center', transform:`translateX(-50%) rotate(${angle}deg)`, transition:'none' }}>
-         <div style={{ position:'absolute', bottom:-22, left:'50%', transform:'translateX(-50%)', width:44, height:44, borderRadius:'50%', background:BLUE, boxShadow:`0 0 20px ${BLUE}` }} />
-       </div>
-       <div style={{ position:'absolute', top:-6, left:'50%', width:14, height:14, borderRadius:'50%', background:'rgba(255,255,255,0.7)', transform:'translateX(-50%)' }} />
-     </div>
-     <div style={{ fontSize:13, color:'rgba(255,255,255,0.15)', fontWeight:700 }}>Tap anywhere</div>
-   </main>
- )
-
- // RESULT
- return (
-   <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
-     <div style={{ textAlign:'center' }}>
-       <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Angle from vertical</div>
-       <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{(resultDeg/10).toFixed(1)}°</div>
-       {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
-     </div>
-
-     {!profile?.name && !saved && (
-       <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
-         <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
-         <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
-         <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
-         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
-         <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
-           {pin.map((d,i) => (
-             <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
-               onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
-               style={{ width:48, height:56, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
-           ))}
-         </div>
-         {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:10 }}>{saveError}</div>}
-         <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.15)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-           {saving?'Saving...':'Save →'}
-         </button>
-       </div>
-     )}
-
-     {saved && (
-       <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
-         <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
-       </div>
-     )}
-
-     <div style={{ display:'flex', gap:10, width:'100%' }}>
-       <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
-       <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:BLUE, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 5px 0 ${BLUE}80` }}>Play again →</button>
-     </div>
-   </main>
- )
+        <RelatedGames category="agility" current="Pendulum" />
+      </div>
+    </>
+  )
 }

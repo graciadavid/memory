@@ -19,7 +19,7 @@ const CATEGORIES = {
    color: '#FF6F00',
    games: [
      { href: '/precision/stopwatch', img: `${BASE}/precision.png`, label: 'Stop', desc: 'Stop at 5 seconds' },
-     { href: '/precision/formula1', img: `${BASE}/formula1.png`, label: 'F1 Reaction', desc: 'React to the lights' },
+     { href: '/f1', img: `${BASE}/f1.png`, label: 'F1 Reaction', desc: 'React to the lights' },
      { href: '/precision/pendulum', img: `${BASE}/pendulum.png`, label: 'Pendulum', desc: 'Stop at the center' },
      { href: '/ace', img: `${BASE}/padel.png`, label: 'Ace', desc: 'Hit the ball' },
    ],
