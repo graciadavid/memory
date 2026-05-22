@@ -128,7 +128,7 @@ export default function ProfilePage() {
              {cat.games.map(g => (
                <div key={g.label} style={{ background:'rgba(255,255,255,0.05)', borderRadius:14, padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', border:'1px solid rgba(255,255,255,0.06)' }}>
                  <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.7)' }}>{g.label}</div>
-                 <div style={{ fontSize:13, fontWeight:900, color:g.value ? cat.color : 'rgba(255,255,255,0.15)' }}>{g.value ?? '—'}</div>
+                 <div style={{ fontSize:13, fontWeight:900, color:'#fff' }}>{g.value ?? '—'}</div>
                </div>
              ))}
            </div>
