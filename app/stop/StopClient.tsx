@@ -2,6 +2,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
@@ -70,6 +71,7 @@ export default function StopPage() {
       const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(diff))
       setWorldRank((count??0)+1)
       if (myBest===null || Math.abs(diff)<myBest) setMyBest(Math.abs(diff))
+      updateStreak(profile.name)
     }
   }, [phase, profile?.name, myBest])
 
