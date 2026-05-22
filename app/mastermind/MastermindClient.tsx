@@ -243,7 +243,7 @@ export default function MastermindClient() {
                      background: COLORS[c],
                      boxShadow: fb === 'correct' ? `0 0 0 3px #69F0AE` : 'none',
                      display:'flex', alignItems:'center', justifyContent:'center',
-                     animation: isLastRow && isMisplaced && blinking ? 'blink 0.3s ease 4' : 'none',
+                     animation: isLastRow && isMisplaced && blinking ? 'blink 0.6s ease infinite' : 'none',
                    }}>
                      {fb === 'correct' && <span style={{ fontSize:22, color:'#fff', fontWeight:900, textShadow:'0 1px 4px rgba(0,0,0,0.5)' }}>✓</span>}
                    </div>
