@@ -184,7 +184,7 @@ export default function DigitsClient() {
            if (d === '⌫') { setInput(prev => prev.slice(0,-1)); return }
            if (d === '') return
            handleDigit(Number(d))
-         }} style={{ padding:'20px', borderRadius:16, border:'none', background: d===''?'transparent':'rgba(255,255,255,0.08)', color:'#fff', fontSize:24, fontWeight:900, fontFamily:'inherit', cursor: d===''?'default':'pointer', border:'1px solid rgba(255,255,255,0.06)' }}>
+         }} style={{ padding:'20px', borderRadius:16, border:'1px solid rgba(255,255,255,0.06)', background: d===''?'transparent':'rgba(255,255,255,0.08)', color:'#fff', fontSize:24, fontWeight:900, fontFamily:'inherit', cursor: d===''?'default':'pointer' }}>
            {d}
          </button>
        ))}
