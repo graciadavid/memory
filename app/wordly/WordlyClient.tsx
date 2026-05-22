@@ -177,9 +177,7 @@ export default function WordlyClient() {
       const next = currentRef.current + key
       setCurrent(next); currentRef.current = next
     }
-
-
-
+  }
 
   useEffect(() => () => { if (timerRef.current) clearInterval(timerRef.current) }, [])
 
