@@ -2,6 +2,9 @@
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const GREEN = '#2E7D32'
 
+// Today's game — change daily
+const TODAY = { href: '/stop', label: 'Stop' }
+
 export default function HomePage() {
  return (
    <main style={{
@@ -15,27 +18,20 @@ export default function HomePage() {
      alignItems: 'center',
      justifyContent: 'center',
      padding: '0 32px',
-     gap: 40,
+     gap: 48,
    }}>
-     {/* Logo */}
      <div style={{ textAlign: 'center' }}>
-       <img src={`${BASE}/brain-logo.webp`} style={{ width: 100, height: 100, objectFit: 'contain', marginBottom: 20 }} />
-       <div style={{ fontSize: 40, fontWeight: 900, color: '#fff', letterSpacing: -1, marginBottom: 10 }}>MemGenius</div>
-       <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', fontWeight: 700 }}>Train your brain daily.</div>
-       <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', fontWeight: 700 }}>Compete with the world.</div>
+       <img src={`${BASE}/brain-logo.webp`} style={{ width: 90, height: 90, objectFit: 'contain', marginBottom: 24 }} />
+       <div style={{ fontSize: 42, fontWeight: 900, color: '#fff', letterSpacing: -1, marginBottom: 12 }}>MemGenius</div>
+       <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', fontWeight: 700, lineHeight: 1.6 }}>Your daily brain gym.</div>
      </div>
 
-     {/* Game banner */}
-     <div style={{ width: '100%', background: 'linear-gradient(135deg, #4A148C, #7B1FA2)', borderRadius: 28, padding: '28px', textAlign: 'center', boxShadow: '0 12px 0 #4A148C50' }}>
-       <img src={`${BASE}/precision.png`} style={{ width: 80, height: 80, objectFit: 'contain', marginBottom: 14 }} />
-       <div style={{ fontSize: 26, fontWeight: 900, color: '#fff', marginBottom: 6 }}>Stop</div>
-       <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', fontWeight: 700, marginBottom: 24 }}>Stop the timer at exactly 5.000s</div>
-       <a href="/stop" style={{ textDecoration: 'none', display: 'block' }}>
-         <div style={{ background: GREEN, borderRadius: 18, padding: '18px', fontWeight: 900, fontSize: 20, color: '#fff', boxShadow: '0 8px 0 #1B5E2070' }}>
-           Let's Go →
-         </div>
-       </a>
-     </div>
+     <a href={TODAY.href} style={{ textDecoration: 'none', width: '100%' }}>
+       <div style={{ background: GREEN, borderRadius: 24, padding: '22px', textAlign: 'center', boxShadow: '0 10px 0 #1B5E2070' }}>
+         <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6 }}>Today's game</div>
+         <div style={{ fontSize: 26, fontWeight: 900, color: '#fff' }}>Play of the Day →</div>
+       </div>
+     </a>
 
      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.15)', fontWeight: 700 }}>Free · No login required</div>
    </main>
