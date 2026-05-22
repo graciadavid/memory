@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
 const WORDS = [
   'CRANE','SLATE','TRACE','RAISE','BRAIN','LIGHT','BRAVE','PLANT','FLESH','WATER',
@@ -28,7 +29,7 @@ const KEYBOARD = [
 type LetterState = 'empty'|'active'|'correct'|'present'|'absent'
 const CELL_BG: Record<LetterState, string> = {
   empty: 'rgba(255,255,255,0.06)',
-  active: 'rgba(255,255,255,0.12)',
+  active: 'rgba(255,255,255,0.15)',
   correct: '#2E7D32',
   present: '#F9A825',
   absent: '#333',
@@ -56,6 +57,7 @@ export default function WordlyClient() {
   const [keyStates, setKeyStates] = useState<Record<string,LetterState>>({})
   const [startTime, setStartTime] = useState(0)
   const [finalTime, setFinalTime] = useState(0)
+  const [elapsed, setElapsed] = useState(0)
   const [worldRank, setWorldRank] = useState<number|null>(null)
   const [worldRecord, setWorldRecord] = useState<{attempts:number,name:string}|null>(null)
   const [myBest, setMyBest] = useState<number|null>(null)
@@ -65,12 +67,12 @@ export default function WordlyClient() {
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
-  const [elapsed, setElapsed] = useState(0)
   const timerRef = useRef<NodeJS.Timeout|null>(null)
 
   useEffect(() => {
     if (profile?.name) setName(profile.name)
     loadData()
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [profile?.name])
 
   const loadData = async () => {
@@ -91,13 +93,13 @@ export default function WordlyClient() {
     setCurrent('')
     setKeyStates({})
     setShake(false)
-    setStartTime(Date.now())
+    const now = Date.now()
+    setStartTime(now)
     setFinalTime(0)
     setElapsed(0)
     setPhase('playing')
-    const t = Date.now()
     if (timerRef.current) clearInterval(timerRef.current)
-    timerRef.current = setInterval(() => setElapsed(Date.now() - t), 100)
+    timerRef.current = setInterval(() => setElapsed(Date.now() - now), 500)
   }
 
   const evaluate = (guess: string, target: string): LetterState[] => {
@@ -137,7 +139,6 @@ export default function WordlyClient() {
           await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:t})
           const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
           setWorldRank((count??0)+1)
-          if (myBest===null || newGuesses.length<myBest) setMyBest(newGuesses.length)
         }
       } else if (newGuesses.length >= 6) {
         if (timerRef.current) clearInterval(timerRef.current)
@@ -146,7 +147,7 @@ export default function WordlyClient() {
       return
     }
     if (/^[A-Z]$/.test(key) && current.length < 5) setCurrent(p => p + key)
-  }, [phase, current, word, guesses, keyStates, startTime, profile?.name, myBest])
+  }, [phase, current, word, guesses, keyStates, startTime, profile?.name])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => handleKey(e.key.toUpperCase())
@@ -174,9 +175,13 @@ export default function WordlyClient() {
     setTimeout(() => window.location.reload(), 1500)
   }
 
-  const reset = () => { setPhase('rules'); setSaved(false); loadData() }
+  const reset = () => {
+    if (timerRef.current) clearInterval(timerRef.current)
+    setPhase('rules')
+    setSaved(false)
+    loadData()
+  }
 
-  // Build rows
   const rows = Array.from({length:6}, (_,i) => {
     const g = guesses[i]
     if (g) {
@@ -192,7 +197,7 @@ export default function WordlyClient() {
   if (phase === 'rules') return (
     <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}>
-        <img src='https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/wordly.png' style={{ width:60, height:60, objectFit:'contain' }} />
+        <img src={`${BASE}/wordly.png`} style={{ width:60, height:60, objectFit:'contain' }} />
         <div>
           <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Wordly</div>
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Guess the 5-letter word in 6 tries</div>
@@ -233,85 +238,85 @@ export default function WordlyClient() {
   )
 
   return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 12px 8px', overflow:'hidden' }}>
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 10px', overflow:'hidden' }}>
 
-     {/* Header */}
-     <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
-       <button onClick={reset} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:14, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>← Back</button>
-       <div style={{ textAlign:'center' }}>
-         <div style={{ fontSize:15, fontWeight:900, color:'#fff' }}>Wordly</div>
-         <div style={{ fontSize:12, fontWeight:800, color:GOLD, fontVariantNumeric:'tabular-nums' }}>{fmtTime(elapsed)}</div>
-       </div>
-       <div style={{ width:60 }} />
-     </div>
+      {/* Header */}
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:4 }}>
+        <button onClick={reset} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:13, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>← Back</button>
+        <div style={{ textAlign:'center' }}>
+          <div style={{ fontSize:13, fontWeight:900, color:'#fff' }}>Wordly</div>
+          <div style={{ fontSize:16, fontWeight:900, color:GOLD, fontVariantNumeric:'tabular-nums' }}>{fmtTime(elapsed)}</div>
+        </div>
+        <div style={{ width:50 }} />
+      </div>
 
-     {/* Grid */}
-     <div style={{ display:'flex', flexDirection:'column', gap:4, alignItems:'center', marginBottom:8 }}>
-       {rows.map((row, i) => (
-         <div key={i} style={{ display:'flex', gap:4, animation: shake && i === guesses.length ? 'shake 0.4s ease' : undefined }}>
-           {row.map((cell, j) => (
-             <div key={j} style={{
-               width:46, height:46, borderRadius:6,
-               display:'flex', alignItems:'center', justifyContent:'center',
-               fontSize:18, fontWeight:900, color:'#fff',
-               background: CELL_BG[cell.state],
-               border: cell.state === 'empty' ? '2px solid rgba(255,255,255,0.1)' : cell.state === 'active' ? '2px solid rgba(255,255,255,0.4)' : 'none',
-             }}>{cell.letter}</div>
-           ))}
-         </div>
-       ))}
-     </div>
+      {/* Grid */}
+      <div style={{ display:'flex', flexDirection:'column', gap:4, alignItems:'center', marginBottom:6 }}>
+        {rows.map((row, i) => (
+          <div key={i} style={{ display:'flex', gap:4, animation: shake && i === guesses.length ? 'shake 0.4s ease' : undefined }}>
+            {row.map((cell, j) => (
+              <div key={j} style={{
+                width:48, height:48, borderRadius:6,
+                display:'flex', alignItems:'center', justifyContent:'center',
+                fontSize:20, fontWeight:900, color:'#fff',
+                background: CELL_BG[cell.state],
+                border: cell.state === 'empty' ? '2px solid rgba(255,255,255,0.1)' : cell.state === 'active' ? '2px solid rgba(255,255,255,0.4)' : 'none',
+              }}>{cell.letter}</div>
+            ))}
+          </div>
+        ))}
+      </div>
 
-     {/* Result */}
-     {(phase === 'won' || phase === 'lost') && (
-       <div style={{ textAlign:'center', marginBottom:8 }}>
-         <div style={{ fontSize:22, fontWeight:900, color: phase==='won'?'#69F0AE':'#FF5252' }}>
-           {phase==='won' ? `✓ ${guesses.length} ${guesses.length===1?'try':'tries'} · ${fmtTime(finalTime)}` : `The word was ${word}`}
-         </div>
-         {worldRank && phase==='won' && <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{worldRank} in the world</div>}
-         {!profile?.name && !saved && phase==='won' && (
-           <div style={{ background:'rgba(0,0,0,0.3)', borderRadius:16, padding:'12px', marginTop:8 }}>
-             <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'8px', borderRadius:8, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:13, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:6, boxSizing:'border-box' }} />
-             <div style={{ display:'flex', gap:5, justifyContent:'center', marginBottom:6 }}>
-               {pin.map((d,i) => (
-                 <input key={i} id={`pin-w-${i}`} type="tel" maxLength={1} value={d}
-                   onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-w-${i+1}`) as HTMLInputElement)?.focus()}}
-                   style={{ width:36, height:44, textAlign:'center', fontSize:18, fontWeight:900, borderRadius:8, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
-               ))}
-             </div>
-             {saveError && <div style={{ fontSize:11, color:'#FF5252', fontWeight:800, marginBottom:4 }}>{saveError}</div>}
-             <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'8px', borderRadius:8, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.1)', color:'#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-               {saving?'Saving...':'Save →'}
-             </button>
-           </div>
-         )}
-         {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:10, padding:'8px', marginTop:6 }}><div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
-         <div style={{ display:'flex', gap:8, justifyContent:'center', marginTop:8 }}>
-           <button onClick={reset} style={{ padding:'10px 16px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
-           <button onClick={startGame} style={{ padding:'10px 16px', borderRadius:12, border:'none', background:GREEN, color:'#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play again →</button>
-         </div>
-       </div>
-     )}
+      {/* Result */}
+      {(phase === 'won' || phase === 'lost') && (
+        <div style={{ textAlign:'center', marginBottom:6 }}>
+          <div style={{ fontSize:20, fontWeight:900, color: phase==='won'?'#69F0AE':'#FF5252' }}>
+            {phase==='won' ? `✓ ${guesses.length} tries · ${fmtTime(finalTime)}` : `The word was ${word}`}
+          </div>
+          {worldRank && phase==='won' && <div style={{ fontSize:11, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{worldRank} in the world</div>}
+          {!profile?.name && !saved && phase==='won' && (
+            <div style={{ background:'rgba(0,0,0,0.3)', borderRadius:14, padding:'10px', marginTop:6 }}>
+              <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'8px', borderRadius:8, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:13, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:6, boxSizing:'border-box' }} />
+              <div style={{ display:'flex', gap:5, justifyContent:'center', marginBottom:6 }}>
+                {pin.map((d,i) => (
+                  <input key={i} id={`pin-w-${i}`} type="tel" maxLength={1} value={d}
+                    onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-w-${i+1}`) as HTMLInputElement)?.focus()}}
+                    style={{ width:36, height:42, textAlign:'center', fontSize:18, fontWeight:900, borderRadius:8, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
+                ))}
+              </div>
+              {saveError && <div style={{ fontSize:11, color:'#FF5252', fontWeight:800, marginBottom:4 }}>{saveError}</div>}
+              <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'8px', borderRadius:8, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.1)', color:'#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+                {saving?'Saving...':'Save →'}
+              </button>
+            </div>
+          )}
+          {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:10, padding:'6px', marginTop:4 }}><div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
+          <div style={{ display:'flex', gap:8, justifyContent:'center', marginTop:6 }}>
+            <button onClick={reset} style={{ padding:'8px 14px', borderRadius:10, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
+            <button onClick={startGame} style={{ padding:'8px 14px', borderRadius:10, border:'none', background:GREEN, color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play again →</button>
+          </div>
+        </div>
+      )}
 
-     {/* Keyboard */}
-     <div style={{ marginTop:'auto', display:'flex', flexDirection:'column', gap:4 }}>
-       {KEYBOARD.map((row, i) => (
-         <div key={i} style={{ display:'flex', gap:3, justifyContent:'center' }}>
-           {row.map(k => (
-             <button key={k} onClick={() => handleKey(k)} style={{
-               padding: k.length > 1 ? '11px 5px' : '11px 0',
-               minWidth: k.length > 1 ? 42 : 30,
-               borderRadius:6, border:'none', cursor:'pointer',
-               background: keyStates[k] ? KEY_BG[keyStates[k]] || 'rgba(255,255,255,0.08)' : k==='ENTER' ? GREEN : 'rgba(255,255,255,0.08)',
-               color:'#fff',
-               fontSize: k.length > 1 ? 9 : 13, fontWeight:900, fontFamily:'inherit',
-             }}>{k}</button>
-           ))}
-         </div>
-       ))}
-     </div>
+      {/* Keyboard — fixed to bottom */}
+      <div style={{ display:'flex', flexDirection:'column', gap:5, marginTop:'auto' }}>
+        {KEYBOARD.map((row, i) => (
+          <div key={i} style={{ display:'flex', gap:4, justifyContent:'center' }}>
+            {row.map(k => (
+              <button key={k} onClick={() => handleKey(k)} style={{
+                padding: k.length > 1 ? '13px 5px' : '13px 0',
+                minWidth: k.length > 1 ? 44 : 30,
+                borderRadius:6, border:'none', cursor:'pointer',
+                background: keyStates[k] ? KEY_BG[keyStates[k]] || 'rgba(255,255,255,0.08)' : k==='ENTER' ? GREEN : 'rgba(255,255,255,0.08)',
+                color:'#fff',
+                fontSize: k.length > 1 ? 9 : 14, fontWeight:900, fontFamily:'inherit',
+              }}>{k}</button>
+            ))}
+          </div>
+        ))}
+      </div>
 
-     <style>{`@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}`}</style>
-   </main>
- )
+      <style>{`@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}`}</style>
+    </main>
+  )
 }
