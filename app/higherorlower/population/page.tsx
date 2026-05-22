@@ -127,11 +127,11 @@ export default function HolPopPage() {
  }, [profile?.name])
 
  const loadData = async () => {
-   const { data } = await supabase.from('higher_lower_scores').select('player_name,level').eq('category','population').order('score', { ascending: false }).limit(500)
+   const { data } = await supabase.from('higher_lower_scores').select('player_name,level').eq('category','population').order('level', { ascending: false }).limit(500)
    if (!data) return
    const best: Record<string,number> = {}
    data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-   const sorted = Object.entries(best).map(([n,s]) => ({name:n, score:s as number})).sort((a,b) => b.score-a.score)
+   const sorted = Object.entries(best).map(([n,l]) => ({name:n, score:l as number})).sort((a,b) => b.score-a.score)
    setTop5(sorted.slice(0,5))
    if (sorted[0]) setWorldRecord({score:sorted[0].score, name:sorted[0].name})
    if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
