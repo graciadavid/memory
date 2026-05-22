@@ -210,7 +210,7 @@ export default function FlagsClient() {
   if (phase === 'rules') return (
     <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
-        <div style={{ fontSize:48 }}>🚩</div>
+        <img src='https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/flags.png' style={{ width:56, height:56, objectFit:'contain' }} />
         <div>
           <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Flags</div>
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Identify flags from around the world</div>
