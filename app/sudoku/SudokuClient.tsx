@@ -104,10 +104,7 @@ export default function SudokuClient() {
     const newBoard = board.map(row => [...row])
     newBoard[r][c] = n
     setBoard(newBoard)
-    const newErrors = new Set(errors)
-    if (n !== 0 && n !== solution[r][c]) newErrors.add(`${r}-${c}`)
-    else newErrors.delete(`${r}-${c}`)
-    setErrors(newErrors)
+
     // Check win
     const complete = newBoard.every((row, ri) => row.every((val, ci) => val === solution[ri][ci]))
     if (complete) {
@@ -222,7 +219,7 @@ export default function SudokuClient() {
       </div>
 
       {/* Board */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:1, background:'rgba(255,255,255,0.1)', padding:2, borderRadius:12, marginBottom:8, maxWidth:360, width:'100%', margin:'0 auto 8px' }}>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:1, background:'#ccc', padding:2, borderRadius:12, marginBottom:8, maxWidth:360, width:'100%', margin:'0 auto 8px' }}>
         {board.map((row, r) => row.map((val, c) => {
           const isSelected = selected?.[0] === r && selected?.[1] === c
           const isFixed = fixed[r]?.[c]
@@ -252,11 +249,11 @@ export default function SudokuClient() {
         <>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:4, marginBottom:8 }}>
             {[1,2,3,4,5,6,7,8,9].map(n => (
-              <button key={n} onClick={() => handleNumber(n)} style={{ aspectRatio:'1', borderRadius:10, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>{n}</button>
+              <button key={n} onClick={() => handleNumber(n)} style={{ aspectRatio:'1', borderRadius:10, border:'none', background:'#4A148C', color:'#fff', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer', borderRadius:10 }}>{n}</button>
             ))}
           </div>
           <div style={{ display:'flex', gap:8, marginBottom:8 }}>
-            <button onClick={() => handleNumber(0)} style={{ flex:1, padding:'10px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.06)', color:'rgba(255,255,255,0.4)', fontSize:14, fontWeight:800, fontFamily:'inherit', cursor:'pointer' }}>Erase</button>
+            <button onClick={() => handleNumber(0)} style={{ flex:1, padding:'10px', borderRadius:12, border:'none', background:'#C62828', color:'#fff', fontSize:14, fontWeight:800, fontFamily:'inherit', cursor:'pointer' }}>Erase</button>
             <button onClick={reset} style={{ flex:1, padding:'10px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.06)', color:'rgba(255,255,255,0.4)', fontSize:14, fontWeight:800, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
           </div>
         </>
