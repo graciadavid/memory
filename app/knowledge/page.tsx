@@ -4,9 +4,9 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 
 const GAMES = [
   { label: 'Flags', icon: `${BASE}/flags.png`, href: '/flags', desc: 'Identify flags from around the world' },
-  { label: 'Versus Pop', icon: `${BASE}/population.png`, href: '/versus/population', desc: 'Which country has more people?' },
-  { label: 'Versus Area', icon: `${BASE}/population.png`, href: '/versus/area', desc: 'Which country is bigger?' },
-  { label: 'GeoShape', icon: `${BASE}/geoshape.png`, href: '/geoshape', desc: 'Identify countries by shape' },
+  { label: 'Higher or Lower Population', icon: `${BASE}/population.png`, href: '/versus/population', desc: 'Which country has more people?' },
+  { label: 'Higher or Lower Area', icon: `${BASE}/area.png`, href: '/versus/area', desc: 'Which country is bigger?' },
+  { label: 'GeoShape', icon: `${BASE}/mapamundi.png`, href: '/geoshape', desc: 'Identify countries by shape' },
 ]
 
 export default function KnowledgePage() {
