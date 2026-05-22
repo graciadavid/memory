@@ -165,7 +165,7 @@ export default function DigitsClient() {
  )
 
  if (phase === 'input') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px', gap:16 }}>
+   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'16px', gap:10 }}>
      <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase', textAlign:'center' }}>Level {level} — Type the sequence</div>
      
      {/* Input display */}
@@ -178,13 +178,13 @@ export default function DigitsClient() {
      </div>
 
      {/* Numpad */}
-     <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:10, marginTop:'auto' }}>
+     <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8, marginTop:16 }}>
        {[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map((d, i) => (
          <button key={i} onClick={() => {
            if (d === '⌫') { setInput(prev => prev.slice(0,-1)); return }
            if (d === '') return
            handleDigit(Number(d))
-         }} style={{ padding:'20px', borderRadius:16, border:'1px solid rgba(255,255,255,0.06)', background: d===''?'transparent':'rgba(255,255,255,0.08)', color:'#fff', fontSize:24, fontWeight:900, fontFamily:'inherit', cursor: d===''?'default':'pointer' }}>
+         }} style={{ padding:'14px', borderRadius:14, border:'1px solid rgba(255,255,255,0.06)', background: d===''?'transparent':'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, fontWeight:900, fontFamily:'inherit', cursor: d===''?'default':'pointer' }}>
            {d}
          </button>
        ))}
@@ -211,7 +211,7 @@ export default function DigitsClient() {
            {pin.map((d,i) => (
              <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
                onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
-               style={{ width:48, height:56, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
+               style={{ width:48, height:56, textAlign:'center', fontSize:22, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
            ))}
          </div>
          {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:10 }}>{saveError}</div>}
