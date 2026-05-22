@@ -20,15 +20,16 @@ export default function ProfilePage() {
 
  const fetchRecords = async (name: string) => {
    const r: any = {}
-   const [mem, stop, f1, pendulum, ace, flags, vPop, vArea, digits, seq, nback, sudoku, master, g2048, wordly] = await Promise.all([
+   const [mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea, digits, seq, nback, sudoku, master, g2048, wordly] = await Promise.all([
      supabase.from('scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
      supabase.from('precision_scores').select('difference_ms').is('game_type', null).eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
      supabase.from('precision_scores').select('difference_ms').eq('game_type', 'formula1').eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
      supabase.from('precision_scores').select('difference_ms').eq('game_type', 'pendulum').eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
      supabase.from('ace_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('flag_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
-     supabase.from('higher_lower_scores').select('level').eq('category', 'population').eq('player_name', name).order('score', { ascending: false }).limit(1),
-     supabase.from('higher_lower_scores').select('level').eq('category', 'area').eq('player_name', name).order('score', { ascending: false }).limit(1),
+     supabase.from('higher_lower_scores').select('level').eq('category', 'population').eq('player_name', name).order('level', { ascending: false }).limit(1),
+     supabase.from('shape_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+     supabase.from('higher_lower_scores').select('level').eq('category', 'area').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('number_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('sequence_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('nback_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
@@ -45,6 +46,7 @@ export default function ProfilePage() {
    if (ace.data?.[0]) r.ace = `${ace.data[0].level} aces`
    if (flags.data?.[0]) r.flags = `${flags.data[0].level} flags`
    if (vPop.data?.[0]) r.versusPop = `${vPop.data[0].level} streak`
+   if (countries.data?.[0]) r.countries = `${countries.data[0].level} correct`
    if (vArea.data?.[0]) r.versusArea = `${vArea.data[0].level} streak`
    if (digits.data?.[0]) r.digits = `Level ${digits.data[0].level}`
    if (seq.data?.[0]) r.sequence = `Level ${seq.data[0].level}`
