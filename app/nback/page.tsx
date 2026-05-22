@@ -74,7 +74,7 @@ export default function NBackPage() {
 
   const handleAnswer = useCallback(async (isMatch: boolean) => {
     if (phase !== 'answer') return
-    const isActualMatch = history.length > nLevel && history[history.length - 1] === history[history.length - 1 - nLevel]
+    const isActualMatch = history.length >= 2 && history[history.length - 1] === history[history.length - 2]
     const correct = isMatch === isActualMatch
 
     if (correct) {
