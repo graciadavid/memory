@@ -204,7 +204,13 @@ export default function Game2048Client() {
     setTimeout(() => window.location.reload(), 1500)
   }
 
-  const reset = () => { setPhase('rules'); setSaved(false); loadData() }
+  const reset = () => {
+    document.body.style.overflow = ''
+    document.body.style.touchAction = ''
+    setPhase('rules')
+    setSaved(false)
+    loadData()
+  }
 
   const tileSize = 'calc((min(100vw, 430px) - 40px - 12px) / 4)'
 
