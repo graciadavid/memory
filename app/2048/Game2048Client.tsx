@@ -275,7 +275,7 @@ export default function Game2048Client() {
             <div style={{ fontSize:20, fontWeight:900, color:GOLD }}>{best.toLocaleString()}</div>
           </div>
         </div>
-        <button onClick={reset} style={{ background:'rgba(255,255,255,0.08)', border:'none', color:'rgba(255,255,255,0.5)', fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit', padding:'8px 12px', borderRadius:10 }}>Quit</button>
+<div style={{ width:50 }} />
       </div>
 
       {/* Board */}
