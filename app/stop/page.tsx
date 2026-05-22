@@ -194,7 +194,7 @@ export default function StopPage() {
 
       <div style={{ display:'flex', gap:10, width:'100%' }}>
         <button onClick={()=>{setPhase('rules');setSaved(false);loadData()}} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
-        <button onClick={()=>{setSaved(false);startCountdown()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E2080' }}>Play again →</button>
+        <button onClick={()=>{setSaved(false);setPhase('rules');loadData()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E2080' }}>Play again →</button>
       </div>
     </main>
   )
