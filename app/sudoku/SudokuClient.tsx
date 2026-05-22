@@ -222,7 +222,7 @@ export default function SudokuClient() {
       </div>
 
       {/* Board */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:1, background:'rgba(255,255,255,0.1)', padding:2, borderRadius:12, marginBottom:8 }}>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:1, background:'rgba(255,255,255,0.1)', padding:2, borderRadius:12, marginBottom:8, maxWidth:360, width:'100%', margin:'0 auto 8px' }}>
         {board.map((row, r) => row.map((val, c) => {
           const isSelected = selected?.[0] === r && selected?.[1] === c
           const isFixed = fixed[r]?.[c]
@@ -232,7 +232,7 @@ export default function SudokuClient() {
           const borderB = (r + 1) % 3 === 0 && r !== 8
           return (
             <div key={`${r}-${c}`} onClick={() => handleCell(r, c)} style={{
-              aspectRatio:'1', display:'flex', alignItems:'center', justifyContent:'center',
+              height:36, display:'flex', alignItems:'center', justifyContent:'center',
               background: isSelected ? 'rgba(74,20,140,0.6)' : isError ? 'rgba(211,47,47,0.3)' : isHighlight ? 'rgba(255,255,255,0.06)' : '#111',
               fontSize:14, fontWeight: isFixed ? 900 : 700,
               color: isError ? '#FF5252' : isFixed ? '#fff' : GOLD,
