@@ -6,7 +6,7 @@ const GAMES = [
   { label: 'Flags', icon: `${BASE}/flags.png`, href: '/flags', desc: 'Identify flags from around the world' },
   { label: 'Higher or Lower Population', icon: `${BASE}/population.png`, href: '/higherorlower/population', desc: 'Which country has more people?' },
   { label: 'Higher or Lower Area', icon: `${BASE}/area.png`, href: '/higherorlower/area', desc: 'Which country is bigger?' },
-  { label: 'GeoShape', icon: `${BASE}/mapamundi.png`, href: '/geoshape', desc: 'Identify countries by shape' },
+  { label: 'Countries', icon: `${BASE}/mapamundi.png`, href: '/countries', desc: 'Identify countries by shape' },
 ]
 
 export default function KnowledgePage() {
