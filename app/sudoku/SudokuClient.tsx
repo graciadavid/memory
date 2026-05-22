@@ -233,9 +233,9 @@ export default function SudokuClient() {
           return (
             <div key={`${r}-${c}`} onClick={() => handleCell(r, c)} style={{
               height:36, display:'flex', alignItems:'center', justifyContent:'center',
-              background: isSelected ? 'rgba(74,20,140,0.6)' : isError ? 'rgba(211,47,47,0.3)' : isHighlight ? 'rgba(255,255,255,0.06)' : '#111',
+              background: isSelected ? '#E8D5FF' : isError ? '#FFE0E0' : isHighlight ? '#F0EBE0' : '#FAF7F2',
               fontSize:14, fontWeight: isFixed ? 900 : 700,
-              color: isError ? '#FF5252' : isFixed ? '#fff' : GOLD,
+              color: isError ? '#C62828' : isFixed ? '#333' : '#6A1B9A',
               cursor: isFixed ? 'default' : 'pointer',
               borderRight: borderR ? '2px solid #999' : '1px solid #ddd',
               borderBottom: borderB ? '2px solid #999' : '1px solid #ddd',
