@@ -128,7 +128,7 @@ export default function ProfilePage() {
             <button onClick={() => { setEditing(!editing); setEditMode(null); setEditError(''); setEditSuccess('') }} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'6px 14px', color:'rgba(255,255,255,0.5)', fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit', display:'block', marginBottom:6 }}>
               {editing ? 'Done' : 'Edit Profile'}
             </button>
-            <a href="/streak" style={{ textDecoration:'none', fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.25)', letterSpacing:0.5 }}>Streak levels →</a>
+
           </div>
         </div>
 
