@@ -29,8 +29,8 @@ const CATEGORIES = {
    color: '#1565C0',
    games: [
      { href: '/flags', img: `${BASE}/flags.png`, label: 'Flags', desc: 'Identify country flags' },
-     { href: '/higherorlower/population', img: `${BASE}/versus.png`, label: 'Higher or Lower Population', desc: 'Which country has more people?' },
-     { href: '/higherorlower/area', img: `${BASE}/versus.png`, label: 'Higher or Lower Area', desc: 'Which country is bigger?' },
+     { href: '/higherorlower/population', img: `${BASE}/population.png`, label: 'Higher or Lower Population', desc: 'Which country has more people?' },
+     { href: '/higherorlower/area', img: `${BASE}/area.png`, label: 'Higher or Lower Area', desc: 'Which country is bigger?' },
      { href: '/countries', img: `${BASE}/mapamundi.png`, label: 'GeoShape', desc: 'Guess by shape' },
    ],
  },
