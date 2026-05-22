@@ -220,7 +220,7 @@ export default function SudokuClient() {
       </div>
 
       {/* Board */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:1, background:'#ccc', padding:1, borderRadius:4, marginBottom:8, maxWidth:360, width:'100%', margin:'0 auto 8px' }}>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:1, background:'#bbb', padding:2, borderRadius:4, marginBottom:8, maxWidth:360, width:'100%', margin:'0 auto 8px' }}>
         {board.map((row, r) => row.map((val, c) => {
           const isSelected = selected?.[0] === r && selected?.[1] === c
           const isFixed = fixed[r]?.[c]
@@ -237,10 +237,10 @@ export default function SudokuClient() {
               fontSize:14, fontWeight: isFixed ? 900 : 700,
               color: isError ? '#FF5252' : isFixed ? '#fff' : GOLD,
               cursor: isFixed ? 'default' : 'pointer',
-              borderRight: borderR ? '3px solid #444' : '1px solid #ccc',
-              borderBottom: borderB ? '3px solid #444' : '1px solid #ccc',
-              borderLeft: borderL ? '3px solid #444' : undefined,
-              borderTop: borderT ? '3px solid #444' : undefined,
+              borderRight: borderR ? '2px solid #999' : '1px solid #ddd',
+              borderBottom: borderB ? '2px solid #999' : '1px solid #ddd',
+              borderLeft: borderL ? '2px solid #999' : undefined,
+              borderTop: borderT ? '2px solid #999' : undefined,
               borderRadius:3, transition:'background 0.1s',
             }}>
               {val !== 0 ? val : ''}
