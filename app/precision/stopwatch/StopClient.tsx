@@ -25,7 +25,7 @@ export default function StopClient() {
      setCountdown(3)
      const t1 = setTimeout(() => setCountdown(2), 1000)
      const t2 = setTimeout(() => setCountdown(1), 2000)
-     const t3 = setTimeout(() => { setCountdown(null); startStop() }, 3000)
+     const t3 = setTimeout(() => { setCountdown(null) }, 3000)
      return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
    }
  }, [])
