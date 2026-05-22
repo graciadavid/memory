@@ -23,7 +23,7 @@ export default function CountriesPage() {
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Knowing world geography is more than a pub quiz skill. It builds spatial reasoning, improves your understanding of global news and politics, and gives you a mental framework for understanding where things happen in the world. Studies show that people with stronger geographical knowledge have better contextual understanding of international events.</p>
         <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>Playing Countries daily is a fun way to gradually build a complete mental map of the world. Most players find their score improves significantly after just a week of practice.</p>
 
-        <RelatedGames category="knowledge" current="Countries" />
+        <RelatedGames category="knowledge" current="GeoShape" />
       </div>
     </>
   )
