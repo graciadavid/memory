@@ -169,7 +169,7 @@ export default function F1Page() {
 
  // GAME
  if (phase === 'lighting' || phase === 'waiting' || phase === 'go') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'space-between', padding:'80px 24px' }}>
+   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:60, padding:'40px 24px' }}>
      <div style={{ display:'flex', gap:6 }}>
        {[1,2,3,4,5].map(n => (
          <Semaphore key={n} lit={phase === 'waiting' ? true : phase === 'go' ? false : litCount >= n} />
