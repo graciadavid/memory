@@ -169,8 +169,8 @@ export default function NBackPage() {
         Streak: {streak}
       </div>
 
-      {/* Color display */}
-      <div style={{ width:160, height:160, borderRadius:32, background: phase==='show' ? COLORS[current].color : 'rgba(255,255,255,0.06)', transition:'background 0.15s', boxShadow: phase==='show' ? `0 0 40px ${COLORS[current].color}60` : 'none' }} />
+      {/* Color always visible */}
+      <div style={{ width:160, height:160, borderRadius:32, background:COLORS[current].color, boxShadow:`0 0 40px ${COLORS[current].color}60`, transition:'background 0.2s' }} />
 
       {feedback && (
         <div style={{ fontSize:22, fontWeight:900, color:feedback==='correct'?'#69F0AE':'#FF5252' }}>
@@ -179,18 +179,21 @@ export default function NBackPage() {
       )}
 
       {phase === 'answer' && !feedback && (
-        <div style={{ display:'flex', gap:12, width:'100%' }}>
-          <button onClick={() => handleAnswer(true)} style={{ flex:1, padding:'20px', borderRadius:18, border:'none', background:'rgba(105,240,174,0.15)', color:'#69F0AE', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', outline:'2px solid rgba(105,240,174,0.3)' }}>
-            Match ✓
-          </button>
-          <button onClick={() => handleAnswer(false)} style={{ flex:1, padding:'20px', borderRadius:18, border:'none', background:'rgba(255,82,82,0.15)', color:'#FF5252', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', outline:'2px solid rgba(255,82,82,0.3)' }}>
-            Different ✗
-          </button>
-        </div>
+        <>
+          <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Same as the previous color?</div>
+          <div style={{ display:'flex', gap:12, width:'100%' }}>
+            <button onClick={() => handleAnswer(true)} style={{ flex:1, padding:'20px', borderRadius:18, border:'none', background:'rgba(105,240,174,0.15)', color:'#69F0AE', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', outline:'2px solid rgba(105,240,174,0.3)' }}>
+              Match ✓
+            </button>
+            <button onClick={() => handleAnswer(false)} style={{ flex:1, padding:'20px', borderRadius:18, border:'none', background:'rgba(255,82,82,0.15)', color:'#FF5252', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', outline:'2px solid rgba(255,82,82,0.3)' }}>
+              Different ✗
+            </button>
+          </div>
+        </>
       )}
 
       {phase === 'show' && (
-        <div style={{ fontSize:13, color:'rgba(255,255,255,0.2)', fontWeight:700 }}>Memorize...</div>
+        <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Memorize this color...</div>
       )}
     </main>
   )
