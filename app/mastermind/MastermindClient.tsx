@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 
@@ -12,6 +12,11 @@ const COLORS = ['#E53935', '#1E88E5', '#43A047', '#FDD835', '#FB8C00']
 const CODE_LENGTH = 5
 const MAX_ATTEMPTS = 8
 const BALL = 48
+
+function fmtTime(ms: number) {
+  const s = Math.floor(ms / 1000)
+  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`
+}
 
 function generateCode(): number[] {
   return Array.from({ length: CODE_LENGTH }, () => Math.floor(Math.random() * COLORS.length))
@@ -54,10 +59,13 @@ export default function MastermindClient() {
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [elapsed, setElapsed] = useState(0)
+  const timerRef = useRef<NodeJS.Timeout|null>(null)
 
   useEffect(() => {
     if (profile?.name) setName(profile.name)
     loadData()
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [profile?.name])
 
   const loadData = async () => {
@@ -79,6 +87,10 @@ export default function MastermindClient() {
     setLockedSlots(Array(CODE_LENGTH).fill(false))
     setSelected(0)
     setWon(false)
+    setElapsed(0)
+    const t = Date.now()
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => setElapsed(Date.now() - t), 100)
     setPhase('playing')
   }
 
@@ -111,7 +123,7 @@ export default function MastermindClient() {
       setWon(true)
       setPhase('result')
       if (profile?.name) {
-        await supabase.from('mastermind_scores').insert({player_name:profile.name, attempts:newGuesses.length})
+        await supabase.from('mastermind_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:elapsed})
         const {count} = await supabase.from('mastermind_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
         setWorldRank((count??0)+1)
       }
@@ -152,7 +164,7 @@ export default function MastermindClient() {
     } else {
       await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
     }
-    await supabase.from('mastermind_scores').insert({player_name:name.trim(), attempts:guesses.length})
+    await supabase.from('mastermind_scores').insert({player_name:name.trim(), attempts:guesses.length, time_ms:elapsed})
     const {count} = await supabase.from('mastermind_scores').select('*',{count:'exact',head:true}).lt('attempts',guesses.length)
     setWorldRank((count??0)+1)
     setSaving(false)
@@ -212,8 +224,9 @@ export default function MastermindClient() {
 
     return (
       <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'12px 20px', overflow:'hidden' }}>
-        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', textAlign:'center', marginBottom:10, letterSpacing:2, textTransform:'uppercase' }}>
-          {guesses.length + 1} / {MAX_ATTEMPTS}
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
+          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase' }}>{guesses.length + 1} / {MAX_ATTEMPTS}</div>
+          <div style={{ fontSize:18, fontWeight:900, color:GOLD, fontVariantNumeric:'tabular-nums' }}>{fmtTime(elapsed)}</div>
         </div>
 
         {/* Previous guesses */}
@@ -286,7 +299,7 @@ export default function MastermindClient() {
     <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
       <div style={{ textAlign:'center' }}>
         <div style={{ fontSize:32, fontWeight:900, color: won?'#69F0AE':'#FF5252', marginBottom:8 }}>{won ? '🎉 Solved!' : '💀 Game Over'}</div>
-        {won && <div style={{ fontSize:18, color:'rgba(255,255,255,0.6)', fontWeight:700 }}>{guesses.length} tries</div>}
+        {won && <div style={{ fontSize:18, color:'rgba(255,255,255,0.6)', fontWeight:700 }}>{guesses.length} tries · {fmtTime(elapsed)}</div>}
         {!won && (
           <div style={{ display:'flex', gap:8, justifyContent:'center', marginTop:12 }}>
             {code.map((c, i) => <div key={i} style={{ width:BALL, height:BALL, borderRadius:'50%', background:COLORS[c] }} />)}
