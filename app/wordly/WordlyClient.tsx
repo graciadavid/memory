@@ -238,7 +238,7 @@ export default function WordlyClient() {
   )
 
   return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 10px', overflow:'hidden' }}>
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 10px 70px', overflow:'hidden', justifyContent:'space-between' }}>
 
       {/* Header */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:4 }}>
@@ -251,14 +251,14 @@ export default function WordlyClient() {
       </div>
 
       {/* Grid */}
-      <div style={{ display:'flex', flexDirection:'column', gap:4, alignItems:'center', marginBottom:6 }}>
+      <div style={{ display:'flex', flexDirection:'column', gap:3, alignItems:'center' }}>
         {rows.map((row, i) => (
           <div key={i} style={{ display:'flex', gap:4, animation: shake && i === guesses.length ? 'shake 0.4s ease' : undefined }}>
             {row.map((cell, j) => (
               <div key={j} style={{
-                width:48, height:48, borderRadius:6,
+                width:44, height:44, borderRadius:6,
                 display:'flex', alignItems:'center', justifyContent:'center',
-                fontSize:20, fontWeight:900, color:'#fff',
+                fontSize:18, fontWeight:900, color:'#fff',
                 background: CELL_BG[cell.state],
                 border: cell.state === 'empty' ? '2px solid rgba(255,255,255,0.1)' : cell.state === 'active' ? '2px solid rgba(255,255,255,0.4)' : 'none',
               }}>{cell.letter}</div>
@@ -299,7 +299,7 @@ export default function WordlyClient() {
       )}
 
       {/* Keyboard — fixed to bottom */}
-      <div style={{ display:'flex', flexDirection:'column', gap:5, marginTop:'auto' }}>
+      <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
         {KEYBOARD.map((row, i) => (
           <div key={i} style={{ display:'flex', gap:4, justifyContent:'center' }}>
             {row.map(k => (
