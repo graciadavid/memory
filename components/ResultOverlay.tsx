@@ -93,10 +93,6 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
              {rank ? `#${rank}` : '...'}
            </div>
          </div>
-
-         <button onClick={() => {
-           const url = `${window.location.origin}/challenge?game=memory&score=${pack?.slug}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-
          <div style={{ display:'flex', gap:10 }}>
            <button onClick={onReset} style={{
              flex:1, padding:'14px', borderRadius:14, border:'none',
