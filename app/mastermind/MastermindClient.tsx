@@ -177,68 +177,74 @@ export default function MastermindClient() {
   )
 
   if (phase === 'playing') {
-    const BALL_SIZE = 52
+    const BALL = 52
 
-    const getSlotStyle = (guess: {colors: number[], feedback: {correct:number,misplaced:number}}, colorIdx: number, slotIdx: number) => {
-      // We need per-slot feedback — recalculate
-      const code_ref = code
-      const g = guess.colors
-      const correct_slots: boolean[] = Array(CODE_LENGTH).fill(false)
-      const misplaced_slots: boolean[] = Array(CODE_LENGTH).fill(false)
+    const getSlotFeedback = (g: {colors: number[], feedback: {correct:number,misplaced:number}}, slotIdx: number) => {
       const codeUsed = Array(CODE_LENGTH).fill(false)
       const guessUsed = Array(CODE_LENGTH).fill(false)
-      g.forEach((v, i) => { if (v === code_ref[i]) { correct_slots[i] = true; codeUsed[i] = true; guessUsed[i] = true } })
-      g.forEach((v, i) => {
+      const correct_slots: boolean[] = Array(CODE_LENGTH).fill(false)
+      const misplaced_slots: boolean[] = Array(CODE_LENGTH).fill(false)
+      g.colors.forEach((v, i) => { if (v === code[i]) { correct_slots[i] = true; codeUsed[i] = true; guessUsed[i] = true } })
+      g.colors.forEach((v, i) => {
         if (guessUsed[i]) return
-        const j = code_ref.findIndex((c, ci) => !codeUsed[ci] && c === v)
+        const j = code.findIndex((c, ci) => !codeUsed[ci] && c === v)
         if (j !== -1) { misplaced_slots[i] = true; codeUsed[j] = true }
       })
-      if (correct_slots[slotIdx]) return { bg: COLORS[g[slotIdx]], border: 'none', shadow: `0 0 0 3px #69F0AE` }
-      if (misplaced_slots[slotIdx]) return { bg: COLORS[g[slotIdx]], border: 'none', shadow: `0 0 0 3px #fff` }
-      return { bg: '#D32F2F', border: 'none', shadow: 'none' }
+      if (correct_slots[slotIdx]) return 'correct'
+      if (misplaced_slots[slotIdx]) return 'misplaced'
+      return 'wrong'
     }
 
     return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'12px 20px 16px', overflow:'hidden' }}>
-      <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', textAlign:'center', marginBottom:12, letterSpacing:2, textTransform:'uppercase' }}>
-        {guesses.length + 1} / {MAX_ATTEMPTS}
-      </div>
+      <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'12px 20px', overflow:'hidden' }}>
+        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', textAlign:'center', marginBottom:12, letterSpacing:2, textTransform:'uppercase' }}>
+          {guesses.length + 1} / {MAX_ATTEMPTS}
+        </div>
 
-      {/* Previous guesses */}
-      <div style={{ flex:1, overflowY:'auto', display:'flex', flexDirection:'column', gap:8, marginBottom:12 }}>
-        {guesses.map((g, ri) => (
-          <div key={ri} style={{ display:'flex', gap:8, justifyContent:'center' }}>
-            {g.colors.map((c, ci) => {
-              const s = getSlotStyle(g, c, ci)
-              return <div key={ci} style={{ width:BALL_SIZE, height:BALL_SIZE, borderRadius:'50%', background:s.bg, boxShadow:s.shadow, transition:'all 0.2s' }} />
-            })}
-          </div>
-        ))}
-      </div>
+        {/* Previous guesses */}
+        <div style={{ flex:1, overflowY:'auto', display:'flex', flexDirection:'column', gap:8, marginBottom:10 }}>
+          {guesses.map((g, ri) => {
+            const hasMisplaced = g.colors.some((_, ci) => getSlotFeedback(g, ci) === 'misplaced')
+            return (
+              <div key={ri} style={{ display:'flex', gap:8, justifyContent:'center', animation: hasMisplaced ? 'blink 0.4s ease 2' : 'none' }}>
+                {g.colors.map((c, ci) => {
+                  const fb = getSlotFeedback(g, ci)
+                  return (
+                    <div key={ci} style={{
+                      width:BALL, height:BALL, borderRadius:'50%',
+                      background: fb === 'wrong' ? '#333' : COLORS[c],
+                      boxShadow: fb === 'correct' ? `0 0 0 3px #69F0AE` : fb === 'misplaced' ? `0 0 0 3px #fff` : 'none',
+                    }} />
+                  )
+                })}
+              </div>
+            )
+          })}
+        </div>
 
-      {/* Current row */}
-      <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
-        {Array.from({length: CODE_LENGTH}).map((_, i) => (
-          <div key={i} style={{ width:BALL_SIZE, height:BALL_SIZE, borderRadius:'50%', background: current[i]!==undefined ? COLORS[current[i]] : 'rgba(255,255,255,0.08)', border:'2px solid rgba(255,255,255,0.12)', transition:'background 0.1s', cursor:'pointer' }} onClick={() => { if (i === current.length - 1) removeColor() }} />
-        ))}
-      </div>
+        {/* Current row */}
+        <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:14 }}>
+          {Array.from({length: CODE_LENGTH}).map((_, i) => (
+            <div key={i} style={{ width:BALL, height:BALL, borderRadius:'50%', background: current[i]!==undefined ? COLORS[current[i]] : 'rgba(255,255,255,0.08)', border:'2px solid rgba(255,255,255,0.1)', transition:'background 0.1s' }} />
+          ))}
+        </div>
 
-      {/* Color palette — circles, same width */}
-      <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:14 }}>
-        {COLORS.map((c, i) => (
-          <button key={i} onClick={() => { setSelected(i); addColor(i) }} style={{ width:BALL_SIZE, height:BALL_SIZE, borderRadius:'50%', border:'none', background:c, cursor:'pointer', boxShadow: selected===i ? `0 0 0 3px #fff, 0 0 16px ${c}` : 'none', transform: selected===i ? 'scale(1.1)' : 'scale(1)', transition:'all 0.1s' }} />
-        ))}
-      </div>
+        {/* Color palette */}
+        <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:14 }}>
+          {COLORS.map((c, i) => (
+            <button key={i} onClick={() => { setSelected(i); addColor(i) }} style={{ width:BALL, height:BALL, borderRadius:'50%', border:'none', background:c, cursor:'pointer', boxShadow: selected===i ? `0 0 0 3px #fff, 0 0 16px ${c}` : 'none', transform: selected===i ? 'scale(1.1)' : 'scale(1)', transition:'all 0.1s' }} />
+          ))}
+        </div>
 
-      {/* Delete + Submit */}
-      <div style={{ display:'flex', gap:10 }}>
-        <button onClick={removeColor} style={{ width:56, padding:'14px', borderRadius:14, border:'1px solid rgba(255,255,255,0.1)', background:'rgba(255,255,255,0.06)', color:'#fff', fontSize:20, cursor:'pointer' }}>⌫</button>
-        <button onClick={submitGuess} disabled={current.length !== CODE_LENGTH} style={{ flex:1, padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 6px 0 #1B5E2080', opacity: current.length !== CODE_LENGTH ? 0.4 : 1 }}>
+        <button onClick={submitGuess} disabled={current.length !== CODE_LENGTH} style={{ width:'100%', padding:'16px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor: current.length===CODE_LENGTH?'pointer':'default', boxShadow:'0 6px 0 #1B5E2080', opacity: current.length !== CODE_LENGTH ? 0.4 : 1, marginBottom:70 }}>
           Submit →
         </button>
-      </div>
-    </main>
-  )}
+
+        <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
+      </main>
+    )
+  }
+
 
   return (
     <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
