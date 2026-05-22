@@ -80,7 +80,7 @@ export default function MastermindClient() {
     const sorted = Object.entries(best).map(([n,v]) => ({name:n, attempts:v.attempts, time_ms:v.time_ms})).sort((a,b) => a.attempts !== b.attempts ? a.attempts-b.attempts : a.time_ms-b.time_ms)
     setTop5(sorted.slice(0,5) as any)
     if (sorted[0]) setWorldRecord({attempts:sorted[0].attempts, time_ms:sorted[0].time_ms, name:sorted[0].name})
-    if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
+    if (profile?.name && best[profile.name]) setMyBest(best[profile.name].attempts)
   }
 
   const startGame = () => {
