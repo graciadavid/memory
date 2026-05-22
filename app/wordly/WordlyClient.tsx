@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 
@@ -65,6 +65,8 @@ export default function WordlyClient() {
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [elapsed, setElapsed] = useState(0)
+  const timerRef = useRef<NodeJS.Timeout|null>(null)
 
   useEffect(() => {
     if (profile?.name) setName(profile.name)
@@ -91,7 +93,11 @@ export default function WordlyClient() {
     setShake(false)
     setStartTime(Date.now())
     setFinalTime(0)
+    setElapsed(0)
     setPhase('playing')
+    const t = Date.now()
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => setElapsed(Date.now() - t), 100)
   }
 
   const evaluate = (guess: string, target: string): LetterState[] => {
@@ -125,6 +131,7 @@ export default function WordlyClient() {
       if (current === word) {
         const t = Date.now() - startTime
         setFinalTime(t)
+        if (timerRef.current) clearInterval(timerRef.current)
         setPhase('won')
         if (profile?.name) {
           await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:t})
@@ -133,6 +140,7 @@ export default function WordlyClient() {
           if (myBest===null || newGuesses.length<myBest) setMyBest(newGuesses.length)
         }
       } else if (newGuesses.length >= 6) {
+        if (timerRef.current) clearInterval(timerRef.current)
         setPhase('lost')
       }
       return
@@ -184,7 +192,7 @@ export default function WordlyClient() {
   if (phase === 'rules') return (
     <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}>
-        <div style={{ fontSize:48 }}>🔤</div>
+        <img src='https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/wordly.png' style={{ width:60, height:60, objectFit:'contain' }} />
         <div>
           <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Wordly</div>
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Guess the 5-letter word in 6 tries</div>
@@ -225,24 +233,36 @@ export default function WordlyClient() {
   )
 
   return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 12px', overflow:'hidden' }}>
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'6px 12px', overflow:'hidden' }}>
 
       {/* Header */}
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
         <button onClick={reset} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:14, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>← Back</button>
-        <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>Wordly</div>
+        <div style={{ textAlign:'center' }}>
+          <div style={{ textAlign:'center' }}>
+          <div style={{ textAlign:'center' }}>
+          <div style={{ textAlign:'center' }}>
+          <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>Wordly</div>
+          <div style={{ fontSize:12, fontWeight:800, color:GOLD, fontVariantNumeric:'tabular-nums' }}>{fmtTime(elapsed)}</div>
+        </div>
+          <div style={{ fontSize:12, fontWeight:800, color:GOLD, fontVariantNumeric:'tabular-nums' }}>{fmtTime(elapsed)}</div>
+        </div>
+          <div style={{ fontSize:12, fontWeight:800, color:GOLD, fontVariantNumeric:'tabular-nums' }}>{fmtTime(elapsed)}</div>
+        </div>
+          <div style={{ fontSize:12, fontWeight:800, color:GOLD, fontVariantNumeric:'tabular-nums' }}>{fmtTime(elapsed)}</div>
+        </div>
         <div style={{ width:60 }} />
       </div>
 
       {/* Grid */}
-      <div style={{ display:'flex', flexDirection:'column', gap:5, alignItems:'center', marginBottom:12 }}>
+      <div style={{ display:'flex', flexDirection:'column', gap:4, alignItems:'center', marginBottom:6 }}>
         {rows.map((row, i) => (
           <div key={i} style={{ display:'flex', gap:5, animation: shake && i === guesses.length ? 'shake 0.4s ease' : undefined }}>
             {row.map((cell, j) => (
               <div key={j} style={{
-                width:52, height:52, borderRadius:8,
+                width:46, height:46, borderRadius:8,
                 display:'flex', alignItems:'center', justifyContent:'center',
-                fontSize:20, fontWeight:900, color:'#fff',
+                fontSize:18, fontWeight:900, color:'#fff',
                 background: CELL_BG[cell.state],
                 border: cell.state === 'empty' ? '2px solid rgba(255,255,255,0.1)' : cell.state === 'active' ? '2px solid rgba(255,255,255,0.4)' : 'none',
                 transition:'background 0.2s',
