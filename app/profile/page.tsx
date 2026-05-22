@@ -132,8 +132,6 @@ export default function ProfilePage() {
            </button>
          </div>
          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-           <img src={`${BASE}/streak.png`} style={{ width:64, height:64, objectFit:'contain' }} />
-           {streak > 0 && <span style={{ fontSize:48, fontWeight:900, color:'#FF6D00', lineHeight:1 }}>{streak}</span>}
          </div>
        </div>
 
