@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 
@@ -138,7 +138,7 @@ export default function WordlyClient() {
     timerRef.current = setInterval(() => setElapsed(Date.now() - now), 500)
   }
 
-  const handleKey = useCallback(async (key: string) => {
+  const handleKey = async (key: string) => {
     if (key === '⌫' || key === 'BACKSPACE') {
       const next = currentRef.current.slice(0,-1)
       setCurrent(next); currentRef.current = next
@@ -177,13 +177,9 @@ export default function WordlyClient() {
       const next = currentRef.current + key
       setCurrent(next); currentRef.current = next
     }
-  }, [myBest, profile?.name])
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => handleKey(e.key.toUpperCase())
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [handleKey])
+
+
 
   useEffect(() => () => { if (timerRef.current) clearInterval(timerRef.current) }, [])
 
