@@ -233,7 +233,7 @@ export default function WordlyClient() {
   )
 
   return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'6px 12px', overflow:'hidden' }}>
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'6px 12px 12px', overflow:'hidden' }}>
 
       {/* Header */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
@@ -255,14 +255,14 @@ export default function WordlyClient() {
       </div>
 
       {/* Grid */}
-      <div style={{ display:'flex', flexDirection:'column', gap:4, alignItems:'center', marginBottom:6 }}>
+      <div style={{ display:'flex', flexDirection:'column', gap:4, alignItems:'center', marginBottom:4 }}>
         {rows.map((row, i) => (
           <div key={i} style={{ display:'flex', gap:5, animation: shake && i === guesses.length ? 'shake 0.4s ease' : undefined }}>
             {row.map((cell, j) => (
               <div key={j} style={{
-                width:46, height:46, borderRadius:8,
+                width:42, height:42, borderRadius:6,
                 display:'flex', alignItems:'center', justifyContent:'center',
-                fontSize:18, fontWeight:900, color:'#fff',
+                fontSize:16, fontWeight:900, color:'#fff',
                 background: CELL_BG[cell.state],
                 border: cell.state === 'empty' ? '2px solid rgba(255,255,255,0.1)' : cell.state === 'active' ? '2px solid rgba(255,255,255,0.4)' : 'none',
                 transition:'background 0.2s',
@@ -304,17 +304,17 @@ export default function WordlyClient() {
       )}
 
       {/* Keyboard */}
-      <div style={{ marginTop:'auto', display:'flex', flexDirection:'column', gap:5 }}>
+      <div style={{ marginTop:'auto', display:'flex', flexDirection:'column', gap:4 }}>
         {KEYBOARD.map((row, i) => (
-          <div key={i} style={{ display:'flex', gap:4, justifyContent:'center' }}>
+          <div key={i} style={{ display:'flex', gap:3, justifyContent:'center' }}>
             {row.map(k => (
               <button key={k} onClick={() => handleKey(k)} style={{
-                padding: k.length > 1 ? '12px 6px' : '12px',
-                minWidth: k.length > 1 ? 46 : 32,
-                borderRadius:8, border:'none', cursor:'pointer',
+                padding: k.length > 1 ? '10px 4px' : '10px',
+                minWidth: k.length > 1 ? 40 : 28,
+                borderRadius:6, border:'none', cursor:'pointer',
                 background: keyStates[k] ? KEY_BG[keyStates[k]] || 'rgba(255,255,255,0.08)' : k==='ENTER' ? GREEN : 'rgba(255,255,255,0.08)',
                 color:'#fff',
-                fontSize: k.length > 1 ? 10 : 14, fontWeight:900, fontFamily:'inherit',
+                fontSize: k.length > 1 ? 9 : 12, fontWeight:900, fontFamily:'inherit',
               }}>{k}</button>
             ))}
           </div>
