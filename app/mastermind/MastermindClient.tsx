@@ -50,9 +50,9 @@ export default function MastermindClient() {
   const [lockedSlots, setLockedSlots] = useState<boolean[]>(Array(CODE_LENGTH).fill(false))
   const [selected, setSelected] = useState<number>(0)
   const [won, setWon] = useState(false)
-  const [worldRecord, setWorldRecord] = useState<{attempts:number,name:string}|null>(null)
+  const [worldRecord, setWorldRecord] = useState<{attempts:number,time_ms:number,name:string}|null>(null)
   const [myBest, setMyBest] = useState<number|null>(null)
-  const [top5, setTop5] = useState<{name:string,attempts:number}[]>([])
+  const [top5, setTop5] = useState<{name:string,attempts:number,time_ms:number}[]>([])
   const [worldRank, setWorldRank] = useState<number|null>(null)
   const [name, setName] = useState('')
   const [pin, setPin] = useState(['','','',''])
@@ -69,13 +69,17 @@ export default function MastermindClient() {
   }, [profile?.name])
 
   const loadData = async () => {
-    const { data } = await supabase.from('mastermind_scores').select('player_name,attempts').order('attempts', { ascending: true }).limit(500)
+    const { data } = await supabase.from('mastermind_scores').select('player_name,attempts,time_ms').order('attempts', { ascending: true }).order('time_ms', { ascending: true }).limit(500)
     if (!data) return
-    const best: Record<string,number> = {}
-    data.forEach((s:any) => { if (!best[s.player_name] || s.attempts < best[s.player_name]) best[s.player_name] = s.attempts })
-    const sorted = Object.entries(best).map(([n,a]) => ({name:n, attempts:a as number})).sort((a,b) => a.attempts-b.attempts)
-    setTop5(sorted.slice(0,5))
-    if (sorted[0]) setWorldRecord({attempts:sorted[0].attempts, name:sorted[0].name})
+    const best: Record<string,{attempts:number,time_ms:number}> = {}
+    data.forEach((s:any) => {
+      const existing = best[s.player_name]
+      if (!existing || s.attempts < existing.attempts || (s.attempts === existing.attempts && s.time_ms < existing.time_ms))
+        best[s.player_name] = {attempts:s.attempts, time_ms:s.time_ms}
+    })
+    const sorted = Object.entries(best).map(([n,v]) => ({name:n, attempts:v.attempts, time_ms:v.time_ms})).sort((a,b) => a.attempts !== b.attempts ? a.attempts-b.attempts : a.time_ms-b.time_ms)
+    setTop5(sorted.slice(0,5) as any)
+    if (sorted[0]) setWorldRecord({attempts:sorted[0].attempts, time_ms:sorted[0].time_ms, name:sorted[0].name})
     if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
   }
 
@@ -196,6 +200,7 @@ export default function MastermindClient() {
         <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
           <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
           <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${worldRecord.attempts} tries` : '—'}</div>
+          {worldRecord && worldRecord.time_ms > 0 && <div style={{ fontSize:11, color:'rgba(200,150,12,0.7)', fontWeight:700 }}>{fmtTime(worldRecord.time_ms)}</div>}
           {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
         </div>
         <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
@@ -209,7 +214,10 @@ export default function MastermindClient() {
           <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
             <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
             <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
-            <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.attempts} tries</div>
+            <div style={{ textAlign:'right' }}>
+              <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.attempts} tries</div>
+              {p.time_ms > 0 && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>{fmtTime(p.time_ms)}</div>}
+            </div>
           </div>
         ))}
       </div>
