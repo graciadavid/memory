@@ -1,51 +1,11 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
-import { supabase } from '@/lib/supabase'
-import { completeWodExercise } from '@/lib/wod'
-import { completePlanDay } from '@/lib/plan'
-import { track } from '@vercel/analytics'
+import { useState, useEffect, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import { revalidateRanking } from '@/app/actions'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 
-const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
-const CREAM = '#FAF7F2'
 const GREEN = '#2E7D32'
-const RED = '#B71C1C'
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
-const LOGO = `${BASE}/flags.webp`
-const TROPHY = `${BASE}/nav-trophy.webp`
-const BRAIN_GREEN = `${BASE}/brain-green.webp`
-const BRAIN_RED = `${BASE}/brain-red.webp`
-const FLAG_CDN = 'https://flagcdn.com/w640'
-
-let sharedCtx: AudioContext | null = null
-
-function getAudioCtx() {
-  if (!sharedCtx || sharedCtx.state === 'closed') sharedCtx = new AudioContext()
-  if (sharedCtx.state === 'suspended') sharedCtx.resume()
-  return sharedCtx
-}
-
-function playTone(freq1: number, freq2: number, duration: number, type: OscillatorType, vol: number) {
-  try {
-    const ctx = getAudioCtx()
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.type = type
-    osc.frequency.setValueAtTime(freq1, ctx.currentTime)
-    osc.frequency.setValueAtTime(freq2, ctx.currentTime + 0.08)
-    gain.gain.setValueAtTime(vol, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration)
-    osc.connect(gain); gain.connect(ctx.destination)
-    osc.start(); osc.stop(ctx.currentTime + duration)
-  } catch(e) {}
-}
-
-function playCorrect() { playTone(523, 659, 0.3, 'sine', 0.25) }
-function playWrong() { playTone(200, 150, 0.4, 'sawtooth', 0.2) }
+const FLAG_CDN = 'https://flagcdn.com/w320'
 
 const COUNTRIES = [
   { code: 'fr', name: 'France' }, { code: 'de', name: 'Germany' },
@@ -58,422 +18,253 @@ const COUNTRIES = [
   { code: 'jp', name: 'Japan' }, { code: 'cn', name: 'China' },
   { code: 'kr', name: 'South Korea' }, { code: 'in', name: 'India' },
   { code: 'au', name: 'Australia' }, { code: 'nz', name: 'New Zealand' },
-  { code: 'za', name: 'South Africa' }, { code: 'eg', name: 'Egypt' },
-  { code: 'ng', name: 'Nigeria' }, { code: 'ke', name: 'Kenya' },
-  { code: 'ma', name: 'Morocco' }, { code: 'ru', name: 'Russia' },
-  { code: 'tr', name: 'Turkey' }, { code: 'sa', name: 'Saudi Arabia' },
-  { code: 'ae', name: 'UAE' }, { code: 'th', name: 'Thailand' },
+  { code: 'za', name: 'South Africa' }, { code: 'ng', name: 'Nigeria' },
+  { code: 'eg', name: 'Egypt' }, { code: 'ma', name: 'Morocco' },
+  { code: 'ke', name: 'Kenya' }, { code: 'gh', name: 'Ghana' },
+  { code: 'se', name: 'Sweden' }, { code: 'no', name: 'Norway' },
+  { code: 'dk', name: 'Denmark' }, { code: 'fi', name: 'Finland' },
+  { code: 'nl', name: 'Netherlands' }, { code: 'be', name: 'Belgium' },
+  { code: 'ch', name: 'Switzerland' }, { code: 'at', name: 'Austria' },
+  { code: 'pl', name: 'Poland' }, { code: 'cz', name: 'Czech Republic' },
+  { code: 'hu', name: 'Hungary' }, { code: 'ro', name: 'Romania' },
+  { code: 'gr', name: 'Greece' }, { code: 'tr', name: 'Turkey' },
+  { code: 'ru', name: 'Russia' }, { code: 'ua', name: 'Ukraine' },
+  { code: 'th', name: 'Thailand' }, { code: 'vn', name: 'Vietnam' },
   { code: 'id', name: 'Indonesia' }, { code: 'ph', name: 'Philippines' },
+  { code: 'my', name: 'Malaysia' }, { code: 'sg', name: 'Singapore' },
   { code: 'pk', name: 'Pakistan' }, { code: 'bd', name: 'Bangladesh' },
-  { code: 'vn', name: 'Vietnam' }, { code: 'nl', name: 'Netherlands' },
-  { code: 'be', name: 'Belgium' }, { code: 'ch', name: 'Switzerland' },
-  { code: 'at', name: 'Austria' }, { code: 'se', name: 'Sweden' },
-  { code: 'no', name: 'Norway' }, { code: 'dk', name: 'Denmark' },
-  { code: 'fi', name: 'Finland' }, { code: 'pl', name: 'Poland' },
-  { code: 'cz', name: 'Czech Republic' }, { code: 'ro', name: 'Romania' },
-  { code: 'hu', name: 'Hungary' }, { code: 'gr', name: 'Greece' },
-  { code: 'ua', name: 'Ukraine' }, { code: 'il', name: 'Israel' },
-  { code: 'sg', name: 'Singapore' }, { code: 'my', name: 'Malaysia' },
-  { code: 'tw', name: 'Taiwan' }, { code: 'hk', name: 'Hong Kong' },
-  { code: 'ie', name: 'Ireland' }, { code: 'nz', name: 'New Zealand' },
-  { code: 'is', name: 'Iceland' }, { code: 'pt', name: 'Portugal' },
-  { code: 'sk', name: 'Slovakia' }, { code: 'hr', name: 'Croatia' },
-  { code: 'rs', name: 'Serbia' }, { code: 'bg', name: 'Bulgaria' },
-  { code: 'lt', name: 'Lithuania' }, { code: 'lv', name: 'Latvia' },
-  { code: 'ee', name: 'Estonia' }, { code: 'si', name: 'Slovenia' },
-  { code: 'ba', name: 'Bosnia' }, { code: 'mk', name: 'North Macedonia' },
-  { code: 'al', name: 'Albania' }, { code: 'md', name: 'Moldova' },
-  { code: 'by', name: 'Belarus' }, { code: 'ge', name: 'Georgia' },
-  { code: 'am', name: 'Armenia' }, { code: 'az', name: 'Azerbaijan' },
-  { code: 'kz', name: 'Kazakhstan' }, { code: 'uz', name: 'Uzbekistan' },
-  { code: 'tm', name: 'Turkmenistan' }, { code: 'tj', name: 'Tajikistan' },
-  { code: 'kg', name: 'Kyrgyzstan' }, { code: 'mn', name: 'Mongolia' },
-  { code: 'np', name: 'Nepal' }, { code: 'lk', name: 'Sri Lanka' },
-  { code: 'mm', name: 'Myanmar' }, { code: 'kh', name: 'Cambodia' },
-  { code: 'la', name: 'Laos' }, { code: 'bn', name: 'Brunei' },
-  { code: 'tz', name: 'Tanzania' }, { code: 'et', name: 'Ethiopia' },
-  { code: 'gh', name: 'Ghana' }, { code: 'cm', name: 'Cameroon' },
-  { code: 'ci', name: 'Ivory Coast' }, { code: 'sn', name: 'Senegal' },
-  { code: 'ug', name: 'Uganda' }, { code: 'dz', name: 'Algeria' },
-  { code: 'tn', name: 'Tunisia' }, { code: 'ly', name: 'Libya' },
-  { code: 'sd', name: 'Sudan' }, { code: 'ao', name: 'Angola' },
-  { code: 'mz', name: 'Mozambique' }, { code: 'zw', name: 'Zimbabwe' },
-  { code: 'bw', name: 'Botswana' }, { code: 'na', name: 'Namibia' },
-  { code: 'iq', name: 'Iraq' }, { code: 'ir', name: 'Iran' },
-  { code: 'jo', name: 'Jordan' }, { code: 'lb', name: 'Lebanon' },
-  { code: 'sy', name: 'Syria' }, { code: 'ye', name: 'Yemen' },
-  { code: 'om', name: 'Oman' }, { code: 'kw', name: 'Kuwait' },
-  { code: 'qa', name: 'Qatar' }, { code: 'bh', name: 'Bahrain' },
-  { code: 've', name: 'Venezuela' }, { code: 'ec', name: 'Ecuador' },
-  { code: 'bo', name: 'Bolivia' }, { code: 'py', name: 'Paraguay' },
-  { code: 'uy', name: 'Uruguay' }, { code: 'cr', name: 'Costa Rica' },
-  { code: 'pa', name: 'Panama' }, { code: 'gt', name: 'Guatemala' },
-  { code: 'hn', name: 'Honduras' }, { code: 'sv', name: 'El Salvador' },
-  { code: 'ni', name: 'Nicaragua' }, { code: 'do', name: 'Dominican Republic' },
-  { code: 'cu', name: 'Cuba' }, { code: 'jm', name: 'Jamaica' },
-  { code: 'ht', name: 'Haiti' }, { code: 'tt', name: 'Trinidad and Tobago' },
+  { code: 'ir', name: 'Iran' }, { code: 'iq', name: 'Iraq' },
+  { code: 'sa', name: 'Saudi Arabia' }, { code: 'ae', name: 'UAE' },
+  { code: 'il', name: 'Israel' }, { code: 'jo', name: 'Jordan' },
 ]
 
-type Phase = 'intro' | 'playing' | 'gameover'
-
 function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
+  return [...arr].sort(() => Math.random() - 0.5)
 }
 
-function getOptions(correct: typeof COUNTRIES[0]) {
-  const others = shuffle(COUNTRIES.filter(c => c.code !== correct.code)).slice(0, 3)
-  return shuffle([correct, ...others])
-}
+type Phase = 'rules' | 'playing' | 'result'
 
 export default function FlagsClient() {
   const { profile } = usePlayer()
-  const router = useRouter()
-  const [phase, setPhase] = useState<Phase>('intro')
-  const [level, setLevel] = useState(0)
-  const [current, setCurrent] = useState<typeof COUNTRIES[0] | null>(null)
-  const [options, setOptions] = useState<typeof COUNTRIES[]>([])
-  const [selected, setSelected] = useState<string | null>(null)
-  const [worldRank, setWorldRank] = useState<number | null>(null)
-  const [topScores, setTopScores] = useState<{ name: string, level: number }[]>([])
-  const [progress, setProgress] = useState(100)
+  const [phase, setPhase] = useState<Phase>('rules')
+  const [score, setScore] = useState(0)
+  const [question, setQuestion] = useState<{ code: string, name: string } | null>(null)
+  const [options, setOptions] = useState<string[]>([])
+  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null)
+  const [lastAnswer, setLastAnswer] = useState('')
+  const [worldRecord, setWorldRecord] = useState<{score:number,name:string}|null>(null)
+  const [myBest, setMyBest] = useState<number|null>(null)
+  const [top5, setTop5] = useState<{name:string,score:number}[]>([])
+  const [worldRank, setWorldRank] = useState<number|null>(null)
   const [imgLoaded, setImgLoaded] = useState(false)
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const [name, setName] = useState('')
+  const [pin, setPin] = useState(['','','',''])
+  const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
+  const usedRef = useState<Set<string>>(() => new Set())[0]
 
-  useEffect(() => { fetchTop() }, [])
+  useEffect(() => {
+    if (profile?.name) setName(profile.name)
+    loadData()
+  }, [profile?.name])
 
-  const fetchTop = async () => {
-    const { data } = await supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
-    if (data) {
-      const best: Record<string, number> = {}
-      data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-      setTopScores(Object.entries(best).map(([name, level]) => ({ name, level })).sort((a, b) => b.level - a.level))
-    }
+  const loadData = async () => {
+    const { data } = await supabase.from('flag_scores').select('player_name,score').order('score', { ascending: false }).limit(500)
+    if (!data) return
+    const best: Record<string,number> = {}
+    data.forEach((s:any) => { if (!best[s.player_name] || s.score > best[s.player_name]) best[s.player_name] = s.score })
+    const sorted = Object.entries(best).map(([n,s]) => ({name:n, score:s as number})).sort((a,b) => b.score-a.score)
+    setTop5(sorted.slice(0,5))
+    if (sorted[0]) setWorldRecord({score:sorted[0].score, name:sorted[0].name})
+    if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
   }
 
-  const nextQuestion = (lvl: number) => {
-    const country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)]
-    setCurrent(country)
-    setOptions(getOptions(country) as any)
-    setSelected(null)
+  const nextQuestion = useCallback(() => {
+    setFeedback(null)
     setImgLoaded(false)
-    setProgress(100)
-    // Force show image after 2s even if not loaded
-    setTimeout(() => setImgLoaded(true), 2000)
-    // Preload next flag
-    const next = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)]
-    const img = new Image()
-    img.src = `${FLAG_CDN}/${next.code}.png`
-  }
+    const available = COUNTRIES.filter(c => !usedRef.has(c.code))
+    const pool = available.length >= 4 ? available : COUNTRIES
+    const shuffled = shuffle(pool)
+    const correct = shuffled[0]
+    usedRef.add(correct.code)
+    const wrong = shuffle(COUNTRIES.filter(c => c.code !== correct.code)).slice(0, 3).map(c => c.name)
+    setQuestion(correct)
+    setOptions(shuffle([correct.name, ...wrong]))
+  }, [usedRef])
 
   const startGame = () => {
-    try { getAudioCtx() } catch(e) {}
-    setLevel(0)
+    usedRef.clear()
+    setScore(0)
     setPhase('playing')
-    nextQuestion(0)
+    setTimeout(() => nextQuestion(), 50)
   }
 
-  const handleAnswer = async (code: string) => {
-    if (selected) return
-    setSelected(code)
-    if (timerRef.current) clearTimeout(timerRef.current)
-
-    const correct = code === current?.code
-    const newLevel = correct ? level + 1 : level
-
-    if (!correct) {
-      playWrong()
-      setTimeout(async () => {
-        if (profile?.name) {
-          await supabase.from('flag_scores').insert({ player_name: profile.name, level })
-        window.dispatchEvent(new Event('game_completed'))
-      completeWodExercise(profile?.name || '', '/flags')
-      completePlanDay(profile?.name || profile?.name || '', '/flags')
-          revalidateRanking('flags')
-          const { data } = await supabase.from('flag_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
-          if (data) {
-            const best: Record<string, number> = {}
-            data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
-            const myBest = best[profile.name] || level
-            setWorldRank(Object.values(best).filter(l => l > myBest).length + 1)
-          }
-          fetchTop()
-        }
-        setPhase('gameover')
-      }, 400)
+  const handleAnswer = useCallback((answer: string) => {
+    if (feedback || !question) return
+    setLastAnswer(answer)
+    const correct = answer === question.name
+    setFeedback(correct ? 'correct' : 'wrong')
+    if (correct) {
+      setScore(s => s + 1)
+      setTimeout(() => nextQuestion(), 700)
     } else {
-      playCorrect()
-      setLevel(newLevel)
-      setTimeout(() => nextQuestion(newLevel), 1000)
+      setTimeout(async () => {
+        const finalScore = score
+        setPhase('result')
+        if (profile?.name) {
+          await supabase.from('flag_scores').insert({player_name:profile.name, score:finalScore})
+          const {count} = await supabase.from('flag_scores').select('*',{count:'exact',head:true}).gt('score',finalScore)
+          setWorldRank((count??0)+1)
+          if (myBest===null || finalScore>myBest) setMyBest(finalScore)
+        }
+      }, 1000)
     }
+  }, [feedback, question, score, profile?.name, myBest, nextQuestion])
+
+  const saveScore = async () => {
+    if (!name.trim() || pin.join('').length!==4) return
+    setSaving(true)
+    setSaveError('')
+    const pinHash = btoa(pin.join(''))
+    const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name',name.trim()).maybeSingle()
+    if (existing) {
+      if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN for this name'); setSaving(false); return }
+    } else {
+      await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
+    }
+    await supabase.from('flag_scores').insert({player_name:name.trim(), score})
+    const {count} = await supabase.from('flag_scores').select('*',{count:'exact',head:true}).gt('score',score)
+    setWorldRank((count??0)+1)
+    setSaving(false)
+    setSaved(true)
+    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    setTimeout(() => window.location.reload(), 1500)
   }
 
-  const share = async () => {
-    const text = `🚩 I got ${level} flags right in a row on MemGenius!\nCan you beat me? 👉 https://memgenius.com/flags`
-    if (navigator.share) await navigator.share({ text })
-    else { await navigator.clipboard.writeText(text); alert('Copied!') }
+  const reset = () => {
+    setPhase('rules')
+    setSaved(false)
+    setFeedback(null)
+    loadData()
   }
 
-  return (
-    <>
-      <style>{`
-        @keyframes floatLogo {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-6px); }
-        }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.03); }
-        }
-      `}</style>
+  const resultColor = score >= 20 ? '#00C853' : score >= 10 ? '#FF6F00' : '#D32F2F'
+  const bgResult = score >= 20 ? '#0D3320' : score >= 10 ? '#2D1A00' : '#1A0000'
 
-      <main style={{
-        height: '100dvh',
-        background: `linear-gradient(180deg, #FFF8EE 0%, ${CREAM} 100%)`,
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center',
-        fontFamily: 'var(--font-nunito), sans-serif',
-        maxWidth: 430, margin: '0 auto',
-        overflow: 'auto', paddingBottom: 80,
-      }}>
-
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', width: '100%', gap: 12 }}>
-          <img src={LOGO} alt="Flags" style={{ height: 56, objectFit: 'contain', animation: 'floatLogo 3s ease-in-out infinite', flexShrink: 0 }} />
-          <div>
-            <div style={{ fontSize: 26, fontWeight: 900, color: BROWN, letterSpacing: -0.5, lineHeight: 1 }}>Flags</div>
-            {phase === 'intro' && <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>How many can you get right?</div>}
-          </div>
+  if (phase === 'rules') return (
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
+        <div style={{ fontSize:48 }}>🚩</div>
+        <div>
+          <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Flags</div>
+          <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Identify flags from around the world</div>
         </div>
-
-        {/* INTRO */}
-        {phase === 'intro' && (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px', gap: 14, width: '100%' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 6 }}>Guess the flag</div>
-              <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.6 }}>
-                A flag appears on screen.<br />Choose the correct country.<br />How many can you get in a row?
-              </div>
-            </div>
-
-            {/* Preview flags */}
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-              {['fr', 'jp', 'br', 'de'].map(code => (
-                <img key={code} src={`${FLAG_CDN}/${code}.png`} alt={code} style={{ width: 72, height: 48, objectFit: 'cover', borderRadius: 8, boxShadow: `0 4px 12px ${BROWN}20` }} />
-              ))}
-            </div>
-
-            <button onClick={startGame} style={{
-              padding: '18px', borderRadius: 20, border: 'none',
-              background: BROWN, color: '#fff',
-              fontSize: 18, fontWeight: 900, fontFamily: 'inherit',
-              cursor: 'pointer', boxShadow: `0 8px 0 ${BROWN}60`,
-              width: '100%',
-            }}>Start</button>
-
-            <Link href="/flags/ranking" style={{ textDecoration: 'none', width: '100%' }}>
-              <div style={{
-                width: '100%', padding: '14px', borderRadius: 16,
-                background: '#fff', border: `1.5px solid ${BROWN}20`,
-                textAlign: 'center', cursor: 'pointer', boxSizing: 'border-box',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              }}>
-                <img src={TROPHY} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-                <span style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>World Ranking</span>
-              </div>
-            </Link>
-
-
+      </div>
+      <div style={{ display:'flex', gap:10, marginBottom:20 }}>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+          <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
+          <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${worldRecord.score}` : '—'}</div>
+          {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
+        </div>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+          <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
+          <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest!==null ? myBest : '—'}</div>
+        </div>
+      </div>
+      <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
+        <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
+        {top5.map((p,i) => (
+          <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+            <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
+            <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
+            <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.score} flags</div>
           </div>
-        )}
-
-        {/* PLAYING */}
-        {phase === 'playing' && current && (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, width: '100%', padding: '0 20px' }}>
-
-            <div style={{ fontSize: 13, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase' }}>
-              Streak: {level}
-            </div>
-
-            {/* Flag */}
-            <div style={{
-              width: '100%', borderRadius: 20,
-              overflow: 'hidden',
-              boxShadow: `0 8px 32px ${BROWN}25`,
-              background: '#f0f0f0',
-              aspectRatio: '3/2',
-              position: 'relative',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              {!imgLoaded && (
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: '#f0f0f0',
-                }}>
-                  <div style={{ fontSize: 32, opacity: 0.3 }}>🏳️</div>
-                </div>
-              )}
-              <img
-                key={current.code}
-                src={`${FLAG_CDN}/${current.code}.png`}
-                alt="flag"
-                onLoad={() => setImgLoaded(true)}
-                onError={() => setImgLoaded(true)}
-                style={{
-                  width: '100%', height: '100%',
-                  objectFit: 'cover',
-                  opacity: imgLoaded ? 1 : 0,
-                  transition: 'opacity 0.3s',
-                }}
-              />
-            </div>
-
-            {/* Progress bar */}
-            <div style={{ width: '100%', height: 6, background: `${BROWN}15`, borderRadius: 4, overflow: 'hidden' }}>
-              <div style={{
-                height: '100%', width: `${progress}%`,
-                background: GOLD, borderRadius: 4,
-                transition: 'width 0.3s linear',
-              }} />
-            </div>
-
-            {/* Options */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, width: '100%' }}>
-              {(options as any[]).map((opt: any) => {
-                const isSelected = selected === opt.code
-                const isCorrect = opt.code === current.code
-                let bg = '#fff'
-                let border = `1.5px solid ${BROWN}15`
-                let color = BROWN
-                if (selected) {
-                  if (isCorrect) { bg = '#E8F5E9'; border = `2px solid ${GREEN}`; color = GREEN }
-                  else if (isSelected) { bg = '#FFEBEE'; border = `2px solid ${RED}`; color = RED }
-                }
-                return (
-                  <button key={opt.code} onClick={() => handleAnswer(opt.code)} style={{
-                    padding: '14px 8px', borderRadius: 14, border,
-                    background: bg, color,
-                    fontSize: 14, fontWeight: 800,
-                    fontFamily: 'inherit', cursor: selected ? 'default' : 'pointer',
-                    transition: 'all 0.2s',
-                    boxShadow: `0 3px 8px ${BROWN}08`,
-                    transform: isSelected ? 'scale(0.98)' : 'scale(1)',
-                  }}>
-                    {opt.name}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* GAME OVER */}
-        {phase === 'gameover' && (
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12, padding: '0 20px', width: '100%' }}>
-            <div style={{
-              background: CREAM, borderRadius: 24, padding: '24px 20px',
-              width: '100%', boxSizing: 'border-box',
-              boxShadow: `0 8px 32px ${BROWN}20`,
-              border: `1px solid ${GOLD}30`,
-              textAlign: 'center',
-            }}>
-              <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: 3, color: `${BROWN}50`, textTransform: 'uppercase', marginBottom: 6 }}>Your Result</div>
-              <div style={{ fontSize: 36, fontWeight: 900, color: BROWN, marginBottom: 4 }}>{level} flags</div>
-              <div style={{ fontSize: 13, color: `${BROWN}50`, fontWeight: 700, marginBottom: 12 }}>in a row</div>
-
-              {current && (
-                <div style={{ marginBottom: 14 }}>
-                  <div style={{ fontSize: 11, color: `${BROWN}50`, fontWeight: 700, marginBottom: 6 }}>The flag was:</div>
-                  <img src={`${FLAG_CDN}/${current.code}.png`} alt={current.name} style={{ width: 80, height: 54, objectFit: 'cover', borderRadius: 8, boxShadow: `0 4px 12px ${BROWN}20` }} />
-                  <div style={{ fontSize: 14, fontWeight: 900, color: BROWN, marginTop: 6 }}>{current.name}</div>
-                </div>
-              )}
-
-              {worldRank && (
-                <div style={{ background: `${GOLD}10`, border: `1px solid ${GOLD}20`, borderRadius: 12, padding: '10px' }}>
-                  <div style={{ fontSize: 10, fontWeight: 800, color: `${BROWN}50`, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 2 }}>World Ranking</div>
-                  <div style={{ fontSize: 28, fontWeight: 900, color: GOLD }}>#{worldRank}</div>
-                </div>
-              )}
-            </div>
-
-
-            <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-              <button onClick={() => {
-              (window as any).gtag?.('event', 'challenge_shared', { game: 'flags' })
-              const url = `${window.location.origin}/challenge?game=flags&score=${level}&by=${encodeURIComponent(profile?.name || 'Someone')}`
-              const text = `🚩 ${profile?.name} got ${level} flags in a row on MemGenius! Can you beat them? ${url}`
-              track('challenge_shared'); if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-            }} style={{
-              width: '100%', padding: '16px', borderRadius: 16, border: 'none',
-              background: '#25D366',
-              color: '#fff', fontSize: 16, fontWeight: 900,
-              fontFamily: 'inherit', cursor: 'pointer',
-              boxShadow: '0 6px 0 #128C7E60',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            }}><span style={{ fontSize: 20 }}>📲</span> Send to WhatsApp</button>
-              <button onClick={startGame} style={{
-                flex: 1, padding: '16px', borderRadius: 16, border: 'none',
-                background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800,
-                fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 6px 0 ${GOLD}50`,
-              }}>Play again</button>
-            </div>
-          </div>
-        )}
-      </main>
-
-    {/* SEO Content */}
-    <section style={{
-      maxWidth: 430, margin: '0 auto',
-      padding: '48px 24px 120px',
-      fontFamily: 'var(--font-nunito), sans-serif',
-      background: '#FAF7F2',
-    }}>
-      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>
-        Flags — World Flag Quiz Game
-      </h2>
-      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 24 }}>
-        Flags challenges you to identify the world's country flags as fast as possible. A flag appears on screen and you must name the correct country from multiple options. The more you get right in a row, the higher you climb on the world ranking. With nearly 200 countries in the pool, every game is different.
-      </p>
-      <p style={{ fontSize: 14, color: '#4A2C0A99', lineHeight: 1.8, marginBottom: 32 }}>
-        Beyond being a fun geography quiz, Flags is a genuine brain trainer. Recognizing visual symbols and linking them to names exercises associative memory — the same cognitive system used when learning languages or faces. Play daily and you will be surprised how quickly you learn every flag on the planet.
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        {[
-          { q: 'How does the Flags game work?', a: 'A country flag appears on screen along with several answer options. Tap the correct country name. Get it right and the next flag appears. One wrong answer ends your streak.' },
-          { q: 'How many flags are in the game?', a: 'The game includes flags from nearly 200 countries and territories worldwide. The selection is randomized each game so you will encounter different flags every time you play.' },
-          { q: 'Is Flags good for learning geography?', a: 'Yes. Repeated exposure to flags and their corresponding countries builds long-term visual memory. Most players report learning dozens of new flags within their first week of daily play.' },
-          { q: 'Can I play Flags on mobile?', a: 'Absolutely. Flags is fully optimized for mobile with large tap targets and fast loading flags. It works on any modern smartphone or tablet.' },
-          { q: 'Is Flags free to play?', a: 'Completely free, no account needed. Your streak score is submitted to the world ranking automatically at the end of each game.' },
-        ].map((item, i) => (
-          <details key={i} style={{
-            background: '#fff', borderRadius: 14,
-            border: '1px solid #4A2C0A15',
-            padding: '14px 18px',
-          }}>
-            <summary style={{
-              fontSize: 14, fontWeight: 800, color: '#4A2C0A',
-              cursor: 'pointer', listStyle: 'none',
-            }}>
-              {item.q}
-            </summary>
-            <p style={{ fontSize: 13, color: '#4A2C0A80', lineHeight: 1.7, marginTop: 10, marginBottom: 0 }}>
-              {item.a}
-            </p>
-          </details>
         ))}
       </div>
-    </section>
+      <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080', marginTop:'auto' }}>
+        Play →
+      </button>
+    </main>
+  )
 
-    </>
+  if (phase === 'playing') return (
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 20px 100px', overflowY:'auto' }}>
+      <div style={{ fontSize:13, fontWeight:900, color:GOLD, marginBottom:20, textAlign:'center' }}>
+        {score} correct
+      </div>
+
+      {question && (
+        <>
+          <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:20, padding:'20px', marginBottom:24, display:'flex', alignItems:'center', justifyContent:'center', minHeight:160 }}>
+            {!imgLoaded && <div style={{ fontSize:13, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>Loading...</div>}
+            <img
+              key={question.code}
+              src={`${FLAG_CDN}/${question.code}.png`}
+              alt=""
+              onLoad={() => setImgLoaded(true)}
+              style={{ maxWidth:'100%', maxHeight:140, objectFit:'contain', borderRadius:8, display:imgLoaded?'block':'none', boxShadow:'0 4px 20px rgba(0,0,0,0.4)' }}
+            />
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+            {options.map(opt => {
+              let bg = 'rgba(255,255,255,0.06)'
+              let color = '#fff'
+              if (feedback) {
+                if (opt === question.name) { bg = 'rgba(76,175,80,0.3)'; color = '#69F0AE' }
+                else if (opt === lastAnswer && feedback === 'wrong') { bg = 'rgba(211,47,47,0.3)'; color = '#FF5252' }
+              }
+              return (
+                <button key={opt} onClick={() => handleAnswer(opt)} style={{ width:'100%', padding:'16px', borderRadius:16, border:`1px solid ${feedback && opt===question.name ? 'rgba(76,175,80,0.5)' : 'rgba(255,255,255,0.08)'}`, background:bg, color, fontSize:15, fontWeight:800, fontFamily:'inherit', cursor:'pointer', textAlign:'left', transition:'all 0.15s' }}>
+                  {opt}
+                </button>
+              )
+            })}
+          </div>
+        </>
+      )}
+    </main>
+  )
+
+  return (
+    <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
+      <div style={{ textAlign:'center' }}>
+        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Flags in a row</div>
+        <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{score}</div>
+        {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
+      </div>
+
+      {!profile?.name && !saved && (
+        <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
+          <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
+          <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
+          <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
+          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
+          <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
+            {pin.map((d,i) => (
+              <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
+                onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
+                style={{ width:48, height:56, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
+            ))}
+          </div>
+          {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:10 }}>{saveError}</div>}
+          <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.15)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+            {saving?'Saving...':'Save →'}
+          </button>
+        </div>
+      )}
+
+      {saved && (
+        <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
+          <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
+          <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:4 }}>#{worldRank} in the world</div>
+        </div>
+      )}
+
+      <div style={{ display:'flex', gap:10, width:'100%' }}>
+        <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
+        <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E2080' }}>Play again →</button>
+      </div>
+    </main>
   )
 }
