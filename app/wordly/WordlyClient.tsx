@@ -81,6 +81,7 @@ export default function WordlyClient() {
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
   const timerRef = useRef<NodeJS.Timeout|null>(null)
+  const profileNameRef = useRef<string|null>(null)
   const wordRef = useRef('')
   const guessesRef = useRef<string[]>([])
   const currentRef = useRef('')
@@ -88,7 +89,7 @@ export default function WordlyClient() {
   const startTimeRef = useRef(0)
 
   useEffect(() => {
-    if (profile?.name) setName(profile.name)
+    if (profile?.name) { setName(profile.name); profileNameRef.current = profile.name }
     loadData()
   }, [profile?.name])
 
@@ -150,8 +151,8 @@ export default function WordlyClient() {
         setFinalTime(t)
         if (timerRef.current) clearInterval(timerRef.current)
         setPhase('won')
-        if (profile?.name) {
-          await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:t})
+        if (profileNameRef.current) {
+          await supabase.from('wordle_scores').insert({player_name:profileNameRef.current, attempts:newGuesses.length, time_ms:t})
           const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
           setWorldRank((count??0)+1)
           if (myBest===null || newGuesses.length<myBest) setMyBest(newGuesses.length)
@@ -166,7 +167,7 @@ export default function WordlyClient() {
       const next = currentRef.current + key
       setCurrent(next); currentRef.current = next
     }
-  }, [profile?.name, myBest])
+  }, [myBest])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => handleKey(e.key.toUpperCase())
