@@ -78,6 +78,7 @@ export default function NBackPage() {
     if (phase !== 'answer') return
     const h = historyRef.current
     const isActualMatch = h.length >= 2 && h[h.length - 1] === h[h.length - 2]
+    console.log('history:', h, 'isActualMatch:', isActualMatch, 'userSaid:', isMatch)
     const correct = isMatch === isActualMatch
 
     if (correct) {
