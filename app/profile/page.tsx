@@ -80,8 +80,8 @@ export default function ProfilePage() {
    ]},
    { label: 'Knowledge', color: '#00796B', games: [
      { label: 'Flags', value: records.flags },
-     { label: 'Versus Pop', value: records.versusPop },
-     { label: 'Versus Area', value: records.versusArea },
+     { label: 'Higher or Lower Pop', value: records.versusPop },
+     { label: 'Higher or Lower Area', value: records.versusArea },
    ]},
    { label: 'Logic', color: '#E65100', games: [
      { label: 'Sudoku', value: records.sudoku },
