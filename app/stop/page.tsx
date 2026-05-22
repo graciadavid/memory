@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 
@@ -22,6 +22,8 @@ export default function StopPage() {
  const [pin, setPin] = useState(['', '', '', ''])
  const [saved, setSaved] = useState(false)
  const [saving, setSaving] = useState(false)
+  const [worldRecord, setWorldRecord] = useState<{diff:number,name:string}|null>(null)
+  const [top5, setTop5] = useState<{name:string,diff:number}[]>([])
  const startRef = useRef(0)
  const rafRef = useRef(0)
 
