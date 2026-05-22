@@ -143,10 +143,7 @@ export default function WordlyClient() {
           await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:t})
           const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
           setWorldRank((count??0)+1)
-          if (myBest===null || newGuesses.length<myBest) {
-            setMyBest(newGuesses.length)
-            loadData()
-          }
+          setMyBest(prev => prev === null || newGuesses.length < prev ? newGuesses.length : prev)
         }
       } else if (newGuesses.length >= 6) {
         if (timerRef.current) clearInterval(timerRef.current)
