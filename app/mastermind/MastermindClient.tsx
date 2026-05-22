@@ -2,359 +2,265 @@
 import { useState, useEffect, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
-import { completeWodExercise } from '@/lib/wod'
-import { completePlanDay } from '@/lib/plan'
-import Link from 'next/link'
 
-const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
-const CREAM = '#FAF7F2'
+const GREEN = '#2E7D32'
 const PURPLE = '#6A1B9A'
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
-const COLORS = ['#6A1B9A', '#1E88E5', '#43A047', '#FDD835', '#FB8C00']
-const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/mastermind.png'
-const TROPHY = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.webp'
-const EMPTY = '#E0E0E0'
-const MAX_ATTEMPTS = 7
-const CODE_LENGTH = 5
+const COLORS = ['#E53935', '#1E88E5', '#43A047', '#FDD835', '#FB8C00', '#E91E63']
+const CODE_LENGTH = 4
+const MAX_ATTEMPTS = 8
 
-const generateCode = () => Array.from({ length: CODE_LENGTH }, () => Math.floor(Math.random() * COLORS.length))
+function generateCode(): number[] {
+  return Array.from({ length: CODE_LENGTH }, () => Math.floor(Math.random() * COLORS.length))
+}
 
-const getFeedback = (guess: number[], code: number[]) => {
+function getFeedback(guess: number[], code: number[]): { correct: number, misplaced: number } {
   const codeUsed = Array(CODE_LENGTH).fill(false)
   const guessUsed = Array(CODE_LENGTH).fill(false)
-  const correctPos: number[] = []
-  const wrongPos: number[] = []
-
-  guess.forEach((g, i) => {
-    if (g === code[i]) { correctPos.push(i); codeUsed[i] = true; guessUsed[i] = true }
-  })
+  let correct = 0, misplaced = 0
+  guess.forEach((g, i) => { if (g === code[i]) { correct++; codeUsed[i] = true; guessUsed[i] = true } })
   guess.forEach((g, i) => {
     if (guessUsed[i]) return
-    const idx = code.findIndex((c, j) => c === g && !codeUsed[j])
-    if (idx !== -1) { wrongPos.push(i); codeUsed[idx] = true }
+    const j = code.findIndex((c, ci) => !codeUsed[ci] && c === g)
+    if (j !== -1) { misplaced++; codeUsed[j] = true }
   })
-
-  return { black: correctPos.length, white: wrongPos.length, correctPos, wrongPos }
+  return { correct, misplaced }
 }
 
-function fmt(ms: number) {
-  const m = Math.floor(ms / 60000)
-  const s = Math.floor((ms % 60000) / 1000)
-  const c = Math.floor((ms % 1000) / 100)
-  return m > 0 ? `${m}:${String(s).padStart(2, '0')}.${c}` : `${s}.${c}s`
-}
+type Phase = 'rules' | 'playing' | 'result'
 
 export default function MastermindClient() {
   const { profile } = usePlayer()
-  const [code] = useState(generateCode)
-  const [guesses, setGuesses] = useState<number[][]>([])
-  const [feedbacks, setFeedbacks] = useState<{ black: number, white: number, correctPos: number[], wrongPos: number[] }[]>([])
-  const [current, setCurrent] = useState<(number | null)[]>(Array(CODE_LENGTH).fill(null))
-  const [phase, setPhase] = useState<'intro' | 'playing' | 'won' | 'lost'>('intro')
-  const [topScores, setTopScores] = useState<{ name: string, time_ms: number, attempts: number }[]>([])
-  const [startTime] = useState(Date.now())
-  const [elapsed, setElapsed] = useState(0)
-  const [finalTime, setFinalTime] = useState(0)
-  const [worldRank, setWorldRank] = useState<number | null>(null)
-  const [bestScore, setBestScore] = useState<{ time_ms: number, attempts: number } | null>(null)
-  const [blinking, setBlinking] = useState<number[]>([])
-  const [selectedPos, setSelectedPos] = useState<number>(0)
-  const [checking, setChecking] = useState(false)
+  const [phase, setPhase] = useState<Phase>('rules')
+  const [code, setCode] = useState<number[]>([])
+  const [guesses, setGuesses] = useState<{colors: number[], feedback: {correct:number,misplaced:number}}[]>([])
+  const [current, setCurrent] = useState<number[]>([])
+  const [selected, setSelected] = useState<number>(0)
+  const [won, setWon] = useState(false)
+  const [worldRecord, setWorldRecord] = useState<{attempts:number,name:string}|null>(null)
+  const [myBest, setMyBest] = useState<number|null>(null)
+  const [top5, setTop5] = useState<{name:string,attempts:number}[]>([])
+  const [worldRank, setWorldRank] = useState<number|null>(null)
+  const [name, setName] = useState('')
+  const [pin, setPin] = useState(['','','',''])
+  const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   useEffect(() => {
-    supabase.from('mastermind_scores').select('player_name, time_ms, attempts').order('time_ms', { ascending: true }).limit(200)
-      .then(({ data }) => {
-        if (data) {
-          const best: Record<string, { time_ms: number, attempts: number }> = {}
-          data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name].time_ms) best[s.player_name] = { time_ms: s.time_ms, attempts: s.attempts } })
-          setTopScores(Object.entries(best).map(([name, d]) => ({ name, ...d })).sort((a, b) => a.time_ms - b.time_ms))
-        }
-      })
-  }, [])
-
-  useEffect(() => {
-    if (phase !== 'playing') return
-    const t = setInterval(() => setElapsed(Date.now() - startTime), 100)
-    return () => clearInterval(t)
-  }, [phase, startTime])
-
-  useEffect(() => {
-    if (!profile?.name) return
-    supabase.from('mastermind_scores').select('time_ms, attempts').eq('player_name', profile.name).order('time_ms', { ascending: true }).limit(1)
-      .then(({ data }) => { if (data?.[0]) setBestScore(data[0]) })
+    if (profile?.name) setName(profile.name)
+    loadData()
   }, [profile?.name])
 
-  const submitGuess = useCallback(async () => {
-    if (current.some(v => v === null) || checking) return
-    setChecking(true)
-    const guess = current as number[]
-    const fb = getFeedback(guess, code)
+  const loadData = async () => {
+    const { data } = await supabase.from('mastermind_scores').select('player_name,attempts').order('attempts', { ascending: true }).limit(500)
+    if (!data) return
+    const best: Record<string,number> = {}
+    data.forEach((s:any) => { if (!best[s.player_name] || s.attempts < best[s.player_name]) best[s.player_name] = s.attempts })
+    const sorted = Object.entries(best).map(([n,a]) => ({name:n, attempts:a as number})).sort((a,b) => a.attempts-b.attempts)
+    setTop5(sorted.slice(0,5))
+    if (sorted[0]) setWorldRecord({attempts:sorted[0].attempts, name:sorted[0].name})
+    if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
+  }
 
-    // Blink wrong positions
-    setBlinking(fb.wrongPos)
-    
-    setTimeout(async () => {
-      setBlinking([])
-      const newGuesses = [...guesses, guess]
-      const newFeedbacks = [...feedbacks, fb]
-      setGuesses(newGuesses)
-      setFeedbacks(newFeedbacks)
+  const startGame = () => {
+    setCode(generateCode())
+    setGuesses([])
+    setCurrent([])
+    setSelected(0)
+    setWon(false)
+    setPhase('playing')
+  }
 
-      const won = fb.black === CODE_LENGTH
-      const lost = !won && newGuesses.length >= MAX_ATTEMPTS
-
-      if (won || lost) {
-        const time = Date.now() - startTime
-        setFinalTime(time)
-        setPhase(won ? 'won' : 'lost')
-        if (won && profile?.name) {
-          await supabase.from('mastermind_scores').insert({ player_name: profile.name, attempts: newGuesses.length, time_ms: time })
-          const { data } = await supabase.from('mastermind_scores').select('player_name, time_ms').order('time_ms', { ascending: true }).limit(500)
-          if (data) {
-            const best: Record<string, number> = {}
-            data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name]) best[s.player_name] = s.time_ms })
-            setWorldRank(Object.values(best).filter(t => t < time).length + 1)
-          }
-        }
-      } else {
-        // Pre-fill next row with correct positions
-        const fixed: (number | null)[] = Array(CODE_LENGTH).fill(null)
-        fb.correctPos.forEach(i => { fixed[i] = guess[i] })
-        setCurrent(fixed)
-        const firstEmpty = fixed.findIndex(v => v === null)
-        setSelectedPos(firstEmpty !== -1 ? firstEmpty : 0)
-      }
-      setChecking(false)
-    }, 1000)
-  }, [current, guesses, feedbacks, code, startTime, profile?.name, checking])
-
-  const selectColor = (colorIdx: number) => {
-    if (phase !== 'playing' || checking) return
-    const next = [...current]
-    next[selectedPos] = colorIdx
-    setCurrent(next)
-    const nextEmpty = next.findIndex((v, i) => i > selectedPos && v === null)
-    if (nextEmpty !== -1) setSelectedPos(nextEmpty)
-    else {
-      const anyEmpty = next.findIndex(v => v === null)
-      if (anyEmpty !== -1) setSelectedPos(anyEmpty)
+  const addColor = (colorIdx: number) => {
+    if (current.length < CODE_LENGTH) {
+      setCurrent(prev => [...prev, colorIdx])
     }
   }
 
-  const clearPos = (pos: number) => {
-    if (phase !== 'playing' || checking) return
-    const lastFb = feedbacks[feedbacks.length - 1]
-    if (lastFb && lastFb.correctPos.includes(pos)) return
-    const next = [...current]
-    next[pos] = null
-    setCurrent(next)
-    setSelectedPos(pos)
+  const removeColor = () => {
+    setCurrent(prev => prev.slice(0, -1))
   }
 
-  const lastFb = feedbacks[feedbacks.length - 1]
-  const fixedPositions = lastFb?.correctPos ?? []
-  const canSubmit = current.every(v => v !== null) && phase === 'playing' && !checking
+  const submitGuess = useCallback(async () => {
+    if (current.length !== CODE_LENGTH) return
+    const feedback = getFeedback(current, code)
+    const newGuesses = [...guesses, { colors: current, feedback }]
+    setGuesses(newGuesses)
+    setCurrent([])
 
-  return (
-    <main style={{ minHeight: '100dvh', background: `linear-gradient(180deg, #EDE7F6 0%, ${CREAM} 40%)`, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', padding: '0 0 100px', color: BROWN }}>
+    if (feedback.correct === CODE_LENGTH) {
+      setWon(true)
+      setPhase('result')
+      if (profile?.name) {
+        const attempts = newGuesses.length
+        await supabase.from('mastermind_scores').insert({player_name:profile.name, attempts})
+        const {count} = await supabase.from('mastermind_scores').select('*',{count:'exact',head:true}).lt('attempts',attempts)
+        setWorldRank((count??0)+1)
+        if (myBest===null || attempts<myBest) setMyBest(attempts)
+      }
+    } else if (newGuesses.length >= MAX_ATTEMPTS) {
+      setWon(false)
+      setPhase('result')
+    }
+  }, [current, code, guesses, profile?.name, myBest])
 
-      <style>{`
-        @keyframes blink { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:0.4; transform:scale(0.8) } }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
-      `}</style>
+  const saveScore = async () => {
+    if (!name.trim() || pin.join('').length!==4) return
+    setSaving(true)
+    setSaveError('')
+    const pinHash = btoa(pin.join(''))
+    const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name',name.trim()).maybeSingle()
+    if (existing) {
+      if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN'); setSaving(false); return }
+    } else {
+      await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
+    }
+    const attempts = guesses.length
+    await supabase.from('mastermind_scores').insert({player_name:name.trim(), attempts})
+    const {count} = await supabase.from('mastermind_scores').select('*',{count:'exact',head:true}).lt('attempts',attempts)
+    setWorldRank((count??0)+1)
+    setSaving(false)
+    setSaved(true)
+    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    setTimeout(() => window.location.reload(), 1500)
+  }
 
-      {/* INTRO */}
-      {phase === 'intro' && (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', gap: 16, width: '100%' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
-            <img src={LOGO} alt="Mastermind" style={{ height: 56, objectFit: 'contain', flexShrink: 0 }} />
-            <div>
-              <div style={{ fontSize: 28, fontWeight: 900, color: PURPLE }}>Mastermind</div>
-              <div style={{ fontSize: 12, color: '#4A2C0A50', fontStyle: 'italic' }}>Crack the color code</div>
-            </div>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 16, fontWeight: 900, color: BROWN, marginBottom: 8 }}>Crack the color code</div>
-            <div style={{ fontSize: 13, color: `${BROWN}60`, lineHeight: 1.7 }}>
-              5 colors. 7 attempts. One code to crack.<br />
-              Green border = correct position.<br />
-              Pink border = wrong position.<br />
-              No border = not in the code.
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-            {COLORS.map((col, i) => (
-              <div key={i} style={{ width: 36, height: 36, borderRadius: 8, background: col, boxShadow: `0 4px 0 ${col}80` }} />
-            ))}
-          </div>
-          <div style={{ display: 'flex', gap: 12, width: '100%' }}>
-            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
-              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Your best</div>
-              {bestScore ? (
-                <>
-                  <div style={{ fontSize: 32, fontWeight: 900, color: PURPLE }}>{fmt(bestScore.time_ms)}</div>
-                  <div style={{ fontSize: 12, color: '#4A2C0A50', fontWeight: 700 }}>{bestScore.attempts} tries</div>
-                </>
-              ) : (
-                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
-              )}
-            </div>
-            <div style={{ flex: 1, background: '#fff', borderRadius: 16, padding: '16px', textAlign: 'center', border: '1px solid #4A2C0A10' }}>
-              <div style={{ fontSize: 10, fontWeight: 900, color: '#4A2C0A50', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>World record</div>
-              {topScores[0] ? (
-                <>
-                  <div style={{ fontSize: 32, fontWeight: 900, color: '#C8960C' }}>{fmt(topScores[0].time_ms)}</div>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: '#4A2C0A60', marginTop: 4 }}>{topScores[0].name}</div>
-                </>
-              ) : (
-                <div style={{ fontSize: 14, color: '#4A2C0A30', fontWeight: 700 }}>—</div>
-              )}
-            </div>
-          </div>
-          <button onClick={() => setPhase('playing')} style={{
-            padding: '18px', borderRadius: 20, border: 'none',
-            background: PURPLE, color: '#fff',
-            fontSize: 18, fontWeight: 900, fontFamily: 'inherit',
-            cursor: 'pointer', boxShadow: '0 8px 0 #4A148C60', width: '100%',
-          }}>Play</button>
-          <a href="/mastermind/ranking" style={{ textDecoration: 'none', width: '100%' }}>
-            <div style={{ width: '100%', padding: '14px', borderRadius: 16, background: '#fff', border: '1.5px solid #4A2C0A20', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxSizing: 'border-box' }}>
-              <img src={TROPHY} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-              <span style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>World Ranking</span>
-            </div>
-          </a>
-        </div>
-      )}
+  const reset = () => { setPhase('rules'); setSaved(false); loadData() }
 
-      {/* GAME */}
-      {phase !== 'intro' && <>
+  const resultColor = won ? '#00C853' : '#D32F2F'
+  const bgResult = won ? '#0D3320' : '#1A0000'
 
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', padding: '20px 20px 0', gap: 12 }}>
+  if (phase === 'rules') return (
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}>
+        <img src={`${BASE}/mastermind.png`} style={{ width:60, height:60, objectFit:'contain' }} />
         <div>
-          <div style={{ fontSize: 28, fontWeight: 900, color: PURPLE, letterSpacing: -0.5 }}>Mastermind</div>
-          <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif', marginTop: 2 }}>Crack the color code</div>
-        </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
-          {phase === 'playing' && <div style={{ fontSize: 18, fontWeight: 900, color: BROWN }}>{fmt(elapsed)}</div>}
-          <Link href="/" style={{ textDecoration: 'none' }}>
-            <div style={{ background: '#fff', border: `1px solid ${BROWN}15`, borderRadius: 10, padding: '6px 14px', fontSize: 12, fontWeight: 800, color: `${BROWN}60` }}>← Home</div>
-          </Link>
+          <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Mastermind</div>
+          <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Crack the {CODE_LENGTH}-color code in {MAX_ATTEMPTS} tries</div>
         </div>
       </div>
-
-      {bestScore && (
-        <div style={{ margin: '12px 20px 0', background: `${PURPLE}10`, borderRadius: 14, padding: '10px 16px', display: 'flex', justifyContent: 'space-between' }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase' }}>Your best</div>
-          <div style={{ fontSize: 13, fontWeight: 900, color: PURPLE }}>{fmt(bestScore.time_ms)} · {bestScore.attempts} tries</div>
+      <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:16, padding:'14px', marginBottom:20 }}>
+        <div style={{ fontSize:12, color:'rgba(255,255,255,0.5)', fontWeight:700, lineHeight:1.7 }}>
+          🟢 Right color, right position<br/>
+          🟡 Right color, wrong position<br/>
+          ⚫ Wrong color
         </div>
-      )}
-
-      {/* Board */}
-      <div style={{ padding: '10px 20px 0', display: 'flex', flexDirection: 'column', gap: 6 }}>
-
-        {/* Past rows */}
-        {guesses.map((guess, rowIdx) => {
-          const fb = feedbacks[rowIdx]
-          return (
-            <div key={rowIdx} style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-              {guess.map((col, j) => {
-                const isCorrect = fb.correctPos.includes(j)
-                const isWrong = fb.wrongPos.includes(j)
-                return (
-                  <div key={j} style={{
-                    width: 42, height: 42, borderRadius: '50%',
-                    background: COLORS[col],
-                    boxShadow: `0 4px 0 ${COLORS[col]}50`,
-                    border: isCorrect ? '4px solid #2E7D32' : isWrong ? '4px solid #E91E63' : 'none',
-                    opacity: !isCorrect && !isWrong ? 0.4 : 1,
-                  }} />
-                )
-              })}
-            </div>
-          )
-        })}
-
-        {/* Active row */}
-        {phase === 'playing' && (
-          <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-            {current.map((col, j) => {
-              const isFixed = fixedPositions.includes(j)
-              return (
-                <div key={j} onClick={() => !isFixed && clearPos(j)} style={{
-                  width: 42, height: 42, borderRadius: '50%',
-                  background: col !== null ? COLORS[col] : EMPTY,
-                  boxShadow: col !== null ? `0 4px 0 ${COLORS[col]}50` : 'none',
-                  border: selectedPos === j && !isFixed ? `3px solid ${PURPLE}` : 'none',
-                  cursor: isFixed ? 'default' : 'pointer',
-                  opacity: isFixed ? 0.8 : 1,
-                }} />
-              )
-            })}
+      </div>
+      <div style={{ display:'flex', gap:10, marginBottom:20 }}>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+          <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
+          <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${worldRecord.attempts} tries` : '—'}</div>
+          {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
+        </div>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+          <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
+          <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest!==null ? `${myBest} tries` : '—'}</div>
+        </div>
+      </div>
+      <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
+        <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
+        {top5.map((p,i) => (
+          <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+            <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
+            <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
+            <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.attempts} tries</div>
           </div>
-        )}
+        ))}
+      </div>
+      <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:PURPLE, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 8px 0 ${PURPLE}80`, marginTop:'auto' }}>
+        Play →
+      </button>
+    </main>
+  )
 
-        {/* Empty rows */}
-        {phase === 'playing' && Array(MAX_ATTEMPTS - guesses.length - 1).fill(null).map((_, i) => (
-          <div key={i} style={{ display: 'flex', gap: 6, justifyContent: 'center', opacity: 0.2 }}>
-            {Array(CODE_LENGTH).fill(null).map((_, j) => (
-              <div key={j} style={{ width: 42, height: 42, borderRadius: '50%', background: EMPTY }} />
-            ))}
+  if (phase === 'playing') return (
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'16px 16px 100px', overflowY:'auto' }}>
+      <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.3)', textAlign:'center', marginBottom:12 }}>
+        Attempt {guesses.length + 1} / {MAX_ATTEMPTS}
+      </div>
+
+      {/* Previous guesses */}
+      <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:12 }}>
+        {guesses.map((g, ri) => (
+          <div key={ri} style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <div style={{ display:'flex', gap:6, flex:1 }}>
+              {g.colors.map((c, ci) => (
+                <div key={ci} style={{ width:44, height:44, borderRadius:12, background:COLORS[c], flex:1 }} />
+              ))}
+            </div>
+            <div style={{ display:'flex', gap:4, width:80, flexWrap:'wrap' }}>
+              {Array.from({length: g.feedback.correct}).map((_, i) => <div key={`c${i}`} style={{ width:16, height:16, borderRadius:'50%', background:'#69F0AE' }} />)}
+              {Array.from({length: g.feedback.misplaced}).map((_, i) => <div key={`m${i}`} style={{ width:16, height:16, borderRadius:'50%', background:GOLD }} />)}
+              {Array.from({length: CODE_LENGTH - g.feedback.correct - g.feedback.misplaced}).map((_, i) => <div key={`x${i}`} style={{ width:16, height:16, borderRadius:'50%', background:'rgba(255,255,255,0.1)' }} />)}
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Result */}
-      {phase !== 'playing' && (
-        <div style={{ margin: '20px 20px 0', textAlign: 'center', animation: 'fadeUp 0.4s ease' }}>
-          <div style={{ fontSize: 36, fontWeight: 900, color: phase === 'won' ? PURPLE : '#C62828' }}>
-            {phase === 'won' ? fmt(finalTime) : 'Game Over'}
-          </div>
-          {phase === 'lost' && (
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 12 }}>
-              {code.map((c, i) => <div key={i} style={{ width: 40, height: 40, borderRadius: '50%', background: COLORS[c], boxShadow: `0 3px 0 ${COLORS[c]}60` }} />)}
-            </div>
-          )}
-          <div style={{ fontSize: 14, color: `${BROWN}60`, marginTop: 8 }}>
-            {phase === 'won' ? `Solved in ${guesses.length} ${guesses.length === 1 ? 'try' : 'tries'}` : 'The code was'}
-          </div>
-          {worldRank && <div style={{ fontSize: 20, fontWeight: 900, color: PURPLE, marginTop: 8 }}>#{worldRank} World</div>}
-          <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-            {phase === 'won' && (
-              <button onClick={() => {
-                const text = `I cracked the Mastermind code in ${fmt(finalTime)} with ${guesses.length} tries on MemGenius! memgenius.com/mastermind`
-                const url = 'https://memgenius.com/mastermind'
-                if (navigator.share) { navigator.share({ title: 'MemGenius', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-              }} style={{ flex: 2, padding: '14px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>Share</button>
-            )}
-            <button onClick={() => window.location.reload()} style={{ flex: 1, padding: '14px', borderRadius: 14, border: 'none', background: GOLD, color: '#fff', fontSize: 13, fontWeight: 800, fontFamily: 'inherit', cursor: 'pointer' }}>Play again</button>
-          </div>
-        </div>
-      )}
+      {/* Current row */}
+      <div style={{ display:'flex', gap:6, marginBottom:16 }}>
+        {Array.from({length: CODE_LENGTH}).map((_, i) => (
+          <div key={i} style={{ flex:1, height:52, borderRadius:14, background: current[i]!==undefined ? COLORS[current[i]] : 'rgba(255,255,255,0.06)', border:'2px solid rgba(255,255,255,0.1)' }} />
+        ))}
+        <button onClick={removeColor} style={{ width:52, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.06)', color:'#fff', fontSize:18, cursor:'pointer' }}>⌫</button>
+      </div>
 
-      {/* Color picker */}
-      {phase === 'playing' && (
-        <div style={{ padding: '12px 20px 0' }}>
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 10 }}>
-            {COLORS.map((color, i) => (
-              <button key={i} onClick={() => selectColor(i)} style={{
-                width: 44, height: 44, borderRadius: '50%', border: 'none',
-                background: color, cursor: 'pointer',
-                boxShadow: `0 4px 0 ${color}60`,
-              }} />
+      {/* Color palette */}
+      <div style={{ display:'flex', gap:10, marginBottom:12, justifyContent:'center' }}>
+        {COLORS.map((c, i) => (
+          <button key={i} onClick={() => { setSelected(i); addColor(i) }} style={{ width:48, height:48, borderRadius:14, border:'none', background:c, cursor:'pointer', boxShadow: selected===i ? `0 0 12px ${c}` : 'none', transform: selected===i ? 'scale(1.1)' : 'scale(1)', transition:'all 0.1s' }} />
+        ))}
+      </div>
+
+      <button onClick={submitGuess} disabled={current.length !== CODE_LENGTH} style={{ width:'100%', padding:'16px', borderRadius:16, border:'none', background: current.length===CODE_LENGTH ? GREEN : 'rgba(255,255,255,0.08)', color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor: current.length===CODE_LENGTH?'pointer':'default', boxShadow: current.length===CODE_LENGTH?'0 6px 0 #1B5E2080':'none' }}>
+        Submit →
+      </button>
+    </main>
+  )
+
+  return (
+    <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
+      <div style={{ textAlign:'center' }}>
+        <div style={{ fontSize:32, fontWeight:900, color:resultColor, marginBottom:8 }}>{won ? '🎉 Solved!' : '💀 Game Over'}</div>
+        {won && <div style={{ fontSize:18, color:'rgba(255,255,255,0.6)', fontWeight:700 }}>{guesses.length} tries</div>}
+        {!won && (
+          <div style={{ display:'flex', gap:8, justifyContent:'center', marginTop:12 }}>
+            {code.map((c, i) => <div key={i} style={{ width:44, height:44, borderRadius:12, background:COLORS[c] }} />)}
+          </div>
+        )}
+        {worldRank && won && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
+      </div>
+      {!profile?.name && !saved && won && (
+        <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
+          <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
+          <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
+          <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
+          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
+          <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
+            {pin.map((d,i) => (
+              <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
+                onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
+                style={{ width:48, height:56, textAlign:'center', fontSize:24, fontWeight:900, borderRadius:12, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
             ))}
           </div>
-          <button onClick={submitGuess} disabled={!canSubmit} style={{
-            width: '100%', padding: '14px', borderRadius: 16, border: 'none',
-            background: canSubmit ? '#2E7D32' : '#2E7D3240',
-            color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit',
-            cursor: canSubmit ? 'pointer' : 'default',
-            boxShadow: canSubmit ? '0 4px 0 #2E7D3260' : 'none',
-          }}>Check →</button>
+          {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:10 }}>{saveError}</div>}
+          <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.15)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+            {saving?'Saving...':'Save →'}
+          </button>
         </div>
       )}
-    </> }
+      {saved && (
+        <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
+          <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
+        </div>
+      )}
+      <div style={{ display:'flex', gap:10, width:'100%' }}>
+        <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
+        <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:PURPLE, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 5px 0 ${PURPLE}80` }}>Play again →</button>
+      </div>
     </main>
   )
 }
