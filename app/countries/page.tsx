@@ -80,11 +80,11 @@ export default function CountriesPage() {
  }, [profile?.name])
 
  const loadData = async () => {
-   const { data } = await supabase.from('shape_scores').select('player_name,score').order('score', { ascending: false }).limit(500)
+   const { data } = await supabase.from('shape_scores').select('player_name,level').order('level', { ascending: false }).limit(500)
    if (!data) return
    const best: Record<string,number> = {}
-   data.forEach((s:any) => { if (!best[s.player_name] || s.score > best[s.player_name]) best[s.player_name] = s.score })
-   const sorted = Object.entries(best).map(([n,s]) => ({name:n, score:s as number})).sort((a,b) => b.score-a.score)
+   data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
+   const sorted = Object.entries(best).map(([n,l]) => ({name:n, score:l as number})).sort((a,b) => b.score-a.score)
    setTop5(sorted.slice(0,5))
    if (sorted[0]) setWorldRecord({score:sorted[0].score, name:sorted[0].name})
    if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
@@ -123,8 +123,8 @@ export default function CountriesPage() {
        const finalScore = score
        setPhase('result')
        if (profile?.name) {
-         await supabase.from('shape_scores').insert({player_name:profile.name, score:finalScore})
-         const {count} = await supabase.from('shape_scores').select('*',{count:'exact',head:true}).gt('score',finalScore)
+         await supabase.from('shape_scores').insert({player_name:profile.name, level:finalScore})
+         const {count} = await supabase.from('shape_scores').select('*',{count:'exact',head:true}).gt('level',finalScore)
          setWorldRank((count??0)+1)
          if (myBest===null || finalScore>myBest) setMyBest(finalScore)
        }
@@ -143,8 +143,8 @@ export default function CountriesPage() {
    } else {
      await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
    }
-   await supabase.from('shape_scores').insert({player_name:name.trim(), score})
-   const {count} = await supabase.from('shape_scores').select('*',{count:'exact',head:true}).gt('score',score)
+   await supabase.from('shape_scores').insert({player_name:name.trim(), level:score})
+   const {count} = await supabase.from('shape_scores').select('*',{count:'exact',head:true}).gt('level',score)
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
