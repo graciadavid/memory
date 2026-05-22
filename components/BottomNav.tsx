@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 const BROWN = '#4A2C0A'
 
 const ITEMS = [
- { href: '/memory', label: 'Memory', color: '#C62828', icon: '🧠' },
+ { href: '/memory-hub', label: 'Memory', color: '#C62828', icon: '🧠' },
  { href: '/agility', label: 'Agility', color: '#4A148C', icon: '⚡' },
  { href: '/knowledge', label: 'Knowledge', color: '#00796B', icon: '🌍' },
  { href: '/logic', label: 'Logic', color: '#E65100', icon: '🔷' },
