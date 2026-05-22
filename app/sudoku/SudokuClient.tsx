@@ -65,8 +65,9 @@ export default function SudokuClient() {
     loadData()
   }, [profile?.name])
 
-  const loadData = async () => {
-    const { data } = await supabase.from('sudoku_scores').select('player_name,time_ms').order('time_ms', { ascending: true }).limit(500)
+  const loadData = async (diff?: string) => {
+    const d = diff || difficulty
+    const { data } = await supabase.from('sudoku_scores').select('player_name,time_ms').eq('difficulty', d).order('time_ms', { ascending: true }).limit(500)
     if (!data) return
     const best: Record<string,number> = {}
     data.forEach((s:any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name]) best[s.player_name] = s.time_ms })
@@ -113,8 +114,8 @@ export default function SudokuClient() {
       setElapsed(finalMs)
       setPhase('result')
       if (profile?.name) {
-        supabase.from('sudoku_scores').insert({player_name:profile.name, time_ms:finalMs}).then(() => {
-          supabase.from('sudoku_scores').select('*',{count:'exact',head:true}).lt('time_ms',finalMs).then(({count}) => setWorldRank((count??0)+1))
+        supabase.from('sudoku_scores').insert({player_name:profile.name, time_ms:finalMs, difficulty}).then(() => {
+          supabase.from('sudoku_scores').select('*',{count:'exact',head:true}).eq('difficulty',difficulty).lt('time_ms',finalMs).then(({count}) => setWorldRank((count??0)+1))
         })
       }
     }
@@ -142,8 +143,8 @@ export default function SudokuClient() {
     } else {
       await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
     }
-    await supabase.from('sudoku_scores').insert({player_name:name.trim(), time_ms:elapsed})
-    const {count} = await supabase.from('sudoku_scores').select('*',{count:'exact',head:true}).lt('time_ms',elapsed)
+    await supabase.from('sudoku_scores').insert({player_name:name.trim(), time_ms:elapsed, difficulty})
+    const {count} = await supabase.from('sudoku_scores').select('*',{count:'exact',head:true}).eq('difficulty',difficulty).lt('time_ms',elapsed)
     setWorldRank((count??0)+1)
     setSaving(false)
     setSaved(true)
@@ -173,7 +174,7 @@ export default function SudokuClient() {
         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Choose difficulty</div>
         <div style={{ display:'flex', gap:10 }}>
           {(['easy','medium','hard'] as Difficulty[]).map(d => (
-            <button key={d} onClick={() => setDifficulty(d)} style={{ flex:1, padding:'14px', borderRadius:16, border:`2px solid ${difficulty===d ? GOLD : 'rgba(255,255,255,0.1)'}`, background: difficulty===d ? 'rgba(200,150,12,0.15)' : 'rgba(255,255,255,0.04)', color: difficulty===d ? GOLD : 'rgba(255,255,255,0.5)', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer', textTransform:'capitalize' }}>
+            <button key={d} onClick={() => { setDifficulty(d); loadData(d) }} style={{ flex:1, padding:'14px', borderRadius:16, border:`2px solid ${difficulty===d ? GOLD : 'rgba(255,255,255,0.1)'}`, background: difficulty===d ? 'rgba(200,150,12,0.15)' : 'rgba(255,255,255,0.04)', color: difficulty===d ? GOLD : 'rgba(255,255,255,0.5)', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer', textTransform:'capitalize' }}>
               {d}
             </button>
           ))}
@@ -249,7 +250,7 @@ export default function SudokuClient() {
         <>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(9, 1fr)', gap:4, marginBottom:8 }}>
             {[1,2,3,4,5,6,7,8,9].map(n => (
-              <button key={n} onClick={() => handleNumber(n)} style={{ aspectRatio:'1', borderRadius:10, border:'none', background:'#4A148C', color:'#fff', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer', borderRadius:10 }}>{n}</button>
+              <button key={n} onClick={() => handleNumber(n)} style={{ aspectRatio:'1', borderRadius:10, border:'none', background:'#4A148C', color:'#fff', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>{n}</button>
             ))}
           </div>
           <div style={{ display:'flex', gap:8, marginBottom:8 }}>
