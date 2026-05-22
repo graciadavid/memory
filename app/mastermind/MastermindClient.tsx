@@ -8,7 +8,7 @@ const GREEN = '#2E7D32'
 const PURPLE = '#6A1B9A'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
-const COLORS = ['#E53935', '#1E88E5', '#43A047', '#FDD835', '#FB8C00', '#E91E63']
+const COLORS = ['#E53935', '#1E88E5', '#43A047', '#FDD835', '#FB8C00']
 const CODE_LENGTH = 4
 const MAX_ATTEMPTS = 8
 
@@ -203,7 +203,7 @@ export default function MastermindClient() {
       {/* Current row */}
       <div style={{ display:'flex', gap:6, marginBottom:16 }}>
         {Array.from({length: CODE_LENGTH}).map((_, i) => (
-          <div key={i} style={{ flex:1, height:52, borderRadius:14, background: current[i]!==undefined ? COLORS[current[i]] : 'rgba(255,255,255,0.06)', border:'2px solid rgba(255,255,255,0.1)' }} />
+          <div key={i} style={{ width:48, height:48, borderRadius:14, background: current[i]!==undefined ? COLORS[current[i]] : 'rgba(255,255,255,0.06)', border:'2px solid rgba(255,255,255,0.1)' }} />
         ))}
         <button onClick={removeColor} style={{ width:52, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.06)', color:'#fff', fontSize:18, cursor:'pointer' }}>⌫</button>
       </div>
@@ -215,7 +215,7 @@ export default function MastermindClient() {
         ))}
       </div>
 
-      <button onClick={submitGuess} disabled={current.length !== CODE_LENGTH} style={{ width:'100%', padding:'16px', borderRadius:16, border:'none', background: current.length===CODE_LENGTH ? GREEN : 'rgba(255,255,255,0.08)', color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor: current.length===CODE_LENGTH?'pointer':'default', boxShadow: current.length===CODE_LENGTH?'0 6px 0 #1B5E2080':'none' }}>
+      <button onClick={submitGuess} disabled={current.length !== CODE_LENGTH} style={{ width:'100%', padding:'16px', borderRadius:16, border:'none', background: current.length===CODE_LENGTH ? GREEN : 'rgba(255,255,255,0.06)', color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor: current.length===CODE_LENGTH?'pointer':'default', boxShadow: current.length===CODE_LENGTH?'0 6px 0 #1B5E2080':'none' }}>
         Submit →
       </button>
     </main>
