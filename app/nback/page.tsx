@@ -221,7 +221,7 @@ export default function NBackPage() {
      )}
 
      {/* Match button */}
-     <button onClick={handleMatch} style={{ width:'100%', padding:'22px', borderRadius:20, border:'none', background:'rgba(105,240,174,0.15)', color:'#69F0AE', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', border:'2px solid rgba(105,240,174,0.3)' }}>
+     <button onClick={handleMatch} style={{ width:'100%', padding:'22px', borderRadius:20, border:'none', background:'rgba(105,240,174,0.15)', color:'#69F0AE', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', outline:'2px solid rgba(105,240,174,0.3)' }}>
        Match ✓
      </button>
      <div style={{ fontSize:12, color:'rgba(255,255,255,0.2)', fontWeight:700 }}>Tap only when it matches {nLevel} step{nLevel>1?'s':''} ago</div>
