@@ -2,16 +2,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
-import { completeWodExercise } from '@/lib/wod'
-import { completePlanDay } from '@/lib/plan'
-import Link from 'next/link'
 
-const BROWN = '#4A2C0A'
 const GOLD = '#C8960C'
-const CREAM = '#FAF7F2'
 const GREEN = '#2E7D32'
-const YELLOW = '#F9A825'
-const GRAY = '#9E9E9E'
 
 const WORDS = [
   'CRANE','SLATE','TRACE','RAISE','BRAIN','LIGHT','BRAVE','PLANT','FLESH','WATER',
@@ -20,22 +13,11 @@ const WORDS = [
   'FRESH','LATER','ROUND','PHONE','CHAIN','BREAK','WORTH','BLAME','CRISP','LANCE',
   'SPACE','WHILE','FLOOD','GROSS','GREET','TIGHT','ARISE','FIGHT','GRAVE','GRANT',
   'PRESS','CATER','FOUND','CLONE','CHILD','DREAM','WORRY','CLAIM','CRACK','CHANCE',
-  'GRACE','STYLE','STOOD','CROSS','FLEET','RIGHT','SERAI','SIGHT','STAVE','CHANT',
-  'DRESS','MATER','BOUND','DRONE','CHINA','CREAM','WORSE','FRAME','CRAFT','GLANCE',
-  'TRACE','GUILE','BROOD','GLOSS','SLEET','FIGHT','AFIRE','BIGHT','SHAVE','SCANT',
-  'BLESS','RATER','WOUND','PRONE','CHIEF','GREED','WORKS','SHAME','CRASH','FENCE',
-  'BEACH','EXILE','DROOL','FLOSS','SHEET','WIGHT','REAIS','WIGHT','KNAVE','BLUNT',
-  'CHESS','HATER','HOUND','OZONE','CHOIR','SPEED','WORDS','TAME','CRANK','HENCE',
-  'PEACH','AGILE','STOOL','BOSS','STEEL','HIGHT','IAMBS','GLARE','FRONT','GUESS',
-  'REACH','RILE','SPOOL','LOSS','WHEEL','STALE','BRAIN','FLARE','STUNT','STRESS',
-  'TEACH','FILE','DROOP','MOSS','KNEEL','TALES','GROAN','SNARE','SHUNT','CRASS',
-  'STEAL','MILE','TROOP','TOSS','KEEL','LEATS','PLAIN','SHONE','GRUNT','BRASS',
+  'GRACE','STYLE','STOOD','CROSS','FLEET','RIGHT','SIGHT','STAVE','CHANT','DRESS',
+  'BOUND','DRONE','CREAM','FRAME','CRAFT','GLANCE','BROOD','SLEET','SHAVE','SCANT',
+  'BLESS','WOUND','PRONE','GREED','SHAME','CRASH','FENCE','BEACH','DROOL','SHEET',
+  'CHESS','HOUND','SPEED','WORDS','CRANK','HENCE','PEACH','STOOL','STEEL','STALE',
 ]
-
-const getRandomWord = () => WORDS[Math.floor(Math.random() * WORDS.length)]
-
-const LOGO = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/wordly.png'
-const TROPHY = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nav-trophy.webp'
 
 const KEYBOARD = [
   ['Q','W','E','R','T','Y','U','I','O','P'],
@@ -43,261 +25,283 @@ const KEYBOARD = [
   ['ENTER','Z','X','C','V','B','N','M','⌫'],
 ]
 
-type LetterState = 'correct' | 'present' | 'absent' | 'empty' | 'active'
-
-function getLetterStates(guess: string, target: string): LetterState[] {
-  const result: LetterState[] = Array(5).fill('absent')
-  const targetArr = target.split('')
-  const guessArr = guess.split('')
-  const used = Array(5).fill(false)
-  guessArr.forEach((l, i) => { if (l === targetArr[i]) { result[i] = 'correct'; used[i] = true } })
-  guessArr.forEach((l, i) => {
-    if (result[i] === 'correct') return
-    const idx = targetArr.findIndex((t, j) => t === l && !used[j])
-    if (idx !== -1) { result[i] = 'present'; used[idx] = true }
-  })
-  return result
+type LetterState = 'empty'|'active'|'correct'|'present'|'absent'
+const CELL_BG: Record<LetterState, string> = {
+  empty: 'rgba(255,255,255,0.06)',
+  active: 'rgba(255,255,255,0.12)',
+  correct: '#2E7D32',
+  present: '#F9A825',
+  absent: '#333',
 }
-
-const CELL_COLORS: Record<LetterState, string> = {
-  correct: GREEN, present: YELLOW, absent: GRAY, empty: '#fff', active: '#fff',
+const KEY_BG: Record<string, string> = {
+  correct: '#2E7D32',
+  present: '#F9A825',
+  absent: '#222',
 }
 
 function fmtTime(ms: number) {
-  const m = Math.floor(ms / 60000)
-  const s = Math.floor((ms % 60000) / 1000)
-  const c = Math.floor((ms % 1000) / 100)
-  return m > 0 ? `${m}:${String(s).padStart(2,'0')}.${c}` : `${s}.${c}s`
+  const s = Math.floor(ms / 1000)
+  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`
 }
+
+type Phase = 'rules'|'playing'|'won'|'lost'
 
 export default function WordlyClient() {
   const { profile } = usePlayer()
-  const [phase, setPhase] = useState<'intro' | 'playing' | 'won' | 'lost'>('intro')
-  const [word, setWord] = useState(getRandomWord)
+  const [phase, setPhase] = useState<Phase>('rules')
+  const [word, setWord] = useState('')
   const [guesses, setGuesses] = useState<string[]>([])
   const [current, setCurrent] = useState('')
-  const [keyStates, setKeyStates] = useState<Record<string, LetterState>>({})
   const [shake, setShake] = useState(false)
-  const [startTime] = useState(Date.now())
-  const [elapsed, setElapsed] = useState(0)
+  const [keyStates, setKeyStates] = useState<Record<string,LetterState>>({})
+  const [startTime, setStartTime] = useState(0)
   const [finalTime, setFinalTime] = useState(0)
-  const [worldRank, setWorldRank] = useState<number | null>(null)
-  const [topScores, setTopScores] = useState<{ name: string, time_ms: number, attempts: number }[]>([])
-  const [bestScore, setBestScore] = useState<{ time_ms: number, attempts: number } | null>(null)
+  const [worldRank, setWorldRank] = useState<number|null>(null)
+  const [worldRecord, setWorldRecord] = useState<{attempts:number,name:string}|null>(null)
+  const [myBest, setMyBest] = useState<number|null>(null)
+  const [top5, setTop5] = useState<{name:string,attempts:number}[]>([])
+  const [name, setName] = useState('')
+  const [pin, setPin] = useState(['','','',''])
+  const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   useEffect(() => {
-    supabase.from('wordle_scores').select('player_name, time_ms, attempts').order('time_ms', { ascending: true }).limit(200)
-      .then(({ data }) => {
-        if (!data) return
-        const best: Record<string, { time_ms: number, attempts: number }> = {}
-        data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name].time_ms) best[s.player_name] = { time_ms: s.time_ms, attempts: s.attempts } })
-        setTopScores(Object.entries(best).map(([name, d]) => ({ name, ...d })).sort((a, b) => a.time_ms - b.time_ms))
-        if (profile?.name && best[profile.name]) setBestScore(best[profile.name])
-      })
+    if (profile?.name) setName(profile.name)
+    loadData()
   }, [profile?.name])
 
-  useEffect(() => {
-    if (phase !== 'playing') return
-    const t = setInterval(() => setElapsed(Date.now() - startTime), 100)
-    return () => clearInterval(t)
-  }, [phase, startTime])
+  const loadData = async () => {
+    const { data } = await supabase.from('wordle_scores').select('player_name,attempts').order('attempts', { ascending: true }).limit(500)
+    if (!data) return
+    const best: Record<string,number> = {}
+    data.forEach((s:any) => { if (!best[s.player_name] || s.attempts < best[s.player_name]) best[s.player_name] = s.attempts })
+    const sorted = Object.entries(best).map(([n,a]) => ({name:n, attempts:a as number})).sort((a,b) => a.attempts-b.attempts)
+    setTop5(sorted.slice(0,5))
+    if (sorted[0]) setWorldRecord({attempts:sorted[0].attempts, name:sorted[0].name})
+    if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
+  }
 
-  const updateKeyStates = useCallback((guess: string, states: LetterState[]) => {
-    setKeyStates(prev => {
-      const next = { ...prev }
-      const priority: Record<LetterState, number> = { correct: 3, present: 2, absent: 1, empty: 0, active: 0 }
-      guess.split('').forEach((l, i) => {
-        if (!next[l] || priority[states[i]] > priority[next[l]]) next[l] = states[i]
-      })
-      return next
-    })
-  }, [])
-
-  const submit = useCallback(async () => {
-    if (current.length !== 5) { setShake(true); setTimeout(() => setShake(false), 500); return }
-    const states = getLetterStates(current, word)
-    updateKeyStates(current, states)
-    const newGuesses = [...guesses, current]
-    setGuesses(newGuesses)
+  const startGame = () => {
+    const w = WORDS[Math.floor(Math.random() * WORDS.length)]
+    setWord(w)
+    setGuesses([])
     setCurrent('')
-    const won = current === word
-    if (won || newGuesses.length >= 6) {
-      const time = Date.now() - startTime
-      setFinalTime(time)
-      setPhase(won ? 'won' : 'lost')
-      if (won && profile?.name) {
-        const today = new Date().toISOString().split('T')[0]
-        await supabase.from('wordle_scores').insert({ player_name: profile.name, word_date: today, attempts: newGuesses.length, time_ms: time })
-        const { data } = await supabase.from('wordle_scores').select('player_name, time_ms').order('time_ms', { ascending: true }).limit(500)
-        if (data) {
-          const best: Record<string, number> = {}
-          data.forEach((s: any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name]) best[s.player_name] = s.time_ms })
-          setWorldRank(Object.values(best).filter(t => t < time).length + 1)
-        }
-      }
-    }
-  }, [current, guesses, word, startTime, profile?.name, updateKeyStates])
+    setKeyStates({})
+    setShake(false)
+    setStartTime(Date.now())
+    setFinalTime(0)
+    setPhase('playing')
+  }
 
-  const handleKey = useCallback((k: string) => {
+  const evaluate = (guess: string, target: string): LetterState[] => {
+    const result: LetterState[] = Array(5).fill('absent')
+    const targetArr = target.split('')
+    const used = Array(5).fill(false)
+    guess.split('').forEach((l, i) => { if (l === targetArr[i]) { result[i] = 'correct'; used[i] = true } })
+    guess.split('').forEach((l, i) => {
+      if (result[i] === 'correct') return
+      const j = targetArr.findIndex((t, ti) => !used[ti] && t === l)
+      if (j !== -1) { result[i] = 'present'; used[j] = true }
+    })
+    return result
+  }
+
+  const handleKey = useCallback(async (key: string) => {
     if (phase !== 'playing') return
-    if (k === 'ENTER') { submit(); return }
-    if (k === '⌫') { setCurrent(p => p.slice(0, -1)); return }
-    if (current.length < 5 && /^[A-Z]$/.test(k)) {
-      const next = current + k
-      setCurrent(next)
-      if (next.length === 5) setTimeout(() => submit(), 150)
+    if (key === '⌫' || key === 'BACKSPACE') { setCurrent(p => p.slice(0,-1)); return }
+    if (key === 'ENTER') {
+      if (current.length !== 5) { setShake(true); setTimeout(() => setShake(false), 500); return }
+      const states = evaluate(current, word)
+      const newGuesses = [...guesses, current]
+      setGuesses(newGuesses)
+      const newKeys = {...keyStates}
+      current.split('').forEach((l,i) => {
+        const s = states[i]
+        if (!newKeys[l] || s === 'correct' || (s === 'present' && newKeys[l] === 'absent')) newKeys[l] = s
+      })
+      setKeyStates(newKeys)
+      setCurrent('')
+      if (current === word) {
+        const t = Date.now() - startTime
+        setFinalTime(t)
+        setPhase('won')
+        if (profile?.name) {
+          await supabase.from('wordle_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:t})
+          const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
+          setWorldRank((count??0)+1)
+          if (myBest===null || newGuesses.length<myBest) setMyBest(newGuesses.length)
+        }
+      } else if (newGuesses.length >= 6) {
+        setPhase('lost')
+      }
+      return
     }
-  }, [phase, current, submit])
+    if (/^[A-Z]$/.test(key) && current.length < 5) setCurrent(p => p + key)
+  }, [phase, current, word, guesses, keyStates, startTime, profile?.name, myBest])
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey || e.altKey) return
-      const k = e.key.toUpperCase()
-      if (k === 'ENTER') handleKey('ENTER')
-      else if (k === 'BACKSPACE') handleKey('⌫')
-      else if (/^[A-Z]$/.test(k)) handleKey(k)
-    }
+    const handler = (e: KeyboardEvent) => handleKey(e.key.toUpperCase())
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [handleKey])
 
-  const playAgain = () => {
-    setWord(getRandomWord())
-    setGuesses([])
-    setCurrent('')
-    setKeyStates({})
-    setWorldRank(null)
-    setPhase('playing')
+  const saveScore = async () => {
+    if (!name.trim() || pin.join('').length!==4) return
+    setSaving(true)
+    setSaveError('')
+    const pinHash = btoa(pin.join(''))
+    const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name',name.trim()).maybeSingle()
+    if (existing) {
+      if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN'); setSaving(false); return }
+    } else {
+      await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
+    }
+    await supabase.from('wordle_scores').insert({player_name:name.trim(), attempts:guesses.length, time_ms:finalTime})
+    const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',guesses.length)
+    setWorldRank((count??0)+1)
+    setSaving(false)
+    setSaved(true)
+    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    setTimeout(() => window.location.reload(), 1500)
   }
 
-  const rows = Array(6).fill(null).map((_, i) => {
-    if (i < guesses.length) {
-      const states = getLetterStates(guesses[i], word)
-      return guesses[i].split('').map((l, j) => ({ letter: l, state: states[j] }))
+  const reset = () => { setPhase('rules'); setSaved(false); loadData() }
+
+  // Build rows
+  const rows = Array.from({length:6}, (_,i) => {
+    const g = guesses[i]
+    if (g) {
+      const states = evaluate(g, word)
+      return g.split('').map((l,j) => ({letter:l, state:states[j]}))
     }
     if (i === guesses.length && phase === 'playing') {
-      return Array(5).fill(null).map((_, j) => ({ letter: current[j] || '', state: (current[j] ? 'active' : 'empty') as LetterState }))
+      return Array.from({length:5}, (_,j) => ({letter:current[j]||'', state:(current[j]?'active':'empty') as LetterState}))
     }
-    return Array(5).fill(null).map(() => ({ letter: '', state: 'empty' as LetterState }))
+    return Array.from({length:5}, () => ({letter:'', state:'empty' as LetterState}))
   })
 
-  return (
-    <div style={{ minHeight: '100dvh', background: CREAM, fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 430, margin: '0 auto', paddingBottom: 80 }}>
-      <style>{`@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} } @keyframes popIn { 0%{transform:scale(0.8);opacity:0} 100%{transform:scale(1);opacity:1} }`}</style>
-
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', padding: '12px 20px 0', gap: 12 }}>
-        <img src={LOGO} alt="Wordly" style={{ height: 38, objectFit: 'contain' }} />
+  if (phase === 'rules') return (
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}>
+        <div style={{ fontSize:48 }}>🔤</div>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: GREEN }}>Wordly</div>
-          <div style={{ fontSize: 12, color: `${BROWN}50`, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>Guess the 5-letter word</div>
-        </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
-          {phase === 'playing' && <div style={{ fontSize: 18, fontWeight: 900, color: BROWN, fontVariantNumeric: 'tabular-nums' }}>{fmtTime(elapsed)}</div>}
+          <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Wordly</div>
+          <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Guess the 5-letter word in 6 tries</div>
         </div>
       </div>
-
-      {/* INTRO */}
-      {phase === 'intro' && (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 24px', gap: 16 }}>
-          <div style={{ fontSize: 14, color: `${BROWN}70`, fontWeight: 700, textAlign: 'center', lineHeight: 1.8 }}>
-            Guess the 5-letter word in 6 tries.<br />
-            🟩 Correct position · 🟨 Wrong position · ⬜ Not in word
+      <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:16, padding:'14px 16px', marginBottom:20 }}>
+        <div style={{ display:'flex', gap:16, alignItems:'center', justifyContent:'center' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:6 }}><div style={{ width:16, height:16, borderRadius:4, background:'#2E7D32' }} /><span style={{ fontSize:12, color:'rgba(255,255,255,0.5)', fontWeight:700 }}>Right spot</span></div>
+          <div style={{ display:'flex', alignItems:'center', gap:6 }}><div style={{ width:16, height:16, borderRadius:4, background:'#F9A825' }} /><span style={{ fontSize:12, color:'rgba(255,255,255,0.5)', fontWeight:700 }}>Wrong spot</span></div>
+          <div style={{ display:'flex', alignItems:'center', gap:6 }}><div style={{ width:16, height:16, borderRadius:4, background:'#333' }} /><span style={{ fontSize:12, color:'rgba(255,255,255,0.5)', fontWeight:700 }}>Not in word</span></div>
+        </div>
+      </div>
+      <div style={{ display:'flex', gap:10, marginBottom:20 }}>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+          <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
+          <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${worldRecord.attempts} tries` : '—'}</div>
+          {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
+        </div>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+          <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
+          <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest!==null ? `${myBest} tries` : '—'}</div>
+        </div>
+      </div>
+      <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
+        <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
+        {top5.map((p,i) => (
+          <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+            <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
+            <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
+            <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.attempts} tries</div>
           </div>
-          {bestScore && (
-            <div style={{ background: `${GREEN}10`, borderRadius: 14, padding: '12px 20px', textAlign: 'center', width: '100%', border: `1px solid ${GREEN}20` }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>Your best</div>
-              <div style={{ fontSize: 18, fontWeight: 900, color: GREEN }}>{fmtTime(bestScore.time_ms)} · {bestScore.attempts} tries</div>
+        ))}
+      </div>
+      <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080', marginTop:'auto' }}>
+        Play →
+      </button>
+    </main>
+  )
+
+  return (
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 12px', overflow:'hidden' }}>
+
+      {/* Header */}
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+        <button onClick={reset} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:14, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>← Back</button>
+        <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>Wordly</div>
+        <div style={{ width:60 }} />
+      </div>
+
+      {/* Grid */}
+      <div style={{ display:'flex', flexDirection:'column', gap:5, alignItems:'center', marginBottom:12 }}>
+        {rows.map((row, i) => (
+          <div key={i} style={{ display:'flex', gap:5, animation: shake && i === guesses.length ? 'shake 0.4s ease' : undefined }}>
+            {row.map((cell, j) => (
+              <div key={j} style={{
+                width:52, height:52, borderRadius:8,
+                display:'flex', alignItems:'center', justifyContent:'center',
+                fontSize:20, fontWeight:900, color:'#fff',
+                background: CELL_BG[cell.state],
+                border: cell.state === 'empty' ? '2px solid rgba(255,255,255,0.1)' : cell.state === 'active' ? '2px solid rgba(255,255,255,0.4)' : 'none',
+                transition:'background 0.2s',
+              }}>{cell.letter}</div>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {/* Result */}
+      {(phase === 'won' || phase === 'lost') && (
+        <div style={{ textAlign:'center', marginBottom:10 }}>
+          <div style={{ fontSize:24, fontWeight:900, color: phase==='won'?'#69F0AE':'#FF5252' }}>
+            {phase==='won' ? `✓ ${guesses.length} ${guesses.length===1?'try':'tries'}` : `The word was ${word}`}
+          </div>
+          {worldRank && phase==='won' && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{worldRank} in the world</div>}
+          {!profile?.name && !saved && phase==='won' && (
+            <div style={{ background:'rgba(0,0,0,0.3)', borderRadius:20, padding:'16px', marginTop:10 }}>
+              <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'10px', borderRadius:10, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:8, boxSizing:'border-box' }} />
+              <div style={{ display:'flex', gap:6, justifyContent:'center', marginBottom:8 }}>
+                {pin.map((d,i) => (
+                  <input key={i} id={`pin-w-${i}`} type="tel" maxLength={1} value={d}
+                    onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-w-${i+1}`) as HTMLInputElement)?.focus()}}
+                    style={{ width:40, height:48, textAlign:'center', fontSize:20, fontWeight:900, borderRadius:10, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
+                ))}
+              </div>
+              {saveError && <div style={{ fontSize:11, color:'#FF5252', fontWeight:800, marginBottom:6 }}>{saveError}</div>}
+              <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'10px', borderRadius:10, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.1)', color:'#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+                {saving?'Saving...':'Save →'}
+              </button>
             </div>
           )}
-          {topScores[0] && (
-            <div style={{ background: `${GOLD}10`, borderRadius: 14, padding: '12px 20px', textAlign: 'center', width: '100%', border: `1px solid ${GOLD}20` }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: `${BROWN}50`, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>World record</div>
-              <div style={{ fontSize: 16, fontWeight: 900, color: GOLD }}>{fmtTime(topScores[0].time_ms)} · {topScores[0].name}</div>
-            </div>
-          )}
-          <button onClick={() => setPhase('playing')} style={{
-            width: '100%', padding: '18px', borderRadius: 20, border: 'none',
-            background: GREEN, color: '#fff', fontSize: 18, fontWeight: 900,
-            fontFamily: 'inherit', cursor: 'pointer', boxShadow: `0 8px 0 #1B5E2060`,
-          }}>Play</button>
-          <Link href="/wordly/ranking" style={{ textDecoration: 'none', width: '100%' }}>
-            <div style={{ width: '100%', padding: '14px', borderRadius: 16, background: '#fff', border: `1.5px solid ${BROWN}20`, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxSizing: 'border-box' }}>
-              <img src={TROPHY} alt="" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-              <span style={{ fontSize: 14, fontWeight: 800, color: BROWN }}>World Ranking</span>
-            </div>
-          </Link>
+          {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:12, padding:'10px', marginTop:8 }}><div style={{ fontSize:14, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
+          <div style={{ display:'flex', gap:8, justifyContent:'center', marginTop:10 }}>
+            <button onClick={reset} style={{ padding:'12px 20px', borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
+            <button onClick={startGame} style={{ padding:'12px 20px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 4px 0 #1B5E2080' }}>Play again →</button>
+          </div>
         </div>
       )}
 
-      {/* GAME */}
-      {phase !== 'intro' && (
-        <>
-          {/* Grid */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '20px 20px 0', alignItems: 'center' }}>
-            {rows.map((row, i) => (
-              <div key={i} style={{ display: 'flex', gap: 6, animation: shake && i === guesses.length ? 'shake 0.5s ease' : undefined }}>
-                {row.map((cell, j) => (
-                  <div key={j} style={{
-                    width: 44, height: 44, borderRadius: 8,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 17, fontWeight: 900, color: cell.state === 'empty' || cell.state === 'active' ? BROWN : '#fff',
-                    background: CELL_COLORS[cell.state as LetterState],
-                    border: cell.state === 'empty' ? `2px solid ${BROWN}15` : cell.state === 'active' ? `2px solid ${BROWN}60` : 'none',
-                    transition: 'background 0.3s',
-                    animation: i < guesses.length ? `popIn 0.2s ease ${j * 0.05}s both` : undefined,
-                  }}>{cell.letter}</div>
-                ))}
-              </div>
+      {/* Keyboard */}
+      <div style={{ marginTop:'auto', display:'flex', flexDirection:'column', gap:5 }}>
+        {KEYBOARD.map((row, i) => (
+          <div key={i} style={{ display:'flex', gap:4, justifyContent:'center' }}>
+            {row.map(k => (
+              <button key={k} onClick={() => handleKey(k)} style={{
+                padding: k.length > 1 ? '12px 6px' : '12px',
+                minWidth: k.length > 1 ? 46 : 32,
+                borderRadius:8, border:'none', cursor:'pointer',
+                background: keyStates[k] ? KEY_BG[keyStates[k]] || 'rgba(255,255,255,0.08)' : k==='ENTER' ? GREEN : 'rgba(255,255,255,0.08)',
+                color:'#fff',
+                fontSize: k.length > 1 ? 10 : 14, fontWeight:900, fontFamily:'inherit',
+              }}>{k}</button>
             ))}
           </div>
+        ))}
+      </div>
 
-          {/* Result */}
-          {(phase === 'won' || phase === 'lost') && (
-            <div style={{ margin: '20px 20px 0', textAlign: 'center' }}>
-              <div style={{ fontSize: 32, fontWeight: 900, color: phase === 'won' ? GREEN : '#C62828' }}>
-                {phase === 'won' ? fmtTime(finalTime) : word}
-              </div>
-              <div style={{ fontSize: 14, color: `${BROWN}60`, marginTop: 4, marginBottom: 16 }}>
-                {phase === 'won' ? `Solved in ${guesses.length} ${guesses.length === 1 ? 'try' : 'tries'}` : 'Better luck next time!'}
-              </div>
-              {worldRank && <div style={{ fontSize: 20, fontWeight: 900, color: GREEN, marginBottom: 16 }}>#{worldRank} World</div>}
-              <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-                {phase === 'won' && (
-                  <button onClick={() => {
-                    const text = `I solved MemGenius Wordly in ${fmtTime(finalTime)} with ${guesses.length} tries!`
-                    const url = 'https://memgenius.com/wordly'
-                    if (navigator.share) { navigator.share({ title: 'MemGenius Wordly', text, url }) } else { window.open('https://wa.me/?text=' + encodeURIComponent(text + ' ' + url), '_blank') }
-                  }} style={{ padding: '14px 24px', borderRadius: 16, border: 'none', background: '#25D366', color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-                    Share
-                  </button>
-                )}
-                <button onClick={playAgain} style={{ padding: '14px 24px', borderRadius: 16, border: 'none', background: GOLD, color: '#fff', fontSize: 15, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
-                  Play again
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Keyboard */}
-          <div style={{ padding: '20px 12px 0', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {KEYBOARD.map((row, i) => (
-              <div key={i} style={{ display: 'flex', gap: 5, justifyContent: 'center' }}>
-                {row.map(k => (
-                  <button key={k} onClick={() => handleKey(k)} style={{
-                    padding: k.length > 1 ? '11px 6px' : '11px',
-                    minWidth: k.length > 1 ? 44 : 30,
-                    borderRadius: 8, border: 'none', cursor: 'pointer',
-                    background: k === 'ENTER' ? '#2E7D32' : keyStates[k] ? CELL_COLORS[keyStates[k]] : '#E0E0E0',
-                    color: k === 'ENTER' || (keyStates[k] && keyStates[k] !== 'empty' && keyStates[k] !== 'active') ? '#fff' : BROWN,
-                    fontSize: k.length > 1 ? 10 : 13, fontWeight: 900, fontFamily: 'inherit',
-                  }}>{k}</button>
-                ))}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-    </div>
+      <style>{`@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}`}</style>
+    </main>
   )
 }
