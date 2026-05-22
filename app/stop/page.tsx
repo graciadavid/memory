@@ -81,13 +81,21 @@ export default function StopPage() {
     if (!name.trim() || pin.join('').length!==4) return
     setSaving(true)
     setSaveError('')
-    const {data:existing, error:existErr} = await supabase.from('profiles').select('password_hash').eq('player_name', name.trim()).maybeSingle()
-    if (existing && !existErr) {
-      if (existing.password_hash !== btoa(pin.join(''))) {
-        setSaveError('Wrong PIN for this name')
-        setSaving(false)
-        return
-      }
+    const pinHash = btoa(pin.join(''))
+    const {data:existing} = await supabase.from('profiles').select('password_hash').eq('player_name', name.trim()).maybeSingle()
+    if (existing) {
+      if (existing.password_hash !== pinHash) { setSaveError('Wrong PIN'); setSaving(false); return }
+    } else {
+      await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
+    }
+    await supabase.from('precision_scores').insert({player_name:name.trim(), difference_ms:Math.abs(difference), game_type:null})
+    const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(difference))
+    setWorldRank((count??0)+1)
+    setSaving(false)
+    setSaved(true)
+    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    setTimeout(() => window.location.reload(), 1500)
+  }
     } else {
       await supabase.from('profiles').insert({player_name:name.trim(), password_hash:btoa(pin.join(''))})
     }
@@ -182,6 +190,7 @@ export default function StopPage() {
           <div style={{ fontSize:14, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
           <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>Create your free account</div>
           <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:10, boxSizing:'border-box' }} />
+          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
           <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:12 }}>
             {pin.map((d,i) => (
               <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
