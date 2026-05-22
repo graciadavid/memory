@@ -69,6 +69,7 @@ export default function StopPage() {
    setWorldRank((count ?? 0) + 1)
    setSaving(false)
    setSaved(true)
+   setTimeout(() => window.location.reload(), 1500)
  }
 
  const fmt = (ms: number) => `${Math.floor(ms/1000)}.${String(Math.floor(ms%1000)).padStart(3,'0')}`
