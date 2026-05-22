@@ -177,45 +177,47 @@ export default function MastermindClient() {
   )
 
   if (phase === 'playing') return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'16px 16px 100px', overflowY:'auto' }}>
-      <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.3)', textAlign:'center', marginBottom:12 }}>
-        Attempt {guesses.length + 1} / {MAX_ATTEMPTS}
+    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'16px 16px 16px', overflow:'hidden' }}>
+      <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', textAlign:'center', marginBottom:10, letterSpacing:2, textTransform:'uppercase' }}>
+        Attempt {guesses.length + 1} of {MAX_ATTEMPTS}
       </div>
 
       {/* Previous guesses */}
-      <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:12 }}>
+      <div style={{ flex:1, overflowY:'auto', display:'flex', flexDirection:'column', gap:6, marginBottom:10 }}>
         {guesses.map((g, ri) => (
-          <div key={ri} style={{ display:'flex', alignItems:'center', gap:8 }}>
-            <div style={{ display:'flex', gap:6, flex:1 }}>
+          <div key={ri} style={{ display:'flex', alignItems:'center', gap:10, background:'rgba(255,255,255,0.04)', borderRadius:14, padding:'8px 10px' }}>
+            <div style={{ display:'flex', gap:5, flex:1 }}>
               {g.colors.map((c, ci) => (
-                <div key={ci} style={{ width:44, height:44, borderRadius:12, background:COLORS[c], flex:1 }} />
+                <div key={ci} style={{ width:36, height:36, borderRadius:10, background:COLORS[c], flex:1 }} />
               ))}
             </div>
-            <div style={{ display:'flex', gap:4, width:80, flexWrap:'wrap' }}>
-              {Array.from({length: g.feedback.correct}).map((_, i) => <div key={`c${i}`} style={{ width:16, height:16, borderRadius:'50%', background:'#69F0AE' }} />)}
-              {Array.from({length: g.feedback.misplaced}).map((_, i) => <div key={`m${i}`} style={{ width:16, height:16, borderRadius:'50%', background:GOLD }} />)}
-              {Array.from({length: CODE_LENGTH - g.feedback.correct - g.feedback.misplaced}).map((_, i) => <div key={`x${i}`} style={{ width:16, height:16, borderRadius:'50%', background:'rgba(255,255,255,0.1)' }} />)}
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:3, width:44 }}>
+              {Array.from({length: CODE_LENGTH}).map((_, i) => {
+                const dotColor = i < g.feedback.correct ? '#69F0AE' : i < g.feedback.correct + g.feedback.misplaced ? GOLD : 'rgba(255,255,255,0.12)'
+                return <div key={i} style={{ width:18, height:18, borderRadius:'50%', background:dotColor }} />
+              })}
             </div>
           </div>
         ))}
       </div>
 
       {/* Current row */}
-      <div style={{ display:'flex', gap:6, marginBottom:16 }}>
+      <div style={{ display:'flex', gap:5, marginBottom:10, alignItems:'center' }}>
         {Array.from({length: CODE_LENGTH}).map((_, i) => (
-          <div key={i} style={{ width:48, height:48, borderRadius:14, background: current[i]!==undefined ? COLORS[current[i]] : 'rgba(255,255,255,0.06)', border:'2px solid rgba(255,255,255,0.1)' }} />
+          <div key={i} style={{ flex:1, height:44, borderRadius:12, background: current[i]!==undefined ? COLORS[current[i]] : 'rgba(255,255,255,0.06)', border:'2px solid rgba(255,255,255,0.08)', transition:'background 0.1s' }} />
         ))}
-        <button onClick={removeColor} style={{ width:52, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.06)', color:'#fff', fontSize:18, cursor:'pointer' }}>⌫</button>
+        <button onClick={removeColor} style={{ width:44, height:44, borderRadius:12, border:'1px solid rgba(255,255,255,0.1)', background:'rgba(255,255,255,0.06)', color:'#fff', fontSize:20, cursor:'pointer', flexShrink:0 }}>⌫</button>
       </div>
 
-      {/* Color palette */}
-      <div style={{ display:'flex', gap:10, marginBottom:12, justifyContent:'center' }}>
+      {/* Color palette — same width as slots */}
+      <div style={{ display:'flex', gap:5, marginBottom:10 }}>
         {COLORS.map((c, i) => (
-          <button key={i} onClick={() => { setSelected(i); addColor(i) }} style={{ width:48, height:48, borderRadius:14, border:'none', background:c, cursor:'pointer', boxShadow: selected===i ? `0 0 12px ${c}` : 'none', transform: selected===i ? 'scale(1.1)' : 'scale(1)', transition:'all 0.1s' }} />
+          <button key={i} onClick={() => { setSelected(i); addColor(i) }} style={{ flex:1, height:44, borderRadius:12, border:`2px solid ${selected===i ? c : 'transparent'}`, background:c, cursor:'pointer', boxShadow: selected===i ? `0 0 14px ${c}80` : 'none', transform: selected===i ? 'scale(1.08)' : 'scale(1)', transition:'all 0.1s' }} />
         ))}
+        <div style={{ width:44, flexShrink:0 }} />
       </div>
 
-      <button onClick={submitGuess} disabled={current.length !== CODE_LENGTH} style={{ width:'100%', padding:'16px', borderRadius:16, border:'none', background: current.length===CODE_LENGTH ? GREEN : 'rgba(255,255,255,0.06)', color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor: current.length===CODE_LENGTH?'pointer':'default', boxShadow: current.length===CODE_LENGTH?'0 6px 0 #1B5E2080':'none' }}>
+      <button onClick={submitGuess} disabled={current.length !== CODE_LENGTH} style={{ width:'100%', padding:'16px', borderRadius:16, border:'none', background: current.length===CODE_LENGTH ? GREEN : 'rgba(255,255,255,0.06)', color: current.length===CODE_LENGTH ? '#fff' : 'rgba(255,255,255,0.3)', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor: current.length===CODE_LENGTH?'pointer':'default', boxShadow: current.length===CODE_LENGTH?'0 6px 0 #1B5E2080':'none', transition:'all 0.2s' }}>
         Submit →
       </button>
     </main>
