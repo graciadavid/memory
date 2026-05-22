@@ -202,11 +202,11 @@ export default function CountriesPage() {
            {!imgLoaded && <div style={{ fontSize:13, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>Loading...</div>}
            <img
              key={question.code}
-             src={`${BASE}/shapes/${question.code}.png`}
+             src={`https://raw.githubusercontent.com/djaiss/mapsicon/master/all/${question.code.toLowerCase()}/512.png`}
              alt=""
              onLoad={() => setImgLoaded(true)}
              onError={() => setImgLoaded(true)}
-             style={{ maxWidth:'100%', maxHeight:180, objectFit:'contain', display:imgLoaded?'block':'none', filter:'invert(1)' }}
+             style={{ maxWidth:'100%', maxHeight:180, objectFit:'contain', display:imgLoaded?'block':'none', filter:'brightness(0) invert(1)' }}
            />
          </div>
          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>

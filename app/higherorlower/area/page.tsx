@@ -123,10 +123,10 @@ export default function HolAreaPage() {
  }, [profile?.name])
 
  const loadData = async () => {
-   const { data } = await supabase.from('higher_lower_scores').select('player_name,score').eq('category','area').order('score', { ascending: false }).limit(500)
+   const { data } = await supabase.from('higher_lower_scores').select('player_name,level').eq('category','area').order('score', { ascending: false }).limit(500)
    if (!data) return
    const best: Record<string,number> = {}
-   data.forEach((s:any) => { if (!best[s.player_name] || s.score > best[s.player_name]) best[s.player_name] = s.score })
+   data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
    const sorted = Object.entries(best).map(([n,s]) => ({name:n, score:s as number})).sort((a,b) => b.score-a.score)
    setTop5(sorted.slice(0,5))
    if (sorted[0]) setWorldRecord({score:sorted[0].score, name:sorted[0].name})
@@ -173,8 +173,8 @@ export default function HolAreaPage() {
        const finalScore = score
        setPhase('result')
        if (profile?.name) {
-         await supabase.from('higher_lower_scores').insert({player_name:profile.name, score:finalScore, category:'area'})
-         const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','area').gt('score',finalScore)
+         await supabase.from('higher_lower_scores').insert({player_name:profile.name, level:finalScore, category:'area'})
+         const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','area').gt('level',finalScore)
          setWorldRank((count??0)+1)
          if (myBest===null || finalScore>myBest) setMyBest(finalScore)
        }
@@ -194,7 +194,7 @@ export default function HolAreaPage() {
      await supabase.from('profiles').insert({player_name:name.trim(), password_hash:pinHash})
    }
    await supabase.from('higher_lower_scores').insert({player_name:name.trim(), score, category:'area'})
-   const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','area').gt('score',score)
+   const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','area').gt('level',score)
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
