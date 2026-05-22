@@ -125,6 +125,7 @@ export default function MastermindClient() {
 
     if (feedback.every(f => f === 'correct')) {
       setWon(true)
+      if (timerRef.current) clearInterval(timerRef.current)
       setPhase('result')
       if (profile?.name) {
         await supabase.from('mastermind_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:elapsed})
@@ -136,6 +137,7 @@ export default function MastermindClient() {
 
     if (newGuesses.length >= MAX_ATTEMPTS) {
       setWon(false)
+      if (timerRef.current) clearInterval(timerRef.current)
       setPhase('result')
       return
     }
