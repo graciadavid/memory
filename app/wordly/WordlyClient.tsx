@@ -62,7 +62,9 @@ type Phase = 'rules'|'playing'|'won'|'lost'
 export default function WordlyClient() {
  // Get player name directly from localStorage — no hook
  const [playerName, setPlayerName] = useState<string|null>(null)
- const playerNameRef = useRef<string|null>(null)
+ const playerNameRef = useRef<string|null>((() => {
+    try { const s = typeof window !== 'undefined' ? localStorage.getItem('memgenius_profile') : null; if (s) return JSON.parse(s).name || null } catch {}; return null
+  })())
 
  useEffect(() => {
    const stored = localStorage.getItem('memgenius_profile')
