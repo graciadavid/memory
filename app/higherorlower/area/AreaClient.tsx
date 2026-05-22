@@ -208,7 +208,7 @@ export default function HolAreaPage() {
  const bgResult = score >= 15 ? '#0D3320' : score >= 8 ? '#2D1A00' : '#1A0000'
 
  if (phase === 'rules') return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
        <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/area.png" style={{ width:60, height:60, objectFit:'contain' }} />
        <div>
@@ -244,7 +244,7 @@ export default function HolAreaPage() {
  )
 
  if (phase === 'playing') return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden' }}>
+   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden' }}>
      <div style={{ padding:'16px 24px', textAlign:'center', fontSize:13, fontWeight:900, color:GOLD }}>{score} correct</div>
      {top && (
        <div style={{ background:'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:6, padding:'12px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
@@ -253,7 +253,7 @@ export default function HolAreaPage() {
          <div style={{ fontSize:18, fontWeight:900, color:GOLD }}>{formatArea(top.area)}</div>
        </div>
      )}
-     <div style={{ background:'#0A0A0A', padding:'8px', textAlign:'center', fontSize:12, fontWeight:900, color:'rgba(255,255,255,0.2)', letterSpacing:3 }}>VS</div>
+     <div style={{ background:'#1C1C1E', padding:'8px', textAlign:'center', fontSize:12, fontWeight:900, color:'rgba(255,255,255,0.2)', letterSpacing:3 }}>VS</div>
      {bottom && (
        <div style={{ background: feedback === 'correct' ? 'rgba(76,175,80,0.15)' : feedback === 'wrong' ? 'rgba(211,47,47,0.15)' : 'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, padding:'10px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
          <img src={`${FLAG_CDN}/${bottom.code}.png`} style={{ maxWidth:120, maxHeight:75, objectFit:'contain', borderRadius:6, boxShadow:'0 0 0 1px rgba(255,255,255,0.15)' }} />

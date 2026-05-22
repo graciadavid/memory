@@ -95,7 +95,7 @@ export default function ProfilePage() {
  ]
 
  return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', paddingBottom:100 }}>
+   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', paddingBottom:100 }}>
 
      {/* Header */}
      <div style={{ padding:'40px 24px 32px', textAlign:'center', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>

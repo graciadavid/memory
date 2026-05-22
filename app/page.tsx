@@ -8,7 +8,7 @@ export default function HomePage() {
  return (
    <main style={{
      height: '100dvh',
-     background: '#0A0A0A',
+     background: '#1C1C1E',
      fontFamily: 'var(--font-nunito), sans-serif',
      maxWidth: 430,
      margin: '0 auto',

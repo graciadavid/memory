@@ -122,7 +122,7 @@ export default function F1Page() {
 
  // RULES
  if (phase === 'rules') return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
        <img src={`${BASE}/f1.png`} style={{ width:60, height:60, objectFit:'contain' }} />
        <div>
@@ -159,7 +159,7 @@ export default function F1Page() {
 
  // JUMPSTART
  if (phase === 'jumpstart') return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:24, padding:'32px 24px' }}>
+   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:24, padding:'32px 24px' }}>
      <div style={{ fontSize:64 }}>🚩</div>
      <div style={{ fontSize:32, fontWeight:900, color:RED }}>Jump Start!</div>
      <div style={{ fontSize:15, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>You pressed too early</div>
@@ -169,7 +169,7 @@ export default function F1Page() {
 
  // GAME
  if (phase === 'lighting' || phase === 'waiting' || phase === 'go') return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:60, padding:'40px 24px' }}>
+   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:60, padding:'40px 24px' }}>
      <div style={{ display:'flex', gap:6 }}>
        {[1,2,3,4,5].map(n => (
          <Semaphore key={n} lit={phase === 'waiting' ? true : phase === 'go' ? false : litCount >= n} />

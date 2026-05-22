@@ -71,7 +71,7 @@ export default function AceClient() {
    const { x, y } = getBallPos(t)
 
    ctx.clearRect(0, 0, CANVAS_W, CANVAS_H)
-   ctx.fillStyle = '#0A0A0A'
+   ctx.fillStyle = '#1C1C1E'
    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
 
    // Level label
@@ -227,7 +227,7 @@ export default function AceClient() {
  const bgResult = level >= 10 ? '#0D3320' : level >= 5 ? '#2D1A00' : '#1A0000'
 
  if (phase === 'rules') return (
-   <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+   <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
        <img src={`${BASE}/padel.png`} style={{ width:60, height:60, objectFit:'contain' }} />
        <div>
@@ -263,7 +263,7 @@ export default function AceClient() {
  )
 
  if (phase === 'playing') return (
-   <main onClick={handleTap} style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor:'pointer', userSelect:'none', gap:12 }}>
+   <main onClick={handleTap} style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor:'pointer', userSelect:'none', gap:12 }}>
      <canvas ref={canvasRef} width={CANVAS_W} height={CANVAS_H} style={{ width:'100%', maxWidth:CANVAS_W, touchAction:'none' }} />
      {hitResult && (
        <div style={{ fontSize:28, fontWeight:900, color:hitResult==='perfect'?GOLD:hitResult==='good'?TENNIS:'#D32F2F' }}>

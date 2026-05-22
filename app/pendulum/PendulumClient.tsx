@@ -109,7 +109,7 @@ export default function PendulumPage() {
 
  // RULES
  if (phase === 'rules') return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
        <img src={`${BASE}/pendulum.png`} style={{ width:60, height:60, objectFit:'contain' }} />
        <div>
@@ -146,7 +146,7 @@ export default function PendulumPage() {
 
  // PLAYING
  if (phase === 'playing') return (
-   <main onClick={handleTap} style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor:'pointer', userSelect:'none', gap:24 }}>
+   <main onClick={handleTap} style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', cursor:'pointer', userSelect:'none', gap:24 }}>
      <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.25)', letterSpacing:3, textTransform:'uppercase' }}>Tap when vertical</div>
      <div style={{ position:'relative', width:240, height:220, display:'flex', alignItems:'flex-start', justifyContent:'center' }}>
        <div style={{ position:'absolute', top:0, left:'50%', transform:'translateX(-50%)', width:1, height:190, background:'rgba(255,255,255,0.2)' }} />

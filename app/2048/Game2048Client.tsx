@@ -215,7 +215,7 @@ export default function Game2048Client() {
   const tileSize = 'calc((min(100vw, 430px) - 40px - 12px) / 4)'
 
   if (phase === 'rules') return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
         <img src={`${BASE}/2048.png`} style={{ width:60, height:60, objectFit:'contain' }} />
         <div>
@@ -251,7 +251,7 @@ export default function Game2048Client() {
   )
 
   return (
-    <main style={{ height:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'12px 20px', overflow:'hidden' }}
+    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'12px 20px', overflow:'hidden' }}
       onTouchStart={e => { e.preventDefault(); setTouchStart({x:e.touches[0].clientX, y:e.touches[0].clientY}) }}
       onTouchEnd={e => { e.preventDefault();
         if (!touchStart) return

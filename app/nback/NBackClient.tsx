@@ -140,7 +140,7 @@ export default function NBackPage() {
 
  // RULES
  if (phase === 'rules') return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
+   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}>
        <div style={{ width:60, height:60, background:'rgba(255,255,255,0.06)', borderRadius:16, display:'flex', alignItems:'center', justifyContent:'center', fontSize:32 }}>🧠</div>
        <div>
@@ -185,7 +185,7 @@ export default function NBackPage() {
 
  // SHOW FIRST COLOR
  if (phase === 'show_first') return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:32, padding:'24px' }}>
+   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:32, padding:'24px' }}>
      <div style={{ fontSize:16, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase' }}>Memorize this color</div>
      <div style={{ width:180, height:180, borderRadius:40, background:COLORS[currColor].color, boxShadow:`0 0 60px ${COLORS[currColor].color}60` }} />
      <div style={{ fontSize:14, color:'rgba(255,255,255,0.2)', fontWeight:700 }}>Next color coming...</div>
@@ -194,7 +194,7 @@ export default function NBackPage() {
 
  // ANSWER
  if (phase === 'answer' || phase === 'feedback') return (
-   <main style={{ minHeight:'100dvh', background:'#0A0A0A', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:28, padding:'24px' }}>
+   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:28, padding:'24px' }}>
      
      <div style={{ fontSize:28, fontWeight:900, color:GOLD }}>{streak}</div>
 
