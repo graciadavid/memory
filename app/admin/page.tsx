@@ -75,6 +75,16 @@ export default function AdminPage() {
       TABLES.map(async ({table, game, filter}) => {
         let q = supabase.from(table).select('player_name, created_at', {count:'exact'}).gte('created_at', from)
         if (to) q = q.lt('created_at', to)
+        // Apply game-specific filters
+        if (table === 'precision_scores') {
+          if (game === 'stop') q = q.is('game_type', null)
+          else if (game === 'f1') q = q.eq('game_type', 'formula1')
+          else if (game === 'pendulum') q = q.eq('game_type', 'pendulum')
+        }
+        if (table === 'higher_lower_scores') {
+          if (game === 'hl_pop') q = q.eq('category', 'population')
+          else if (game === 'hl_area') q = q.eq('category', 'area')
+        }
         const {data, count} = await q.order('created_at', {ascending: false}).limit(5000)
         return { game, count: count || 0, data: data || [] }
       })
