@@ -85,7 +85,7 @@ export default function AdminPage() {
           if (game === 'hl_pop') q = q.eq('category', 'population')
           else if (game === 'hl_area') q = q.eq('category', 'area')
         }
-        const {data, count} = await q.order('created_at', {ascending: false}).limit(5000)
+        const {data, count} = await q.order('created_at', {ascending: false}).limit(100)
         return { game, count: count || 0, data: data || [] }
       })
     )
