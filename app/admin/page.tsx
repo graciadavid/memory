@@ -120,7 +120,10 @@ export default function AdminPage() {
 
   return (
     <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:600, margin:'0 auto', padding:'24px 20px 100px', color:'#fff' }}>
-      <div style={{ fontSize:24, fontWeight:900, marginBottom:24 }}>Admin</div>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
+        <div style={{ fontSize:24, fontWeight:900 }}>Admin</div>
+        <button onClick={loadData} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, padding:'8px 16px', color:'#fff', fontSize:13, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>↻ Refresh</button>
+      </div>
 
       {/* Period tabs */}
       <div style={{ display:'flex', gap:8, marginBottom:24 }}>
