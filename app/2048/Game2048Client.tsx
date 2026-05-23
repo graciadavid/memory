@@ -116,14 +116,11 @@ export default function Game2048Client() {
   useEffect(() => {
     if (phase === 'playing') {
       document.body.style.overflow = 'hidden'
-      document.body.style.touchAction = 'none'
     } else {
       document.body.style.overflow = ''
-      document.body.style.touchAction = ''
     }
     return () => {
       document.body.style.overflow = ''
-      document.body.style.touchAction = ''
     }
   }, [phase])
 
@@ -252,8 +249,8 @@ export default function Game2048Client() {
 
   return (
     <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'12px 20px', overflow:'hidden' }}
-      onTouchStart={e => { e.preventDefault(); setTouchStart({x:e.touches[0].clientX, y:e.touches[0].clientY}) }}
-      onTouchEnd={e => { e.preventDefault();
+      onTouchStart={e => { setTouchStart({x:e.touches[0].clientX, y:e.touches[0].clientY}) }}
+      onTouchEnd={e => {
         if (!touchStart) return
         const dx = e.changedTouches[0].clientX - touchStart.x
         const dy = e.changedTouches[0].clientY - touchStart.y
