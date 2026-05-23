@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
@@ -172,6 +173,7 @@ export default function FlagsClient() {
           const {count} = await supabase.from('flag_scores').select('*',{count:'exact',head:true}).gt('level',finalScore)
           setWorldRank((count??0)+1)
           if (myBest===null || finalScore>myBest) setMyBest(finalScore)
+          await updateStreak(profile.name)
         }
       }, 1000)
     }

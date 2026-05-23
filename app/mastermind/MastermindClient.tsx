@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
@@ -131,6 +132,7 @@ export default function MastermindClient() {
         await supabase.from('mastermind_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:elapsed})
         const {count} = await supabase.from('mastermind_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
         setWorldRank((count??0)+1)
+        await updateStreak(profile.name)
       }
       return
     }

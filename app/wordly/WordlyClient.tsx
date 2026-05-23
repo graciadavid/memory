@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'

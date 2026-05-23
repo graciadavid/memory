@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
@@ -115,7 +116,7 @@ export default function SudokuClient() {
       setPhase('result')
       if (profile?.name) {
         supabase.from('sudoku_scores').insert({player_name:profile.name, time_ms:finalMs, difficulty}).then(() => {
-          supabase.from('sudoku_scores').select('*',{count:'exact',head:true}).eq('difficulty',difficulty).lt('time_ms',finalMs).then(({count}) => setWorldRank((count??0)+1))
+          supabase.from('sudoku_scores').select('*',{count:'exact',head:true}).eq('difficulty',difficulty).lt('time_ms',finalMs).then(({count}) => { setWorldRank((count??0)+1); updateStreak(profile.name) })
         })
       }
     }

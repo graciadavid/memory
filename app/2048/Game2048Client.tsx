@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
@@ -162,7 +163,7 @@ export default function Game2048Client() {
         setScore(s => {
           if (profile?.name) {
             supabase.from('game2048_scores').insert({player_name:profile.name, score:s}).then(() => {
-              supabase.from('game2048_scores').select('*',{count:'exact',head:true}).gt('score',s).then(({count}) => setWorldRank((count??0)+1))
+              supabase.from('game2048_scores').select('*',{count:'exact',head:true}).gt('score',s).then(({count}) => { setWorldRank((count??0)+1); updateStreak(profile.name) })
             })
           }
           return s

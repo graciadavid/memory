@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
@@ -171,6 +172,7 @@ export default function AceClient() {
      const {count} = await supabase.from('ace_scores').select('*',{count:'exact',head:true}).gt('level',finalLevel)
      setWorldRank((count??0)+1)
      if (myBest===null || finalLevel>myBest) setMyBest(finalLevel)
+     await updateStreak(profile.name)
    }
  }, [profile?.name, myBest])
 

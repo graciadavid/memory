@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
+import { updateStreak } from '@/lib/streak'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
@@ -84,6 +85,7 @@ export default function DigitsClient() {
            const {count} = await supabase.from('number_scores').select('*',{count:'exact',head:true}).gt('level',fl)
            setWorldRank((count??0)+1)
            if (myBest===null || fl>myBest) setMyBest(fl)
+          await updateStreak(profile.name)
          }
        }, 1000)
      }
