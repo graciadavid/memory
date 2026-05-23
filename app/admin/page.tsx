@@ -7,256 +7,158 @@ const GOLD = '#C8960C'
 type Period = '1h' | '1d' | 'yesterday' | 'month' | 'year'
 
 const PERIODS: { key: Period, label: string }[] = [
-  { key: '1h', label: '1h' },
-  { key: '1d', label: 'Today' },
-  { key: 'yesterday', label: 'Yesterday' },
-  { key: 'month', label: 'Month' },
-  { key: 'year', label: 'Year' },
+ { key: '1h', label: '1h' },
+ { key: '1d', label: 'Today' },
+ { key: 'yesterday', label: 'Yesterday' },
+ { key: 'month', label: 'Month' },
+ { key: 'year', label: 'Year' },
 ]
 
-const TABLES = [
-  { table: 'scores', game: 'memory' },
-  { table: 'precision_scores', game: 'stop', filter: 'game_type IS NULL' },
-  { table: 'precision_scores', game: 'f1', filter: "game_type = 'formula1'" },
-  { table: 'precision_scores', game: 'pendulum', filter: "game_type = 'pendulum'" },
-  { table: 'ace_scores', game: 'ace' },
-  { table: 'flag_scores', game: 'flags' },
-  { table: 'higher_lower_scores', game: 'hl_pop', filter: "category = 'population'" },
-  { table: 'higher_lower_scores', game: 'hl_area', filter: "category = 'area'" },
-  { table: 'shape_scores', game: 'countries' },
-  { table: 'number_scores', game: 'digits' },
-  { table: 'sequence_scores', game: 'simon' },
-  { table: 'nback_scores', game: 'nback' },
-  { table: 'sudoku_scores', game: 'sudoku' },
-  { table: 'mastermind_scores', game: 'mastermind' },
-  { table: 'game2048_scores', game: '2048' },
-  { table: 'wordle_scores', game: 'wordly' },
+const GAME_TABLES = [
+ { table: 'scores', game: 'memory', filter: null },
+ { table: 'precision_scores', game: 'stop', filter: { col: 'game_type', val: null, isNull: true } },
+ { table: 'precision_scores', game: 'f1', filter: { col: 'game_type', val: 'formula1', isNull: false } },
+ { table: 'precision_scores', game: 'pendulum', filter: { col: 'game_type', val: 'pendulum', isNull: false } },
+ { table: 'ace_scores', game: 'ace', filter: null },
+ { table: 'flag_scores', game: 'flags', filter: null },
+ { table: 'higher_lower_scores', game: 'hl_pop', filter: { col: 'category', val: 'population', isNull: false } },
+ { table: 'higher_lower_scores', game: 'hl_area', filter: { col: 'category', val: 'area', isNull: false } },
+ { table: 'shape_scores', game: 'countries', filter: null },
+ { table: 'number_scores', game: 'digits', filter: null },
+ { table: 'sequence_scores', game: 'simon', filter: null },
+ { table: 'nback_scores', game: 'nback', filter: null },
+ { table: 'sudoku_scores', game: 'sudoku', filter: null },
+ { table: 'mastermind_scores', game: 'mastermind', filter: null },
+ { table: 'game2048_scores', game: '2048', filter: null },
+ { table: 'wordle_scores', game: 'wordly', filter: null },
 ]
 
-function getDateFilter(period: Period): string {
-  const now = new Date()
-  switch (period) {
-    case '1h': return new Date(now.getTime() - 3600000).toISOString()
-    case '1d': return new Date(now.setHours(0,0,0,0)).toISOString()
-    case 'yesterday': {
-      const y = new Date(); y.setDate(y.getDate()-1); y.setHours(0,0,0,0)
-      return y.toISOString()
-    }
-    case 'month': return new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
-    case 'year': return new Date(now.getFullYear(), 0, 1).toISOString()
-  }
-}
-
-function getDateFilterEnd(period: Period): string | null {
-  if (period === 'yesterday') {
-    const y = new Date(); y.setDate(y.getDate()); y.setHours(0,0,0,0)
-    return y.toISOString()
-  }
-  return null
-}
-
-
-function LastTenGames() {
-  const [games, setGames] = useState<{player_name:string,game:string,created_at:string}[]>([])
-  const [loading, setLoading] = useState(true)
-
-  const load = async () => {
-    setLoading(true)
-    const tables = [
-      { table: 'scores', game: 'memory' },
-      { table: 'ace_scores', game: 'ace' },
-      { table: 'flag_scores', game: 'flags' },
-      { table: 'shape_scores', game: 'countries' },
-      { table: 'number_scores', game: 'digits' },
-      { table: 'sequence_scores', game: 'simon' },
-      { table: 'nback_scores', game: 'nback' },
-      { table: 'sudoku_scores', game: 'sudoku' },
-      { table: 'mastermind_scores', game: 'mastermind' },
-      { table: 'game2048_scores', game: '2048' },
-      { table: 'wordle_scores', game: 'wordly' },
-    ]
-    const precisionGames = [
-      { game_type: null, game: 'stop' },
-      { game_type: 'formula1', game: 'f1' },
-      { game_type: 'pendulum', game: 'pendulum' },
-    ]
-    const hlGames = [
-      { category: 'population', game: 'hl_pop' },
-      { category: 'area', game: 'hl_area' },
-    ]
-
-    const results = await Promise.all([
-      ...tables.map(({table, game}) =>
-        supabase.from(table).select('player_name,created_at').order('created_at',{ascending:false}).limit(3)
-          .then(({data}) => (data||[]).map((d:any) => ({...d, game})))
-      ),
-      ...precisionGames.map(({game_type, game}) => {
-        let q = supabase.from('precision_scores').select('player_name,created_at').order('created_at',{ascending:false}).limit(3)
-        if (game_type === null) q = q.is('game_type', null)
-        else q = q.eq('game_type', game_type)
-        return q.then(({data}) => (data||[]).map((d:any) => ({...d, game})))
-      }),
-      ...hlGames.map(({category, game}) =>
-        supabase.from('higher_lower_scores').select('player_name,created_at').eq('category',category).order('created_at',{ascending:false}).limit(3)
-          .then(({data}) => (data||[]).map((d:any) => ({...d, game})))
-      ),
-    ])
-
-    const all = results.flat().sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0,10)
-    setGames(all)
-    setLoading(false)
-  }
-
-  useEffect(() => { load() }, [])
-
-  const fmt = (d: string) => {
-    const date = new Date(d)
-    return date.toLocaleString('es', {hour:'2-digit', minute:'2-digit', second:'2-digit', day:'2-digit', month:'2-digit'})
-  }
-
-  return (
-    <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'16px' }}>
-      <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Last 10 Games</div>
-      {loading ? <div style={{ color:'rgba(255,255,255,0.3)', fontSize:13 }}>Loading...</div> : (
-        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-          {games.map((a, i) => (
-            <div key={i} style={{ display:'flex', alignItems:'center', gap:10 }}>
-              <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', width:100, flexShrink:0 }}>{fmt(a.created_at)}</div>
-              <div style={{ flex:1, fontSize:13, fontWeight:800, color:'#fff' }}>{a.player_name}</div>
-              <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.4)', textTransform:'capitalize' }}>{a.game}</div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
+function getPeriodRange(period: Period): { from: string, to?: string } {
+ const now = new Date()
+ if (period === '1h') return { from: new Date(now.getTime() - 3600000).toISOString() }
+ if (period === '1d') { const d = new Date(); d.setHours(0,0,0,0); return { from: d.toISOString() } }
+ if (period === 'yesterday') {
+   const from = new Date(); from.setDate(from.getDate()-1); from.setHours(0,0,0,0)
+   const to = new Date(); to.setHours(0,0,0,0)
+   return { from: from.toISOString(), to: to.toISOString() }
+ }
+ if (period === 'month') return { from: new Date(now.getFullYear(), now.getMonth(), 1).toISOString() }
+ return { from: new Date(now.getFullYear(), 0, 1).toISOString() }
 }
 
 export default function AdminPage() {
-  const [period, setPeriod] = useState<Period>('1d')
-  const [totalPlays, setTotalPlays] = useState(0)
-  const [totalUsers, setTotalUsers] = useState(0)
-  const [gamePlays, setGamePlays] = useState<Record<string,number>>({})
-  const [activity, setActivity] = useState<{player_name:string, game:string, created_at:string}[]>([])
-  const [loading, setLoading] = useState(false)
+ const [period, setPeriod] = useState<Period>('1d')
+ const [loading, setLoading] = useState(false)
+ const [totalPlays, setTotalPlays] = useState(0)
+ const [totalUsers, setTotalUsers] = useState(0)
+ const [gamePlays, setGamePlays] = useState<{game:string, plays:number}[]>([])
+ const [lastGames, setLastGames] = useState<{player_name:string, game:string, created_at:string}[]>([])
 
-  useEffect(() => { loadData() }, [period])
+ useEffect(() => { load() }, [period])
 
-  const loadData = async () => {
-    setLoading(true)
-    const from = getDateFilter(period)
-    const to = getDateFilterEnd(period)
+ const load = async () => {
+   setLoading(true)
+   const { from, to } = getPeriodRange(period)
 
-    // Load all games in parallel
-    const results = await Promise.all(
-      TABLES.map(async ({table, game, filter}) => {
-        let q = supabase.from(table).select('player_name, created_at', {count:'exact'}).gte('created_at', from)
-        if (to) q = q.lt('created_at', to)
-        // Apply game-specific filters
-        if (table === 'precision_scores') {
-          if (game === 'stop') q = q.is('game_type', null)
-          else if (game === 'f1') q = q.eq('game_type', 'formula1')
-          else if (game === 'pendulum') q = q.eq('game_type', 'pendulum')
-        }
-        if (table === 'higher_lower_scores') {
-          if (game === 'hl_pop') q = q.eq('category', 'population')
-          else if (game === 'hl_area') q = q.eq('category', 'area')
-        }
-        const {data, count} = await q.order('created_at', {ascending: false}).limit(10)
-        return { game, count: count || 0, data: data || [] }
-      })
-    )
+   // Fetch each game
+   const results = await Promise.all(
+     GAME_TABLES.map(async ({ table, game, filter }) => {
+       let q = supabase.from(table).select('player_name, created_at', { count: 'exact', head: false })
+         .gte('created_at', from)
+       if (to) q = q.lt('created_at', to)
+       if (filter) {
+         if (filter.isNull) q = q.is(filter.col, null)
+         else q = q.eq(filter.col, filter.val)
+       }
+       const { data, count } = await q.order('created_at', { ascending: false }).limit(5000)
+       return { game, plays: count || 0, rows: (data || []) as {player_name:string, created_at:string}[] }
+     })
+   )
 
-    const plays: Record<string,number> = {}
-    const allUsers = new Set<string>()
-    const allActivity: {player_name:string, game:string, created_at:string}[] = []
-    let total = 0
+   // Aggregate
+   let total = 0
+   const users = new Set<string>()
+   const plays: {game:string, plays:number}[] = []
+   const allRows: {player_name:string, game:string, created_at:string}[] = []
 
-    results.forEach(({game, count, data}) => {
-      plays[game] = count
-      total += count
-      data.forEach((d:any) => {
-        allUsers.add(d.player_name)
-        allActivity.push({player_name: d.player_name, game, created_at: d.created_at})
-      })
-    })
+   results.forEach(({ game, plays: p, rows }) => {
+     total += p
+     plays.push({ game, plays: p })
+     rows.forEach(r => {
+       users.add(r.player_name)
+       allRows.push({ player_name: r.player_name, game, created_at: r.created_at })
+     })
+   })
 
-    allActivity.sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+   allRows.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
-    setTotalPlays(total)
-    setTotalUsers(allUsers.size)
-    setGamePlays(plays)
-    setActivity(allActivity.slice(0, 10))
-    setLoading(false)
-  }
+   setTotalPlays(total)
+   setTotalUsers(users.size)
+   setGamePlays(plays.filter(p => p.plays > 0).sort((a, b) => b.plays - a.plays))
+   setLastGames(allRows.slice(0, 10))
+   setLoading(false)
+ }
 
-  const fmt = (d: string) => {
-    const date = new Date(d)
-    return date.toLocaleTimeString('es', {hour:'2-digit', minute:'2-digit', second:'2-digit'})
-  }
+ const fmt = (d: string) => new Date(d).toLocaleString('es', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+ const maxPlays = Math.max(...gamePlays.map(g => g.plays), 1)
 
-  return (
-    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:600, margin:'0 auto', padding:'24px 20px 100px', color:'#fff' }}>
-      <div style={{ fontSize:24, fontWeight:900, marginBottom:8 }}>Admin</div>
-      <button onClick={loadData} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, padding:'8px 16px', color:'#fff', fontSize:13, fontWeight:800, cursor:'pointer', fontFamily:'inherit', marginBottom:24 }}>↻ Refresh</button>
+ return (
+   <main style={{ minHeight: '100dvh', background: '#1C1C1E', fontFamily: 'var(--font-nunito), sans-serif', maxWidth: 600, margin: '0 auto', padding: '24px 20px 100px', color: '#fff' }}>
+     <div style={{ fontSize: 24, fontWeight: 900, marginBottom: 6 }}>Admin</div>
+     <button onClick={load} disabled={loading} style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '8px 16px', color: '#fff', fontSize: 13, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', marginBottom: 24 }}>
+       {loading ? 'Loading...' : '↻ Refresh'}
+     </button>
 
-      {/* Period tabs */}
-      <div style={{ display:'flex', gap:8, marginBottom:24 }}>
-        {PERIODS.map(p => (
-          <button key={p.key} onClick={() => setPeriod(p.key)} style={{ flex:1, padding:'10px', borderRadius:12, border:'none', background: period===p.key ? GOLD : 'rgba(255,255,255,0.06)', color: period===p.key ? '#000' : 'rgba(255,255,255,0.5)', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-            {p.label}
-          </button>
-        ))}
-      </div>
+     {/* Period tabs */}
+     <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+       {PERIODS.map(p => (
+         <button key={p.key} onClick={() => setPeriod(p.key)} style={{ flex: 1, padding: '10px', borderRadius: 12, border: 'none', background: period === p.key ? GOLD : 'rgba(255,255,255,0.06)', color: period === p.key ? '#000' : 'rgba(255,255,255,0.5)', fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
+           {p.label}
+         </button>
+       ))}
+     </div>
 
-      {loading && <div style={{ textAlign:'center', color:'rgba(255,255,255,0.4)', padding:40 }}>Loading...</div>}
+     {/* KPIs */}
+     <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+       <div style={{ flex: 1, background: 'rgba(255,255,255,0.06)', borderRadius: 16, padding: '20px', textAlign: 'center' }}>
+         <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Total Plays</div>
+         <div style={{ fontSize: 42, fontWeight: 900, color: GOLD }}>{totalPlays.toLocaleString()}</div>
+       </div>
+       <div style={{ flex: 1, background: 'rgba(255,255,255,0.06)', borderRadius: 16, padding: '20px', textAlign: 'center' }}>
+         <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.4)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 }}>Users</div>
+         <div style={{ fontSize: 42, fontWeight: 900, color: '#69F0AE' }}>{totalUsers.toLocaleString()}</div>
+       </div>
+     </div>
 
-      {!loading && <>
-        {/* KPIs */}
-        <div style={{ display:'flex', gap:12, marginBottom:24 }}>
-          <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'20px', textAlign:'center' }}>
-            <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Total Plays</div>
-            <div style={{ fontSize:42, fontWeight:900, color:GOLD }}>{totalPlays.toLocaleString()}</div>
-          </div>
-          <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'20px', textAlign:'center' }}>
-            <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Total Users</div>
-            <div style={{ fontSize:42, fontWeight:900, color:'#69F0AE' }}>{totalUsers.toLocaleString()}</div>
-          </div>
-        </div>
+     {/* By game */}
+     <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: '16px', marginBottom: 24 }}>
+       <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>By Game</div>
+       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+         {gamePlays.map(({ game, plays }) => (
+           <div key={game} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+             <div style={{ width: 90, fontSize: 13, fontWeight: 800, color: 'rgba(255,255,255,0.7)', textTransform: 'capitalize', flexShrink: 0 }}>{game}</div>
+             <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.08)', borderRadius: 3, overflow: 'hidden' }}>
+               <div style={{ height: '100%', background: GOLD, borderRadius: 3, width: `${Math.round((plays / maxPlays) * 100)}%` }} />
+             </div>
+             <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', width: 40, textAlign: 'right' }}>{plays}</div>
+           </div>
+         ))}
+       </div>
+     </div>
 
-        {/* Game breakdown */}
-        <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'16px', marginBottom:24 }}>
-          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>By Game</div>
-          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-            {TABLES
-              .filter(t => gamePlays[t.game] > 0)
-              .sort((a,b) => (gamePlays[b.game]||0) - (gamePlays[a.game]||0))
-              .map(({game}) => (
-              <div key={game} style={{ display:'flex', alignItems:'center', gap:10 }}>
-                <div style={{ flex:1, fontSize:14, fontWeight:800, color:'rgba(255,255,255,0.7)', textTransform:'capitalize' }}>{game}</div>
-                <div style={{ fontSize:14, fontWeight:900, color:'#fff' }}>{gamePlays[game].toLocaleString()}</div>
-                <div style={{ width:100, height:6, background:'rgba(255,255,255,0.08)', borderRadius:3, overflow:'hidden' }}>
-                  <div style={{ height:'100%', background:GOLD, borderRadius:3, width:`${Math.round((gamePlays[game]/Math.max(...Object.values(gamePlays)))*100)}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Last 10 activity */}
-        <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'16px' }}>
-          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Last 10 Games</div>
-          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-            {activity.map((a, i) => (
-              <div key={i} style={{ display:'flex', alignItems:'center', gap:10 }}>
-                <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.5)', width:60 }}>{fmt(a.created_at)}</div>
-                <div style={{ flex:1, fontSize:13, fontWeight:800, color:'#fff' }}>{a.player_name}</div>
-                <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.4)', textTransform:'capitalize' }}>{a.game}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </>}
-    </main>
-  )
+     {/* Last 10 games */}
+     <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 16, padding: '16px' }}>
+       <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>Last 10 Games</div>
+       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+         {lastGames.map((g, i) => (
+           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+             <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.35)', flexShrink: 0, width: 110 }}>{fmt(g.created_at)}</div>
+             <div style={{ flex: 1, fontSize: 13, fontWeight: 800, color: '#fff' }}>{g.player_name}</div>
+             <div style={{ fontSize: 12, fontWeight: 800, color: 'rgba(255,255,255,0.4)', textTransform: 'capitalize' }}>{g.game}</div>
+           </div>
+         ))}
+       </div>
+     </div>
+   </main>
+ )
 }
