@@ -130,7 +130,7 @@ export default function Game2048Client() {
   }, [profile?.name])
 
   const loadData = async () => {
-    const { data } = await supabase.from('game2048_scores').select('player_name,score').order('score', { ascending: false }).limit(500)
+    const { data } = await supabase.from('game2048_scores').select('player_name,score').order('score', { ascending: false }).limit(5000)
     if (!data) return
     const best: Record<string,number> = {}
     data.forEach((s:any) => { if (!best[s.player_name] || s.score > best[s.player_name]) best[s.player_name] = s.score })

@@ -34,7 +34,7 @@ export default function StopPage() {
   }, [profile?.name])
 
   const loadData = async () => {
-    const {data:all} = await supabase.from('precision_scores').select('player_name,difference_ms').is('game_type',null).order('difference_ms',{ascending:true}).limit(500)
+    const {data:all} = await supabase.from('precision_scores').select('player_name,difference_ms').is('game_type',null).order('difference_ms',{ascending:true}).limit(5000)
     if (!all) return
     const best:Record<string,number> = {}
     all.forEach((s:any) => { if (!best[s.player_name] || s.difference_ms < best[s.player_name]) best[s.player_name] = s.difference_ms })

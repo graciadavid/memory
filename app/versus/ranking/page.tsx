@@ -5,8 +5,8 @@ export const revalidate = 60
 
 export default async function VersusRankingPage() {
   const [popData, areaData] = await Promise.all([
-    supabase.from('higher_lower_scores').select('player_name, level, created_at').eq('category', 'population').order('level', { ascending: false }).order('created_at', { ascending: true }).limit(500),
-    supabase.from('higher_lower_scores').select('player_name, level, created_at').eq('category', 'area').order('level', { ascending: false }).order('created_at', { ascending: true }).limit(500),
+    supabase.from('higher_lower_scores').select('player_name, level, created_at').eq('category', 'population').order('level', { ascending: false }).order('created_at', { ascending: true }).limit(5000),
+    supabase.from('higher_lower_scores').select('player_name, level, created_at').eq('category', 'area').order('level', { ascending: false }).order('created_at', { ascending: true }).limit(5000),
   ])
 
   const getBest = (data: any[]) => {

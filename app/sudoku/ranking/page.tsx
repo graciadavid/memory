@@ -5,9 +5,9 @@ export const revalidate = 60
 
 export default async function SudokuRankingPage() {
   const [easy, medium, hard] = await Promise.all([
-    supabase.from('sudoku_scores').select('player_name, time_ms, created_at').eq('difficulty', 'easy').order('time_ms', { ascending: true }).limit(500),
-    supabase.from('sudoku_scores').select('player_name, time_ms, created_at').eq('difficulty', 'medium').order('time_ms', { ascending: true }).limit(500),
-    supabase.from('sudoku_scores').select('player_name, time_ms, created_at').eq('difficulty', 'hard').order('time_ms', { ascending: true }).limit(500),
+    supabase.from('sudoku_scores').select('player_name, time_ms, created_at').eq('difficulty', 'easy').order('time_ms', { ascending: true }).limit(5000),
+    supabase.from('sudoku_scores').select('player_name, time_ms, created_at').eq('difficulty', 'medium').order('time_ms', { ascending: true }).limit(5000),
+    supabase.from('sudoku_scores').select('player_name, time_ms, created_at').eq('difficulty', 'hard').order('time_ms', { ascending: true }).limit(5000),
   ])
 
   const getBest = (data: any[]) => {

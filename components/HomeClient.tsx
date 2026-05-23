@@ -36,7 +36,7 @@ export default function HomeClient({ easy, medium, hard }: Props) {
   }, [profile?.name])
 
   const loadData = async () => {
-    const { data } = await supabase.from('scores').select('player_name,time_ms').order('time_ms', { ascending: true }).limit(500)
+    const { data } = await supabase.from('scores').select('player_name,time_ms').order('time_ms', { ascending: true }).limit(5000)
     if (!data) return
     const best: Record<string,number> = {}
     data.forEach((s:any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name]) best[s.player_name] = s.time_ms })

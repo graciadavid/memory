@@ -9,17 +9,17 @@ export default async function PrecisionRankingPage() {
       .is('game_type', null)
       .order('difference_ms', { ascending: true })
       .order('created_at', { ascending: true })
-      .limit(500),
+      .limit(5000),
     supabase.from('precision_scores').select('player_name, difference_ms, created_at')
       .eq('game_type', 'formula1')
       .order('difference_ms', { ascending: true })
       .order('created_at', { ascending: true })
-      .limit(500),
+      .limit(5000),
     supabase.from('precision_scores').select('player_name, difference_ms, created_at')
       .eq('game_type', 'pendulum')
       .order('difference_ms', { ascending: true })
       .order('created_at', { ascending: true })
-      .limit(500),
+      .limit(5000),
   ])
 
   const getBest = (data: any[], lowerIsBetter = true) => {

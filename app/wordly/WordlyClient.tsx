@@ -95,7 +95,7 @@ export default function WordlyClient() {
   }, [profile?.name])
 
   const loadData = async () => {
-    const { data } = await supabase.from('wordle_scores').select('player_name,attempts,time_ms').order('attempts', { ascending: true }).order('time_ms', { ascending: true }).limit(500)
+    const { data } = await supabase.from('wordle_scores').select('player_name,attempts,time_ms').order('attempts', { ascending: true }).order('time_ms', { ascending: true }).limit(5000)
     if (!data) return
     const best: Record<string,{attempts:number,time_ms:number}> = {}
     data.forEach((s:any) => {

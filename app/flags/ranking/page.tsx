@@ -9,7 +9,7 @@ export default async function FlagsRankingPage() {
     .select('player_name, level, created_at')
     .order('level', { ascending: false })
     .order('created_at', { ascending: true })
-    .limit(500)
+    .limit(5000)
 
   const best: Record<string, { level: number, created_at: string }> = {}
   data?.forEach(s => {

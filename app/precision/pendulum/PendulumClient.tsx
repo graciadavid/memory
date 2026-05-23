@@ -124,7 +124,7 @@ export default function PendulumClient() {
         .select('player_name, difference_ms')
         .eq('game_type', 'pendulum')
         .order('difference_ms', { ascending: true })
-        .limit(500)
+        .limit(5000)
 
       if (data) {
         const best: Record<string, number> = {}

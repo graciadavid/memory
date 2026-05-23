@@ -115,7 +115,7 @@ export default function SequenceClient() {
       .from('sequence_scores')
       .select('player_name, level')
       .order('level', { ascending: false })
-      .limit(200)
+      .limit(5000)
     if (data) {
       const best: Record<string, number> = {}
       data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
@@ -184,7 +184,7 @@ export default function SequenceClient() {
       setPhase('gameover')
       if (profile?.name) {
         await supabase.from('sequence_scores').insert({ player_name: profile.name, level: lvl })
-        const { data } = await supabase.from('sequence_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
+        const { data } = await supabase.from('sequence_scores').select('player_name, level').order('level', { ascending: false }).limit(5000)
         if (data) {
           const best: Record<string, number> = {}
           data.forEach(s => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })

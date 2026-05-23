@@ -67,7 +67,7 @@ export default function SudokuClient() {
 
   const loadData = async (diff?: string) => {
     const d = diff || difficulty
-    const { data } = await supabase.from('sudoku_scores').select('player_name,time_ms').eq('difficulty', d).order('time_ms', { ascending: true }).limit(500)
+    const { data } = await supabase.from('sudoku_scores').select('player_name,time_ms').eq('difficulty', d).order('time_ms', { ascending: true }).limit(5000)
     if (!data) return
     const best: Record<string,number> = {}
     data.forEach((s:any) => { if (!best[s.player_name] || s.time_ms < best[s.player_name]) best[s.player_name] = s.time_ms })

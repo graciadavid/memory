@@ -9,7 +9,7 @@ export default async function StopRankingPage() {
     .select('player_name, difference_ms, created_at')
     .is('game_type', null)
     .order('difference_ms', { ascending: true })
-    .limit(500)
+    .limit(5000)
 
   const best: Record<string, { diff: number, created_at: string }> = {}
   data?.forEach((s: any) => {

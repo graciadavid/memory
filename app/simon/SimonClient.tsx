@@ -42,7 +42,7 @@ export default function SimonClient() {
   }, [profile?.name])
 
   const loadData = async () => {
-    const { data } = await supabase.from('sequence_scores').select('player_name,level').order('level', { ascending: false }).limit(500)
+    const { data } = await supabase.from('sequence_scores').select('player_name,level').order('level', { ascending: false }).limit(5000)
     if (!data) return
     const best: Record<string,number> = {}
     data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })

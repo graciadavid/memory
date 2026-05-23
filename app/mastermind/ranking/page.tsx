@@ -8,7 +8,7 @@ export default async function MastermindRankingPage() {
     .from('mastermind_scores')
     .select('player_name, time_ms, attempts')
     .order('time_ms', { ascending: true })
-    .limit(500)
+    .limit(5000)
 
   const best: Record<string, { time: number, attempts: number }> = {}
   data?.forEach((s: any) => {

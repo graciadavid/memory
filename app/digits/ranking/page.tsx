@@ -9,7 +9,7 @@ export default async function DigitsRankingPage() {
     .select('player_name, level, created_at')
     .order('level', { ascending: false })
     .order('created_at', { ascending: true })
-    .limit(500)
+    .limit(5000)
 
   // Pre-compute best per player on server
   const best: Record<string, { level: number, created_at: string }> = {}

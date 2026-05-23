@@ -165,7 +165,7 @@ export default function GeoShapeClient() {
   useEffect(() => { fetchTop() }, [])
 
   const fetchTop = async () => {
-    const { data } = await supabase.from('shape_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
+    const { data } = await supabase.from('shape_scores').select('player_name, level').order('level', { ascending: false }).limit(5000)
     if (data) {
       const best: Record<string, number> = {}
       data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
@@ -201,7 +201,7 @@ export default function GeoShapeClient() {
                 window.dispatchEvent(new Event('game_completed'))
       completeWodExercise(profile?.name || '', '/geoshape')
       completePlanDay(profile?.name || profile?.name || '', '/geoshape')
-          const { data } = await supabase.from('shape_scores').select('player_name, level').order('level', { ascending: false }).limit(200)
+          const { data } = await supabase.from('shape_scores').select('player_name, level').order('level', { ascending: false }).limit(5000)
           if (data) {
             const best: Record<string, number> = {}
             data.forEach((s: any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })

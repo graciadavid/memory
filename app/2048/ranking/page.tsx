@@ -9,7 +9,7 @@ export default async function Game2048RankingPage() {
     .select('player_name, best_tile, time_ms')
     .order('best_tile', { ascending: false })
     .order('time_ms', { ascending: true })
-    .limit(500)
+    .limit(5000)
 
   const best: Record<string, { tile: number, time: number }> = {}
   data?.forEach((s: any) => {

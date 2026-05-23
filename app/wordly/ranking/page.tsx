@@ -8,7 +8,7 @@ export default async function WordlyRankingPage() {
     .from('wordle_scores')
     .select('player_name, time_ms, attempts, word_date')
     .order('time_ms', { ascending: true })
-    .limit(1000)
+    .limit(5000)
 
   const best: Record<string, { time: number, attempts: number }> = {}
   data?.forEach((s: any) => {

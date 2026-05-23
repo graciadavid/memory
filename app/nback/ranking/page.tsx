@@ -8,7 +8,7 @@ export default async function NBackRankingPage() {
     .from('nback_scores')
     .select('player_name, level')
     .order('level', { ascending: false })
-    .limit(500)
+    .limit(5000)
 
   const best: Record<string, number> = {}
   data?.forEach((s: any) => {

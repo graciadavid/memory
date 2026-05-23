@@ -8,7 +8,7 @@ export default async function MemoryRankingPage() {
     .from('scores')
     .select('player_name, time_ms, pack_id, packs(difficulty)')
     .order('time_ms', { ascending: true })
-    .limit(1000)
+    .limit(5000)
 
   // Pre-compute best per player per difficulty on server
   const byDiff: Record<number, Record<string, any>> = { 1: {}, 2: {}, 3: {} }
