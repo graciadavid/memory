@@ -129,13 +129,13 @@ export default function ProfilePage() {
               {editing ? 'Done' : 'Edit Profile'}
             </button>
 
-          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
-            <div style={{ display:'flex', alignItems:'center', gap:4, background:'rgba(255,109,0,0.12)', borderRadius:14, padding:'6px 12px' }}>
-              <span style={{ fontSize:24, fontWeight:900, color:'#FF6D00' }}>🔥</span>
-              <span style={{ fontSize:24, fontWeight:900, color:'#FF6D00' }}>{streak}</span>
-            </div>
-            <a href="/streak" style={{ textDecoration:'none', background:'rgba(255,109,0,0.1)', border:'1px solid rgba(255,109,0,0.3)', borderRadius:20, padding:'4px 12px', fontSize:10, fontWeight:800, color:'#FF6D00', letterSpacing:0.5 }}>STREAK LEVELS</a>
-          </div>
+
+
+
+
+
+
+
           </div>
         </div>
 
