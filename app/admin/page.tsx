@@ -55,6 +55,83 @@ function getDateFilterEnd(period: Period): string | null {
   return null
 }
 
+
+function LastTenGames() {
+  const [games, setGames] = useState<{player_name:string,game:string,created_at:string}[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const load = async () => {
+    setLoading(true)
+    const tables = [
+      { table: 'scores', game: 'memory' },
+      { table: 'ace_scores', game: 'ace' },
+      { table: 'flag_scores', game: 'flags' },
+      { table: 'shape_scores', game: 'countries' },
+      { table: 'number_scores', game: 'digits' },
+      { table: 'sequence_scores', game: 'simon' },
+      { table: 'nback_scores', game: 'nback' },
+      { table: 'sudoku_scores', game: 'sudoku' },
+      { table: 'mastermind_scores', game: 'mastermind' },
+      { table: 'game2048_scores', game: '2048' },
+      { table: 'wordle_scores', game: 'wordly' },
+    ]
+    const precisionGames = [
+      { game_type: null, game: 'stop' },
+      { game_type: 'formula1', game: 'f1' },
+      { game_type: 'pendulum', game: 'pendulum' },
+    ]
+    const hlGames = [
+      { category: 'population', game: 'hl_pop' },
+      { category: 'area', game: 'hl_area' },
+    ]
+
+    const results = await Promise.all([
+      ...tables.map(({table, game}) =>
+        supabase.from(table).select('player_name,created_at').order('created_at',{ascending:false}).limit(3)
+          .then(({data}) => (data||[]).map((d:any) => ({...d, game})))
+      ),
+      ...precisionGames.map(({game_type, game}) => {
+        let q = supabase.from('precision_scores').select('player_name,created_at').order('created_at',{ascending:false}).limit(3)
+        if (game_type === null) q = q.is('game_type', null)
+        else q = q.eq('game_type', game_type)
+        return q.then(({data}) => (data||[]).map((d:any) => ({...d, game})))
+      }),
+      ...hlGames.map(({category, game}) =>
+        supabase.from('higher_lower_scores').select('player_name,created_at').eq('category',category).order('created_at',{ascending:false}).limit(3)
+          .then(({data}) => (data||[]).map((d:any) => ({...d, game})))
+      ),
+    ])
+
+    const all = results.flat().sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0,10)
+    setGames(all)
+    setLoading(false)
+  }
+
+  useEffect(() => { load() }, [])
+
+  const fmt = (d: string) => {
+    const date = new Date(d)
+    return date.toLocaleString('es', {hour:'2-digit', minute:'2-digit', second:'2-digit', day:'2-digit', month:'2-digit'})
+  }
+
+  return (
+    <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'16px' }}>
+      <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Last 10 Games</div>
+      {loading ? <div style={{ color:'rgba(255,255,255,0.3)', fontSize:13 }}>Loading...</div> : (
+        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+          {games.map((a, i) => (
+            <div key={i} style={{ display:'flex', alignItems:'center', gap:10 }}>
+              <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', width:100, flexShrink:0 }}>{fmt(a.created_at)}</div>
+              <div style={{ flex:1, fontSize:13, fontWeight:800, color:'#fff' }}>{a.player_name}</div>
+              <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.4)', textTransform:'capitalize' }}>{a.game}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function AdminPage() {
   const [period, setPeriod] = useState<Period>('1d')
   const [totalPlays, setTotalPlays] = useState(0)
@@ -120,10 +197,8 @@ export default function AdminPage() {
 
   return (
     <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:600, margin:'0 auto', padding:'24px 20px 100px', color:'#fff' }}>
-      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:24 }}>
-        <div style={{ fontSize:24, fontWeight:900 }}>Admin</div>
-        <button onClick={loadData} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, padding:'8px 16px', color:'#fff', fontSize:13, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>↻ Refresh</button>
-      </div>
+      <div style={{ fontSize:24, fontWeight:900, marginBottom:8 }}>Admin</div>
+      <button onClick={loadData} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:12, padding:'8px 16px', color:'#fff', fontSize:13, fontWeight:800, cursor:'pointer', fontFamily:'inherit', marginBottom:24 }}>↻ Refresh</button>
 
       {/* Period tabs */}
       <div style={{ display:'flex', gap:8, marginBottom:24 }}>
