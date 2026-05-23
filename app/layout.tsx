@@ -38,6 +38,7 @@ import { Nunito } from 'next/font/google'
 import './globals.css'
 import BottomNav from '@/components/BottomNav'
 import StreakBadge from '@/components/StreakBadge'
+import StreakUpdater from '@/components/StreakUpdater'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
 import GameProfileGuard from '@/components/GameProfileGuard'
 import CookieBanner from '@/components/CookieBanner'
@@ -76,6 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <VercelAnalytics />
         <GameProfileGuard>{children}</GameProfileGuard>
         <StreakBadge />
+        <StreakUpdater />
         <BottomNav />
         <div style={{ textAlign: 'center', padding: '8px 0 80px', fontSize: 11, color: '#4A2C0A40' }}>
           <a href='/privacy' style={{ color: '#4A2C0A40', textDecoration: 'none', marginRight: 16 }}>Privacy Policy</a>
