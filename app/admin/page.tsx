@@ -90,12 +90,24 @@ export default function AdminPage() {
      })
    })
 
-   allRows.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+   // Fetch last 10 separately for recency
+   const lastResults = await Promise.all(
+     GAME_TABLES.map(async ({ table, game, filter }) => {
+       let q = supabase.from(table).select('player_name, created_at')
+       if (filter) {
+         if (filter.isNull) q = q.is(filter.col, null)
+         else q = q.eq(filter.col, filter.val)
+       }
+       const { data } = await q.order('created_at', { ascending: false }).limit(3)
+       return (data || []).map((r:any) => ({ player_name: r.player_name, game, created_at: r.created_at }))
+     })
+   )
+   const last10 = lastResults.flat().sort((a:any,b:any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0,10)
 
    setTotalPlays(total)
    setTotalUsers(users.size)
    setGamePlays(plays.filter(p => p.plays > 0).sort((a, b) => b.plays - a.plays))
-   setLastGames(allRows.slice(0, 10))
+   setLastGames(last10)
    setLoading(false)
  }
 
