@@ -5,12 +5,12 @@ import RequireProfile from './RequireProfile'
 const GAME_PATHS = [
   '/digits', '/sequence', '/flags', '/precision',
   '/ace', '/geoshape', '/sudoku', '/wordle', '/wordly',
-  '/mastermind', '/2048', '/nback', '/versus', '/play',
+  '/mastermind', '/2048', '/nback', '/versus',
   '/stop', '/f1', '/pendulum', '/letter-rain', '/capitals',
-  '/blink', '/blackjack', '/profile', '/profile','
+  '/blink', '/blackjack', '/profile',
 ]
 
-const EXCLUDED_PATHS = ['/g/']
+const EXCLUDED_PATHS = ['/g/', '/play']
 
 export default function GameProfileGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
