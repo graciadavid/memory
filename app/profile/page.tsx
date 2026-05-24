@@ -233,7 +233,6 @@ export default function ProfilePage() {
       <div style={{ width:'100%' }}>
         <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:4, textAlign:'center' }}>Your Profile</div>
         <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:24, textAlign:'center' }}>Login or create your account</div>
-        <AuthModal onSuccess={() => window.location.reload()} title="Login or Register" subtitle="Enter your name and PIN" />
       </div>
     </main>
   )
