@@ -23,7 +23,8 @@ export default function Onboarding({ onCreate }: { onCreate: (name: string) => v
       .eq('player_name', name.trim())
 
     if ((count ?? 0) > 0) {
-      setError(`"${name.trim()}" is already taken. Choose another name.`)
+if (existing[0].password_hash !== btoa(pin)) { setError('Wrong PIN for this name'); setSaving(false); return }
+        // Login successful - continue
       setChecking(false)
       return
     }
