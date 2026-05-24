@@ -374,8 +374,13 @@ export default function ProfilePage() {
        {CATS.map(cat => (
          <div key={cat.label} style={{ marginBottom:24 }}>
            <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:10 }}>
-             <img src={cat.icon} style={{ width:20, height:20, objectFit:'contain' }} />
-             <div style={{ fontSize:12, fontWeight:900, color:cat.color, letterSpacing:1, textTransform:'uppercase' }}>{cat.label}</div>
+             <img src={cat.icon} style={{ width:24, height:24, objectFit:'contain' }} />
+             <div style={{ fontSize:15, fontWeight:900, color:cat.color, letterSpacing:1, textTransform:'uppercase' }}>{cat.label}</div>
+             {catScore(cat.games.map(g => g.key), percentiles) && (
+               <div style={{ fontSize:12, fontWeight:900, color: pctColor(catScore(cat.games.map(g => g.key), percentiles)), background:`${pctColor(catScore(cat.games.map(g => g.key), percentiles))}18`, padding:'3px 10px', borderRadius:20, marginLeft:'auto' }}>
+                 {catScore(cat.games.map(g => g.key), percentiles)}
+               </div>
+             )}
            </div>
            <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
              {cat.games.map(g => (
