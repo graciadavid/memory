@@ -62,6 +62,7 @@ export default function LetterRainClient() {
   const [target, setTarget] = useState('A')
   const [letters, setLetters] = useState<FallingLetter[]>([])
   const [correctCount, setCorrectCount] = useState(0)
+  const [timeLeft, setTimeLeft] = useState(0)
   const [userAnswer, setUserAnswer] = useState('')
   const [worldRank, setWorldRank] = useState<number|null>(null)
   const [worldRecord, setWorldRecord] = useState<{level:number,name:string}|null>(null)
@@ -276,12 +277,12 @@ export default function LetterRainClient() {
           <div style={{ fontSize:72, fontWeight:900, color:GOLD, lineHeight:1, textShadow:`0 0 30px ${GOLD}` }}>{target}</div>
           <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:1, marginTop:2 }}>highlighted in gold</div>
         </div>
-        <div style={{ fontSize:16, fontWeight:900, color:'rgba(255,255,255,0.6)' }}>{(timeLeft/1000).toFixed(1)}s</div>
+
       </div>
 
       {/* Progress bar */}
       <div style={{ height:3, background:'rgba(255,255,255,0.1)', margin:'0 20px' }}>
-        <div style={{ height:'100%', background:'#4CAF50', width:`${(timeLeft/getLevelConfig(level).duration)*100}%`, transition:'width 0.1s linear' }} />
+
       </div>
 
       {/* Letter rain area */}
