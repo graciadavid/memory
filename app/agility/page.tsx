@@ -1,3 +1,4 @@
+import CategoryRelated from '@/components/CategoryRelated'
 import AgilityClient from './AgilityClient'
 
 export const metadata = {

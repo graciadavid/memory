@@ -1,3 +1,4 @@
+import CategoryRelated from '@/components/CategoryRelated'
 import Link from 'next/link'
 
 const COLOR = '#C62828'

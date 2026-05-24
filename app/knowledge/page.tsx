@@ -1,3 +1,4 @@
+import CategoryRelated from '@/components/CategoryRelated'
 import KnowledgeClient from './KnowledgeClient'
 
 export const metadata = {

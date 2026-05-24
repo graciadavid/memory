@@ -1,3 +1,4 @@
+import CategoryRelated from '@/components/CategoryRelated'
 import Link from 'next/link'
 import RelatedGames from '@/components/RelatedGames'
 
@@ -99,6 +100,7 @@ export default function LogicPage() {
           </div>
         </details>
       </div>
+      <CategoryRelated current="Logic" />
     </>
   )
 }
