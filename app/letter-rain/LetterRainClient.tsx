@@ -270,16 +270,11 @@ export default function LetterRainClient() {
   if (phase === 'playing') return (
     <main style={{ height:'100dvh', background:'#0d0d1a', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden', position:'relative' }}>
       {/* Header */}
-      <div style={{ padding:'12px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', zIndex:10 }}>
-        <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>Level {String.fromCharCode(64 + level)}</div>
-        <div style={{ textAlign:'center' }}>
-          <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.5)', letterSpacing:1 }}>Count the</div>
-          <div style={{ fontSize:72, fontWeight:900, color:'#4CAF50', lineHeight:1, textShadow:`0 0 30px ${GOLD}` }}>{target}</div>
-          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:1, marginTop:2 }}>highlighted in gold</div>
-        </div>
-
+      <div style={{ padding:'16px 20px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', zIndex:10, textAlign:'center' }}>
+        <div style={{ fontSize:20, fontWeight:900, color:'#4CAF50', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>COUNT THE</div>
+        <div style={{ fontSize:96, fontWeight:900, color:'#4CAF50', lineHeight:1, textShadow:'0 0 40px #4CAF5080' }}>{target}</div>
+        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', marginTop:4 }}>Level {String.fromCharCode(64 + level)}</div>
       </div>
-
       {/* Progress bar */}
       <div style={{ height:3, background:'rgba(255,255,255,0.1)', margin:'0 20px' }}>
 
