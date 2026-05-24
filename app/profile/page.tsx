@@ -21,10 +21,9 @@ function topPct(rank: number, total: number): string {
 }
 
 function pctColor(pct: string): string {
- if (pct === 'Top 1%') return '#FFD700'
- if (pct === 'Top 5%') return '#C8960C'
- if (pct === 'Top 10%') return '#69F0AE'
- if (pct === 'Top 25%') return '#4CAF50'
+ if (pct === 'Top 1%' || pct === 'Top 5%' || pct === 'Top 10%') return '#4CAF50'
+ if (pct === 'Top 25%') return '#C8960C'
+ if (pct === 'Top 50%') return '#FF5252'
  return 'rgba(255,255,255,0.3)'
 }
 
