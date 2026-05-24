@@ -212,6 +212,7 @@ export default function LetterRainClient() {
   const nextLevel = () => {
     const next = level + 1
     setLevel(next)
+    window.scrollTo(0, 0)
     startLevel(next)
   }
 
