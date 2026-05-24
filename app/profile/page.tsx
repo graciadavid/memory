@@ -9,6 +9,25 @@ const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
+function pctValue(pct: string): number {
+  if (pct === 'Top 1%') return 99
+  if (pct === 'Top 5%') return 95
+  if (pct === 'Top 10%') return 90
+  if (pct === 'Top 25%') return 75
+  if (pct === 'Top 50%') return 50
+  return 0
+}
+
+function catScore(keys: string[], percentiles: any): string {
+  const vals = keys.map(k => percentiles[k]).filter(Boolean).map(pctValue)
+  if (vals.length === 0) return ''
+  const avg = Math.round(vals.reduce((a,b) => a+b, 0) / vals.length)
+  if (avg >= 90) return 'Top 10%'
+  if (avg >= 75) return 'Top 25%'
+  if (avg >= 50) return 'Top 50%'
+  return ''
+}
+
 function topPct(rank: number, total: number): string {
  if (!rank || !total) return ''
  const pct = Math.ceil((rank / total) * 100)
