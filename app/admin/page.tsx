@@ -51,6 +51,19 @@ function getPeriodRange(period: Period): { from: string, to?: string } {
 }
 
 export default function AdminPage() {
+  const [adminPass, setAdminPass] = useState('')
+  const [adminAuth, setAdminAuth] = useState(false)
+
+  if (!adminAuth) return (
+    <main style={{ minHeight:'100dvh', background:'#1C1C1E', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-nunito), sans-serif', padding:24 }}>
+      <div style={{ width:'100%', maxWidth:320, background:'rgba(255,255,255,0.04)', borderRadius:20, padding:28, border:'1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:20, textAlign:'center' }}>Admin Access</div>
+        <input type="password" value={adminPass} onChange={e=>setAdminPass(e.target.value)} onKeyDown={e=>{ if(e.key==='Enter' && adminPass==='Asnip2018') setAdminAuth(true) }} placeholder="Password" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
+        <button onClick={()=>{ if(adminPass==='Asnip2018') setAdminAuth(true) }} style={{ width:'100%', padding:'14px', borderRadius:12, border:'none', background:'#C8960C', color:'#000', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Enter</button>
+      </div>
+    </main>
+  )
+
  const [period, setPeriod] = useState<Period>('1d')
  const [loading, setLoading] = useState(false)
  const [totalPlays, setTotalPlays] = useState(0)
