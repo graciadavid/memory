@@ -209,6 +209,16 @@ export default function ProfilePage() {
 
  if (!loaded) return <main style={{ minHeight:'100dvh', background:'#1C1C1E' }} />
 
+  if (!profile?.name) return (
+    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'24px' }}>
+      <div style={{ width:'100%' }}>
+        <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:4, textAlign:'center' }}>Your Profile</div>
+        <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:24, textAlign:'center' }}>Login or create your account</div>
+        <AuthModal onSuccess={() => window.location.reload()} title="Login or Register" subtitle="Enter your name and PIN" />
+      </div>
+    </main>
+  )
+
  const CATS = [
    { label: 'Memory', color: '#C62828', icon: `${BASE}/brain-logo.webp`, games: [
      { label: 'Memory', key: 'memory' },
