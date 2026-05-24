@@ -241,12 +241,12 @@ export default function LetterRainClient() {
       <div style={{ display:'flex', gap:10, marginBottom:20 }}>
         <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
           <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
-          <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${String.fromCharCode(64 + worldRecord.level)}` : '—'}</div>
+          <div style={{ fontSize:22, fontWeight:900, color:'#4CAF50' }}>{worldRecord ? `${String.fromCharCode(64 + worldRecord.level)}` : '—'}</div>
           {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
         </div>
         <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
           <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
-          <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest ? `${String.fromCharCode(64 + myBest)}` : '—'}</div>
+          <div style={{ fontSize:22, fontWeight:900, color:'#4CAF50' }}>{myBest ? `${String.fromCharCode(64 + myBest)}` : '—'}</div>
         </div>
       </div>
 
