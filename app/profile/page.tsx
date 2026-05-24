@@ -30,7 +30,7 @@ export default function ProfilePage() {
 
   const fetchRecords = async (name: string) => {
     const r: any = {}
-    const [mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea, digits, seq, nback, sudoku, master, g2048, wordly, letterRain] = await Promise.all([
+    const [mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea, digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals] = await Promise.all([
       supabase.from('scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').is('game_type', null).eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').eq('game_type', 'formula1').eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
@@ -48,6 +48,7 @@ export default function ProfilePage() {
       supabase.from('game2048_scores').select('score').eq('player_name', name).order('score', { ascending: false }).limit(1),
       supabase.from('wordle_scores').select('attempts').eq('player_name', name).order('attempts', { ascending: true }).limit(1),
       supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('capitals_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
       supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
       supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
     ])
@@ -69,8 +70,11 @@ export default function ProfilePage() {
     if (g2048.data?.[0]) r.game2048 = `${g2048.data[0].score} pts`
     if (wordly.data?.[0]) r.wordly = `${wordly.data[0].attempts} tries`
     if (letterRain.data?.[0]) r.letterRain = `Level ${letterRain.data[0].level}`
+    if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
     if (letterRain.data?.[0]) r.letterRain = `Level ${letterRain.data[0].level}`
+    if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
     if (letterRain.data?.[0]) r.letterRain = `Level ${letterRain.data[0].level}`
+    if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
     setRecords(r)
   }
 
@@ -115,6 +119,7 @@ export default function ProfilePage() {
       { label: 'Higher or Lower Pop', value: records.versusPop },
       { label: 'Higher or Lower Area', value: records.versusArea },
       { label: 'Countries', value: records.countries },
+      { label: 'Capitals', value: records.capitals },
     ]},
     { label: 'Logic', color: '#E65100', icon: `${BASE}/target.png`, games: [
       { label: 'Sudoku', value: records.sudoku },
