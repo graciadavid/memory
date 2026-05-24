@@ -271,13 +271,11 @@ export default function ProfilePage() {
      {/* Header Card */}
     <div style={{ padding:'24px 20px 0' }}>
       <div style={{ background:'linear-gradient(135deg, #2A2A2E 0%, #1C1C1E 100%)', borderRadius:24, padding:'24px', border:'1px solid rgba(255,255,255,0.08)', marginBottom:24 }}>
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
-          <div>
-            <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>Player</div>
-            <div style={{ fontSize:26, fontWeight:900, color:'#fff', lineHeight:1 }}>{profile?.name ?? 'Guest'}</div>
-          </div>
-          <button onClick={() => { setEditing(!editing); setEditMode(null); setEditError(''); setEditSuccess('') }} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:12, padding:'8px 16px', color:'rgba(255,255,255,0.5)', fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>
-            {editing ? 'Done' : 'Edit'}
+        <div style={{ marginBottom:20 }}>
+          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>Player</div>
+          <div style={{ fontSize:26, fontWeight:900, color:'#fff', lineHeight:1, marginBottom:10 }}>{profile?.name ?? 'Guest'}</div>
+          <button onClick={() => { setEditing(!editing); setEditMode(null); setEditError(''); setEditSuccess('') }} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:12, padding:'6px 14px', color:'rgba(255,255,255,0.5)', fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>
+            {editing ? 'Done' : 'Edit Profile'}
           </button>
         </div>
         {overallScore > 0 && (
