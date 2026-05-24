@@ -7,6 +7,7 @@ const GAMES = [
   { label: 'Mastermind', icon: `${BASE}/mastermind.png`, href: '/mastermind', desc: 'Crack the color code' },
   { label: '2048', icon: `${BASE}/2048.png`, href: '/2048', desc: 'Merge tiles to reach 2048' },
   { label: 'Wordly', icon: `${BASE}/wordly.png`, href: '/wordly', desc: 'Guess the hidden word' },
+  { label: 'Blackjack', icon: `${BASE}/blackjack.png`, href: '/blackjack', desc: 'Grow your stack, cash out at your peak' },
 ]
 
 export default function LogicPage() {
