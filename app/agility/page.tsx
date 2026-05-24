@@ -61,6 +61,18 @@ export default function AgilityPage() {
            <p>Top players on Ace develop a remarkable consistency — hitting the sweet spot repeatedly under time pressure. This consistency is the hallmark of genuine motor skill learning rather than luck, and it is one of the most satisfying forms of improvement to experience firsthand.</p>
          </div>
        </details>
+
+       <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Letter Rain — selective attention and counting
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Letter Rain challenges you to count how many times a target letter appears as letters fall from above. It trains selective attention — the ability to focus on a specific stimulus while filtering out irrelevant information under time pressure. The game progresses through the alphabet from A to Z, with each level bringing more letters falling faster.</p>
+           <p style={{ marginBottom: 10 }}>Selective attention is one of the most practically valuable cognitive skills. Air traffic controllers, surgeons, competitive athletes and drivers all rely on the ability to focus on what matters while ignoring distractions. Research shows this skill responds strongly to training and transfers to real-world performance in high-demand environments.</p>
+           <p>Letter Rain uniquely combines selective attention with working memory — you must maintain a running count while simultaneously scanning for the target letter. This dual-task demand makes it one of the most cognitively rich games on MemGenius.</p>
+         </div>
+       </details>
      </div>
    </>
  )
