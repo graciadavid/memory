@@ -270,18 +270,16 @@ export default function LetterRainClient() {
         <div style={{ fontSize:20, fontWeight:900, color:'#4CAF50', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>COUNT THE</div>
         <div style={{ fontSize:96, fontWeight:900, color:'#4CAF50', lineHeight:1, textShadow:'0 0 40px #4CAF5080' }}>{target}</div>
         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', marginTop:4 }}>Level {String.fromCharCode(64 + level)}</div>
+        <div style={{ width:'100%', height:4, background:'rgba(255,255,255,0.08)', borderRadius:2, marginTop:8, overflow:'hidden' }}>
+          <div style={{ height:'100%', background:'#4CAF50', width:`${(timeLeft/getLevelConfig(level).duration)*100}%`, transition:'width 0.1s linear' }} />
+        </div>
       </div>
       {/* Progress bar */}
       <div style={{ height:3, background:'rgba(255,255,255,0.1)', margin:'0 20px' }}>
 
       </div>
 
-      {/* Progress bar */}
-     <div style={{ height:4, background:'rgba(255,255,255,0.08)', margin:'0 0' }}>
-       <div style={{ height:'100%', background:'#4CAF50', width:`${(timeLeft/getLevelConfig(level).duration)*100}%`, transition:'width 0.1s linear', borderRadius:2 }} />
-     </div>
-
-     {/* Letter rain area */}
+      {/* Letter rain area */}
       <div ref={gameAreaRef} style={{ flex:1, position:'relative', overflow:'hidden' }}>
         {letters.map(l => (
           <div key={l.id} style={{
@@ -329,7 +327,7 @@ export default function LetterRainClient() {
       <div style={{ background:bgResult, borderRadius:24, padding:'28px', width:'100%', border:'1px solid rgba(255,255,255,0.08)', textAlign:'center' }}>
         <div style={{ fontSize:48, marginBottom:8 }}>{isCorrect ? '✓' : '✗'}</div>
         <div style={{ fontSize:22, fontWeight:900, color:isCorrect?'#69F0AE':'#FF5252', marginBottom:4 }}>
-          {isCorrect ? `Correct! Level ${level} complete` : 'Wrong!'}
+          {isCorrect ? `Correct! Level ${String.fromCharCode(64 + level)} complete` : 'Wrong!'}
         </div>
         <div style={{ fontSize:15, color:'rgba(255,255,255,0.5)', fontWeight:700, marginBottom:20 }}>
           The answer was <span style={{ color:'#fff', fontWeight:900 }}>{correctCount}</span> × {target}
