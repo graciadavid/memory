@@ -61,6 +61,17 @@ export default function KnowledgePage() {
            <p>Players who master Countries by Shape report that they start recognizing outlines automatically when they appear in news graphics, weather maps or travel content. It is one of the most satisfying knowledge skills to develop — immediately visible and genuinely impressive to others.</p>
          </div>
        </details>
+
+       <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Capitals — capital city recall and geographical memory
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Capitals tests your knowledge of world capital cities across 150+ countries. Each round shows you a flag and country name, and you must identify the correct capital from four options. The game rewards both breadth of knowledge and speed of retrieval — knowing the answer is not enough if you cannot access it quickly under time pressure.</p>
+           <p>Capital cities are among the most densely connected nodes in the semantic memory network — linked to geography, history, culture, language and politics. Practising capital recall strengthens these connections and expands the associative web around each country, making it easier to remember and learn new information about the world.</p>
+         </div>
+       </details>
      </div>
    </>
  )
