@@ -256,7 +256,7 @@ export default function LetterRainClient() {
           <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
             <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
             <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
-            <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>Lvl {p.level}</div>
+            <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{String.fromCharCode(64 + p.level)}</div>
           </div>
         ))}
       </div>
