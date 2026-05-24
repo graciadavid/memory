@@ -73,13 +73,16 @@ export default function ProfilePage() {
     if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
     if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
     if (blackjack.data?.[0]) r.blackjack = `${blackjack.data[0].chips.toLocaleString()} chips`
-    if (letterRain.data?.[0]) r.letterRain = `Letter ${String.fromCharCode(64 + letterRain.data[0].level)}`
-    if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
-    if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
     if (blackjack.data?.[0]) r.blackjack = `${blackjack.data[0].chips.toLocaleString()} chips`
     if (letterRain.data?.[0]) r.letterRain = `Letter ${String.fromCharCode(64 + letterRain.data[0].level)}`
     if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
     if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
+    if (blackjack.data?.[0]) r.blackjack = `${blackjack.data[0].chips.toLocaleString()} chips`
+    if (blackjack.data?.[0]) r.blackjack = `${blackjack.data[0].chips.toLocaleString()} chips`
+    if (letterRain.data?.[0]) r.letterRain = `Letter ${String.fromCharCode(64 + letterRain.data[0].level)}`
+    if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
+    if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
+    if (blackjack.data?.[0]) r.blackjack = `${blackjack.data[0].chips.toLocaleString()} chips`
     if (blackjack.data?.[0]) r.blackjack = `${blackjack.data[0].chips.toLocaleString()} chips`
     setRecords(r)
   }
