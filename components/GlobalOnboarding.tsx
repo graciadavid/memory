@@ -3,10 +3,8 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { usePathname } from 'next/navigation'
 
-const BROWN = '#4A2C0A'
-const GOLD = '#C8960C'
+const GREEN = '#2E7D32'
 
-// Pages where popup never appears
 const EXCLUDED = [
   '/',
   '/terms', '/privacy', '/about', '/how-to-play', '/teachers',
@@ -18,16 +16,14 @@ const EXCLUDED = [
 export default function GlobalOnboarding() {
   const [show, setShow] = useState(false)
   const [name, setName] = useState('')
-  const [pin, setPin] = useState('')
+  const [pin, setPin] = useState(['','','',''])
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
-    // Check if current path is excluded
     const isExcluded = EXCLUDED.some(p => pathname === p || pathname.startsWith(p + '/') || pathname.startsWith(p + '?'))
     if (isExcluded) return
-
     const stored = localStorage.getItem('memgenius_profile')
     if (!stored || !JSON.parse(stored).name) {
       setTimeout(() => setShow(true), 800)
@@ -36,19 +32,26 @@ export default function GlobalOnboarding() {
 
   const handleSave = async () => {
     if (!name.trim()) { setError('Please enter a name'); return }
-    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) { setError('PIN must be 4 digits'); return }
-    setSaving(true)
-    setError('')
+    if (pin.join('').length !== 4) { setError('PIN must be 4 digits'); return }
+    setSaving(true); setError('')
 
-    const { data: existing } = await supabase.from('profiles').select('player_name').eq('player_name', name.trim()).limit(1)
+    const pinHash = btoa(pin.join(''))
+    const { data: existing } = await supabase.from('profiles').select('player_name,password_hash').eq('player_name', name.trim()).limit(1)
+
     if (existing && existing.length > 0) {
-      setError('Name already taken — try another')
-      setSaving(false)
-      return
+      // Name exists — try login
+      if (existing[0].password_hash !== pinHash) {
+        setError('Wrong PIN for this name')
+        setSaving(false)
+        return
+      }
+      // Login successful
+    } else {
+      // New user — register
+      await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pinHash })
     }
 
-    await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pin })
-    localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim(), pin }))
+    localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
     setSaving(false)
     setShow(false)
     window.location.reload()
@@ -58,68 +61,36 @@ export default function GlobalOnboarding() {
 
   return (
     <>
-      <style>{`@keyframes slideUp { from { transform: translateY(100%); opacity: 0 } to { transform: translateY(0); opacity: 1 } }`}</style>
-      <div style={{
-        position: 'fixed', inset: 0, zIndex: 1000,
-        background: 'rgba(74,44,10,0.6)',
-        display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-        backdropFilter: 'blur(4px)',
-      }}>
-        <div style={{
-          background: '#FAF7F2', borderRadius: '24px 24px 0 0',
-          padding: '32px 24px 48px', width: '100%', maxWidth: 430,
-          animation: 'slideUp 0.3s ease',
-        }}>
-          <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: GOLD, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Join MemGenius</div>
-            <div style={{ fontSize: 22, fontWeight: 900, color: BROWN }}>Create your profile</div>
-            <div style={{ fontSize: 13, color: `${BROWN}60`, marginTop: 6, lineHeight: 1.6 }}>Choose a name and a 4-digit PIN to save your scores and compete on the world ranking.</div>
+      <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', backdropFilter:'blur(8px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
+        <div style={{ background:'#1C1C1E', borderRadius:24, padding:'28px 24px', width:'100%', maxWidth:340, border:'1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:4 }}>Create your profile</div>
+          <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:20 }}>Save your scores and compete worldwide</div>
+
+          <input
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Your name"
+            style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'var(--font-nunito), sans-serif', outline:'none', marginBottom:12, boxSizing:'border-box' }}
+          />
+
+          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', marginBottom:8, letterSpacing:1 }}>4-DIGIT PIN</div>
+          <div style={{ display:'flex', gap:8, marginBottom:16 }}>
+            {pin.map((d,i) => (
+              <input key={i} id={`gon-pin-${i}`} type="tel" maxLength={1} value={d}
+                onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`gon-pin-${i+1}`) as HTMLInputElement)?.focus()}}
+                style={{ flex:1, height:52, textAlign:'center', fontSize:22, fontWeight:900, borderRadius:10, border:'2px solid rgba(255,255,255,0.15)', background:'rgba(255,255,255,0.08)', color:'#fff', fontFamily:'var(--font-nunito), sans-serif', outline:'none' }}
+              />
+            ))}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <input
-              type="text"
-              placeholder="Your name"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSave()}
-              maxLength={20}
-              style={{
-                padding: '14px 16px', borderRadius: 14,
-                border: `1.5px solid ${BROWN}20`, background: '#fff',
-                fontSize: 16, fontFamily: 'inherit', outline: 'none',
-                color: BROWN, fontWeight: 700,
-              }}
-            />
-            <input
-              type="number"
-              placeholder="4-digit PIN"
-              value={pin}
-              onChange={e => setPin(e.target.value.slice(0, 4))}
-              onKeyDown={e => e.key === 'Enter' && handleSave()}
-              style={{
-                padding: '14px 16px', borderRadius: 14,
-                border: `1.5px solid ${BROWN}20`, background: '#fff',
-                fontSize: 16, fontFamily: 'inherit', outline: 'none',
-                color: BROWN, fontWeight: 700,
-              }}
-            />
-            {error && <div style={{ fontSize: 12, color: '#C62828', fontWeight: 700, textAlign: 'center' }}>{error}</div>}
-            <button onClick={handleSave} disabled={saving} style={{
-              padding: '16px', borderRadius: 16, border: 'none',
-              background: BROWN, color: '#fff',
-              fontSize: 16, fontWeight: 900, fontFamily: 'inherit',
-              cursor: saving ? 'default' : 'pointer',
-              boxShadow: `0 6px 0 ${BROWN}60`,
-              marginTop: 4,
-            }}>{saving ? 'Saving...' : 'Join MemGenius'}</button>
-            <button onClick={() => setShow(false)} style={{
-              padding: '10px', borderRadius: 12, border: 'none',
-              background: 'transparent', color: `${BROWN}50`,
-              fontSize: 13, fontWeight: 700, fontFamily: 'inherit',
-              cursor: 'pointer',
-            }}>Maybe later</button>
-          </div>
+          {error && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, marginBottom:12 }}>{error}</div>}
+
+          <button onClick={handleSave} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.1)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer', marginBottom:10 }}>
+            {saving ? 'Saving...' : 'Save & Play →'}
+          </button>
+          <button onClick={() => setShow(false)} style={{ width:'100%', padding:'10px', borderRadius:12, border:'none', background:'transparent', color:'rgba(255,255,255,0.3)', fontSize:13, fontWeight:800, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer' }}>
+            Skip for now
+          </button>
         </div>
       </div>
     </>
