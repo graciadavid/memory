@@ -241,12 +241,12 @@ export default function LetterRainClient() {
       <div style={{ display:'flex', gap:10, marginBottom:20 }}>
         <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
           <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
-          <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `Lvl ${worldRecord.level}` : '—'}</div>
+          <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${String.fromCharCode(64 + worldRecord.level)}` : '—'}</div>
           {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
         </div>
         <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
           <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
-          <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest ? `Lvl ${myBest}` : '—'}</div>
+          <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{myBest ? `${String.fromCharCode(64 + myBest)}` : '—'}</div>
         </div>
       </div>
 
@@ -272,7 +272,7 @@ export default function LetterRainClient() {
     <main style={{ height:'100dvh', background:'#0d0d1a', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden', position:'relative' }}>
       {/* Header */}
       <div style={{ padding:'12px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', zIndex:10 }}>
-        <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>Level {level}</div>
+        <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>Level {String.fromCharCode(64 + level)}</div>
         <div style={{ textAlign:'center' }}>
           <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.5)', letterSpacing:1 }}>Count the</div>
           <div style={{ fontSize:72, fontWeight:900, color:GOLD, lineHeight:1, textShadow:`0 0 30px ${GOLD}` }}>{target}</div>
@@ -283,7 +283,7 @@ export default function LetterRainClient() {
 
       {/* Progress bar */}
       <div style={{ height:3, background:'rgba(255,255,255,0.1)', margin:'0 20px' }}>
-        <div style={{ height:'100%', background:GOLD, width:`${(timeLeft/getLevelConfig(level).duration)*100}%`, transition:'width 0.1s linear' }} />
+        <div style={{ height:'100%', background:'#4CAF50', width:`${(timeLeft/getLevelConfig(level).duration)*100}%`, transition:'width 0.1s linear' }} />
       </div>
 
       {/* Letter rain area */}
@@ -296,7 +296,7 @@ export default function LetterRainClient() {
             fontSize:l.size,
             fontWeight:900,
             fontFamily:'var(--font-nunito), sans-serif',
-            color: l.isTarget ? GOLD : 'rgba(255,255,255,0.5)',
+            color: l.isTarget ? '#4CAF50' : 'rgba(255,255,255,0.4)',
             transform:'translateX(-50%)',
             userSelect:'none',
             transition:'none',
