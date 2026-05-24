@@ -295,7 +295,7 @@ export default function BlackjackClient() {
           <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2 }}>CHIPS</div>
           <div style={{ fontSize:28, fontWeight:900, color:GOLD }}>{chips.toLocaleString()}</div>
         </div>
-        <button onClick={cashOut} style={{ background:'rgba(200,150,12,0.2)', border:`1px solid ${GOLD}`, borderRadius:10, padding:'6px 12px', color:GOLD, fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>Cash Out</button>
+<div style={{ width:80 }} />
       </div>
 
       {peakChips > START_CHIPS && (
@@ -317,9 +317,14 @@ export default function BlackjackClient() {
         <div style={{ fontSize:48, fontWeight:900, color:'#fff' }}>{bet}</div>
       </div>
 
-      <button onClick={deal} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080', marginTop:'auto' }}>
-        Deal →
-      </button>
+      <div style={{ marginTop:'auto', display:'flex', flexDirection:'column', gap:12 }}>
+       <button onClick={deal} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080' }}>
+         Deal →
+       </button>
+       <button onClick={cashOut} style={{ width:'100%', padding:'16px', borderRadius:16, border:'none', background:`linear-gradient(135deg, #8B6914, ${GOLD}, #C8960C, #8B6914)`, color:'#000', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 6px 0 #5a420880', letterSpacing:0.5 }}>
+         💰 Cash Out
+       </button>
+     </div>
     </main>
   )
 
