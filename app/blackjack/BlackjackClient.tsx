@@ -73,9 +73,18 @@ export default function BlackjackClient() {
   const [worldRank, setWorldRank] = useState<number|null>(null)
 
   useEffect(() => {
-    if (profile?.name) setSaveName(profile.name)
-    loadData()
-  }, [profile?.name])
+   if (profile?.name) {
+     setSaveName(profile.name)
+     // Load saved chips
+     supabase.from('profiles').select('current_chips').eq('player_name', profile.name).single().then(({data}:any) => {
+       if (data?.current_chips && data.current_chips > 0) {
+         setChips(data.current_chips)
+         setPeakChips(data.current_chips)
+       }
+     })
+   }
+   loadData()
+ }, [profile?.name])
 
   const loadData = async () => {
     const { data } = await supabase.from('blackjack_scores').select('player_name,chips').order('chips', { ascending: false }).limit(5000)
@@ -89,8 +98,11 @@ export default function BlackjackClient() {
   }
 
   const startGame = () => {
-    setChips(START_CHIPS)
-    setPeakChips(START_CHIPS)
+   setChips(START_CHIPS)
+   setPeakChips(START_CHIPS)
+   if (profile?.name) {
+     supabase.from('profiles').update({ current_chips: START_CHIPS }).eq('player_name', profile.name)
+   }
     setBet(100)
     setPhase('betting')
     setDeck(createDeck())
@@ -118,8 +130,11 @@ export default function BlackjackClient() {
       const winnings = Math.floor(bet * 1.5)
       const newChips = chips - bet + bet + winnings
       setChips(newChips)
-      setPeakChips(prev => Math.max(prev, newChips))
-      setRoundResult('blackjack')
+     setPeakChips(prev => Math.max(prev, newChips))
+     if (profile?.name) {
+       supabase.from('profiles').update({ current_chips: newChips }).eq('player_name', profile.name)
+     }
+     setRoundResult('blackjack')
       setPhase('result')
     } else {
       setPhase('playing')
@@ -133,11 +148,14 @@ export default function BlackjackClient() {
     setDeck(newDeck)
     setPlayerHand(newHand)
     if (handValue(newHand) > 21) {
-      const newChips = chips - bet
-      setChips(newChips)
-      setRoundResult('lose')
-      setPhase('result')
-      if (newChips <= 0) setTimeout(() => setPhase('gameover'), 1500)
+     const newChips = chips - bet
+     setChips(newChips)
+     if (profile?.name) {
+       supabase.from('profiles').update({ current_chips: Math.max(newChips, 0) }).eq('player_name', profile.name)
+     }
+     setRoundResult('lose')
+     setPhase('result')
+     if (newChips <= 0) setTimeout(() => setPhase('gameover'), 1500)
     }
   }
 
@@ -163,10 +181,13 @@ export default function BlackjackClient() {
     else { result = 'lose'; newChips = chips - bet }
 
     setChips(newChips)
-    setPeakChips(prev => Math.max(prev, newChips))
-    setRoundResult(result)
-    setPhase('result')
-    if (newChips <= 0) setTimeout(() => setPhase('gameover'), 1500)
+   setPeakChips(prev => Math.max(prev, newChips))
+   setRoundResult(result)
+   setPhase('result')
+   if (profile?.name) {
+     supabase.from('profiles').update({ current_chips: Math.max(newChips, 0) }).eq('player_name', profile.name)
+   }
+   if (newChips <= 0) setTimeout(() => setPhase('gameover'), 1500)
   }
 
   const cashOut = async () => {
