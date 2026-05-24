@@ -276,7 +276,12 @@ export default function LetterRainClient() {
 
       </div>
 
-      {/* Letter rain area */}
+      {/* Progress bar */}
+     <div style={{ height:4, background:'rgba(255,255,255,0.08)', margin:'0 0' }}>
+       <div style={{ height:'100%', background:'#4CAF50', width:`${(timeLeft/getLevelConfig(level).duration)*100}%`, transition:'width 0.1s linear', borderRadius:2 }} />
+     </div>
+
+     {/* Letter rain area */}
       <div ref={gameAreaRef} style={{ flex:1, position:'relative', overflow:'hidden' }}>
         {letters.map(l => (
           <div key={l.id} style={{
