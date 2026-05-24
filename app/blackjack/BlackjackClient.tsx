@@ -228,7 +228,13 @@ export default function BlackjackClient() {
 
   const reset = () => { setPhase('rules'); setSaved(false); loadData() }
 
-  const BET_OPTIONS = [50, 100, 200, 500, 1000].filter(b => b <= chips)
+  const BET_OPTIONS = (() => {
+    const base = [50, 100, 200, 500, 1000]
+    if (chips >= 5000) base.push(2500, 5000)
+    if (chips >= 10000) base.push(10000)
+    if (chips >= 25000) base.push(25000)
+    return base.filter(b => b <= chips)
+  })()
 
   // Rules
   if (phase === 'rules') return (
