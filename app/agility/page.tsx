@@ -2,7 +2,7 @@ import AgilityClient from './AgilityClient'
 
 export const metadata = {
  title: 'Agility Games — Reaction Time & Precision | MemGenius',
- description: 'Test your reaction time, timing and precision with 4 free agility games. F1 reaction test, stopwatch precision, pendulum and ace. World rankings. No login required.',
+ description: 'Test your reaction time, timing and precision with 5 free agility games. F1 reaction test, stopwatch precision, pendulum, ace and letter rain. World rankings. No login required.',
 }
 
 export default function AgilityPage() {
