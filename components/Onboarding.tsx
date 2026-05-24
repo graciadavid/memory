@@ -23,8 +23,7 @@ export default function Onboarding({ onCreate }: { onCreate: (name: string) => v
       .eq('player_name', name.trim())
 
     if ((count ?? 0) > 0) {
-      setError('"' + name.trim() + '" is already taken. Choose another name.')
-        // Login successful - continue
+      setError(`"${name.trim()}" is already taken. Choose another name.`)
       setChecking(false)
       return
     }
