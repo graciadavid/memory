@@ -1,3 +1,4 @@
+import CategoryRelated from '@/components/CategoryRelated'
 export default function ProfileSEO() {
  return (
    <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
