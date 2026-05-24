@@ -278,6 +278,7 @@ export default function ProfilePage() {
       </div>
     </div>
 
+     <div style={{ padding:'0 20px' }}>
        {/* Edit panel */}
        {editing && (
          <div style={{ marginTop:20, background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'16px', border:'1px solid rgba(255,255,255,0.08)' }}>
