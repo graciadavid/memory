@@ -225,7 +225,7 @@ export default function LetterRainClient() {
   if (phase === 'rules') return (
     <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:28 }}>
-        <div style={{ fontSize:48 }}>🌧️</div>
+        <img src={`${BASE}/rain.png`} style={{ width:60, height:60, objectFit:'contain' }} />
         <div>
           <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Letter Rain</div>
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Count the target letter as it falls</div>

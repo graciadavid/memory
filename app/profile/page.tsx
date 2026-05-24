@@ -30,7 +30,7 @@ export default function ProfilePage() {
 
   const fetchRecords = async (name: string) => {
     const r: any = {}
-    const [mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea, digits, seq, nback, sudoku, master, g2048, wordly] = await Promise.all([
+    const [mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea, digits, seq, nback, sudoku, master, g2048, wordly, letterRain] = await Promise.all([
       supabase.from('scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').is('game_type', null).eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').eq('game_type', 'formula1').eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
@@ -47,6 +47,9 @@ export default function ProfilePage() {
       supabase.from('mastermind_scores').select('attempts,time_ms').eq('player_name', name).order('attempts', { ascending: true }).order('time_ms', { ascending: true }).limit(1),
       supabase.from('game2048_scores').select('score').eq('player_name', name).order('score', { ascending: false }).limit(1),
       supabase.from('wordle_scores').select('attempts').eq('player_name', name).order('attempts', { ascending: true }).limit(1),
+      supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
     ])
     const fmt = (ms: number) => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`
     if (mem.data?.[0]) r.memory = fmt(mem.data[0].time_ms)
@@ -65,6 +68,9 @@ export default function ProfilePage() {
     if (master.data?.[0]) r.mastermind = `${master.data[0].attempts} tries · ${fmt(master.data[0].time_ms)}`
     if (g2048.data?.[0]) r.game2048 = `${g2048.data[0].score} pts`
     if (wordly.data?.[0]) r.wordly = `${wordly.data[0].attempts} tries`
+    if (letterRain.data?.[0]) r.letterRain = `Level ${letterRain.data[0].level}`
+    if (letterRain.data?.[0]) r.letterRain = `Level ${letterRain.data[0].level}`
+    if (letterRain.data?.[0]) r.letterRain = `Level ${letterRain.data[0].level}`
     setRecords(r)
   }
 
@@ -114,6 +120,9 @@ export default function ProfilePage() {
       { label: 'Mastermind', value: records.mastermind },
       { label: '2048', value: records.game2048 },
       { label: 'Wordly', value: records.wordly },
+      { label: 'Letter Rain', value: records.letterRain },
+      { label: 'Letter Rain', value: records.letterRain },
+      { label: 'Letter Rain', value: records.letterRain },
     ]},
   ]
 
