@@ -108,6 +108,7 @@ export default function ProfilePage() {
       { label: 'F1 Reaction', value: records.f1 },
       { label: 'Pendulum', value: records.pendulum },
       { label: 'Ace', value: records.ace },
+      { label: 'Letter Rain', value: records.letterRain },
     ]},
     { label: 'Knowledge', color: '#00796B', icon: `${BASE}/population.png`, games: [
       { label: 'Flags', value: records.flags },
@@ -120,9 +121,7 @@ export default function ProfilePage() {
       { label: 'Mastermind', value: records.mastermind },
       { label: '2048', value: records.game2048 },
       { label: 'Wordly', value: records.wordly },
-      { label: 'Letter Rain', value: records.letterRain },
-      { label: 'Letter Rain', value: records.letterRain },
-      { label: 'Letter Rain', value: records.letterRain },
+
     ]},
   ]
 

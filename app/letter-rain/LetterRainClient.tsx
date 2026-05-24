@@ -274,8 +274,9 @@ export default function LetterRainClient() {
       <div style={{ padding:'12px 20px', display:'flex', justifyContent:'space-between', alignItems:'center', zIndex:10 }}>
         <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>Level {level}</div>
         <div style={{ textAlign:'center' }}>
-          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase' }}>Count the</div>
-          <div style={{ fontSize:48, fontWeight:900, color:GOLD, lineHeight:1 }}>{target}</div>
+          <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.5)', letterSpacing:1 }}>Count the</div>
+          <div style={{ fontSize:72, fontWeight:900, color:GOLD, lineHeight:1, textShadow:`0 0 30px ${GOLD}` }}>{target}</div>
+          <div style={{ fontSize:11, fontWeight:800, color:GOLD, opacity:0.6, letterSpacing:1 }}>← these ones</div>
         </div>
         <div style={{ fontSize:16, fontWeight:900, color:'rgba(255,255,255,0.6)' }}>{(timeLeft/1000).toFixed(1)}s</div>
       </div>
