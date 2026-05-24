@@ -304,7 +304,7 @@ export default function BlackjackClient() {
 
       <div style={{ fontSize:18, fontWeight:900, color:'rgba(255,255,255,0.7)', textAlign:'center', marginBottom:20 }}>Place your bet</div>
 
-      <div style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center', marginBottom:24 }}>
+     <div style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center', marginBottom:16 }}>
         {BET_OPTIONS.map(b => (
           <button key={b} onClick={() => placeBet(b)} style={{ padding:'12px 20px', borderRadius:12, border:`2px solid ${bet===b?GOLD:'rgba(255,255,255,0.15)'}`, background: bet===b?'rgba(200,150,12,0.2)':'rgba(255,255,255,0.06)', color: bet===b?GOLD:'rgba(255,255,255,0.6)', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
             {b}
@@ -312,10 +312,23 @@ export default function BlackjackClient() {
         ))}
       </div>
 
-      <div style={{ textAlign:'center', marginBottom:24 }}>
-        <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Current bet</div>
-        <div style={{ fontSize:48, fontWeight:900, color:'#fff' }}>{bet}</div>
-      </div>
+      {/* Custom bet input */}
+     <div style={{ display:'flex', gap:10, alignItems:'center', marginBottom:16 }}>
+       <input
+         type="tel"
+         placeholder="Custom bet..."
+         onChange={e => {
+           const v = parseInt(e.target.value.replace(/\D/,''))
+           if (!isNaN(v) && v > 0 && v <= chips) setBet(v)
+         }}
+         style={{ flex:1, padding:'12px', borderRadius:12, border:'1px solid rgba(255,255,255,0.15)', background:'rgba(255,255,255,0.06)', color:'#fff', fontSize:16, fontWeight:800, fontFamily:'inherit', outline:'none', textAlign:'center' }}
+       />
+     </div>
+
+     <div style={{ textAlign:'center', marginBottom:24 }}>
+       <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Current bet</div>
+       <div style={{ fontSize:48, fontWeight:900, color:'#fff' }}>{bet}</div>
+     </div>
 
       <div style={{ marginTop:'auto', display:'flex', flexDirection:'column', gap:12 }}>
        <button onClick={deal} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080' }}>
