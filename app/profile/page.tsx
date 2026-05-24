@@ -261,10 +261,10 @@ export default function ProfilePage() {
                 <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>Brain Score</div>
                 <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>Based on your global percentiles</div>
               </div>
-              <div style={{ fontSize:48, fontWeight:900, lineHeight:1, color: overallScore >= 90 ? '#FFD700' : overallScore >= 75 ? '#C8960C' : overallScore >= 50 ? '#69F0AE' : 'rgba(255,255,255,0.6)' }}>{overallScore}</div>
+              <div style={{ fontSize:48, fontWeight:900, lineHeight:1, color: overallScore >= 75 ? '#69F0AE' : overallScore >= 25 ? '#C8960C' : '#FF5252' }}>{overallScore}</div>
             </div>
             <div style={{ height:8, background:'rgba(255,255,255,0.08)', borderRadius:4, overflow:'hidden' }}>
-              <div style={{ height:'100%', width:String(overallScore)+'%', background: overallScore >= 90 ? 'linear-gradient(90deg,#C8960C,#FFD700)' : overallScore >= 75 ? '#C8960C' : '#4CAF50', borderRadius:4 }} />
+              <div style={{ height:'100%', width:String(overallScore)+'%', background: overallScore >= 75 ? '#4CAF50' : overallScore >= 25 ? '#C8960C' : '#FF5252', borderRadius:4 }} />
             </div>
           </div>
         )}
