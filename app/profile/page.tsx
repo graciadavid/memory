@@ -230,10 +230,7 @@ export default function ProfilePage() {
 
   if (!profile?.name) return (
     <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'24px' }}>
-      <div style={{ width:'100%' }}>
-        <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:4, textAlign:'center' }}>Your Profile</div>
-        <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:24, textAlign:'center' }}>Login or create your account</div>
-      </div>
+      <ProfileLoginButton />
     </main>
   )
 
