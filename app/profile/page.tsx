@@ -30,7 +30,7 @@ export default function ProfilePage() {
 
   const fetchRecords = async (name: string) => {
     const r: any = {}
-    const [mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea, digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals] = await Promise.all([
+    const [mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea, digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals, blink] = await Promise.all([
       supabase.from('scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').is('game_type', null).eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').eq('game_type', 'formula1').eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
@@ -49,6 +49,7 @@ export default function ProfilePage() {
       supabase.from('wordle_scores').select('attempts').eq('player_name', name).order('attempts', { ascending: true }).limit(1),
       supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
       supabase.from('capitals_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('blink_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
     ])
     const fmt = (ms: number) => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`
     if (mem.data?.[0]) r.memory = fmt(mem.data[0].time_ms)
@@ -69,10 +70,13 @@ export default function ProfilePage() {
     if (wordly.data?.[0]) r.wordly = `${wordly.data[0].attempts} tries`
     if (letterRain.data?.[0]) r.letterRain = `Letter ${String.fromCharCode(64 + letterRain.data[0].level)}`
     if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
+    if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
     if (letterRain.data?.[0]) r.letterRain = `Letter ${String.fromCharCode(64 + letterRain.data[0].level)}`
     if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
+    if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
     if (letterRain.data?.[0]) r.letterRain = `Letter ${String.fromCharCode(64 + letterRain.data[0].level)}`
     if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
+    if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
     setRecords(r)
   }
 
@@ -104,6 +108,7 @@ export default function ProfilePage() {
       { label: 'Digits', value: records.digits },
       { label: 'Simon Says', value: records.sequence },
       { label: 'N-Back', value: records.nback },
+      { label: 'Blink', value: records.blink },
     ]},
     { label: 'Agility', color: '#4A148C', icon: `${BASE}/precision.png`, games: [
       { label: 'Stop', value: records.stop },
