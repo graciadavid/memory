@@ -169,6 +169,19 @@ export default function ProfilePage() {
    })
 
    setPercentiles(newPercentiles)
+
+    const pctValues = Object.values(newPercentiles).map((p:any) => {
+      if (p === 'Top 1%') return 99
+      if (p === 'Top 5%') return 95
+      if (p === 'Top 10%') return 90
+      if (p === 'Top 25%') return 75
+      if (p === 'Top 50%') return 50
+      return 0
+    })
+    if (pctValues.length > 0) {
+      const avg = Math.round((pctValues as number[]).reduce((a,b) => a+b, 0) / pctValues.length)
+      setOverallScore(avg)
+    }
  }
 
  const savePin = async () => {
@@ -231,7 +244,18 @@ export default function ProfilePage() {
      <div style={{ padding:'40px 24px 24px' }}>
        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
          <div>
-           <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:6 }}>{profile?.name ?? 'Guest'}</div>
+            <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:6 }}>{profile?.name ?? 'Guest'}</div>
+           {overallScore > 0 && (
+             <div style={{ marginBottom:10 }}>
+               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:4 }}>
+                 <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:1 }}>BRAIN SCORE</div>
+                 <div style={{ fontSize:22, fontWeight:900, color: overallScore >= 90 ? '#FFD700' : overallScore >= 75 ? '#C8960C' : '#69F0AE' }}>{overallScore}</div>
+               </div>
+               <div style={{ height:6, background:'rgba(255,255,255,0.08)', borderRadius:3, overflow:'hidden' }}>
+                 <div style={{ height:'100%', width:overallScore+'%', background: overallScore >= 90 ? 'linear-gradient(90deg,#C8960C,#FFD700)' : '#4CAF50', borderRadius:3 }} />
+               </div>
+             </div>
+           )}
            <button onClick={() => { setEditing(!editing); setEditMode(null); setEditError(''); setEditSuccess('') }} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'6px 14px', color:'rgba(255,255,255,0.5)', fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit', display:'block', marginBottom:6 }}>
              {editing ? 'Done' : 'Edit Profile'}
            </button>
