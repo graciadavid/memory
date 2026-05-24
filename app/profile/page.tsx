@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import ProfileSEO from './ProfileSEO'
+import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 
