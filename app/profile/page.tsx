@@ -28,6 +28,25 @@ function pctColor(pct: string): string {
  return 'rgba(255,255,255,0.3)'
 }
 
+
+function ProfileLoginButton() {
+  const [show, setShow] = useState(false)
+  return (
+    <div style={{ textAlign:"center" }}>
+      <div style={{ fontSize:22, fontWeight:900, color:"#fff", marginBottom:8 }}>Your Profile</div>
+      <div style={{ fontSize:14, color:"rgba(255,255,255,0.4)", fontWeight:700, marginBottom:24 }}>Track your scores and rankings</div>
+      <button onClick={() => setShow(true)} style={{ padding:"14px 32px", borderRadius:16, border:"none", background:"#2E7D32", color:"#fff", fontSize:16, fontWeight:900, fontFamily:"var(--font-nunito), sans-serif", cursor:"pointer" }}>
+        Login / Register
+      </button>
+      {show && (
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", backdropFilter:"blur(8px)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
+          <AuthModal onSuccess={() => window.location.reload()} title="Login or Register" subtitle="Enter your name and 4-digit PIN" onSkip={() => setShow(false)} />
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function ProfilePage() {
  const { profile, loaded } = usePlayer()
  const [records, setRecords] = useState<any>({})
