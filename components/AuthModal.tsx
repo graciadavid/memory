@@ -60,11 +60,11 @@ export default function AuthModal({ onSuccess, onSkip, title = 'Create your prof
      />
 
      <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', marginBottom:8, letterSpacing:1 }}>4-DIGIT PIN</div>
-     <div style={{ display:'flex', gap:8, marginBottom:16 }}>
+     <div style={{ display:'flex', gap:6, marginBottom:16, justifyContent:'center' }}>
        {pin.map((d,i) => (
          <input key={i} id={`auth-pin-${i}`} type="tel" maxLength={1} value={d}
            onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);setError('');if(v&&i<3)(document.getElementById(`auth-pin-${i+1}`) as HTMLInputElement)?.focus()}}
-           style={{ flex:1, height:52, textAlign:'center', fontSize:22, fontWeight:900, borderRadius:10, border:'2px solid rgba(255,255,255,0.15)', background:'rgba(255,255,255,0.08)', color:'#fff', fontFamily:'var(--font-nunito), sans-serif', outline:'none' }}
+           style={{ width:56, height:56, textAlign:'center', fontSize:22, fontWeight:900, borderRadius:10, border:'2px solid rgba(255,255,255,0.15)', background:'rgba(255,255,255,0.08)', color:'#fff', fontFamily:'var(--font-nunito), sans-serif', outline:'none', flexShrink:0 }}
          />
        ))}
      </div>
