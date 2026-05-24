@@ -9,7 +9,7 @@ const GAMES = [
  { label: 'F1 Reaction', icon: `${BASE}/f1.png`, href: '/f1', unlocked: true, desc: 'React when lights go out' },
  { label: 'Pendulum', icon: `${BASE}/pendulum.png`, href: '/pendulum', unlocked: true, desc: 'Tap when vertical' },
  { label: 'Ace', icon: `${BASE}/padel.png`, href: '/ace', unlocked: true, desc: 'Hit the sweet spot' },
-  { label: 'Letter Rain', icon: `${BASE}/brain-logo.webp`, href: '/letter-rain', unlocked: true, desc: 'Count the falling letters' },
+  { label: 'Letter Rain', icon: `${BASE}/rain.png`, href: '/letter-rain', unlocked: true, desc: 'Count the falling letters' },
 ]
 
 export default function AgilityPage() {
