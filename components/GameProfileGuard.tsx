@@ -3,9 +3,11 @@ import { usePathname } from 'next/navigation'
 import RequireProfile from './RequireProfile'
 
 const GAME_PATHS = [
-  '/memory', '/digits', '/sequence', '/flags', '/precision',
+  '/digits', '/sequence', '/flags', '/precision',
   '/ace', '/geoshape', '/sudoku', '/wordle', '/wordly',
   '/mastermind', '/2048', '/nback', '/versus', '/play',
+  '/stop', '/f1', '/pendulum', '/letter-rain', '/capitals',
+  '/blink', '/blackjack',
 ]
 
 const EXCLUDED_PATHS = ['/g/']
