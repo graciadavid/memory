@@ -31,6 +31,7 @@ export default function ProfilePage() {
  const [records, setRecords] = useState<any>({})
  const [percentiles, setPercentiles] = useState<any>({})
  const [streak, setStreak] = useState<number>(0)
+  const [overallScore, setOverallScore] = useState<number>(0)
  const [editing, setEditing] = useState(false)
  const [newName, setNewName] = useState('')
  const [pin, setPin] = useState(['','','',''])
