@@ -97,7 +97,7 @@ export default function BlackjackClient() {
     if (profile?.name && best[profile.name]) setMyBest(best[profile.name])
   }
 
-  const startGame = () => {
+  const startGame = (forceReset = false) => {
    setChips(START_CHIPS)
    setPeakChips(START_CHIPS)
    if (profile?.name) {
