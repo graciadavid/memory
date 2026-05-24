@@ -117,7 +117,7 @@ export default function BlackjackClient() {
 
   const deal = () => {
     if (bet > chips) return
-    const newDeck = [...deck]
+    const newDeck = deck.length > 10 ? [...deck] : createDeck()
     const p = [newDeck.pop()!, newDeck.pop()!]
     const d = [newDeck.pop()!, newDeck.pop()!]
     setDeck(newDeck)
