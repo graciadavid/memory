@@ -239,7 +239,7 @@ export default function LetterRainClient() {
 
       <div style={{ display:'flex', gap:10, marginBottom:20 }}>
         <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
-          <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
+          <div style={{ fontSize:9, fontWeight:800, color:'#4CAF50', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
           <div style={{ fontSize:22, fontWeight:900, color:'#4CAF50' }}>{worldRecord ? `${String.fromCharCode(64 + worldRecord.level)}` : '—'}</div>
           {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
         </div>
@@ -274,7 +274,7 @@ export default function LetterRainClient() {
         <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>Level {String.fromCharCode(64 + level)}</div>
         <div style={{ textAlign:'center' }}>
           <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.5)', letterSpacing:1 }}>Count the</div>
-          <div style={{ fontSize:72, fontWeight:900, color:GOLD, lineHeight:1, textShadow:`0 0 30px ${GOLD}` }}>{target}</div>
+          <div style={{ fontSize:72, fontWeight:900, color:'#4CAF50', lineHeight:1, textShadow:`0 0 30px ${GOLD}` }}>{target}</div>
           <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:1, marginTop:2 }}>highlighted in gold</div>
         </div>
 
@@ -308,7 +308,7 @@ export default function LetterRainClient() {
   // Answer screen
   if (phase === 'answer') return (
     <main style={{ height:'100dvh', background:'#0d0d1a', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px' }}>
-      <div style={{ fontSize:64, fontWeight:900, color:GOLD, marginBottom:8 }}>{target}</div>
+      <div style={{ fontSize:64, fontWeight:900, color:'#4CAF50', marginBottom:8 }}>{target}</div>
       <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:32 }}>How many did you count?</div>
       <input
         type="tel"
