@@ -30,10 +30,10 @@ interface FallingLetter {
 function getLevelConfig(level: number) {
   return {
     duration: Math.max(6000, 12000 - level * 500),
-    letterCount: Math.min(5 + level * 3, 40),
+    letterCount: 10 + level * 2,
     targetRatio: 0.25,
-    speed: 1 + level * 0.3,
-    confuserLetters: level >= 5 ? 1 : 0, // similar looking letters
+    speed: 0.5 + level * 0.15,
+    confuserLetters: level >= 5 ? 1 : 0,
   }
 }
 
@@ -109,37 +109,28 @@ export default function LetterRainClient() {
     setTimeLeft(config.duration)
     setPhase('playing')
 
-    // Spawn letters
-    let elapsed = 0
-    const spawnInterval = config.duration / config.letterCount
-
-    const spawn = () => {
-      if (elapsed >= config.duration) return
-      elapsed += spawnInterval
-
-      const isTarget = Math.random() < config.targetRatio
-      const isConfuser = !isTarget && config.confuserLetters > 0 && Math.random() < 0.2
-      let letter = isTarget ? t : isConfuser ? getConfuser(t) : ALL_LETTERS[Math.floor(Math.random() * ALL_LETTERS.length)]
-      if (letter === t && !isTarget) letter = 'X'
-
-      const newLetter: FallingLetter = {
-        id: letterIdRef.current++,
-        letter,
-        x: 5 + Math.random() * 85,
-        y: -10,
-        speed: config.speed + Math.random() * 0.5,
-        size: 20 + Math.random() * 16,
-        isTarget: letter === t,
-      }
-
-      if (letter === t) countRef.current++
-      activeLettersRef.current = [...activeLettersRef.current, newLetter]
-      setLetters([...activeLettersRef.current])
-
-      timerRef.current = setTimeout(spawn, spawnInterval)
+    // Spawn all letters staggered
+    const spawnDelay = config.duration / config.letterCount
+    for (let i = 0; i < config.letterCount; i++) {
+      setTimeout(() => {
+        const isTarget = Math.random() < config.targetRatio
+        const isConfuser = !isTarget && config.confuserLetters > 0 && Math.random() < 0.2
+        let letter = isTarget ? t : isConfuser ? getConfuser(t) : ALL_LETTERS[Math.floor(Math.random() * ALL_LETTERS.length)]
+        if (letter === t && !isTarget) letter = 'X'
+        const newLetter: FallingLetter = {
+          id: letterIdRef.current++,
+          letter,
+          x: 5 + Math.random() * 85,
+          y: -10,
+          speed: config.speed + Math.random() * 0.3,
+          size: 24 + Math.random() * 14,
+          isTarget: letter === t,
+        }
+        if (letter === t) countRef.current++
+        activeLettersRef.current = [...activeLettersRef.current, newLetter]
+        setLetters([...activeLettersRef.current])
+      }, i * spawnDelay)
     }
-
-    timerRef.current = setTimeout(spawn, spawnInterval * 0.3)
 
     // Animate
     let start: number | null = null
