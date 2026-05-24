@@ -242,28 +242,41 @@ export default function ProfilePage() {
  return (
    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', paddingBottom:100 }}>
 
-     {/* Header */}
-     <div style={{ padding:'40px 24px 24px' }}>
-       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
-         <div>
-            <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:6 }}>{profile?.name ?? 'Guest'}</div>
-           {overallScore > 0 && (
-             <div style={{ marginBottom:10 }}>
-               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:4 }}>
-                 <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:1 }}>BRAIN SCORE</div>
-                 <div style={{ fontSize:22, fontWeight:900, color: overallScore >= 90 ? '#FFD700' : overallScore >= 75 ? '#C8960C' : '#69F0AE' }}>{overallScore}</div>
-               </div>
-               <div style={{ height:6, background:'rgba(255,255,255,0.08)', borderRadius:3, overflow:'hidden' }}>
-                 <div style={{ height:'100%', width:overallScore+'%', background: overallScore >= 90 ? 'linear-gradient(90deg,#C8960C,#FFD700)' : '#4CAF50', borderRadius:3 }} />
-               </div>
-             </div>
-           )}
-           <button onClick={() => { setEditing(!editing); setEditMode(null); setEditError(''); setEditSuccess('') }} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:10, padding:'6px 14px', color:'rgba(255,255,255,0.5)', fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit', display:'block', marginBottom:6 }}>
-             {editing ? 'Done' : 'Edit Profile'}
-           </button>
-           <a href="/streak" style={{ textDecoration:'none', fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.25)', letterSpacing:0.5 }}>Streak levels →</a>
-         </div>
-       </div>
+     {/* Header Card */}
+    <div style={{ padding:'24px 20px 0' }}>
+      <div style={{ background:'linear-gradient(135deg, #2A2A2E 0%, #1C1C1E 100%)', borderRadius:24, padding:'24px', border:'1px solid rgba(255,255,255,0.08)', marginBottom:24 }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:20 }}>
+          <div>
+            <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>Player</div>
+            <div style={{ fontSize:26, fontWeight:900, color:'#fff', lineHeight:1 }}>{profile?.name ?? 'Guest'}</div>
+          </div>
+          <button onClick={() => { setEditing(!editing); setEditMode(null); setEditError(''); setEditSuccess('') }} style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:12, padding:'8px 16px', color:'rgba(255,255,255,0.5)', fontSize:12, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>
+            {editing ? 'Done' : 'Edit'}
+          </button>
+        </div>
+        {overallScore > 0 && (
+          <div style={{ background:'rgba(0,0,0,0.2)', borderRadius:16, padding:'16px', marginBottom:16 }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginBottom:10 }}>
+              <div>
+                <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>Brain Score</div>
+                <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>Based on your global percentiles</div>
+              </div>
+              <div style={{ fontSize:48, fontWeight:900, lineHeight:1, color: overallScore >= 90 ? '#FFD700' : overallScore >= 75 ? '#C8960C' : overallScore >= 50 ? '#69F0AE' : 'rgba(255,255,255,0.6)' }}>{overallScore}</div>
+            </div>
+            <div style={{ height:8, background:'rgba(255,255,255,0.08)', borderRadius:4, overflow:'hidden' }}>
+              <div style={{ height:'100%', width:String(overallScore)+'%', background: overallScore >= 90 ? 'linear-gradient(90deg,#C8960C,#FFD700)' : overallScore >= 75 ? '#C8960C' : '#4CAF50', borderRadius:4 }} />
+            </div>
+          </div>
+        )}
+        <a href="/streak" style={{ textDecoration:'none', display:'flex', alignItems:'center', justifyContent:'space-between', background:'rgba(255,109,0,0.08)', border:'1px solid rgba(255,109,0,0.2)', borderRadius:12, padding:'10px 14px' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/streak.png" style={{ width:20, height:20, objectFit:'contain' }} />
+            <span style={{ fontSize:13, fontWeight:800, color:'#FF6D00' }}>{streak > 0 ? streak + ' day streak' : 'Start your streak'}</span>
+          </div>
+          <span style={{ fontSize:11, fontWeight:800, color:'rgba(255,109,0,0.5)' }}>Levels →</span>
+        </a>
+      </div>
+    </div>
 
        {/* Edit panel */}
        {editing && (
@@ -340,6 +353,7 @@ export default function ProfilePage() {
        ))}
      </div>
 
+      <ProfileSEO />
    </main>
  )
 }
