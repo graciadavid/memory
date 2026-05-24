@@ -7,7 +7,7 @@ const GAME_PATHS = [
   '/ace', '/geoshape', '/sudoku', '/wordle', '/wordly',
   '/mastermind', '/2048', '/nback', '/versus', '/play',
   '/stop', '/f1', '/pendulum', '/letter-rain', '/capitals',
-  '/blink', '/blackjack',
+  '/blink', '/blackjack', '/profile', '/profile','
 ]
 
 const EXCLUDED_PATHS = ['/g/']
