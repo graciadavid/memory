@@ -75,6 +75,7 @@ export default function AgilityPage() {
          </div>
        </details>
      </div>
+      <CategoryRelated current="Agility" />
    </>
  )
 }

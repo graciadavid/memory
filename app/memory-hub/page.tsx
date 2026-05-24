@@ -99,6 +99,7 @@ export default function MemoryHubPage() {
          </div>
        </details>
      </div>
+      <CategoryRelated current="Memory" />
    </>
  )
 }

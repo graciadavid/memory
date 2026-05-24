@@ -74,6 +74,7 @@ export default function KnowledgePage() {
          </div>
        </details>
      </div>
+      <CategoryRelated current="Knowledge" />
    </>
  )
 }
