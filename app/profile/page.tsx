@@ -30,7 +30,7 @@ export default function ProfilePage() {
 
   const fetchRecords = async (name: string) => {
     const r: any = {}
-    const [mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea, digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals, blink] = await Promise.all([
+    const [mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea, digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals, blink, blackjack] = await Promise.all([
       supabase.from('scores').select('time_ms').eq('player_name', name).order('time_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').is('game_type', null).eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
       supabase.from('precision_scores').select('difference_ms').eq('game_type', 'formula1').eq('player_name', name).order('difference_ms', { ascending: true }).limit(1),
@@ -50,6 +50,7 @@ export default function ProfilePage() {
       supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
       supabase.from('capitals_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
       supabase.from('blink_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+      supabase.from('blackjack_scores').select('chips').eq('player_name', name).order('chips', { ascending: false }).limit(1),
     ])
     const fmt = (ms: number) => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`
     if (mem.data?.[0]) r.memory = fmt(mem.data[0].time_ms)
@@ -129,6 +130,7 @@ export default function ProfilePage() {
       { label: 'Mastermind', value: records.mastermind },
       { label: '2048', value: records.game2048 },
       { label: 'Wordly', value: records.wordly },
+      { label: 'Blackjack', value: records.blackjack },
 
     ]},
   ]
