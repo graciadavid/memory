@@ -49,8 +49,6 @@ export default function ProfilePage() {
       supabase.from('wordle_scores').select('attempts').eq('player_name', name).order('attempts', { ascending: true }).limit(1),
       supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
       supabase.from('capitals_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
-      supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
-      supabase.from('letter_rain_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
     ])
     const fmt = (ms: number) => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`
     if (mem.data?.[0]) r.memory = fmt(mem.data[0].time_ms)
@@ -69,11 +67,11 @@ export default function ProfilePage() {
     if (master.data?.[0]) r.mastermind = `${master.data[0].attempts} tries · ${fmt(master.data[0].time_ms)}`
     if (g2048.data?.[0]) r.game2048 = `${g2048.data[0].score} pts`
     if (wordly.data?.[0]) r.wordly = `${wordly.data[0].attempts} tries`
-    if (letterRain.data?.[0]) r.letterRain = `Level ${letterRain.data[0].level}`
+    if (letterRain.data?.[0]) r.letterRain = `Letter ${String.fromCharCode(64 + letterRain.data[0].level)}`
     if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
-    if (letterRain.data?.[0]) r.letterRain = `Level ${letterRain.data[0].level}`
+    if (letterRain.data?.[0]) r.letterRain = `Letter ${String.fromCharCode(64 + letterRain.data[0].level)}`
     if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
-    if (letterRain.data?.[0]) r.letterRain = `Level ${letterRain.data[0].level}`
+    if (letterRain.data?.[0]) r.letterRain = `Letter ${String.fromCharCode(64 + letterRain.data[0].level)}`
     if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
     setRecords(r)
   }
