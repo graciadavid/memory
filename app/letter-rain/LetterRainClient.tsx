@@ -38,12 +38,7 @@ function getLevelConfig(level: number) {
 }
 
 function getTargetLetter(level: number): string {
-  const easy = ['A', 'O', 'I', 'E', 'U']
-  const medium = ['B', 'C', 'D', 'F', 'G', 'H', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'T']
-  const hard = ['J', 'Q', 'V', 'W', 'X', 'Y', 'Z']
-  if (level <= 2) return easy[level % easy.length]
-  if (level <= 6) return medium[(level - 3) % medium.length]
-  return hard[(level - 7) % hard.length]
+  return String.fromCharCode(64 + ((level - 1) % 26) + 1)
 }
 
 function getConfuser(target: string): string {
