@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
+import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -272,21 +273,10 @@ export default function SudokuClient() {
           {worldRank && <div style={{ fontSize:18, fontWeight:900, color:'rgba(255,255,255,0.5)' }}>#{worldRank} in the world</div>}
 
           {!profile?.name && !saved && (
-            <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'20px' }}>
-              <div style={{ fontSize:15, fontWeight:900, color:'#fff', marginBottom:12 }}>Save your score</div>
-              <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'10px', borderRadius:10, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:14, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:10, boxSizing:'border-box' }} />
-              <div style={{ display:'flex', gap:6, justifyContent:'center', marginBottom:12 }}>
-                {pin.map((d,i) => (
-                  <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
-                    onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus()}}
-                    style={{ width:44, height:52, textAlign:'center', fontSize:22, fontWeight:900, borderRadius:10, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
-                ))}
-              </div>
-              {saveError && <div style={{ fontSize:12, color:'#FF5252', fontWeight:800, textAlign:'center', marginBottom:4 }}>{saveError}</div>}
-              <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-                {saving?'Saving...':'Save →'}
-              </button>
-            </div>
+       <AuthModal onSuccess={async (playerName) => {
+           await supabase.from('sudoku_scores').insert({player_name: playerName, time_ms: elapsed})
+           setSaved(true)
+         }} title="Save your result" subtitle="Free · No email needed" />
           )}
           {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'14px 20px', textAlign:'center' }}><div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Saved! #{worldRank}</div></div>}
           <div style={{ display:'flex', gap:10, width:'100%' }}>

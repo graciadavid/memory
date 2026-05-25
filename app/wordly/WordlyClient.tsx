@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
+import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -299,15 +300,10 @@ export default function WordlyClient() {
           </div>
           {worldRank && phase==='won' && <div style={{ fontSize:11, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{worldRank} in the world</div>}
           {!profile?.name && !saved && phase==='won' && (
-            <div style={{ background:'rgba(0,0,0,0.3)', borderRadius:14, padding:'10px', marginTop:6 }}>
-              <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'8px', borderRadius:8, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:13, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:6, boxSizing:'border-box' }} />
-              <div style={{ display:'flex', gap:5, justifyContent:'center', marginBottom:6 }}>
-                {pin.map((d,i) => (
-                  <input key={i} id={`pin-w-${i}`} type="tel" maxLength={1} value={d}
-                    onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-w-${i+1}`) as HTMLInputElement)?.focus()}}
-                    style={{ width:36, height:42, textAlign:'center', fontSize:18, fontWeight:900, borderRadius:8, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
-                ))}
-              </div>
+            <AuthModal onSuccess={async (playerName) => {
+              await supabase.from('wordle_scores').insert({player_name: playerName, attempts: guesses.length, word_date: wordDate})
+              setSaved(true)
+            }} title="Save your result" subtitle="Free · No email needed" />
               {saveError && <div style={{ fontSize:11, color:'#FF5252', fontWeight:800, marginBottom:4 }}>{saveError}</div>}
               <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'8px', borderRadius:8, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.1)', color:'#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
                 {saving?'Saving...':'Save →'}
