@@ -240,7 +240,7 @@ export default function NBackPage() {
      </div>
      {!profile?.name && !saved && (
        <AuthModal onSuccess={async (playerName) => {
-           await supabase.from('nback_scores').insert({player_name: playerName, level: level})
+           await supabase.from('nback_scores').insert({player_name: playerName, level: finalStreak})
            setSaved(true)
          }} title="Save your result" subtitle="Free · No email needed" />
      )}
