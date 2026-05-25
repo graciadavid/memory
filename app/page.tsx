@@ -2,7 +2,7 @@
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const GREEN = '#2E7D32'
 
-const TODAY = { href: '/wordly', label: 'Wordly' }
+const TODAY = { href: '/letter-rain', label: 'Letter Rain' }
 
 export default function HomePage() {
  return (
