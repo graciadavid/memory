@@ -55,6 +55,14 @@ export default function AdminPage() {
   const [adminAuth, setAdminAuth] = useState(false)
 
  const [period, setPeriod] = useState<Period>('1d')
+const [potd, setPotd] = useState('capitals')
+const [potdSaving, setPotdSaving] = useState(false)
+const [potdSaved, setPotdSaved] = useState(false)
+
+useEffect(() => {
+  supabase.from('settings').select('value').eq('key','play_of_the_day').single()
+    .then(({data}:any) => { if (data?.value) setPotd(data.value) })
+}, [])
  const [loading, setLoading] = useState(false)
  const [totalPlays, setTotalPlays] = useState(0)
  const [totalUsers, setTotalUsers] = useState(0)
