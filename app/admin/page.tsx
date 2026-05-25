@@ -136,8 +136,7 @@ useEffect(() => {
        {loading ? 'Loading...' : '↻ Refresh'}
      </button>
 
-     {/* Period tabs */}
-     <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+     {/* Play of the Day */}
 
       <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'16px', marginBottom:16, border:'1px solid rgba(255,255,255,0.08)' }}>
         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, marginBottom:10 }}>PLAY OF THE DAY</div>
@@ -150,6 +149,9 @@ useEffect(() => {
           </button>
         </div>
       </div>
+
+     {/* Period tabs */}
+     <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
        {PERIODS.map(p => (
          <button key={p.key} onClick={() => setPeriod(p.key)} style={{ flex: 1, padding: '10px', borderRadius: 12, border: 'none', background: period === p.key ? GOLD : 'rgba(255,255,255,0.06)', color: period === p.key ? '#000' : 'rgba(255,255,255,0.5)', fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
            {p.label}
