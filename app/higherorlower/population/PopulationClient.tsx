@@ -300,7 +300,7 @@ export default function HolPopPage() {
 
      {!profile?.name && !saved && (
        <AuthModal onSuccess={async (playerName) => {
-           await supabase.from('higher_lower_scores').insert({player_name: playerName, level: streak, category: 'population'})
+           await supabase.from('higher_lower_scores').insert({player_name: playerName, level: score, category: 'population'})
            setSaved(true)
          }} title="Save your result" subtitle="Free · No email needed" />
      )}

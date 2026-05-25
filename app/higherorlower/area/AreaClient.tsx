@@ -281,7 +281,7 @@ export default function HolAreaPage() {
      </div>
      {!profile?.name && !saved && (
        <AuthModal onSuccess={async (playerName) => {
-           await supabase.from('higher_lower_scores').insert({player_name: playerName, level: streak, category: 'area'})
+           await supabase.from('higher_lower_scores').insert({player_name: playerName, level: score, category: 'area'})
            setSaved(true)
          }} title="Save your result" subtitle="Free · No email needed" />
      )}
