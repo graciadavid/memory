@@ -322,7 +322,7 @@ export default function MastermindClient() {
       </div>
       {!profile?.name && !saved && won && (
         <AuthModal onSuccess={async (playerName) => {
-            await supabase.from('mastermind_scores').insert({player_name: playerName, attempts: attempts, time_ms: elapsed})
+            await supabase.from('mastermind_scores').insert({player_name: playerName, attempts: guesses.length, time_ms: elapsed})
             setSaved(true)
           }} title="Save your result" subtitle="Free · No email needed" />
       )}
