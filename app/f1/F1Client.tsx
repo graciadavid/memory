@@ -193,7 +193,7 @@ export default function F1Page() {
 
      {!profile?.name && !saved && (
        <AuthModal onSuccess={async (playerName) => {
-           await supabase.from('precision_scores').insert({player_name: playerName, difference_ms: Math.abs(reactionTime), game_type: 'formula1'})
+           await supabase.from('precision_scores').insert({player_name: playerName, difference_ms: Math.abs(reactionMs), game_type: 'formula1'})
            setSaved(true)
          }} title="Save your result" subtitle="Free · No email needed" />
      )}

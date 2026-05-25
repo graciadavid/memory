@@ -304,11 +304,6 @@ export default function WordlyClient() {
               await supabase.from('wordle_scores').insert({player_name: playerName, attempts: guesses.length, word_date: wordDate})
               setSaved(true)
             }} title="Save your result" subtitle="Free · No email needed" />
-              {saveError && <div style={{ fontSize:11, color:'#FF5252', fontWeight:800, marginBottom:4 }}>{saveError}</div>}
-              <button onClick={saveScore} disabled={!name.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'8px', borderRadius:8, border:'none', background:name.trim()&&pin.join('').length===4?GREEN:'rgba(255,255,255,0.1)', color:'#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-                {saving?'Saving...':'Save →'}
-              </button>
-            </div>
           )}
           {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:10, padding:'6px', marginTop:4 }}><div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
           <div style={{ display:'flex', gap:8, justifyContent:'center', marginTop:6 }}>
