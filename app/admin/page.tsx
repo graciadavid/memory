@@ -138,6 +138,18 @@ useEffect(() => {
 
      {/* Period tabs */}
      <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+
+      <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'16px', marginBottom:16, border:'1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, marginBottom:10 }}>PLAY OF THE DAY</div>
+        <div style={{ display:'flex', gap:10, alignItems:'center' }}>
+          <select value={potd} onChange={e=>setPotd(e.target.value)} style={{ flex:1, padding:'10px', borderRadius:10, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:14, fontWeight:800, fontFamily:'inherit', outline:'none' }}>
+            <option value="memory">Memory</option><option value="digits">Digits</option><option value="sequence">Sequence</option><option value="nback">Nback</option><option value="blink">Blink</option><option value="stop">Stop</option><option value="f1">F1</option><option value="pendulum">Pendulum</option><option value="ace">Ace</option><option value="letter-rain">Letter rain</option><option value="flags">Flags</option><option value="capitals">Capitals</option><option value="countries">Countries</option><option value="blackjack">Blackjack</option><option value="sudoku">Sudoku</option><option value="mastermind">Mastermind</option><option value="2048">2048</option><option value="wordly">Wordly</option>
+          </select>
+          <button onClick={async()=>{setPotdSaving(true);await supabase.from('settings').upsert({key:'play_of_the_day',value:potd,updated_at:new Date().toISOString()});setPotdSaving(false);setPotdSaved(true);setTimeout(()=>setPotdSaved(false),2000)}} style={{ padding:'10px 16px', borderRadius:10, border:'none', background:potdSaved?'#2E7D32':'#C8960C', color:'#000', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+            {potdSaving?'...' : potdSaved?'Saved':'Save'}
+          </button>
+        </div>
+      </div>
        {PERIODS.map(p => (
          <button key={p.key} onClick={() => setPeriod(p.key)} style={{ flex: 1, padding: '10px', borderRadius: 12, border: 'none', background: period === p.key ? GOLD : 'rgba(255,255,255,0.06)', color: period === p.key ? '#000' : 'rgba(255,255,255,0.5)', fontSize: 13, fontWeight: 900, fontFamily: 'inherit', cursor: 'pointer' }}>
            {p.label}
