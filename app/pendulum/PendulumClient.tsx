@@ -172,7 +172,7 @@ export default function PendulumPage() {
 
      {!profile?.name && !saved && (
        <AuthModal onSuccess={async (playerName) => {
-           await supabase.from('precision_scores').insert({player_name: playerName, difference_ms: Math.abs(lastDiff), game_type: 'pendulum'})
+           await supabase.from('precision_scores').insert({player_name: playerName, difference_ms: absDiff, game_type: 'pendulum'})
            setSaved(true)
          }} title="Save your result" subtitle="Free · No email needed" />
      )}
