@@ -301,7 +301,7 @@ export default function WordlyClient() {
           {worldRank && phase==='won' && <div style={{ fontSize:11, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{worldRank} in the world</div>}
           {!profile?.name && !saved && phase==='won' && (
             <AuthModal onSuccess={async (playerName) => {
-              await supabase.from('wordle_scores').insert({player_name: playerName, attempts: guesses.length, word_date: wordDate})
+              await supabase.from('wordle_scores').insert({player_name: playerName, attempts: guesses.length, time_ms: finalTime, word_date: new Date().toISOString().split('T')[0]})
               setSaved(true)
             }} title="Save your result" subtitle="Free · No email needed" />
           )}
