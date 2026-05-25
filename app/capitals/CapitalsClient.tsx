@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
+import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -283,20 +284,10 @@ export default function CapitalsClient() {
         {worldRank && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>#{worldRank} in the world</div>}
 
         {!profile?.name && !saved && score > 0 && (
-          <div style={{ background:'rgba(0,0,0,0.3)', borderRadius:14, padding:'12px', marginBottom:16 }}>
-            <input value={saveName} onChange={e=>setSaveName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'8px', borderRadius:8, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:13, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:8, boxSizing:'border-box' }} />
-            <div style={{ display:'flex', gap:5, justifyContent:'center', marginBottom:8 }}>
-              {pin.map((d,i) => (
-                <input key={i} id={`pin-cap-${i}`} type="tel" maxLength={1} value={d}
-                  onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-cap-${i+1}`) as HTMLInputElement)?.focus()}}
-                  style={{ width:36, height:42, textAlign:'center', fontSize:18, fontWeight:900, borderRadius:8, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
-              ))}
-            </div>
-            {saveError && <div style={{ fontSize:11, color:'#FF5252', fontWeight:800, marginBottom:6 }}>{saveError}</div>}
-            <button onClick={saveScore} disabled={!saveName.trim()||pin.join('').length!==4||saving} style={{ width:'100%', padding:'8px', borderRadius:8, border:'none', background:GREEN, color:'#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-              {saving?'Saving...':'Save →'}
-            </button>
-          </div>
+          <AuthModal onSuccess={async (playerName) => {
+            await supabase.from('capitals_scores').insert({player_name: playerName, level: score})
+            setSaved(true)
+          }} title="Save your result" subtitle="Free · No email needed" />
         )}
         {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:10, padding:'8px', marginBottom:16 }}><div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
 
