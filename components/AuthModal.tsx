@@ -46,7 +46,7 @@ export default function AuthModal({ onSuccess, onSkip, title = 'Save your result
             style={{ width:'100%', padding:'12px', borderRadius:12, border:'1.5px solid rgba(255,255,255,0.1)', background:'rgba(255,255,255,0.06)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'var(--font-nunito), sans-serif', outline:'none', boxSizing:'border-box' }} />
         </div>
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.35)', letterSpacing:1.5, textTransform:'uppercase', marginBottom:6 }}>PIN</div>
+          <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.35)', letterSpacing:1.5, textTransform:'uppercase', marginBottom:6 }}>Create PIN</div>
           <div style={{ display:'flex', gap:6 }}>
             {pin.map((d,i) => (
               <input key={i} id={"auth-pin-"+i} type="tel" maxLength={1} value={d}
