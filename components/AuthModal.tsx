@@ -11,7 +11,7 @@ interface Props {
  subtitle?: string
 }
 
-export default function AuthModal({ onSuccess, onSkip, title = 'Create your profile', subtitle = 'Save your scores and compete worldwide' }: Props) {
+export default function AuthModal({ onSuccess, onSkip, title = 'Save your result', subtitle = 'Create a free profile to save your score and rank globally' }: Props) {
  const [name, setName] = useState('')
  const [pin, setPin] = useState(['','','',''])
  const [error, setError] = useState('')
@@ -59,7 +59,7 @@ export default function AuthModal({ onSuccess, onSkip, title = 'Create your prof
        style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'var(--font-nunito), sans-serif', outline:'none', marginBottom:12, boxSizing:'border-box' }}
      />
 
-     <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', marginBottom:8, letterSpacing:1 }}>4-DIGIT PIN</div>
+     <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', marginBottom:8, letterSpacing:1 }}>PIN — 4 digits to protect your profile</div>
      <div style={{ display:'flex', gap:6, marginBottom:16, justifyContent:'center' }}>
        {pin.map((d,i) => (
          <input key={i} id={`auth-pin-${i}`} type="tel" maxLength={1} value={d}
