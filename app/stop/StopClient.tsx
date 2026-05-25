@@ -169,7 +169,6 @@ export default function StopPage() {
 
       {!profile?.name && !saved && (
         <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
-          <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
           <AuthModal onSuccess={async (playerName) => {
            await supabase.from('precision_scores').insert({player_name: playerName, difference_ms: Math.abs(difference), game_type: null})
            setSaved(true)
