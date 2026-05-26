@@ -5,7 +5,7 @@ import { usePlayer } from '@/lib/usePlayer'
 import AuthModal from '@/components/AuthModal'
 
 const COLS = 10
-const ROWS = 20
+const ROWS = 18
 const GREEN = '#2E7D32'
 const GOLD = '#C8960C'
 
@@ -185,7 +185,7 @@ export default function TetrisClient() {
     }
   }
 
-  const CELL = 30
+  const CELL = 26
 
   return (
     <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', display:'flex', flexDirection:'column', alignItems:'center', padding:'16px 0 100px' }}>
@@ -215,7 +215,7 @@ export default function TetrisClient() {
                 <div key={c} style={{
                   width: CELL, height: CELL,
                   background: cell === 'ghost' ? 'rgba(255,255,255,0.1)' : cell || 'transparent',
-                  border: '1px solid rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.12)',
                   boxSizing:'border-box',
                   borderRadius: cell && cell !== 'ghost' ? 3 : 0,
                 }} />
@@ -224,8 +224,8 @@ export default function TetrisClient() {
           ))}
         </div>
 
-        {/* Next piece */}
-        <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+        {/* Right panel: next + controls */}
+       <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
           <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:12, padding:'10px', border:'1px solid rgba(255,255,255,0.08)' }}>
             <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, marginBottom:8 }}>NEXT</div>
             <div style={{ display:'flex', flexDirection:'column', gap:2 }}>
@@ -238,8 +238,20 @@ export default function TetrisClient() {
               ))}
             </div>
           </div>
-        </div>
-      </div>
+
+         {/* Controls */}
+         {phase === 'playing' && (
+           <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+             <button onTouchStart={rotatePiece} onClick={rotatePiece} style={{ width:'100%', height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:16, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>↻ Rotate</button>
+             <div style={{ display:'flex', gap:8 }}>
+               <button onTouchStart={moveLeft} onClick={moveLeft} style={{ flex:1, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>←</button>
+               <button onTouchStart={moveRight} onClick={moveRight} style={{ flex:1, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>→</button>
+             </div>
+             <button onTouchStart={hardDrop} onClick={hardDrop} style={{ width:'100%', height:52, borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:14, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>⬇ Drop</button>
+           </div>
+         )}
+       </div>
+     </div>
 
       {/* Game Over */}
       {phase === 'over' && (
@@ -286,22 +298,7 @@ export default function TetrisClient() {
         </div>
       )}
 
-      {/* Controls */}
-      {phase === 'playing' && (
-        <div style={{ marginTop:20, display:'flex', flexDirection:'column', gap:10, width:'100%', maxWidth:340, padding:'0 16px' }}>
-          {/* Row 1: left, rotate, right */}
-          <div style={{ display:'flex', gap:10 }}>
-            <button onTouchStart={moveLeft} onClick={moveLeft} style={{ flex:1, height:60, borderRadius:16, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:24, cursor:'pointer', fontFamily:'inherit' }}>←</button>
-            <button onTouchStart={rotatePiece} onClick={rotatePiece} style={{ flex:2, height:60, borderRadius:16, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:18, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>↻ Rotate</button>
-            <button onTouchStart={moveRight} onClick={moveRight} style={{ flex:1, height:60, borderRadius:16, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:24, cursor:'pointer', fontFamily:'inherit' }}>→</button>
-          </div>
-          {/* Row 2: down, hard drop */}
-          <div style={{ display:'flex', gap:10 }}>
-            <button onTouchStart={moveDown} onClick={moveDown} style={{ flex:1, height:52, borderRadius:16, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>↓</button>
-            <button onTouchStart={hardDrop} onClick={hardDrop} style={{ flex:2, height:52, borderRadius:16, border:'none', background:GOLD, color:'#000', fontSize:14, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>⬇ Drop</button>
-          </div>
-        </div>
-      )}
+
 
     </main>
   )
