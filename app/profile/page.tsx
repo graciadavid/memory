@@ -175,7 +175,8 @@ export default function ProfilePage() {
    if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
    if (blackjack.data?.[0]) r.blackjack = `${blackjack.data[0].chips.toLocaleString()} chips`
   if (poke.data?.[0]) r.poke = `Level ${poke.data[0].level}`
-  if (tetris.data?.[0]) r.tetris = `${tetris.data[0].score.toLocaleString()} pts`   setRecords(r)
+  if (tetris.data?.[0]) r.tetris = `${tetris.data[0].score.toLocaleString()} pts`
+   setRecords(r)
 
    // Now calculate percentiles - fetch ranks in parallel
    const rankQueries = await Promise.all([
