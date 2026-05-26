@@ -164,6 +164,7 @@ export default function ChampionshipPage() {
      )}
 
    </main>
+    <ChampionshipSEO />
  )
 }
 
