@@ -267,6 +267,7 @@ export default function TetrisClient() {
 
   if (phase === 'idle') return (
     <>
+    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px', display:'flex', flexDirection:'column' }}>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:24 }}>
         <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/mango.png" style={{ width:60, height:60, objectFit:'contain' }} />
         <div>
