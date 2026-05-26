@@ -80,6 +80,8 @@ export default function TetrisClient() {
   const [phase, setPhase] = useState<'idle' | 'playing' | 'over'>('idle')
   const [saved, setSaved] = useState(false)
   const [top5, setTop5] = useState<any[]>([])
+  const [worldRecord, setWorldRecord] = useState<any>(null)
+  const [myBest, setMyBest] = useState<number|null>(null)
 
   useEffect(() => {
     supabase.from('tetris_scores').select('player_name, score').order('score', { ascending: false }).limit(100)
@@ -89,6 +91,7 @@ export default function TetrisClient() {
         data.forEach((s: any) => { if (!best[s.player_name] || s.score > best[s.player_name]) best[s.player_name] = s.score })
         const sorted = Object.entries(best).sort((a, b) => b[1] - a[1]).slice(0, 5)
         setTop5(sorted.map(([name, score]) => ({ name, score })))
+        if (sorted.length > 0) setWorldRecord({ name: sorted[0][0], score: sorted[0][1] })
       })
   }, [])
   const [worldRank, setWorldRank] = useState<number | null>(null)
@@ -220,32 +223,41 @@ export default function TetrisClient() {
   const CELL = 26
 
   if (phase === 'idle') return (
-    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
-      <div style={{ fontSize:11, fontWeight:800, color:'#E65100', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Logic</div>
-      <div style={{ fontSize:36, fontWeight:900, color:'#fff', marginBottom:8 }}>Tetris</div>
-      <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:32 }}>Stack blocks, clear lines, beat the world</div>
+    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px', display:'flex', flexDirection:'column' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:24 }}>
+        <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/tetris.png" style={{ width:60, height:60, objectFit:'contain' }} />
+        <div>
+          <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Tetris</div>
+          <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Stack blocks, clear lines, beat the world</div>
+        </div>
+      </div>
 
-      <button onClick={start} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080', marginBottom:32 }}>
+      <div style={{ display:'flex', gap:10, marginBottom:20 }}>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+          <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
+          <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? worldRecord.score.toLocaleString() : '—'}</div>
+          {worldRecord && <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:2 }}>{worldRecord.name}</div>}
+        </div>
+        <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
+          <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>Your Best</div>
+          <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{profile?.name && top5.find(t => t.name === profile.name) ? top5.find(t => t.name === profile.name)!.score.toLocaleString() : '—'}</div>
+        </div>
+      </div>
+
+      <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
+        <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
+        {top5.map((p, i) => (
+          <div key={p.name} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+            <div style={{ fontSize:12, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.25)', width:18 }}>{i+1}</div>
+            <div style={{ flex:1, fontSize:14, fontWeight:800, color:i===0?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
+            <div style={{ fontSize:14, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.5)' }}>{p.score.toLocaleString()}</div>
+          </div>
+        ))}
+      </div>
+
+      <button onClick={start} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080', marginTop:'auto' }}>
         Play →
       </button>
-
-      {top5.length > 0 && (
-        <div style={{ marginBottom:32 }}>
-          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase', marginBottom:16 }}>World Ranking</div>
-          {top5.map((r, i) => (
-            <div key={r.name} style={{ display:'flex', alignItems:'center', gap:12, background:'rgba(255,255,255,0.04)', borderRadius:14, padding:'12px 16px', marginBottom:8, border: i === 0 ? '1px solid rgba(200,150,12,0.3)' : '1px solid rgba(255,255,255,0.06)' }}>
-              <div style={{ fontSize:16, fontWeight:900, color: i === 0 ? GOLD : 'rgba(255,255,255,0.3)', width:28 }}>{i === 0 ? '👑' : '#' + (i+1)}</div>
-              <div style={{ flex:1, fontSize:14, fontWeight:800, color:'#fff' }}>{r.name}</div>
-              <div style={{ fontSize:14, fontWeight:900, color:GOLD }}>{r.score.toLocaleString()}</div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div style={{ fontSize:13, color:'rgba(255,255,255,0.3)', lineHeight:1.7, marginBottom:16 }}>
-        Tetris is one of the most studied games in cognitive science. It trains spatial reasoning, working memory and planning simultaneously. Clearing multiple lines at once multiplies your score — rewarding players who think ahead.
-      </div>
-      <div style={{ fontSize:12, color:'rgba(255,255,255,0.2)', fontWeight:700, textAlign:'center' }}>Free · No login required to play · World rankings</div>
     </main>
   )
 
@@ -305,12 +317,12 @@ export default function TetrisClient() {
          {/* Controls */}
          {phase === 'playing' && (
            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-             <button onTouchStart={(e)=>{e.preventDefault();rotatePiece()}} onMouseDown={rotatePiece} style={{ width:'100%', height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:16, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>↻ Rotate</button>
+             <button onPointerDown={(e)=>{e.preventDefault();rotatePiece()}} style={{ width:'100%', height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:16, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>↻ Rotate</button>
              <div style={{ display:'flex', gap:8 }}>
-               <button onTouchStart={(e)=>{e.preventDefault();moveLeft()}} onMouseDown={moveLeft} style={{ flex:1, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>←</button>
-               <button onTouchStart={(e)=>{e.preventDefault();moveRight()}} onMouseDown={moveRight} style={{ flex:1, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>→</button>
+               <button onPointerDown={(e)=>{e.preventDefault();moveLeft()}} style={{ flex:1, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>←</button>
+               <button onPointerDown={(e)=>{e.preventDefault();moveRight()}} style={{ flex:1, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>→</button>
              </div>
-             <button onTouchStart={(e)=>{e.preventDefault();hardDrop()}} onMouseDown={hardDrop} style={{ width:'100%', height:52, borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:14, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>⬇ Drop</button>
+             <button onPointerDown={(e)=>{e.preventDefault();hardDrop()}} style={{ width:'100%', height:52, borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:14, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>⬇ Drop</button>
            </div>
          )}
        </div>
