@@ -17,7 +17,10 @@ export default function HallOfFamePage() {
       <a href="/championship" style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:800, textDecoration:'none', display:'block', marginBottom:24 }}>← Championship</a>
       
       <div style={{ fontSize:11, fontWeight:800, color:GOLD, letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Sunday Brain Championship</div>
-      <div style={{ fontSize:32, fontWeight:900, color:'#fff', marginBottom:32 }}>Hall of Fame 🏆</div>
+      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:32 }}>
+       <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/trophy.png" style={{ width:52, height:52, objectFit:'contain' }} />
+       <div style={{ fontSize:32, fontWeight:900, color:'#fff' }}>Hall of Fame</div>
+     </div>
 
       {winners.length === 0 ? (
         <div style={{ textAlign:'center', color:'rgba(255,255,255,0.3)', fontSize:14, fontWeight:700, marginTop:60 }}>
