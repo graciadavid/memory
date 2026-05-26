@@ -62,16 +62,25 @@ export default function HomePage() {
      padding: '0 32px',
      gap: 40,
    }}>
+     {/* Logo */}
      <div style={{ textAlign: 'center' }}>
-       <img src={`${BASE}/logomemgenius.webp`} alt="MemGenius" style={{ width: '100%', maxWidth: 280, objectFit: 'contain', marginBottom: 16 }} />
-       <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', fontWeight: 700 }}>Train your brain daily.</div>
-       <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', fontWeight: 700 }}>Compete with the world.</div>
+       <img src={`${BASE}/logomemgenius.webp`} alt="MemGenius" style={{ width: '100%', maxWidth: 160, objectFit: 'contain' }} />
      </div>
 
-     <a href={GAMES[todayGame] || '/stop'} style={{ textDecoration: 'none', width: '100%' }}>
-       <div style={{ background: GREEN, borderRadius: 24, padding: '22px', textAlign: 'center', boxShadow: '0 10px 0 #1B5E2070' }}>
-         <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6 }}>Today's game</div>
-         <div style={{ fontSize: 26, fontWeight: 900, color: '#fff' }}>Stop — This Sunday →</div>
+     {/* Championship Banner */}
+     <a href='/championship' style={{ textDecoration:'none', width:'100%' }}>
+       <div style={{ background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:24, padding:'20px 22px', boxShadow:'0 8px 0 rgba(100,70,0,0.5)' }}>
+         <div style={{ fontSize:10, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Sunday Brain Championship</div>
+         <div style={{ fontSize:22, fontWeight:900, color:'#000', marginBottom:10 }}>June 1st — Stop 🏆</div>
+         <ChampionshipCountdown />
+       </div>
+     </a>
+
+     {/* Train button */}
+     <a href='/stop' style={{ textDecoration: 'none', width: '100%' }}>
+       <div style={{ background: GREEN, borderRadius: 24, padding: '20px', textAlign: 'center', boxShadow: '0 10px 0 #1B5E2070' }}>
+         <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6 }}>Train for the championship</div>
+         <div style={{ fontSize: 24, fontWeight: 900, color: '#fff' }}>Play Stop →</div>
        </div>
      </a>
 
