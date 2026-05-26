@@ -56,7 +56,6 @@ export default function PokeClient() {
     setSelected([])
     setTimeLeft(3)
     setPhase('memorize')
-
     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
         if (t <= 1) {
@@ -79,21 +78,16 @@ export default function PokeClient() {
   const handleSelect = (id: string) => {
     if (phase !== 'guess') return
     if (selected.includes(id)) return
-
     if (!bowl.includes(id)) {
-      // Wrong ingredient
       clearInterval(timerRef.current)
       setPhase('wrong')
       supabase.from('poke_scores').select('*', { count: 'exact', head: true }).gt('level', level - 1)
         .then(({ count }) => setWorldRank((count || 0) + 1))
       return
     }
-
     const newSelected = [...selected, id]
     setSelected(newSelected)
-
     if (newSelected.length === bowl.length) {
-      // All correct
       setPhase('correct')
       setTimeout(() => {
         const nextLevel = level + 1
@@ -103,11 +97,7 @@ export default function PokeClient() {
     }
   }
 
-  const isOver = phase === 'wrong'
-
-  // Idle / Start screen
   if (phase === 'idle') return (
-    <>
     <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px', display:'flex', flexDirection:'column' }}>
       <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:24 }}>
         <img src={`${BASE}/salmon.png`} style={{ width:60, height:60, objectFit:'contain' }} />
@@ -116,7 +106,6 @@ export default function PokeClient() {
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Remember the bowl ingredients</div>
         </div>
       </div>
-
       <div style={{ display:'flex', gap:10, marginBottom:20 }}>
         <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
           <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
@@ -128,7 +117,6 @@ export default function PokeClient() {
           <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>{profile?.name && top5.find(t => t.name === profile.name) ? `Level ${top5.find(t => t.name === profile.name)!.level}` : '—'}</div>
         </div>
       </div>
-
       <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:16, padding:'14px', marginBottom:24 }}>
         <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Top Players</div>
         {top5.map((p, i) => (
@@ -139,162 +127,63 @@ export default function PokeClient() {
           </div>
         ))}
       </div>
-
       <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080', marginTop:'auto' }}>
         Play →
       </button>
     </main>
-    </>
   )
 
-
- // Result screen
- if (phase === 'wrong') return (
-   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
-     <div style={{ textAlign:'center', marginBottom:28 }}>
-       <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:4 }}>Game Over</div>
-       <div style={{ fontSize:48, fontWeight:900, color:GOLD, marginBottom:4 }}>Level {level}</div>
-       {worldRank && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)' }}>#{worldRank} in the world</div>}
-     </div>
-
-     {/* Correct ingredients */}
-     <div style={{ marginBottom:20 }}>
-       <div style={{ fontSize:11, fontWeight:800, color:'#69F0AE', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>✓ Correct — Bowl contained</div>
-       <div style={{ display:'flex', flexWrap:'wrap', gap:10, justifyContent:'center' }}>
-         {bowl.map(id => {
-           const ing = INGREDIENTS.find(i => i.id === id)!
-           return (
-             <div key={id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'rgba(46,125,50,0.15)', borderRadius:14, padding:'10px 8px', border:'1px solid rgba(105,240,174,0.3)', minWidth:64 }}>
-               <img src={ing.img} style={{ width:44, height:44, objectFit:'contain' }} />
-               <div style={{ fontSize:9, fontWeight:800, color:'#69F0AE' }}>{ing.label}</div>
-             </div>
-           )
-         })}
-       </div>
-     </div>
-
-     {/* Wrong selected */}
-     {selected.filter(id => !bowl.includes(id)).length > 0 && (
-       <div style={{ marginBottom:24 }}>
-         <div style={{ fontSize:11, fontWeight:800, color:'#FF5252', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>✗ You selected wrong</div>
-         <div style={{ display:'flex', flexWrap:'wrap', gap:10, justifyContent:'center' }}>
-           {selected.filter(id => !bowl.includes(id)).map(id => {
-             const ing = INGREDIENTS.find(i => i.id === id)!
-             return (
-               <div key={id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'rgba(198,40,40,0.15)', borderRadius:14, padding:'10px 8px', border:'1px solid rgba(255,82,82,0.3)', minWidth:64 }}>
-                 <img src={ing.img} style={{ width:44, height:44, objectFit:'contain', opacity:0.7 }} />
-                 <div style={{ fontSize:9, fontWeight:800, color:'#FF5252' }}>{ing.label}</div>
-               </div>
-             )
-           })}
-         </div>
-       </div>
-     )}
-
-     {!profile?.name && !saved && (
-       <div style={{ marginBottom:16 }}>
-         <AuthModal onSuccess={async (playerName) => {
-           await supabase.from('poke_scores').insert({ player_name: playerName, level })
-           setSaved(true)
-         }} title="Save your result" subtitle="Free · No email needed" />
-       </div>
-     )}
-     {profile?.name && !saved && (
-       <button onClick={async () => {
-         await supabase.from('poke_scores').insert({ player_name: profile.name, level })
-         setSaved(true)
-       }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:12 }}>
-         Save Score
-       </button>
-     )}
-     {saved && <div style={{ fontSize:13, color:'#69F0AE', fontWeight:800, textAlign:'center', marginBottom:12 }}>✓ Saved!</div>}
-
-     <div style={{ display:'flex', gap:10 }}>
-       <a href="/memory-hub" style={{ flex:1, textDecoration:'none', display:'block', padding:'14px', borderRadius:14, background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.6)', fontSize:14, fontWeight:900, textAlign:'center' }}>← Memory</a>
-       <button onClick={startGame} style={{ flex:2, padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play Again →</button>
-     </div>
-   </main>
- )
-
-
- // Result screen
- if (phase === 'wrong') return (
-   <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
-     <div style={{ textAlign:'center', marginBottom:28 }}>
-       <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:4 }}>Game Over</div>
-       <div style={{ fontSize:48, fontWeight:900, color:GOLD, marginBottom:4 }}>Level {level}</div>
-       {worldRank && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)' }}>#{worldRank} in the world</div>}
-     </div>
-
-     {/* Correct ingredients */}
-     <div style={{ marginBottom:20 }}>
-       <div style={{ fontSize:11, fontWeight:800, color:'#69F0AE', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>✓ Correct — Bowl contained</div>
-       <div style={{ display:'flex', flexWrap:'wrap', gap:10, justifyContent:'center' }}>
-         {bowl.map(id => {
-           const ing = INGREDIENTS.find(i => i.id === id)!
-           return (
-             <div key={id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'rgba(46,125,50,0.15)', borderRadius:14, padding:'10px 8px', border:'1px solid rgba(105,240,174,0.3)', minWidth:64 }}>
-               <img src={ing.img} style={{ width:44, height:44, objectFit:'contain' }} />
-               <div style={{ fontSize:9, fontWeight:800, color:'#69F0AE' }}>{ing.label}</div>
-             </div>
-           )
-         })}
-       </div>
-     </div>
-
-     {/* Wrong selected */}
-     {selected.filter(id => !bowl.includes(id)).length > 0 && (
-       <div style={{ marginBottom:24 }}>
-         <div style={{ fontSize:11, fontWeight:800, color:'#FF5252', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>✗ You selected wrong</div>
-         <div style={{ display:'flex', flexWrap:'wrap', gap:10, justifyContent:'center' }}>
-           {selected.filter(id => !bowl.includes(id)).map(id => {
-             const ing = INGREDIENTS.find(i => i.id === id)!
-             return (
-               <div key={id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'rgba(198,40,40,0.15)', borderRadius:14, padding:'10px 8px', border:'1px solid rgba(255,82,82,0.3)', minWidth:64 }}>
-                 <img src={ing.img} style={{ width:44, height:44, objectFit:'contain', opacity:0.7 }} />
-                 <div style={{ fontSize:9, fontWeight:800, color:'#FF5252' }}>{ing.label}</div>
-               </div>
-             )
-           })}
-         </div>
-       </div>
-     )}
-
-     {!profile?.name && !saved && (
-       <div style={{ marginBottom:16 }}>
-         <AuthModal onSuccess={async (playerName) => {
-           await supabase.from('poke_scores').insert({ player_name: playerName, level })
-           setSaved(true)
-         }} title="Save your result" subtitle="Free · No email needed" />
-       </div>
-     )}
-     {profile?.name && !saved && (
-       <button onClick={async () => {
-         await supabase.from('poke_scores').insert({ player_name: profile.name, level })
-         setSaved(true)
-       }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:12 }}>
-         Save Score
-       </button>
-     )}
-     {saved && <div style={{ fontSize:13, color:'#69F0AE', fontWeight:800, textAlign:'center', marginBottom:12 }}>✓ Saved!</div>}
-
-     <div style={{ display:'flex', gap:10 }}>
-       <a href="/memory-hub" style={{ flex:1, textDecoration:'none', display:'block', padding:'14px', borderRadius:14, background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.6)', fontSize:14, fontWeight:900, textAlign:'center' }}>← Memory</a>
-       <button onClick={startGame} style={{ flex:2, padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play Again →</button>
-     </div>
-   </main>
- )
+  if (phase === 'wrong') return (
+    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
+      <div style={{ textAlign:'center', marginBottom:28 }}>
+        <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:4 }}>Game Over</div>
+        <div style={{ fontSize:48, fontWeight:900, color:GOLD, marginBottom:4 }}>Level {level}</div>
+        {worldRank && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)' }}>#{worldRank} in the world</div>}
+      </div>
+      <div style={{ marginBottom:20 }}>
+        <div style={{ fontSize:11, fontWeight:800, color:'#69F0AE', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>✓ Correct — Bowl contained</div>
+        <div style={{ display:'flex', flexWrap:'wrap', gap:10, justifyContent:'center' }}>
+          {bowl.map(id => {
+            const ing = INGREDIENTS.find(i => i.id === id)!
+            return (
+              <div key={id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4, background:'rgba(46,125,50,0.15)', borderRadius:14, padding:'10px 8px', border:'1px solid rgba(105,240,174,0.3)', minWidth:64 }}>
+                <img src={ing.img} style={{ width:44, height:44, objectFit:'contain' }} />
+                <div style={{ fontSize:9, fontWeight:800, color:'#69F0AE' }}>{ing.label}</div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+      {!profile?.name && !saved && (
+        <div style={{ marginBottom:16 }}>
+          <AuthModal onSuccess={async (playerName) => {
+            await supabase.from('poke_scores').insert({ player_name: playerName, level })
+            setSaved(true)
+          }} title="Save your result" subtitle="Free · No email needed" />
+        </div>
+      )}
+      {profile?.name && !saved && (
+        <button onClick={async () => {
+          await supabase.from('poke_scores').insert({ player_name: profile.name, level })
+          setSaved(true)
+        }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:12 }}>
+          Save Score
+        </button>
+      )}
+      {saved && <div style={{ fontSize:13, color:'#69F0AE', fontWeight:800, textAlign:'center', marginBottom:12 }}>✓ Saved!</div>}
+      <div style={{ display:'flex', gap:10 }}>
+        <a href="/memory-hub" style={{ flex:1, textDecoration:'none', display:'block', padding:'14px', borderRadius:14, background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.6)', fontSize:14, fontWeight:900, textAlign:'center' }}>← Memory</a>
+        <button onClick={startGame} style={{ flex:2, padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play Again →</button>
+      </div>
+    </main>
+  )
 
   return (
     <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'16px 20px 100px' }}>
-
-      {/* Header */}
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2 }}>LEVEL {level}</div>
         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2 }}>{bowl.length} INGREDIENTS</div>
       </div>
-
-      {/* Timer bar */}
       {phase === 'memorize' && (
         <div style={{ marginBottom:20 }}>
           <div style={{ height:6, background:'rgba(255,255,255,0.1)', borderRadius:6, overflow:'hidden' }}>
@@ -303,15 +192,12 @@ export default function PokeClient() {
           <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', textAlign:'center', marginTop:6 }}>Memorize the bowl — {timeLeft}s</div>
         </div>
       )}
-
       {phase === 'guess' && (
         <div style={{ marginBottom:20, textAlign:'center' }}>
           <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.5)' }}>Select the {bowl.length} ingredients from the bowl</div>
           <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', marginTop:4 }}>{selected.length} / {bowl.length} selected</div>
         </div>
       )}
-
-      {/* Bowl */}
       <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:24, padding:'20px', marginBottom:24, border:'1px solid rgba(255,255,255,0.08)', minHeight:120, display:'flex', flexWrap:'wrap', gap:12, justifyContent:'center', alignItems:'center' }}>
         {phase === 'memorize' ? (
           bowl.map(id => {
@@ -320,58 +206,22 @@ export default function PokeClient() {
           })
         ) : (
           <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.2)' }}>
-            {phase === 'wrong' ? '❌ Wrong!' : phase === 'correct' ? '✓ Correct!' : 'What was in the bowl?'}
+            {phase === 'correct' ? '✓ Correct!' : 'What was in the bowl?'}
           </div>
         )}
       </div>
-
-      {/* Ingredients grid */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:12, marginBottom:24 }}>
         {INGREDIENTS.map(ing => {
           const isSelected = selected.includes(ing.id)
-          const isCorrect = isSelected && bowl.includes(ing.id)
           return (
             <button key={ing.id} onPointerDown={() => handleSelect(ing.id)}
-              style={{ background: isSelected ? 'rgba(46,125,50,0.3)' : 'rgba(255,255,255,0.06)', borderRadius:16, padding:'12px 8px', border: isSelected ? '2px solid #69F0AE' : '2px solid rgba(255,255,255,0.08)', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', gap:6, opacity: phase === 'over' ? 0.5 : 1 }}>
+              style={{ background: isSelected ? 'rgba(46,125,50,0.3)' : 'rgba(255,255,255,0.06)', borderRadius:16, padding:'12px 8px', border: isSelected ? '2px solid #69F0AE' : '2px solid rgba(255,255,255,0.08)', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
               <img src={ing.img} style={{ width:48, height:48, objectFit:'contain' }} />
               <div style={{ fontSize:10, fontWeight:800, color: isSelected ? '#69F0AE' : 'rgba(255,255,255,0.5)', textAlign:'center' }}>{ing.label}</div>
             </button>
           )
         })}
       </div>
-
-      {/* Game over */}
-      {phase === 'wrong' && (
-        <div style={{ background:'rgba(0,0,0,0.6)', borderRadius:24, padding:'24px', textAlign:'center', border:'1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:4 }}>Game Over</div>
-          <div style={{ fontSize:40, fontWeight:900, color:GOLD, marginBottom:4 }}>Level {level}</div>
-          {worldRank && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginBottom:16 }}>#{worldRank} in the world</div>}
-
-          {!profile?.name && !saved && (
-            <div style={{ marginBottom:16 }}>
-              <AuthModal onSuccess={async (playerName) => {
-                await supabase.from('poke_scores').insert({ player_name: playerName, level })
-                setSaved(true)
-              }} title="Save your result" subtitle="Free · No email needed" />
-            </div>
-          )}
-          {profile?.name && !saved && (
-            <button onClick={async () => {
-              await supabase.from('poke_scores').insert({ player_name: profile.name, level })
-              setSaved(true)
-            }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:12 }}>
-              Save Score
-            </button>
-          )}
-          {saved && <div style={{ fontSize:13, color:'#69F0AE', fontWeight:800, marginBottom:12 }}>✓ Saved!</div>}
-
-          <div style={{ display:'flex', gap:10 }}>
-            <a href="/memory-hub" style={{ flex:1, textDecoration:'none', display:'block', padding:'14px', borderRadius:14, background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.6)', fontSize:14, fontWeight:900, textAlign:'center' }}>← Memory</a>
-            <button onClick={startGame} style={{ flex:2, padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play Again →</button>
-          </div>
-        </div>
-      )}
-
     </main>
   )
 }
