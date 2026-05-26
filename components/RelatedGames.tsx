@@ -12,6 +12,7 @@ const CATEGORIES = {
       { href: '/digits', img: `${BASE}/digits.webp`, label: 'Digits', desc: 'Remember the sequence' },
       { href: '/sequence', img: `${BASE}/sequence.webp`, label: 'Simon Says', desc: 'Repeat the pattern' },
       { href: '/nback', img: `${BASE}/nback.png`, label: 'N-Back', desc: 'Same color as before?' },
+      { href: '/poke', img: `${BASE}/salmon.png`, label: 'Poke', desc: 'Remember the bowl ingredients' },
     ],
   },
   agility: {
