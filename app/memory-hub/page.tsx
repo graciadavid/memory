@@ -15,6 +15,7 @@ const GAMES = [
  { label: 'Simon Says', icon: `${BASE}/sequence.png`, href: '/sequence', desc: 'Repeat the color pattern' },
  { label: 'N-Back', icon: `${BASE}/nback.png`, href: '/nback', desc: 'Working memory challenge' },
  { label: 'Blink', icon: `${BASE}/blink.png`, href: '/blink', desc: 'Remember the grid' },
+ { label: 'Poke', icon: `${BASE}/salmon.png`, href: '/poke', desc: 'Remember the bowl ingredients' },
 ]
 
 export default function MemoryHubPage() {
