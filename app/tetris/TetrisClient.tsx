@@ -399,9 +399,10 @@ export default function TetrisClient() {
               </button>
             )}
             {saved && <div style={{ fontSize:13, color:'#69F0AE', fontWeight:800, marginBottom:12 }}>✓ Saved!</div>}
-            <button onClick={start} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-              Play Again →
-            </button>
+            <div style={{ display:'flex', gap:10 }}>
+             <a href="/logic" style={{ flex:1, textDecoration:'none', display:'block', padding:'14px', borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.6)', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer', textAlign:'center' }}>← Logic</a>
+             <button onClick={start} style={{ flex:2, padding:'14px', borderRadius:14, border:'none', background:'#2E7D32', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play Again →</button>
+           </div>
           </div>
         </div>
       )}
