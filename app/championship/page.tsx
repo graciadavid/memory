@@ -95,9 +95,9 @@ export default function ChampionshipPage() {
        <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>One game. One day. One winner.</div>
      </div>
 
-     <div style={{ background:'linear-gradient(135deg, #1a2a1a, #0D3320)', borderRadius:24, padding:'24px', marginBottom:20, border:'1px solid rgba(46,125,50,0.3)' }}>
-       <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, marginBottom:8 }}>THIS WEEK</div>
-        <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}><img src={gameIcon} style={{ width:64, height:64, objectFit:'contain' }} /><div style={{ fontSize:32, fontWeight:900, color:'#fff' }}>{gameLabel}</div></div>
+      <div style={{ background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:24, padding:'24px', marginBottom:20, boxShadow:'0 8px 0 rgba(100,70,0,0.5)' }}>
+       <div style={{ fontSize:11, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:2, marginBottom:8 }}>THIS WEEK</div>
+        <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}><img src={gameIcon} style={{ width:64, height:64, objectFit:'contain' }} /><div style={{ fontSize:32, fontWeight:900, color:'#000' }}>{gameLabel}</div></div>
 
        <div style={{ marginBottom:20 }}>
          <div style={{ fontSize:11, fontWeight:800, color: countdown.isActive ? '#69F0AE' : 'rgba(255,255,255,0.4)', letterSpacing:2, marginBottom:8 }}>
@@ -106,15 +106,15 @@ export default function ChampionshipPage() {
          <div style={{ display:'flex', gap:12 }}>
            {[{v:countdown.d,l:'DAYS'},{v:countdown.h,l:'HRS'},{v:countdown.m,l:'MIN'},{v:countdown.s,l:'SEC'}].map(({v,l}) => (
              <div key={l} style={{ flex:1, background:'rgba(0,0,0,0.3)', borderRadius:12, padding:'12px', textAlign:'center' }}>
-               <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>{String(v).padStart(2,'0')}</div>
+               <div style={{ fontSize:28, fontWeight:900, color:'#000' }}>{String(v).padStart(2,'0')}</div>
                <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>{l}</div>
              </div>
            ))}
          </div>
        </div>
 
-       <a href={gameHref} style={{ textDecoration:'none', display:'block', background:GREEN, borderRadius:16, padding:'16px', textAlign:'center', boxShadow:'0 6px 0 #1B5E2080' }}>
-         <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>Play {gameLabel} →</div>
+        <a href={gameHref} style={{ textDecoration:'none', display:'block', background:'rgba(0,0,0,0.25)', borderRadius:16, padding:'16px', textAlign:'center' }}>
+         <div style={{ fontSize:16, fontWeight:900, color:'#000' }}>Play {gameLabel} →</div>
        </a>
 
         <button onClick={() => { if (navigator.share) { navigator.share({ title:'Sunday Brain Championship', text:'Can you beat the world? This Sunday: ' + gameLabel, url:'https://memgenius.com/championship' }) } else { navigator.clipboard.writeText('https://memgenius.com/championship'); alert('Link copied!') } }} style={{ width:'100%', marginTop:10, padding:'14px', borderRadius:16, border:'1px solid rgba(0,0,0,0.2)', background:'rgba(0,0,0,0.15)', color:'#000', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer' }}>
