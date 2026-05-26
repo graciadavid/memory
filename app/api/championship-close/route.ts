@@ -65,10 +65,13 @@ export async function GET(req: Request) {
     const nextGame = GAME_ROTATION[(currentIdx + 1) % GAME_ROTATION.length]
 
     await supabase.from('championship_weeks').insert({
-      game: nextGame,
-      sunday_date: nextSundayStr,
-      active: true
-    })
+     game: nextGame,
+     sunday_date: nextSundayStr,
+     active: true
+   })
+
+   // Auto-update Play of the Day to match championship game
+   await supabase.from('settings').upsert({ key: 'play_of_the_day', value: nextGame, updated_at: new Date().toISOString() })
 
     return NextResponse.json({ success: true, winner: scores?.length ? 'saved' : 'no players', nextGame, nextSunday: nextSundayStr })
   } catch (err) {
