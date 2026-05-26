@@ -172,7 +172,7 @@ export default function ProfilePage() {
    if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
    if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
    if (blackjack.data?.[0]) r.blackjack = `${blackjack.data[0].chips.toLocaleString()} chips`
-
+  if (poke.data?.[0]) r.poke = `Level ${poke.data[0].level}`
    setRecords(r)
 
    // Now calculate percentiles - fetch ranks in parallel
@@ -197,7 +197,7 @@ export default function ProfilePage() {
      capitals.data?.[0] ? supabase.from('capitals_scores').select('player_name', {count:'exact',head:true}).gt('level', capitals.data[0].level) : Promise.resolve({count:0}),
      blink.data?.[0] ? supabase.from('blink_scores').select('player_name', {count:'exact',head:true}).gt('level', blink.data[0].level) : Promise.resolve({count:0}),
      blackjack.data?.[0] ? supabase.from('blackjack_scores').select('player_name', {count:'exact',head:true}).gt('chips', blackjack.data[0].chips) : Promise.resolve({count:0}),
-   ])
+    poke.data?.[0] ? supabase.from('poke_scores').select('player_name', {count:'exact',head:true}).gt('level', poke.data[0].level) : Promise.resolve({count:0}),   ])
 
    const totals = [memTotal,stopTotal,f1Total,pendulumTotal,aceTotal,flagsTotal,vPopTotal,countriesTotal,vAreaTotal,digitsTotal,seqTotal,nbackTotal,sudokuTotal,masterTotal,g2048Total,wordlyTotal,letterRainTotal,capitalsTotal,blinkTotal,blackjackTotal,pokeTotal]
    const keys = ['memory','stop','f1','pendulum','ace','flags','versusPop','countries','versusArea','digits','sequence','nback','sudoku','mastermind','game2048','wordly','letterRain','capitals','blink','blackjack','poke']
