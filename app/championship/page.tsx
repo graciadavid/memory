@@ -172,7 +172,7 @@ export default function ChampionshipPage() {
 
 function ChampionshipSEO() {
  return (
-   <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
+   <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif', background: '#1C1C1E', color: '#fff' }}>
      <h2 style={{ fontSize: 20, fontWeight: 900, color: '#fff', marginBottom: 12 }}>Sunday Brain Championship — The World's Weekly Cognitive Competition</h2>
      <p style={{ fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.6)', marginBottom: 24 }}>Every Sunday, thousands of players from around the world compete in a single cognitive challenge. One game. One day. One winner. The Sunday Brain Championship is the world's first weekly brain training competition — free to enter, open to everyone, and decided purely by performance.</p>
 
