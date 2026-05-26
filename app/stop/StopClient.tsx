@@ -176,6 +176,17 @@ export default function StopPage() {
           </div>
       )}
 
+      {/* Championship Banner */}
+      <a href="/championship" style={{ textDecoration:'none', display:'block', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:16, padding:'14px 18px', marginBottom:12, boxShadow:'0 4px 0 rgba(100,70,0,0.5)' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+          <span style={{ fontSize:20 }}>🏆</span>
+          <div>
+            <div style={{ fontSize:10, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:2, textTransform:'uppercase' }}>Sunday Championship</div>
+            <div style={{ fontSize:14, fontWeight:900, color:'#000' }}>This game is featured this Sunday →</div>
+          </div>
+        </div>
+      </a>
+
       {saved && (
         <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
           <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
