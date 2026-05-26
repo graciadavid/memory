@@ -50,10 +50,11 @@ export default function PokeClient() {
 
   const startLevel = (lvl: number) => {
     const count = Math.min(3 + lvl, 9)
+    const time = Math.max(3, 8 - Math.max(0, count - 5))
     const picked = shuffle(INGREDIENTS).slice(0, count).map(i => i.id)
     setBowl(picked)
     setSelected([])
-    setTimeLeft(8)
+    setTimeLeft(time)
     setPhase('memorize')
     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
@@ -178,7 +179,7 @@ export default function PokeClient() {
       {phase === 'memorize' && (
         <div style={{ marginBottom:20 }}>
           <div style={{ height:6, background:'rgba(255,255,255,0.1)', borderRadius:6, overflow:'hidden' }}>
-            <div style={{ height:'100%', background:GREEN, borderRadius:6, width:`${(timeLeft/8)*100}%`, transition:'width 1s linear' }} />
+            <div style={{ height:'100%', background:GREEN, borderRadius:6, width:`${(timeLeft/time)*100}%`, transition:'width 1s linear' }} />
           </div>
           <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', textAlign:'center', marginTop:6 }}>Memorize the bowl — {timeLeft}s</div>
         </div>
