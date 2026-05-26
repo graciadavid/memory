@@ -32,7 +32,8 @@ export default function PokeClient() {
   const [level, setLevel] = useState(1)
   const [bowl, setBowl] = useState<string[]>([])
   const [selected, setSelected] = useState<string[]>([])
-  const [timeLeft, setTimeLeft] = useState(5)
+  const [timeLeft, setTimeLeft] = useState(8)
+  const [totalTime, setTotalTime] = useState(8)
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const [top5, setTop5] = useState<any[]>([])
   const timerRef = useRef<any>(null)
@@ -55,6 +56,7 @@ export default function PokeClient() {
     setBowl(picked)
     setSelected([])
     setTimeLeft(time)
+    setTotalTime(time)
     setPhase('memorize')
     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
@@ -88,7 +90,6 @@ export default function PokeClient() {
     setSelected(newSelected)
     if (newSelected.length === bowl.length) {
       setPhase('correct')
-      // Auto-save score
       if (profile?.name) {
         await supabase.from('poke_scores').insert({ player_name: profile.name, level })
       }
@@ -179,7 +180,7 @@ export default function PokeClient() {
       {phase === 'memorize' && (
         <div style={{ marginBottom:20 }}>
           <div style={{ height:6, background:'rgba(255,255,255,0.1)', borderRadius:6, overflow:'hidden' }}>
-            <div style={{ height:'100%', background:GREEN, borderRadius:6, width:`${(timeLeft/time)*100}%`, transition:'width 1s linear' }} />
+            <div style={{ height:'100%', background:GREEN, borderRadius:6, width:`${(timeLeft/totalTime)*100}%`, transition:'width 1s linear' }} />
           </div>
           <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', textAlign:'center', marginTop:6 }}>Memorize the bowl — {timeLeft}s</div>
         </div>
