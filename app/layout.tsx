@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import ChampionshipBanner from '@/components/ChampionshipBanner'
 
 export const metadata: Metadata = {
   title: 'MemGenius — Daily Brain Games',
@@ -75,7 +76,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${nunito.variable} font-nunito`} style={{ background: '#f2f2f2', margin: 0 }}>
         <GAAnalytics />
         <VercelAnalytics />
-        <GameProfileGuard>{children}</GameProfileGuard>
+        <GameProfileGuard><ChampionshipBanner />
+        {children}</GameProfileGuard>
         <StreakBadge />
         <StreakUpdater />
         <BottomNav />
