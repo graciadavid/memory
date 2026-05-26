@@ -33,7 +33,7 @@ function getCountdown(sundayDate?: string) {
 
 export default function ChampionshipPage() {
  const { profile } = usePlayer()
- const [countdown, setCountdown] = useState({ isActive: false, d: 0, h: 0, m: 0, s: 0 })
+  const [countdown, setCountdown] = useState(() => getCountdown('2026-06-01'))
  const [ranking, setRanking] = useState<any[]>([])
  const [week, setWeek] = useState<any>(null)
  const [hallOfFame, setHallOfFame] = useState<any[]>([])
