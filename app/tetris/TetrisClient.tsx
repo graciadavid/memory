@@ -47,7 +47,15 @@ function isValid(board: Board, piece: Piece, dx = 0, dy = 0, shape = piece.shape
 }
 
 function rotate(shape: number[][]) {
-  return shape[0].map((_, i) => shape.map(row => row[i]).reverse())
+  const rows = shape.length
+  const cols = shape[0].length
+  const rotated = Array.from({ length: cols }, () => Array(rows).fill(0))
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      rotated[c][rows - 1 - r] = shape[r][c]
+    }
+  }
+  return rotated
 }
 
 function placePiece(board: Board, piece: Piece): Board {
