@@ -16,6 +16,7 @@ const GAMES = [
   { label: '2048', icon: `${BASE}/2048.png`, href: '/2048', desc: 'Merge tiles to reach 2048' },
   { label: 'Wordly', icon: `${BASE}/wordly.png`, href: '/wordly', desc: 'Guess the hidden word' },
   { label: 'Blackjack', icon: `${BASE}/blackjack.png`, href: '/blackjack', desc: 'Grow your stack, cash out at your peak' },
+  { label: 'Tetris', icon: `${BASE}/tetris.png`, href: '/tetris', desc: 'Stack blocks, clear lines, beat the world' },
 ]
 
 export default function LogicPage() {
@@ -89,9 +90,21 @@ export default function LogicPage() {
           </div>
         </details>
 
-        <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
-          <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            Blackjack — probabilistic decision-making
+        <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Tetris — spatial reasoning and planning
+           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
+         </summary>
+         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
+           <p style={{ marginBottom: 10 }}>Tetris is one of the most studied games in cognitive science. It requires continuous spatial reasoning — rotating and placing falling pieces to clear lines — while planning several moves ahead under time pressure. The game demands simultaneous management of working memory, spatial visualization and executive function.</p>
+           <p style={{ marginBottom: 10 }}>Research has shown that Tetris players develop measurably thicker cortical regions associated with critical thinking, reasoning and language and processing. Regular Tetris play has also been linked to reduced intrusive thoughts and PTSD symptoms, suggesting that the spatial engagement it requires actively displaces other cognitive processing.</p>
+           <p>The competitive scoring system rewards both speed and efficiency. Clearing multiple lines simultaneously multiplies your score — rewarding players who plan ahead rather than reacting purely to the current piece. This forward-planning habit transfers directly to strategic thinking in other domains.</p>
+         </div>
+       </details>
+
+       <details style={{ marginBottom: 24, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
+         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+           Blackjack — probabilistic decision-making
             <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
           </summary>
           <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
