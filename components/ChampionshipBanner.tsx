@@ -5,7 +5,7 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 
 export default function ChampionshipBanner() {
  const pathname = usePathname()
- if (pathname === '/') return null
+  if (pathname === '/' || pathname.startsWith('/championship')) return null
 
  return (
    <a href="/championship" style={{ textDecoration:'none', display:'flex', alignItems:'center', justifyContent:'center', gap:8, background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', padding:'8px 16px', position:'sticky', top:0, zIndex:999 }}>
