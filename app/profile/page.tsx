@@ -203,7 +203,7 @@ export default function ProfilePage() {
     poke.data?.[0] ? supabase.from('poke_scores').select('player_name', {count:'exact',head:true}).gt('level', poke.data[0].level) : Promise.resolve({count:0}),   ])
 
    const totals = [memTotal,stopTotal,f1Total,pendulumTotal,aceTotal,flagsTotal,vPopTotal,countriesTotal,vAreaTotal,digitsTotal,seqTotal,nbackTotal,sudokuTotal,masterTotal,g2048Total,wordlyTotal,letterRainTotal,capitalsTotal,blinkTotal,blackjackTotal,pokeTotal,tetrisTotal]
-   const keys = ['memory','stop','f1','pendulum','ace','flags','versusPop','countries','versusArea','digits','sequence','nback','sudoku','mastermind','game2048','wordly','letterRain','capitals','blink','blackjack','poke']
+   const keys = ['memory','stop','f1','pendulum','ace','flags','versusPop','countries','versusArea','digits','sequence','nback','sudoku','mastermind','game2048','wordly','letterRain','capitals','blink','blackjack','poke','tetris']
 
    const newPercentiles: any = {}
    rankQueries.forEach((rank: any, i) => {
@@ -287,6 +287,7 @@ export default function ProfilePage() {
      { label: '2048', key: 'game2048' },
      { label: 'Wordly', key: 'wordly' },
      { label: 'Blackjack', key: 'blackjack' },
+     { label: 'Tetris', key: 'tetris' },
    ]},
  ]
 
