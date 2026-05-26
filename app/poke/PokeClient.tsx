@@ -32,8 +32,7 @@ export default function PokeClient() {
   const [level, setLevel] = useState(1)
   const [bowl, setBowl] = useState<string[]>([])
   const [selected, setSelected] = useState<string[]>([])
-  const [timeLeft, setTimeLeft] = useState(3)
-  const [saved, setSaved] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(5)
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const [top5, setTop5] = useState<any[]>([])
   const timerRef = useRef<any>(null)
@@ -69,13 +68,12 @@ export default function PokeClient() {
   }
 
   const startGame = () => {
-    setSaved(false)
     setWorldRank(null)
     setLevel(1)
     startLevel(1)
   }
 
-  const handleSelect = (id: string) => {
+  const handleSelect = async (id: string) => {
     if (phase !== 'guess') return
     if (selected.includes(id)) return
     if (!bowl.includes(id)) {
@@ -89,6 +87,10 @@ export default function PokeClient() {
     setSelected(newSelected)
     if (newSelected.length === bowl.length) {
       setPhase('correct')
+      // Auto-save score
+      if (profile?.name) {
+        await supabase.from('poke_scores').insert({ player_name: profile.name, level })
+      }
       setTimeout(() => {
         const nextLevel = level + 1
         setLevel(nextLevel)
@@ -140,8 +142,7 @@ export default function PokeClient() {
         <div style={{ fontSize:48, fontWeight:900, color:GOLD, marginBottom:4 }}>Level {level}</div>
         {worldRank && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)' }}>#{worldRank} in the world</div>}
       </div>
-      <div style={{ marginBottom:20 }}>
-        <div style={{ fontSize:11, fontWeight:800, color:'#69F0AE', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>✓ Correct — Bowl contained</div>
+      <div style={{ marginBottom:24 }}>
         <div style={{ display:'flex', flexWrap:'wrap', gap:10, justifyContent:'center' }}>
           {bowl.map(id => {
             const ing = INGREDIENTS.find(i => i.id === id)!
@@ -154,23 +155,13 @@ export default function PokeClient() {
           })}
         </div>
       </div>
-      {!profile?.name && !saved && (
+      {!profile?.name && (
         <div style={{ marginBottom:16 }}>
           <AuthModal onSuccess={async (playerName) => {
             await supabase.from('poke_scores').insert({ player_name: playerName, level })
-            setSaved(true)
           }} title="Save your result" subtitle="Free · No email needed" />
         </div>
       )}
-      {profile?.name && !saved && (
-        <button onClick={async () => {
-          await supabase.from('poke_scores').insert({ player_name: profile.name, level })
-          setSaved(true)
-        }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:12 }}>
-          Save Score
-        </button>
-      )}
-      {saved && <div style={{ fontSize:13, color:'#69F0AE', fontWeight:800, textAlign:'center', marginBottom:12 }}>✓ Saved!</div>}
       <div style={{ display:'flex', gap:10 }}>
         <a href="/memory-hub" style={{ flex:1, textDecoration:'none', display:'block', padding:'14px', borderRadius:14, background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.6)', fontSize:14, fontWeight:900, textAlign:'center' }}>← Memory</a>
         <button onClick={startGame} style={{ flex:2, padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play Again →</button>
