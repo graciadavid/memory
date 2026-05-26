@@ -115,6 +115,10 @@ export default function ChampionshipPage() {
          <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>Play {gameLabel} →</div>
        </a>
 
+        <button onClick={() => { if (navigator.share) { navigator.share({ title:'Sunday Brain Championship', text:'Can you beat the world? This Sunday: ' + gameLabel, url:'https://memgenius.com/championship' }) } else { navigator.clipboard.writeText('https://memgenius.com/championship'); alert('Link copied!') } }} style={{ width:'100%', marginTop:10, padding:'14px', borderRadius:16, border:'1px solid rgba(255,255,255,0.15)', background:'rgba(255,255,255,0.06)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer' }}>
+          🔗 Share Championship
+        </button>
+
        {myRank && (
          <div style={{ marginTop:12, textAlign:'center', fontSize:13, color:'rgba(255,255,255,0.5)', fontWeight:700 }}>
            You are <span style={{ color:GOLD, fontWeight:900 }}>#{myRank}</span> of {ranking.length} players
