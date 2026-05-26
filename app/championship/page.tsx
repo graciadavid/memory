@@ -16,30 +16,30 @@ function getThisSunday() {
  return sunday
 }
 
-function getCountdown() {
- const now = new Date()
- const sunday = getThisSunday()
- const end = new Date(sunday)
- end.setUTCHours(23,59,59,999)
- const isActive = now >= sunday && now <= end
- const target = isActive ? end : sunday
- const diff = target.getTime() - now.getTime()
- const h = Math.floor(diff / 3600000)
- const m = Math.floor((diff % 3600000) / 60000)
- const s = Math.floor((diff % 60000) / 1000)
- return { isActive, h, m, s, sunday }
+function getCountdown(sundayDate?: string) {
+  const now = new Date()
+  const sunday = sundayDate ? new Date(sundayDate + 'T00:00:00Z') : new Date()
+  const end = new Date(sunday)
+  end.setUTCHours(23,59,59,999)
+  const isActive = now >= sunday && now <= end
+  const target = isActive ? end : sunday
+  const diff = Math.max(0, target.getTime() - now.getTime())
+  const h = Math.floor(diff / 3600000)
+  const m = Math.floor((diff % 3600000) / 60000)
+  const s = Math.floor((diff % 60000) / 1000)
+  return { isActive, h, m, s }
 }
 
 export default function ChampionshipPage() {
  const { profile } = usePlayer()
- const [countdown, setCountdown] = useState(getCountdown())
+ const [countdown, setCountdown] = useState({ isActive: false, h: 0, m: 0, s: 0 })
  const [ranking, setRanking] = useState<any[]>([])
  const [week, setWeek] = useState<any>(null)
  const [hallOfFame, setHallOfFame] = useState<any[]>([])
  const [myRank, setMyRank] = useState<number | null>(null)
 
  useEffect(() => {
-   const timer = setInterval(() => setCountdown(getCountdown()), 1000)
+   const timer = setInterval(() => setCountdown(getCountdown(week?.sunday_date)), 1000)
    return () => clearInterval(timer)
  }, [])
 
