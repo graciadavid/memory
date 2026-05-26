@@ -11,6 +11,36 @@ const GAMES: Record<string,string> = {
  sudoku:'/sudoku', mastermind:'/mastermind', '2048':'/2048', wordly:'/wordly',
 }
 
+
+function ChampionshipCountdown() {
+ const [cd, setCd] = useState({ d:0, h:0, m:0, s:0 })
+ useEffect(() => {
+   const calc = () => {
+     const now = new Date()
+     const sunday = new Date('2026-06-01T00:00:00Z')
+     const diff = Math.max(0, sunday.getTime() - now.getTime())
+     const d = Math.floor(diff / 86400000)
+     const h = Math.floor((diff % 86400000) / 3600000)
+     const m = Math.floor((diff % 3600000) / 60000)
+     const s = Math.floor((diff % 60000) / 1000)
+     setCd({d,h,m,s})
+   }
+   calc()
+   const t = setInterval(calc, 1000)
+   return () => clearInterval(t)
+ }, [])
+ return (
+   <div style={{ display:'flex', gap:8 }}>
+     {[{v:cd.d,l:'D'},{v:cd.h,l:'H'},{v:cd.m,l:'M'},{v:cd.s,l:'S'}].map(({v,l}) => (
+       <div key={l} style={{ flex:1, background:'rgba(0,0,0,0.2)', borderRadius:8, padding:'6px 4px', textAlign:'center' }}>
+         <div style={{ fontSize:18, fontWeight:900, color:'#000' }}>{String(v).padStart(2,'0')}</div>
+         <div style={{ fontSize:8, fontWeight:800, color:'rgba(0,0,0,0.4)', letterSpacing:1 }}>{l}</div>
+       </div>
+     ))}
+   </div>
+ )
+}
+
 export default function HomePage() {
  const [todayGame, setTodayGame] = useState('capitals')
 
