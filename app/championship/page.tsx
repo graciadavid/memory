@@ -181,7 +181,7 @@ function ChampionshipSEO() {
          How the championship works
          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>▼</span>
        </summary>
-       <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.5)' }}>
+       <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.04)' }}>
          <p style={{ marginBottom: 10 }}>Each week a different game is selected from the MemGenius catalogue — Stop, Blink, Capitals, Flags, Pendulum, Digits and more. From 00:00 UTC to 23:59 UTC on Sunday, every registered player can compete. Your best score of the day counts. You can play as many times as you want to improve your result.</p>
          <p>The live ranking updates every few seconds throughout the day. At midnight, the championship closes automatically. The player with the best score is crowned champion and enters the Hall of Fame permanently.</p>
        </div>
@@ -192,7 +192,7 @@ function ChampionshipSEO() {
          Why compete? The science of competitive brain training
          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>▼</span>
        </summary>
-       <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.5)' }}>
+       <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.04)' }}>
          <p style={{ marginBottom: 10 }}>Competition is one of the most powerful motivators for cognitive improvement. Research in sports psychology consistently shows that competitive contexts produce greater effort, higher arousal and better performance than solo practice — and that performance improvements in competitive settings transfer to non-competitive ones.</p>
          <p>The weekly format is deliberately designed to match the optimal cycle for cognitive training. Daily practice builds the neural connections. Weekly competition provides the high-stakes moment that consolidates them. The combination of routine and peak performance is what drives genuine, lasting cognitive improvement.</p>
        </div>
@@ -203,7 +203,7 @@ function ChampionshipSEO() {
          The game rotation — what to train each week
          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>▼</span>
        </summary>
-       <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.5)' }}>
+       <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.04)' }}>
          <p style={{ marginBottom: 10 }}>The championship rotates through ten games covering all four cognitive categories. Stop and Pendulum test reaction time and temporal precision. Blink and Digits test working memory and spatial recall. Capitals and Flags test knowledge retrieval speed. Mastermind tests logical reasoning under pressure.</p>
          <p>No single cognitive profile dominates every week. The rotation ensures that different strengths are rewarded on different Sundays — making the championship genuinely inclusive and giving every type of player a realistic chance of winning.</p>
        </div>
@@ -214,7 +214,7 @@ function ChampionshipSEO() {
          How to prepare and win
          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>▼</span>
        </summary>
-       <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.5)' }}>
+       <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.04)' }}>
          <p style={{ marginBottom: 10 }}>The week before the championship is your preparation window. Play the featured game daily — even five minutes a day produces measurable improvement in the specific skill being tested. Your nervous system needs repetition to consolidate the timing and pattern recognition required for a top score.</p>
          <p style={{ marginBottom: 10 }}>On Sunday itself, play your first few attempts to warm up — do not expect your best score immediately. Peak cognitive performance typically occurs after three to five practice attempts, when your nervous system is calibrated and your focus is fully engaged.</p>
          <p>Avoid playing when fatigued, hungry or distracted. Cognitive performance is genuinely sensitive to physical state. The best scores are achieved in a focused, alert state — early afternoon tends to be optimal for most people.</p>
@@ -226,7 +226,7 @@ function ChampionshipSEO() {
          Free brain training competition — no entry fee, no limits
          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>▼</span>
        </summary>
-       <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.5)' }}>
+       <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: 'rgba(255,255,255,0.5)', background: 'rgba(255,255,255,0.04)' }}>
          <p style={{ marginBottom: 10 }}>The Sunday Brain Championship is completely free. No entry fee, no premium tier, no advantage that can be purchased. Every player competes on equal terms — the only thing that matters is your cognitive performance on the day.</p>
          <p>All you need is a free MemGenius profile — a name and a four-digit PIN. Your scores are saved automatically, your rank updates in real time, and your place in the Hall of Fame is permanent if you win. The championship is open to players of all ages, backgrounds and experience levels worldwide.</p>
        </div>
