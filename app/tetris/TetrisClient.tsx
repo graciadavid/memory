@@ -250,12 +250,12 @@ export default function TetrisClient() {
          {/* Controls */}
          {phase === 'playing' && (
            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-             <button onTouchStart={rotatePiece} onClick={rotatePiece} style={{ width:'100%', height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:16, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>↻ Rotate</button>
+             <button onTouchStart={(e)=>{e.preventDefault();rotatePiece()}} onMouseDown={rotatePiece} style={{ width:'100%', height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:16, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>↻ Rotate</button>
              <div style={{ display:'flex', gap:8 }}>
-               <button onTouchStart={moveLeft} onClick={moveLeft} style={{ flex:1, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>←</button>
-               <button onTouchStart={moveRight} onClick={moveRight} style={{ flex:1, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>→</button>
+               <button onTouchStart={(e)=>{e.preventDefault();moveLeft()}} onMouseDown={moveLeft} style={{ flex:1, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>←</button>
+               <button onTouchStart={(e)=>{e.preventDefault();moveRight()}} onMouseDown={moveRight} style={{ flex:1, height:52, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:22, cursor:'pointer', fontFamily:'inherit' }}>→</button>
              </div>
-             <button onTouchStart={hardDrop} onClick={hardDrop} style={{ width:'100%', height:52, borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:14, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>⬇ Drop</button>
+             <button onTouchStart={(e)=>{e.preventDefault();hardDrop()}} onMouseDown={hardDrop} style={{ width:'100%', height:52, borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:14, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>⬇ Drop</button>
            </div>
          )}
        </div>
