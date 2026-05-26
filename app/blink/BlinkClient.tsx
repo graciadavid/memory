@@ -29,6 +29,11 @@ type Phase = 'rules' | 'preview' | 'flash' | 'input' | 'result'
 
 export default function BlinkClient() {
   const { profile } = usePlayer()
+ const [champGame, setChampGame] = useState<string|null>(null)
+ useEffect(() => {
+   supabase.from('championship_weeks').select('game').eq('active', true).single()
+     .then(({data}:any) => { if (data?.game) setChampGame(data.game) })
+ }, [])
   const [phase, setPhase] = useState<Phase>('rules')
   const [level, setLevel] = useState(1)
   const [pattern, setPattern] = useState<number[]>([])

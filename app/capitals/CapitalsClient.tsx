@@ -85,6 +85,11 @@ type Phase = 'rules' | 'playing' | 'result'
 
 export default function CapitalsClient() {
   const { profile } = usePlayer()
+ const [champGame, setChampGame] = useState<string|null>(null)
+ useEffect(() => {
+   supabase.from('championship_weeks').select('game').eq('active', true).single()
+     .then(({data}:any) => { if (data?.game) setChampGame(data.game) })
+ }, [])
   const [phase, setPhase] = useState<Phase>('rules')
   const [current, setCurrent] = useState<{name:string,capital:string,code:string}|null>(null)
   const [options, setOptions] = useState<string[]>([])

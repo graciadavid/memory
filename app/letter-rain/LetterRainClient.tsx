@@ -53,6 +53,11 @@ function getConfuser(target: string): string {
 
 export default function LetterRainClient() {
   const { profile } = usePlayer()
+ const [champGame, setChampGame] = useState<string|null>(null)
+ useEffect(() => {
+   supabase.from('championship_weeks').select('game').eq('active', true).single()
+     .then(({data}:any) => { if (data?.game) setChampGame(data.game) })
+ }, [])
   const [phase, setPhase] = useState<Phase>('rules')
   const [level, setLevel] = useState(1)
   const [target, setTarget] = useState('A')

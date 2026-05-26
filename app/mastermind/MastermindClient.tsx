@@ -45,6 +45,11 @@ type GuessRow = { colors: number[], feedback: SlotFeedback[] }
 
 export default function MastermindClient() {
   const { profile } = usePlayer()
+ const [champGame, setChampGame] = useState<string|null>(null)
+ useEffect(() => {
+   supabase.from('championship_weeks').select('game').eq('active', true).single()
+     .then(({data}:any) => { if (data?.game) setChampGame(data.game) })
+ }, [])
   const [phase, setPhase] = useState<Phase>('rules')
   const [code, setCode] = useState<number[]>([])
   const [guesses, setGuesses] = useState<GuessRow[]>([])

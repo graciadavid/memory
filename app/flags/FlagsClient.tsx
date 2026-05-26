@@ -103,6 +103,11 @@ type Phase = 'rules' | 'playing' | 'result'
 
 export default function FlagsClient() {
   const { profile } = usePlayer()
+ const [champGame, setChampGame] = useState<string|null>(null)
+ useEffect(() => {
+   supabase.from('championship_weeks').select('game').eq('active', true).single()
+     .then(({data}:any) => { if (data?.game) setChampGame(data.game) })
+ }, [])
   const [phase, setPhase] = useState<Phase>('rules')
   const [score, setScore] = useState(0)
   const [question, setQuestion] = useState<{ code: string, name: string } | null>(null)
@@ -299,6 +304,18 @@ export default function FlagsClient() {
           }} title="Save your result" subtitle="Free · No email needed" />
       )}
 
+      {/* Championship Banner */}
+     {champGame === 'flags' && (
+       <a href="/championship" style={{ textDecoration:'none', display:'block', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:16, padding:'14px 18px', marginBottom:12, boxShadow:'0 4px 0 rgba(100,70,0,0.5)' }}>
+         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+           <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/trophy.png" style={{ width:36, height:36, objectFit:'contain' }} />
+           <div>
+             <div style={{ fontSize:10, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:2, textTransform:'uppercase' }}>Sunday Championship</div>
+             <div style={{ fontSize:14, fontWeight:900, color:'#000' }}>This game is featured this Sunday →</div>
+           </div>
+         </div>
+       </a>
+     )}
       {saved && (
         <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
           <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
