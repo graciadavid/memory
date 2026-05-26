@@ -34,7 +34,7 @@ export default function HallOfFamePage() {
                 {new Date(w.sunday_date).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})} · {w.game.charAt(0).toUpperCase()+w.game.slice(1)}
               </div>
               <div style={{ display:'flex', alignItems:'center', gap:14 }}>
-                <img style={{ width: i === 0 ? 48 : 36, height: i === 0 ? 48 : 36, objectFit:'contain' }} src={i === 0 ? 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png' : i === 1 ? 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/silver.png' : 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/bronze.png'} />
+                {i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : '🏅'}
                 <div style={{ flex:1 }}>
                   <div style={{ fontSize:18, fontWeight:900, color:'#fff' }}>{w.winner_name}</div>
                   <div style={{ fontSize:12, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>{w.participants} participants</div>
