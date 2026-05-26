@@ -39,11 +39,12 @@ export default function ChampionshipPage() {
  const [hallOfFame, setHallOfFame] = useState<any[]>([])
  const [myRank, setMyRank] = useState<number | null>(null)
 
- useEffect(() => {
-   const timer = setInterval(() => setCountdown(getCountdown(week?.sunday_date)), 1000)
-   return () => clearInterval(timer)
- }, [])
-
+  useEffect(() => {
+    if (!week?.sunday_date) return
+    setCountdown(getCountdown(week.sunday_date))
+    const timer = setInterval(() => setCountdown(getCountdown(week.sunday_date)), 1000)
+    return () => clearInterval(timer)
+  }, [week])
  useEffect(() => { loadWeek(); loadHallOfFame() }, [])
 
  useEffect(() => {
