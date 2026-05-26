@@ -91,18 +91,6 @@ export default function TetrisClient() {
         setTop5(sorted.map(([name, score]) => ({ name, score })))
       })
   }, [])
-  const [top5, setTop5] = useState<any[]>([])
-
-  useEffect(() => {
-    supabase.from('tetris_scores').select('player_name, score').order('score', { ascending: false }).limit(100)
-      .then(({ data }) => {
-        if (!data) return
-        const best: Record<string, number> = {}
-        data.forEach((s: any) => { if (!best[s.player_name] || s.score > best[s.player_name]) best[s.player_name] = s.score })
-        const sorted = Object.entries(best).sort((a, b) => b[1] - a[1]).slice(0, 5)
-        setTop5(sorted.map(([name, score]) => ({ name, score })))
-      })
-  }, [])
   const [worldRank, setWorldRank] = useState<number | null>(null)
   const boardRef = useRef(board)
   const pieceRef = useRef(piece)
@@ -261,35 +249,6 @@ export default function TetrisClient() {
     </main>
   )
 
-  if (phase === 'idle') return (
-    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
-      <div style={{ fontSize:11, fontWeight:800, color:'#E65100', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Logic</div>
-      <div style={{ fontSize:36, fontWeight:900, color:'#fff', marginBottom:8 }}>Tetris</div>
-      <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:32 }}>Stack blocks, clear lines, beat the world</div>
-
-      <button onClick={start} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080', marginBottom:32 }}>
-        Play →
-      </button>
-
-      {top5.length > 0 && (
-        <div style={{ marginBottom:32 }}>
-          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase', marginBottom:16 }}>World Ranking</div>
-          {top5.map((r, i) => (
-            <div key={r.name} style={{ display:'flex', alignItems:'center', gap:12, background:'rgba(255,255,255,0.04)', borderRadius:14, padding:'12px 16px', marginBottom:8, border: i === 0 ? '1px solid rgba(200,150,12,0.3)' : '1px solid rgba(255,255,255,0.06)' }}>
-              <div style={{ fontSize:16, fontWeight:900, color: i === 0 ? GOLD : 'rgba(255,255,255,0.3)', width:28 }}>{i === 0 ? '👑' : '#' + (i+1)}</div>
-              <div style={{ flex:1, fontSize:14, fontWeight:800, color:'#fff' }}>{r.name}</div>
-              <div style={{ fontSize:14, fontWeight:900, color:GOLD }}>{r.score.toLocaleString()}</div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div style={{ fontSize:13, color:'rgba(255,255,255,0.3)', lineHeight:1.7, marginBottom:16 }}>
-        Tetris is one of the most studied games in cognitive science. It trains spatial reasoning, working memory and planning simultaneously. Clearing multiple lines at once multiplies your score — rewarding players who think ahead.
-      </div>
-      <div style={{ fontSize:12, color:'rgba(255,255,255,0.2)', fontWeight:700, textAlign:'center' }}>Free · No login required to play · World rankings</div>
-    </main>
-  )
 
   return (
     <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', display:'flex', flexDirection:'column', alignItems:'center', padding:'16px 0 100px' }}>
@@ -390,17 +349,6 @@ export default function TetrisClient() {
       )}
 
       {/* Start screen */}
-      {phase === 'idle' && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.8)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, zIndex:100 }}>
-          <div style={{ background:'#1C1C1E', borderRadius:24, padding:'32px 24px', width:'100%', maxWidth:340, border:'1px solid rgba(255,255,255,0.08)', textAlign:'center' }}>
-            <div style={{ fontSize:36, fontWeight:900, color:'#fff', marginBottom:8 }}>Tetris</div>
-            <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:24 }}>Classic block stacking game</div>
-            <button onClick={start} style={{ width:'100%', padding:'18px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080' }}>
-              Play →
-            </button>
-          </div>
-        </div>
-      )}
 
 
 
