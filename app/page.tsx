@@ -41,7 +41,7 @@ export default function HomePage() {
      <a href={GAMES[todayGame] || '/stop'} style={{ textDecoration: 'none', width: '100%' }}>
        <div style={{ background: GREEN, borderRadius: 24, padding: '22px', textAlign: 'center', boxShadow: '0 10px 0 #1B5E2070' }}>
          <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6 }}>Today's game</div>
-         <div style={{ fontSize: 26, fontWeight: 900, color: '#fff' }}>{todayGame.charAt(0).toUpperCase() + todayGame.slice(1).replace('-',' ')} →</div>
+         <div style={{ fontSize: 26, fontWeight: 900, color: '#fff' }}>Stop — This Sunday →</div>
        </div>
      </a>
 
