@@ -39,8 +39,8 @@ export default function StreakBadge() {
  if (!ready) return null
 
  return (
-   <Link href="/" style={{ textDecoration:'none', position:'fixed', top:10, right:10, zIndex:999, display:'flex', alignItems:'center', gap:8, background:'rgba(0,0,0,0.35)', borderRadius:22, padding:'6px 12px 6px 6px', backdropFilter:'blur(10px)' }}>
-     <img src={`${BASE}/brain-logo.webp`} style={{ width:40, height:40, objectFit:'contain', flexShrink:0 }} />
+   <Link href="/" style={{ textDecoration:'none', position:'fixed', top:10, right:10, zIndex:999, display:'flex', alignItems:'center', gap:5, background:'rgba(0,0,0,0.35)', borderRadius:18, padding:'4px 8px 4px 4px', backdropFilter:'blur(10px)' }}>
+     <img src={`${BASE}/brain-logo.webp`} style={{ width:28, height:28, objectFit:'contain', flexShrink:0 }} />
      {streak > 0 && (
        <div style={{ display:'flex', flexDirection:'column', alignItems:'center' }}>
          <span style={{ fontSize:26, fontWeight:900, color:'#FF6D00', fontFamily:'var(--font-nunito), sans-serif', lineHeight:1 }}>{streak}</span>
