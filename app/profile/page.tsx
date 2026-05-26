@@ -96,11 +96,11 @@ export default function ProfilePage() {
    // Fetch best scores and total counts in parallel
    const [
      mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea,
-     digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals, blink, blackjack, poke,
+     digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals, blink, blackjack, poke, tetris,
      // Totals
      memTotal, stopTotal, f1Total, pendulumTotal, aceTotal, flagsTotal,
      vPopTotal, countriesTotal, vAreaTotal, digitsTotal, seqTotal, nbackTotal,
-     sudokuTotal, masterTotal, g2048Total, wordlyTotal, letterRainTotal, capitalsTotal, blinkTotal, blackjackTotal, pokeTotal,
+     sudokuTotal, masterTotal, g2048Total, wordlyTotal, letterRainTotal, capitalsTotal, blinkTotal, blackjackTotal, pokeTotal, tetrisTotal,
      // Ranks (how many are better)
    ] = await Promise.all([
      // Best scores
@@ -125,6 +125,7 @@ export default function ProfilePage() {
      supabase.from('blink_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('blackjack_scores').select('chips').eq('player_name', name).order('chips', { ascending: false }).limit(1),
      supabase.from('poke_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
+     supabase.from('tetris_scores').select('score').eq('player_name', name).order('score', { ascending: false }).limit(1),
      // Total unique players per game
      supabase.from('scores').select('player_name', { count: 'exact', head: true }),
      supabase.from('precision_scores').select('player_name', { count: 'exact', head: true }).is('game_type', null),
@@ -147,6 +148,7 @@ export default function ProfilePage() {
      supabase.from('blink_scores').select('player_name', { count: 'exact', head: true }),
      supabase.from('blackjack_scores').select('player_name', { count: 'exact', head: true }),
      supabase.from('poke_scores').select('player_name', { count: 'exact', head: true }),
+     supabase.from('tetris_scores').select('player_name', { count: 'exact', head: true }),
    ])
 
    const fmt = (ms: number) => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`
@@ -173,7 +175,7 @@ export default function ProfilePage() {
    if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
    if (blackjack.data?.[0]) r.blackjack = `${blackjack.data[0].chips.toLocaleString()} chips`
   if (poke.data?.[0]) r.poke = `Level ${poke.data[0].level}`
-   setRecords(r)
+  if (tetris.data?.[0]) r.tetris = `${tetris.data[0].score.toLocaleString()} pts`   setRecords(r)
 
    // Now calculate percentiles - fetch ranks in parallel
    const rankQueries = await Promise.all([
@@ -199,7 +201,7 @@ export default function ProfilePage() {
      blackjack.data?.[0] ? supabase.from('blackjack_scores').select('player_name', {count:'exact',head:true}).gt('chips', blackjack.data[0].chips) : Promise.resolve({count:0}),
     poke.data?.[0] ? supabase.from('poke_scores').select('player_name', {count:'exact',head:true}).gt('level', poke.data[0].level) : Promise.resolve({count:0}),   ])
 
-   const totals = [memTotal,stopTotal,f1Total,pendulumTotal,aceTotal,flagsTotal,vPopTotal,countriesTotal,vAreaTotal,digitsTotal,seqTotal,nbackTotal,sudokuTotal,masterTotal,g2048Total,wordlyTotal,letterRainTotal,capitalsTotal,blinkTotal,blackjackTotal,pokeTotal]
+   const totals = [memTotal,stopTotal,f1Total,pendulumTotal,aceTotal,flagsTotal,vPopTotal,countriesTotal,vAreaTotal,digitsTotal,seqTotal,nbackTotal,sudokuTotal,masterTotal,g2048Total,wordlyTotal,letterRainTotal,capitalsTotal,blinkTotal,blackjackTotal,pokeTotal,tetrisTotal]
    const keys = ['memory','stop','f1','pendulum','ace','flags','versusPop','countries','versusArea','digits','sequence','nback','sudoku','mastermind','game2048','wordly','letterRain','capitals','blink','blackjack','poke']
 
    const newPercentiles: any = {}
