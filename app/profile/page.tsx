@@ -96,11 +96,11 @@ export default function ProfilePage() {
    // Fetch best scores and total counts in parallel
    const [
      mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea,
-     digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals, blink, blackjack,
+     digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals, blink, blackjack, poke,
      // Totals
      memTotal, stopTotal, f1Total, pendulumTotal, aceTotal, flagsTotal,
      vPopTotal, countriesTotal, vAreaTotal, digitsTotal, seqTotal, nbackTotal,
-     sudokuTotal, masterTotal, g2048Total, wordlyTotal, letterRainTotal, capitalsTotal, blinkTotal, blackjackTotal,
+     sudokuTotal, masterTotal, g2048Total, wordlyTotal, letterRainTotal, capitalsTotal, blinkTotal, blackjackTotal, pokeTotal,
      // Ranks (how many are better)
    ] = await Promise.all([
      // Best scores
@@ -199,8 +199,8 @@ export default function ProfilePage() {
      blackjack.data?.[0] ? supabase.from('blackjack_scores').select('player_name', {count:'exact',head:true}).gt('chips', blackjack.data[0].chips) : Promise.resolve({count:0}),
    ])
 
-   const totals = [memTotal,stopTotal,f1Total,pendulumTotal,aceTotal,flagsTotal,vPopTotal,countriesTotal,vAreaTotal,digitsTotal,seqTotal,nbackTotal,sudokuTotal,masterTotal,g2048Total,wordlyTotal,letterRainTotal,capitalsTotal,blinkTotal,blackjackTotal]
-   const keys = ['memory','stop','f1','pendulum','ace','flags','versusPop','countries','versusArea','digits','sequence','nback','sudoku','mastermind','game2048','wordly','letterRain','capitals','blink','blackjack']
+   const totals = [memTotal,stopTotal,f1Total,pendulumTotal,aceTotal,flagsTotal,vPopTotal,countriesTotal,vAreaTotal,digitsTotal,seqTotal,nbackTotal,sudokuTotal,masterTotal,g2048Total,wordlyTotal,letterRainTotal,capitalsTotal,blinkTotal,blackjackTotal,pokeTotal]
+   const keys = ['memory','stop','f1','pendulum','ace','flags','versusPop','countries','versusArea','digits','sequence','nback','sudoku','mastermind','game2048','wordly','letterRain','capitals','blink','blackjack','poke']
 
    const newPercentiles: any = {}
    rankQueries.forEach((rank: any, i) => {
