@@ -87,6 +87,7 @@ export default function ChampionshipPage() {
   const gameIcon = week?.game ? GAME_ICONS[week.game] : 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png'
 
  return (
+   <>
    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
 
      <div style={{ textAlign:'center', marginBottom:32 }}>
@@ -165,6 +166,7 @@ export default function ChampionshipPage() {
 
    </main>
     <ChampionshipSEO />
+   </>
  )
 }
 
