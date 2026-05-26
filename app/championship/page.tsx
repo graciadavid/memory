@@ -81,6 +81,8 @@ export default function ChampionshipPage() {
 
  const gameLabel = week?.game ? week.game.charAt(0).toUpperCase() + week.game.slice(1).replace('-', ' ') : 'Stop'
  const gameHref = week?.game ? `/${week.game}` : '/stop'
+  const GAME_ICONS: Record<string,string> = { stop:'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png', blink:'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/blink.png', capitals:'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/capitals.png', flags:'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/flags.png', pendulum:'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/pendulum.png', digits:'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/digits.png', nback:'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/nback.png', ace:'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/ace.png', 'letter-rain':'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/letter-rain.png', mastermind:'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/mastermind.png' }
+  const gameIcon = week?.game ? GAME_ICONS[week.game] : 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/precision.png'
 
  return (
    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
@@ -93,7 +95,7 @@ export default function ChampionshipPage() {
 
      <div style={{ background:'linear-gradient(135deg, #1a2a1a, #0D3320)', borderRadius:24, padding:'24px', marginBottom:20, border:'1px solid rgba(46,125,50,0.3)' }}>
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, marginBottom:8 }}>THIS WEEK</div>
-       <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:16 }}>{gameLabel}</div>
+        <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}><img src={gameIcon} style={{ width:64, height:64, objectFit:'contain' }} /><div style={{ fontSize:32, fontWeight:900, color:'#fff' }}>{gameLabel}</div></div>
 
        <div style={{ marginBottom:20 }}>
          <div style={{ fontSize:11, fontWeight:800, color: countdown.isActive ? '#69F0AE' : 'rgba(255,255,255,0.4)', letterSpacing:2, marginBottom:8 }}>
