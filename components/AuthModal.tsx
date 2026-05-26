@@ -19,12 +19,15 @@ export default function AuthModal({ onSuccess, onSkip, title = 'Save your result
    if (!name.trim()) { setError('Enter a name'); return }
    if (pin.join('').length !== 4) { setError('Choose a 4-digit PIN'); return }
    setSaving(true); setError('')
+    let country = ''
+    try { const geo = await fetch('https://ipapi.co/json/'); const geoData = await geo.json(); country = geoData.country_code || '' } catch {}
+
    const pinHash = btoa(pin.join(''))
    const { data: existing } = await supabase.from('profiles').select('player_name, password_hash').eq('player_name', name.trim()).limit(1)
    if (existing && existing.length > 0) {
      if (existing[0].password_hash !== pinHash) { setError('Wrong PIN for this name'); setSaving(false); return }
    } else {
-     await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pinHash })
+     await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pinHash, country })
    }
    localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
    setSaving(false)
