@@ -47,15 +47,7 @@ function isValid(board: Board, piece: Piece, dx = 0, dy = 0, shape = piece.shape
 }
 
 function rotate(shape: number[][]) {
-  const rows = shape.length
-  const cols = shape[0].length
-  const rotated = Array.from({ length: cols }, () => Array(rows).fill(0))
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      rotated[c][rows - 1 - r] = shape[r][c]
-    }
-  }
-  return rotated
+  return shape[0].map((_, colIdx) => shape.map(row => row[colIdx]).reverse())
 }
 
 function placePiece(board: Board, piece: Piece): Board {
@@ -188,8 +180,28 @@ export default function TetrisClient() {
     if (!piece) return
     let p = { ...piece }
     while (isValid(board, p, 0, 1)) p = { ...p, y: p.y + 1 }
-    setPiece(p)
-    setTimeout(drop, 0)
+    // Place piece immediately
+    const newBoard = placePiece(board, p)
+    const { board: cleared, lines: clearedLines } = clearLines(newBoard)
+    const points = [0, 100, 300, 500, 800][Math.min(clearedLines, 4)] * level
+    const newScore = score + points
+    const newLines = lines + clearedLines
+    const newLevel = Math.floor(newLines / 10) + 1
+    setBoard(cleared)
+    setScore(newScore)
+    setLines(newLines)
+    setLevel(newLevel)
+    const np = next
+    const nn = randomPiece()
+    setNext(nn)
+    if (!isValid(cleared, np)) {
+      setPhase('over')
+      setPiece(null)
+      supabase.from('tetris_scores').select('*', { count: 'exact', head: true }).gt('score', newScore)
+        .then(({ count }:any) => setWorldRank((count || 0) + 1))
+    } else {
+      setPiece(np)
+    }
   }
 
   // Render board with current piece
