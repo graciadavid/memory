@@ -92,7 +92,11 @@ export default function ChampionshipPage() {
 
      <div style={{ textAlign:'center', marginBottom:32 }}>
        <div style={{ fontSize:11, fontWeight:800, color:GOLD, letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Every Sunday</div>
-       <div style={{ fontSize:32, fontWeight:900, color:'#fff', marginBottom:8 }}>Sunday Brain<br />Championship</div>
+       <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:12, marginBottom:8 }}>
+       <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:44, height:44, objectFit:'contain' }} />
+       <div style={{ fontSize:32, fontWeight:900, color:'#fff' }}>Sunday Brain<br />Championship</div>
+       <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:44, height:44, objectFit:'contain' }} />
+     </div>
        <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>One game. One day. One winner.</div>
      </div>
 
