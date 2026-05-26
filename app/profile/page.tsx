@@ -124,6 +124,7 @@ export default function ProfilePage() {
      supabase.from('capitals_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('blink_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('blackjack_scores').select('chips').eq('player_name', name).order('chips', { ascending: false }).limit(1),
+     supabase.from('poke_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      // Total unique players per game
      supabase.from('scores').select('player_name', { count: 'exact', head: true }),
      supabase.from('precision_scores').select('player_name', { count: 'exact', head: true }).is('game_type', null),
@@ -145,6 +146,7 @@ export default function ProfilePage() {
      supabase.from('capitals_scores').select('player_name', { count: 'exact', head: true }),
      supabase.from('blink_scores').select('player_name', { count: 'exact', head: true }),
      supabase.from('blackjack_scores').select('player_name', { count: 'exact', head: true }),
+     supabase.from('poke_scores').select('player_name', { count: 'exact', head: true }),
    ])
 
    const fmt = (ms: number) => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`
@@ -260,6 +262,7 @@ export default function ProfilePage() {
      { label: 'Simon Says', key: 'sequence' },
      { label: 'N-Back', key: 'nback' },
      { label: 'Blink', key: 'blink' },
+     { label: 'Poke', key: 'poke' },
    ]},
    { label: 'Agility', color: '#F9A825', icon: `${BASE}/precision.png`, games: [
      { label: 'Stop', key: 'stop' },
