@@ -24,15 +24,16 @@ function getCountdown(sundayDate?: string) {
   const isActive = now >= sunday && now <= end
   const target = isActive ? end : sunday
   const diff = Math.max(0, target.getTime() - now.getTime())
-  const h = Math.floor(diff / 3600000)
+  const d = Math.floor(diff / 86400000)
+  const h = Math.floor((diff % 86400000) / 3600000)
   const m = Math.floor((diff % 3600000) / 60000)
   const s = Math.floor((diff % 60000) / 1000)
-  return { isActive, h, m, s }
+  return { isActive, d, h, m, s }
 }
 
 export default function ChampionshipPage() {
  const { profile } = usePlayer()
- const [countdown, setCountdown] = useState({ isActive: false, h: 0, m: 0, s: 0 })
+ const [countdown, setCountdown] = useState({ isActive: false, d: 0, h: 0, m: 0, s: 0 })
  const [ranking, setRanking] = useState<any[]>([])
  const [week, setWeek] = useState<any>(null)
  const [hallOfFame, setHallOfFame] = useState<any[]>([])
@@ -102,7 +103,7 @@ export default function ChampionshipPage() {
            {countdown.isActive ? 'CHAMPIONSHIP LIVE' : 'STARTS IN'}
          </div>
          <div style={{ display:'flex', gap:12 }}>
-           {[{v:countdown.h,l:'HRS'},{v:countdown.m,l:'MIN'},{v:countdown.s,l:'SEC'}].map(({v,l}) => (
+           {[{v:countdown.d,l:'DAYS'},{v:countdown.h,l:'HRS'},{v:countdown.m,l:'MIN'},{v:countdown.s,l:'SEC'}].map(({v,l}) => (
              <div key={l} style={{ flex:1, background:'rgba(0,0,0,0.3)', borderRadius:12, padding:'12px', textAlign:'center' }}>
                <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>{String(v).padStart(2,'0')}</div>
                <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>{l}</div>
