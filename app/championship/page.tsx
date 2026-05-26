@@ -130,7 +130,7 @@ export default function ChampionshipPage() {
        <div style={{ marginBottom:24 }}>
          <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Live Ranking</div>
          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-           {ranking.slice(0,20).map((r, i) => (
+           {ranking.slice(0,10).map((r, i) => (
              <div key={r.name} style={{ background: i === 0 ? 'rgba(200,150,12,0.1)' : 'rgba(255,255,255,0.04)', borderRadius:14, padding:'12px 16px', display:'flex', alignItems:'center', gap:12, border: i === 0 ? '1px solid rgba(200,150,12,0.3)' : '1px solid rgba(255,255,255,0.06)' }}>
                <div style={{ fontSize:16, fontWeight:900, color: i === 0 ? GOLD : 'rgba(255,255,255,0.3)', width:28, textAlign:'center' }}>
                  {i === 0 ? '👑' : `#${i+1}`}
