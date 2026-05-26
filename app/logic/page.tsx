@@ -16,7 +16,7 @@ const GAMES = [
   { label: '2048', icon: `${BASE}/2048.png`, href: '/2048', desc: 'Merge tiles to reach 2048' },
   { label: 'Wordly', icon: `${BASE}/wordly.png`, href: '/wordly', desc: 'Guess the hidden word' },
   { label: 'Blackjack', icon: `${BASE}/blackjack.png`, href: '/blackjack', desc: 'Grow your stack, cash out at your peak' },
-  { label: 'Tetris', icon: `${BASE}/tetris.png`, href: '/tetris', desc: 'Stack blocks, clear lines, beat the world' },
+  { label: 'Tetris', icon: `${BASE}/mango.png`, href: '/tetris', desc: 'Stack blocks, clear lines, beat the world' },
 ]
 
 export default function LogicPage() {
