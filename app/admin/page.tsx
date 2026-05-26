@@ -35,6 +35,7 @@ const GAME_TABLES = [
  { table: 'capitals_scores', game: 'capitals', filter: null },
  { table: 'blink_scores', game: 'blink', filter: null },
  { table: 'blackjack_scores', game: 'blackjack', filter: null },
+ { table: 'tetris_scores', game: 'tetris', filter: null },
 ]
 
 function getPeriodRange(period: Period): { from: string, to?: string } {
