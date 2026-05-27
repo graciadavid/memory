@@ -349,12 +349,12 @@ export default function TetrisClient() {
 
         {/* Controls below board */}
         {phase === 'playing' && (
-          <div style={{ width:'100%', maxWidth:400, display:'flex', flexDirection:'column', gap:10, padding:'0 16px' }}>
-            <button onPointerDown={(e)=>{e.preventDefault();rotatePiece()}} style={{ width:'100%', height:64, borderRadius:18, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:20, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>↻ Rotate</button>
+          <div style={{ width:'100%', maxWidth:400, display:'flex', flexDirection:'column', gap:8, padding:'0 16px 70px' }}>
+            <button onPointerDown={(e)=>{e.preventDefault();rotatePiece()}} style={{ width:'100%', height:48, borderRadius:14, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:16, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>↻ Rotate</button>
             <div style={{ display:'flex', gap:10 }}>
-              <button onPointerDown={(e)=>{e.preventDefault();moveLeft()}} style={{ flex:1, height:64, borderRadius:18, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:28, cursor:'pointer', fontFamily:'inherit' }}>←</button>
-              <button onPointerDown={(e)=>{e.preventDefault();hardDrop()}} style={{ flex:1, height:64, borderRadius:18, border:'none', background:GOLD, color:'#000', fontSize:16, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>⬇</button>
-              <button onPointerDown={(e)=>{e.preventDefault();moveRight()}} style={{ flex:1, height:64, borderRadius:18, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:28, cursor:'pointer', fontFamily:'inherit' }}>→</button>
+              <button onPointerDown={(e)=>{e.preventDefault();moveLeft()}} style={{ flex:1, height:48, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:24, cursor:'pointer', fontFamily:'inherit' }}>←</button>
+              <button onPointerDown={(e)=>{e.preventDefault();hardDrop()}} style={{ flex:1, height:48, borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:16, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>⬇</button>
+              <button onPointerDown={(e)=>{e.preventDefault();moveRight()}} style={{ flex:1, height:48, borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:24, cursor:'pointer', fontFamily:'inherit' }}>→</button>
             </div>
           </div>
         )}
