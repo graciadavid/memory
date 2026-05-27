@@ -293,7 +293,7 @@ export default function WordlyClient() {
     </main>
   )
   return (
-    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 10px 70px', overflow:'hidden', justifyContent:'space-between' }}>
+    <main style={{ height:'calc(100dvh - 40px)', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 10px 60px', overflow:'hidden', justifyContent:'space-between' }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:2 }}>
         <div style={{ textAlign:'center' }}>
           <div style={{ fontSize:13, fontWeight:900, color:'#fff' }}>Wordly</div>
