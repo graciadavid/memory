@@ -51,6 +51,7 @@ export default function StopPage() {
 
   const startCountdown = () => {
     setPhase('countdown')
+    window.dispatchEvent(new CustomEvent('gameStart'))
     setCountdown(3)
     let c = 3
     const t = setInterval(() => { c--; if (c===0){clearInterval(t);startGame()}else setCountdown(c) }, 1000)
@@ -76,6 +77,7 @@ export default function StopPage() {
       return next
     })
     setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
    const {count: rankCount} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(diff))
    setWorldRank((rankCount??0)+1)
     if (profile?.name) {
