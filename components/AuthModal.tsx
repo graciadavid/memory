@@ -29,7 +29,7 @@ export default function AuthModal({ onSuccess, onSkip, title = 'Save your result
    } else {
      await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pinHash, country })
    }
-   localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
+   const fullProfile = { name: name.trim(), streak: 0, lastPlayedDate: '', totalPairs: 0, gamesPlayed: 0, bestRanks: {}, bestTimes: {}, joinedDate: new Date().toISOString().split('T')[0], achievements: [] }; localStorage.setItem('memgenius_profile', JSON.stringify(fullProfile))
    setSaving(false)
    onSuccess(name.trim())
  }
