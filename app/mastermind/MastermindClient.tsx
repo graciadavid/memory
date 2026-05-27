@@ -5,7 +5,7 @@ import { usePlayer } from '@/lib/usePlayer'
 
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
-const MAX = 10
+const MAX = 7
 const CODE_LEN = 4
 
 const COLORS = [
