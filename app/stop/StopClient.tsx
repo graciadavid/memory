@@ -107,7 +107,7 @@ export default function StopPage() {
     setSaving(false)
     setSaved(true)
     createProfile(name.trim())
-    setTimeout(() => window.location.reload(), 1500)
+    
   }
 
   const fmt = (ms:number) => `${Math.floor(ms/1000)}.${String(Math.floor(ms%1000)).padStart(3,'0')}`
