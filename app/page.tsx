@@ -45,7 +45,13 @@ function ChampionshipCountdown() {
 
 export default function HomePage() {
  const [blink, setBlink] = useState(true)
-  const [playerCount] = useState(() => Math.floor(Math.random() * (62 - 31 + 1)) + 31)
+  const [playerCount] = useState(() => {
+    const stored = typeof window !== 'undefined' ? sessionStorage.getItem('stopCount') : null
+    if (stored) return parseInt(stored)
+    const n = Math.floor(Math.random() * (62 - 31 + 1)) + 31
+    if (typeof window !== 'undefined') sessionStorage.setItem('stopCount', String(n))
+    return n
+  })
   useEffect(() => { const t = setInterval(() => setBlink(b => !b), 600); return () => clearInterval(t) }, [])
   const [todayGame, setTodayGame] = useState('capitals')
 
@@ -75,8 +81,8 @@ export default function HomePage() {
      {/* Championship Banner */}
      <a href='/championship' style={{ textDecoration:'none', width:'100%' }}>
        <div style={{ background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:24, padding:'20px 22px', boxShadow:'0 8px 0 rgba(100,70,0,0.5)' }}>
-         <div style={{ fontSize:10, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Sunday Brain Championship</div>
-         <div style={{ fontSize:22, fontWeight:900, color:'#000', marginBottom:8, lineHeight:1.1 }}>Brain Championship</div>
+         
+         <div style={{ fontSize:28, fontWeight:900, color:'#000', marginBottom:8, lineHeight:1.1 }}>Sunday Brain<br />Championship</div>
          <div style={{ fontSize:22, fontWeight:900, color:'#000', marginBottom:10, display:'flex', alignItems:'center', gap:10 }}><img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:32, height:32, objectFit:'contain' }} />June 1st — Stop</div>
          <ChampionshipCountdown />
        </div>

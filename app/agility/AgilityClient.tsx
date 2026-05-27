@@ -15,7 +15,18 @@ const GAMES = [
 function rand() { return Math.floor(Math.random() * (20 - 3 + 1)) + 3 }
 
 export default function AgilityClient() {
-  const [counts] = useState(() => GAMES.map(() => rand()))
+  const [counts] = useState(() => {
+    const stored = typeof window !== 'undefined' ? sessionStorage.getItem('stopCount') : null
+    return GAMES.map((g, i) => {
+      if (i === 0) {
+        if (stored) return parseInt(stored)
+        const n = rand()
+        if (typeof window !== 'undefined') sessionStorage.setItem('stopCount', String(n))
+        return n
+      }
+      return rand()
+    })
+  })
   const [blink, setBlink] = useState(true)
   useEffect(() => { const t = setInterval(() => setBlink(b => !b), 600); return () => clearInterval(t) }, [])
 
