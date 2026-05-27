@@ -15,8 +15,6 @@ const COLORS = [
   { id: 3, hex: '#FDD835' },
   { id: 4, hex: '#FB8C00' },
   { id: 5, hex: '#8E24AA' },
-  { id: 6, hex: '#00ACC1' },
-  { id: 7, hex: '#F06292' },
 ]
 
 function generateCode() {
