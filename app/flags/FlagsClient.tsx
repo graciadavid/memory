@@ -308,7 +308,7 @@ export default function FlagsClient() {
            </div>
          </div>
        </a>
-     </div>}
+     )}
       {saved && (
         <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
           <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
