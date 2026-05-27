@@ -172,8 +172,7 @@ export default function StopPage() {
     </main>
   )
   return (
-<>
-    {showSavePopup && (
+   {showSavePopup && (
      <div style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:1000, padding:'16px', fontFamily:'var(--font-nunito), sans-serif' }}>
        <div style={{ background:'#1C1C1E', borderRadius:'24px 24px 0 0', padding:'28px 24px 40px', width:'100%', maxWidth:430, margin:'0 auto', border:'1px solid rgba(255,255,255,0.1)', textAlign:'center', position:'relative', boxShadow:'0 -8px 40px rgba(0,0,0,0.6)' }}>
          <button onClick={() => setShowSavePopup(false)} style={{ position:'absolute', top:16, right:16, background:'none', border:'none', color:'rgba(255,255,255,0.3)', fontSize:20, cursor:'pointer' }}>✕</button>
@@ -221,5 +220,4 @@ export default function StopPage() {
       </div>
     </main>
   )
-  </>
 }
