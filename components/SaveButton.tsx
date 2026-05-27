@@ -50,8 +50,10 @@ export default function SaveButton() {
 
   if (hasProfile || !isGamePage || !isResult) return null
 
-  const handleClick = () => {
-    supabase.from('save_button_shown').insert({ pathname, type: 'clicked' })
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    await supabase.from('save_button_shown').insert({ pathname, type: 'clicked' })
+    window.location.href = '/profile'
   }
 
   return (
