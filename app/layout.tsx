@@ -42,6 +42,7 @@ import StreakBadge from '@/components/StreakBadge'
 import StreakUpdater from '@/components/StreakUpdater'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
 import GameProfileGuard from '@/components/GameProfileGuard'
+import SaveButton
 import CookieBanner from '@/components/CookieBanner'
 
 const nunito = Nunito({
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <a href='/terms' style={{ color: '#4A2C0A40', textDecoration: 'none' }}>Terms of Service</a>
         </div>
         <CookieBanner />
+        <SaveButton />
         <GAAnalytics />
         <VercelAnalytics />
       </body>
