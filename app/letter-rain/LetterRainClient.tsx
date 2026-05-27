@@ -236,7 +236,7 @@ export default function LetterRainClient() {
 
       <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:16, padding:'16px', marginBottom:20 }}>
         <div style={{ fontSize:13, color:'rgba(255,255,255,0.6)', fontWeight:700, lineHeight:1.7 }}>
-          Letters fall from the top. One letter is highlighted as your target. Count how many times it appears. At the end, type the number. Get it right to advance to the next level.
+          Letters fall from the sky. Count how many times the target letter appears. Type the number at the end.
         </div>
       </div>
 
@@ -277,8 +277,8 @@ export default function LetterRainClient() {
         <div style={{ fontSize:20, fontWeight:900, color:'#4CAF50', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>COUNT THE</div>
         <div style={{ fontSize:96, fontWeight:900, color:'#4CAF50', lineHeight:1, textShadow:'0 0 40px #4CAF5080' }}>{target}</div>
         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', marginTop:4 }}>Level {String.fromCharCode(64 + level)}</div>
-        <div style={{ width:'100%', height:4, background:'rgba(255,255,255,0.08)', borderRadius:2, marginTop:8, overflow:'hidden' }}>
-          <div style={{ height:'100%', background:'#4CAF50', width:`${(timeLeft/getLevelConfig(level).duration)*100}%`, transition:'width 0.1s linear' }} />
+        <div style={{ width:'100%', height:8, background:'rgba(255,255,255,0.08)', borderRadius:4, marginTop:8, overflow:'hidden' }}>
+          <div style={{ height:'100%', background: timeLeft < getLevelConfig(level).duration * 0.3 ? '#FF5252' : '#4CAF50', width:`${(timeLeft/getLevelConfig(level).duration)*100}%`, transition:'width 0.1s linear' }} />
         </div>
       </div>
 
