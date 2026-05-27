@@ -189,7 +189,7 @@ export default function BlackjackClient() {
        if (profile?.name) {
      supabase.from('profiles').update({ current_chips: Math.max(newChips, 0) }).eq('player_name', profile.name)
    }
-   if (newChips <= 0) setTimeout(() => setPhase('gameover'), 1500)
+   if (newChips <= 0) setTimeout(() => { setPhase('gameover'); window.dispatchEvent(new Event('gameResult')) }, 1500)
   }
 
   const cashOut = async () => {
@@ -200,7 +200,7 @@ export default function BlackjackClient() {
       if (myBest===null || peakChips>myBest) setMyBest(peakChips)
       await updateStreak(profile.name)
     }
-    setPhase('gameover')
+    setPhase('gameover'); window.dispatchEvent(new Event('gameResult'))
   }
 
   const saveScore = async () => {
