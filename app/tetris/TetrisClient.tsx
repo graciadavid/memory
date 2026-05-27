@@ -311,7 +311,7 @@ export default function TetrisClient() {
 
 
   return (
-    <main style={{ height:'calc(100dvh - 100px)', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', display:'flex', flexDirection:'column', alignItems:'center', padding:'8px 0 0', overflow:'hidden' }}>
+    <main style={{ height:'calc(100dvh - 100px)', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', display:'flex', flexDirection:'column', alignItems:'center', padding:'8px 16px 0', overflow:'hidden' }}>
 
       {/* Header */}
       <div style={{ width:'100%', maxWidth:380, display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6, padding:'0 16px' }}>
