@@ -24,7 +24,10 @@ export default function ResultOverlay({ ms, pack, worldRank, lastFact, onReset }
 
  useEffect(() => {
    if (saved.current) return
-   if (!profile?.name) return
+   if (!profile?.name) {
+     supabase.from('scores').select('*', { count: 'exact', head: true }).eq('pack_id', pack.id).lt('time_ms', ms).then(({ count }) => setRank((count ?? 0) + 1))
+     return
+   }
    saved.current = true
    const saveAndRank = async () => {
      const today = getSpainToday()
