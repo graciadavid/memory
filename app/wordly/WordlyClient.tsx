@@ -78,6 +78,7 @@ export default function WordlyClient() {
   const [worldRecord, setWorldRecord] = useState<{attempts:number,time_ms:number,name:string}|null>(null)
   const [myBest, setMyBest] = useState<number|null>(null)
   const [top5, setTop5] = useState<{name:string,attempts:number,time_ms:number}[]>([])
+  const [absentLetters, setAbsentLetters] = useState<Set<string>>(new Set())
   const [name, setName] = useState('')
   const [pin, setPin] = useState(['','','',''])
   const [saved, setSaved] = useState(false)
