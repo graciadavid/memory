@@ -13,7 +13,7 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 type Phase = 'rules' | 'lighting' | 'waiting' | 'go' | 'result' | 'jumpstart'
 
 export default function F1Page() {
- const { profile } = usePlayer()
+ const { profile, createProfile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
  const [litCount, setLitCount] = useState(0)
  const [reactionMs, setReactionMs] = useState(0)
@@ -98,7 +98,7 @@ export default function F1Page() {
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+   createProfile(name.trim())
    setTimeout(() => window.location.reload(), 1500)
  }
 

@@ -44,7 +44,7 @@ type SlotFeedback = 'correct'|'misplaced'|'wrong'
 type GuessRow = { colors: number[], feedback: SlotFeedback[] }
 
 export default function MastermindClient() {
-  const { profile } = usePlayer()
+  const { profile, createProfile } = usePlayer()
  const [champGame, setChampGame] = useState<string|null>(null)
  useEffect(() => {
    supabase.from('championship_weeks').select('game').eq('active', true).single()
@@ -183,7 +183,7 @@ export default function MastermindClient() {
     setWorldRank((count??0)+1)
     setSaving(false)
     setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    createProfile(name.trim())
     setTimeout(() => window.location.reload(), 1500)
   }
 

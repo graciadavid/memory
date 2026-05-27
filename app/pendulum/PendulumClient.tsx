@@ -12,7 +12,7 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 type Phase = 'rules' | 'playing' | 'result'
 
 export default function PendulumPage() {
- const { profile } = usePlayer()
+ const { profile, createProfile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
  const [angle, setAngle] = useState(0)
  const [targetAngle, setTargetAngle] = useState(0)
@@ -93,7 +93,7 @@ export default function PendulumPage() {
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+   createProfile(name.trim())
    setTimeout(() => window.location.reload(), 1500)
  }
 

@@ -27,7 +27,7 @@ function getBallPos(t: number) {
 }
 
 export default function AceClient() {
- const { profile } = usePlayer()
+ const { profile, createProfile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
  const [level, setLevel] = useState(0)
  const [worldRecord, setWorldRecord] = useState<{level:number,name:string}|null>(null)
@@ -214,7 +214,7 @@ export default function AceClient() {
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+   createProfile(name.trim())
    setTimeout(() => window.location.reload(), 1500)
  }
 

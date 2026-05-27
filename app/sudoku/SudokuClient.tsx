@@ -41,7 +41,7 @@ type Phase = 'rules' | 'playing' | 'result'
 type Difficulty = 'easy' | 'medium' | 'hard'
 
 export default function SudokuClient() {
-  const { profile } = usePlayer()
+  const { profile, createProfile } = usePlayer()
   const [phase, setPhase] = useState<Phase>('rules')
   const [difficulty, setDifficulty] = useState<Difficulty>('easy')
   const [board, setBoard] = useState<number[][]>([])
@@ -150,7 +150,7 @@ export default function SudokuClient() {
     setWorldRank((count??0)+1)
     setSaving(false)
     setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    createProfile(name.trim())
     setTimeout(() => window.location.reload(), 1500)
   }
 

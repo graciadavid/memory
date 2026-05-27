@@ -28,7 +28,7 @@ function generatePattern(count: number): number[] {
 type Phase = 'rules' | 'preview' | 'flash' | 'input' | 'result'
 
 export default function BlinkClient() {
-  const { profile } = usePlayer()
+  const { profile, createProfile } = usePlayer()
  const [champGame, setChampGame] = useState<string|null>(null)
  useEffect(() => {
    supabase.from('championship_weeks').select('game').eq('active', true).single()
@@ -140,7 +140,7 @@ export default function BlinkClient() {
     }
     await supabase.from('blink_scores').insert({player_name:saveName.trim(), level})
     setSaving(false); setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:saveName.trim()}))
+    createProfile(saveName.trim())
     setTimeout(() => window.location.reload(), 1500)
   }
 

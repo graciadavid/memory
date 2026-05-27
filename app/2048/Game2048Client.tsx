@@ -98,7 +98,7 @@ function hasMovesLeft(board: Board): boolean {
 }
 
 export default function Game2048Client() {
-  const { profile } = usePlayer()
+  const { profile, createProfile } = usePlayer()
   const [phase, setPhase] = useState<Phase>('rules')
   const [board, setBoard] = useState<Board>(emptyBoard())
   const [score, setScore] = useState(0)
@@ -198,7 +198,7 @@ export default function Game2048Client() {
     setWorldRank((count??0)+1)
     setSaving(false)
     setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    createProfile(name.trim())
     setTimeout(() => window.location.reload(), 1500)
   }
 

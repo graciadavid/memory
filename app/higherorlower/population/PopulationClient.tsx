@@ -104,7 +104,7 @@ function formatPop(n: number): string {
 type Phase = 'rules' | 'playing' | 'result'
 
 export default function HolPopPage() {
- const { profile } = usePlayer()
+ const { profile, createProfile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
  const [score, setScore] = useState(0)
  const [top, setTop] = useState<typeof COUNTRIES[0] | null>(null)
@@ -204,7 +204,7 @@ export default function HolPopPage() {
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+   createProfile(name.trim())
    setTimeout(() => window.location.reload(), 1500)
  }
 

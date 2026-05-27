@@ -16,7 +16,7 @@ function generateDigits(length: number): number[] {
 }
 
 export default function DigitsClient() {
- const { profile } = usePlayer()
+ const { profile, createProfile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
  const [level, setLevel] = useState(3)
  const [digits, setDigits] = useState<number[]>([])
@@ -109,7 +109,7 @@ export default function DigitsClient() {
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+   createProfile(name.trim())
    setTimeout(() => window.location.reload(), 1500)
  }
 

@@ -56,7 +56,7 @@ function shuffle<T>(arr: T[]): T[] {
 type Phase = 'rules' | 'playing' | 'result'
 
 export default function CountriesPage() {
- const { profile } = usePlayer()
+ const { profile, createProfile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
  const [score, setScore] = useState(0)
  const [question, setQuestion] = useState<typeof COUNTRIES[0] | null>(null)
@@ -149,7 +149,7 @@ export default function CountriesPage() {
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+   createProfile(name.trim())
    setTimeout(() => window.location.reload(), 1500)
  }
 

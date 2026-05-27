@@ -19,7 +19,7 @@ const COLORS = [
 type Phase = 'rules' | 'show_first' | 'show' | 'answer' | 'feedback' | 'result'
 
 export default function NBackPage() {
- const { profile } = usePlayer()
+ const { profile, createProfile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
  const [prevColor, setPrevColor] = useState<number>(0)
  const [currColor, setCurrColor] = useState<number>(0)
@@ -130,7 +130,7 @@ export default function NBackPage() {
    setWorldRank((count??0)+1)
    setSaving(false)
    setSaved(true)
-   localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+   createProfile(name.trim())
    setTimeout(() => window.location.reload(), 1500)
  }
 

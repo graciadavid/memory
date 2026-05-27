@@ -102,7 +102,7 @@ function shuffle<T>(arr: T[]): T[] {
 type Phase = 'rules' | 'playing' | 'result'
 
 export default function FlagsClient() {
-  const { profile } = usePlayer()
+  const { profile, createProfile } = usePlayer()
  const [champGame, setChampGame] = useState<string|null>(null)
  useEffect(() => {
    supabase.from('championship_weeks').select('game').eq('active', true).single()
@@ -201,7 +201,7 @@ export default function FlagsClient() {
     setWorldRank((count??0)+1)
     setSaving(false)
     setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    createProfile(name.trim())
     setTimeout(() => window.location.reload(), 1500)
   }
 

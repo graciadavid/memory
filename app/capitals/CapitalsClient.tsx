@@ -84,7 +84,7 @@ function getOptions(correct: string, all: {capital:string}[]): string[] {
 type Phase = 'rules' | 'playing' | 'result'
 
 export default function CapitalsClient() {
-  const { profile } = usePlayer()
+  const { profile, createProfile } = usePlayer()
  const [champGame, setChampGame] = useState<string|null>(null)
  useEffect(() => {
    supabase.from('championship_weeks').select('game').eq('active', true).single()
@@ -185,7 +185,7 @@ export default function CapitalsClient() {
     const {count} = await supabase.from('capitals_scores').select('*',{count:'exact',head:true}).gt('level',score)
     setWorldRank((count??0)+1)
     setSaving(false); setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:saveName.trim()}))
+    createProfile(saveName.trim())
     setTimeout(() => window.location.reload(), 1500)
   }
 

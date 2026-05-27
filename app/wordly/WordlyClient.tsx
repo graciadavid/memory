@@ -63,7 +63,7 @@ function evaluate(guess: string, target: string): LetterState[] {
 type Phase = 'rules'|'playing'|'won'|'lost'
 
 export default function WordlyClient() {
-  const { profile } = usePlayer()
+  const { profile, createProfile } = usePlayer()
   const [phase, setPhase] = useState<Phase>('rules')
   const [word, setWord] = useState('')
   const [guesses, setGuesses] = useState<string[]>([])
@@ -197,7 +197,7 @@ export default function WordlyClient() {
     const {count} = await supabase.from('wordle_scores').select('*',{count:'exact',head:true}).lt('attempts',guesses.length)
     setWorldRank((count??0)+1)
     setSaving(false); setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    createProfile(name.trim())
     setTimeout(() => window.location.reload(), 1500)
   }
 

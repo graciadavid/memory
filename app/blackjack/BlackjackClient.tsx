@@ -53,7 +53,7 @@ function CardView({ card, hidden }: { card: Card, hidden?: boolean }) {
 }
 
 export default function BlackjackClient() {
-  const { profile } = usePlayer()
+  const { profile, createProfile } = usePlayer()
   const [phase, setPhase] = useState<Phase>('rules')
   const [deck, setDeck] = useState<Card[]>([])
   const [playerHand, setPlayerHand] = useState<Card[]>([])
@@ -215,7 +215,7 @@ export default function BlackjackClient() {
     const {count} = await supabase.from('blackjack_scores').select('*',{count:'exact',head:true}).gt('chips',peakChips)
     setWorldRank((count??0)+1)
     setSaving(false); setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:saveName.trim()}))
+    createProfile(saveName.trim())
     setTimeout(() => window.location.reload(), 1500)
   }
 

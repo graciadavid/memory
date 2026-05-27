@@ -20,7 +20,7 @@ type Phase = 'rules' | 'showing' | 'input' | 'result'
 function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)) }
 
 export default function SimonClient() {
-  const { profile } = usePlayer()
+  const { profile, createProfile } = usePlayer()
   const [phase, setPhase] = useState<Phase>('rules')
   const [sequence, setSequence] = useState<number[]>([])
   const [userInput, setUserInput] = useState<number[]>([])
@@ -121,7 +121,7 @@ export default function SimonClient() {
     setWorldRank((count??0)+1)
     setSaving(false)
     setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    createProfile(name.trim())
     setTimeout(() => window.location.reload(), 1500)
   }
 
