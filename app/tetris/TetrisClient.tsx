@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 
 const COLS = 10
-const ROWS = 18
+const ROWS = 16
 const GREEN = '#2E7D32'
 const GOLD = '#C8960C'
 
@@ -265,7 +265,7 @@ export default function TetrisClient() {
     }
   }
 
-  const CELL = 26
+  const CELL = 24
 
   if (phase === 'idle') return (
     <>
@@ -311,10 +311,10 @@ export default function TetrisClient() {
 
 
   return (
-    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', display:'flex', flexDirection:'column', alignItems:'center', padding:'16px 0 100px' }}>
+    <main style={{ height:'calc(100dvh - 100px)', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', display:'flex', flexDirection:'column', alignItems:'center', padding:'8px 0 0', overflow:'hidden' }}>
 
       {/* Header */}
-      <div style={{ width:'100%', maxWidth:380, display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12, padding:'0 16px' }}>
+      <div style={{ width:'100%', maxWidth:380, display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6, padding:'0 16px' }}>
         <div>
           <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2 }}>SCORE</div>
           <div style={{ fontSize:24, fontWeight:900, color:'#fff' }}>{score}</div>
