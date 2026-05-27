@@ -140,6 +140,7 @@ export default function GameBoard({ pack }: { pack: any }) {
   useEffect(() => {
     if (matched.length > 0 && matched.length === pack.pairs.length) {
       setDone(true)
+      window.dispatchEvent(new CustomEvent('gameResult'))
       setRunning(false)
       playChimes()
       supabase

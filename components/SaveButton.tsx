@@ -8,7 +8,7 @@ const GAME_PATHS = [
  '/digits', '/simon', '/nback', '/memory',
  '/sudoku', '/mastermind', '/2048', '/wordly',
  '/blackjack', '/tetris', '/poke', '/blink',
- '/capitals', '/letter-rain',
+ '/capitals', '/letter-rain', '/play', '/play/[slug]',
 ]
 
 export default function SaveButton() {
