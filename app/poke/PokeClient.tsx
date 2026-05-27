@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
-import AuthModal from '@/components/AuthModal'
 
 const GREEN = '#2E7D32'
 const GOLD = '#C8960C'

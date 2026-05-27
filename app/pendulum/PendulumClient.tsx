@@ -1,7 +1,6 @@
 'use client'
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 
 const GOLD = '#C8960C'
@@ -170,12 +169,6 @@ export default function PendulumPage() {
        {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
      </div>
 
-     {!profile?.name && !saved && (
-       <AuthModal onSuccess={async (playerName) => {
-           await supabase.from('precision_scores').insert({player_name: playerName, difference_ms: absDiff, game_type: 'pendulum'})
-           setSaved(true)
-         }} title="Save your result" subtitle="Free · No email needed" />
-     )}
 
      {saved && (
        <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>

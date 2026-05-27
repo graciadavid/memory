@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -299,12 +298,6 @@ export default function WordlyClient() {
             {phase==='won' ? `✓ ${guesses.length} tries · ${fmtTime(finalTime)}` : `The word was ${word}`}
           </div>
           {worldRank && phase==='won' && <div style={{ fontSize:11, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{worldRank} in the world</div>}
-          {!profile?.name && !saved && phase==='won' && (
-            <AuthModal onSuccess={async (playerName) => {
-              await supabase.from('wordle_scores').insert({player_name: playerName, attempts: guesses.length, time_ms: finalTime, word_date: new Date().toISOString().split('T')[0]})
-              setSaved(true)
-            }} title="Save your result" subtitle="Free · No email needed" />
-          )}
           {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:10, padding:'6px', marginTop:4 }}><div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
           <div style={{ display:'flex', gap:8, justifyContent:'center', marginTop:6 }}>
             <button onClick={reset} style={{ padding:'8px 14px', borderRadius:10, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>

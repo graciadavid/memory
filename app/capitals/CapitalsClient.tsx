@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -288,12 +287,6 @@ export default function CapitalsClient() {
         {current && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginBottom:16 }}>The capital of <strong style={{color:'#fff'}}>{current.name}</strong> is <strong style={{color:GOLD}}>{current.capital}</strong></div>}
         {worldRank && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>#{worldRank} in the world</div>}
 
-        {!profile?.name && !saved && score > 0 && (
-          <AuthModal onSuccess={async (playerName) => {
-            await supabase.from('capitals_scores').insert({player_name: playerName, level: score})
-            setSaved(true)
-          }} title="Save your result" subtitle="Free · No email needed" />
-        )}
         {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:10, padding:'8px', marginBottom:16 }}><div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
 
         <div style={{ display:'flex', gap:10 }}>

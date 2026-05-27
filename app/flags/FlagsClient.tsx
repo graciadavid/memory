@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -297,12 +296,6 @@ export default function FlagsClient() {
         {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
       </div>
 
-      {!profile?.name && !saved && (
-        <AuthModal onSuccess={async (playerName) => {
-            await supabase.from('flag_scores').insert({player_name: playerName, level: score})
-            setSaved(true)
-          }} title="Save your result" subtitle="Free · No email needed" />
-      )}
 
       {/* Championship Banner */}
      {champGame === 'flags' && (
