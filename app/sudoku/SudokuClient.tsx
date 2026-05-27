@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
+import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -270,6 +271,12 @@ export default function SudokuClient() {
         <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:16, padding:'16px', paddingBottom:100 }}>
           <div style={{ fontSize:48, fontWeight:900, color:GOLD }}>{fmt(elapsed)}</div>
           {worldRank && <div style={{ fontSize:18, fontWeight:900, color:'rgba(255,255,255,0.5)' }}>#{worldRank} in the world</div>}
+
+          {!profile?.name && !saved && (
+       <AuthModal onSuccess={async (playerName) => {
+           await supabase.from('sudoku_scores').insert({player_name: playerName, time_ms: elapsed})
+           setSaved(true)
+         }} title="Save your result" subtitle="Free · No email needed" />
           )}
           {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'14px 20px', textAlign:'center' }}><div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Saved! #{worldRank}</div></div>}
           <div style={{ display:'flex', gap:10, width:'100%' }}>

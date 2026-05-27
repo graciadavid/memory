@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
+import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 
 const GOLD = '#C8960C'
@@ -236,6 +237,12 @@ export default function NBackPage() {
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Streak</div>
        <div style={{ fontSize:96, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{finalStreak}</div>
        {worldRank && <div style={{ fontSize:16, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
+     </div>
+     {!profile?.name && !saved && (
+       <AuthModal onSuccess={async (playerName) => {
+           await supabase.from('nback_scores').insert({player_name: playerName, level: finalStreak})
+           setSaved(true)
+         }} title="Save your result" subtitle="Free · No email needed" />
      )}
      {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}><div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div></div>}
      <div style={{ display:'flex', gap:10, width:'100%' }}>
