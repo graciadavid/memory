@@ -82,7 +82,7 @@ export default function HomePage() {
      <a href='/championship' style={{ textDecoration:'none', width:'100%' }}>
        <div style={{ background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:24, padding:'20px 22px', boxShadow:'0 8px 0 rgba(100,70,0,0.5)' }}>
          
-         <div style={{ fontSize:28, fontWeight:900, color:'#000', marginBottom:8, lineHeight:1.1 }}>Sunday Brain<br />Championship</div>
+         <div style={{ fontSize:28, fontWeight:900, color:'#000', marginBottom:8, lineHeight:1.1, textAlign:'center' }}>Sunday Brain<br />Championship</div>
          <div style={{ fontSize:22, fontWeight:900, color:'#000', marginBottom:10, display:'flex', alignItems:'center', gap:10 }}><img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:32, height:32, objectFit:'contain' }} />June 1st — Stop</div>
          <ChampionshipCountdown />
        </div>
