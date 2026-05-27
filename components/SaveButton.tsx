@@ -1,4 +1,5 @@
 'use client'
+import { supabase } from '@/lib/supabase'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
@@ -39,6 +40,11 @@ export default function SaveButton() {
   }, [pathname])
 
   useEffect(() => { setIsResult(false) }, [pathname])
+
+  useEffect(() => {
+    if (hasProfile || !isGamePage || !isResult) return
+    supabase.from('save_button_shown').insert({ pathname, created_at: new Date().toISOString() })
+  }, [isResult, hasProfile, isGamePage])
 
   if (hasProfile || !isGamePage || !isResult) return null
 
