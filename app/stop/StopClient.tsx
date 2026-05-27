@@ -25,7 +25,7 @@ export default function StopPage() {
   const [pin, setPin] = useState(['','','',''])
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [playerCount] = useState(() => Math.floor(Math.random() * (135 - 117 + 1)) + 117)
+  const [playerCount] = useState(() => Math.floor(Math.random() * (27 - 18 + 1)) + 18)
   const [blink, setBlink] = useState(true)
   useEffect(() => { const t = setInterval(() => setBlink(b => !b), 600); return () => clearInterval(t) }, [])
   const [saveError, setSaveError] = useState('')
