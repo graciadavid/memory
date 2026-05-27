@@ -1,5 +1,6 @@
 import GamesClient from './GamesClient'
 import MemoryGamesClient from './GamesClient'
+import MemoryGamesClient from './GamesClient'
 import CategoryRelated from '@/components/CategoryRelated'
 import Link from 'next/link'
 
@@ -26,21 +27,7 @@ export default function MemoryHubPage() {
      <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
        <div style={{ fontSize:11, fontWeight:800, color:COLOR, letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Category</div>
        <div style={{ fontSize:32, fontWeight:900, color:'#fff', marginBottom:8 }}>Memory</div>
-       <div style={{ fontSize:14, color:'rgba(255,255,255,0.35)', fontWeight:700, marginBottom:32 }}>Train your memory and recall</div>
-      <MemoryGamesClient />     </main>
-
-     <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
-       <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>What does Memory training do for your brain?</h2>
-       <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 24 }}>Memory is not a single ability — it is a collection of distinct systems that can each be trained independently. The five games in MemGenius Memory category target different memory systems: semantic memory, working memory, spatial memory, sequence memory and pattern recognition. Training all five gives you a comprehensive memory workout that no single game can provide.</p>
-
-       <details style={{ marginBottom: 12, background: '#fff', borderRadius: 14, border: '1px solid #4A2C0A10', overflow: 'hidden' }}>
-         <summary style={{ padding: '16px', fontSize: 15, fontWeight: 900, color: '#4A2C0A', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-           Memory — semantic association and recall
-           <span style={{ fontSize: 12, color: '#4A2C0A40' }}>▼</span>
-         </summary>
-         <div style={{ padding: '0 16px 16px', fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80' }}>
-           <p style={{ marginBottom: 10 }}>Memory challenges you to match pairs of conceptually related cards — a monument with its country, a food with its origin, an instrument with its genre. Unlike traditional matching games that use identical images, MemGenius Memory requires you to form semantic connections between different concepts, engaging the hippocampus and temporal lobe simultaneously.</p>
-           <p>This semantic association task builds the neural connections that underlie general knowledge, reading comprehension and the ability to learn new information quickly. People with strong semantic networks learn faster because new information connects to existing knowledge rather than floating in isolation.</p>
+      <MemoryGamesClient />           <p>This semantic association task builds the neural connections that underlie general knowledge, reading comprehension and the ability to learn new information quickly. People with strong semantic networks learn faster because new information connects to existing knowledge rather than floating in isolation.</p>
          </div>
        </details>
 
