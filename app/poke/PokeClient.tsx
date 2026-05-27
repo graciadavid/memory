@@ -36,7 +36,6 @@ export default function PokeClient() {
   const [selected, setSelected] = useState<string[]>([])
   const [timeLeft, setTimeLeft] = useState(8)
   const [totalTime, setTotalTime] = useState(8)
-  const [worldRank, setWorldRank] = useState<number | null>(null)
   const [top5, setTop5] = useState<any[]>([])
   const timerRef = useRef<any>(null)
 
