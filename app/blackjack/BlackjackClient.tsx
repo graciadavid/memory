@@ -137,8 +137,7 @@ export default function BlackjackClient() {
      }
      setRoundResult('blackjack')
       setPhase('result')
-    window.dispatchEvent(new CustomEvent('gameResult'))
-    } else {
+        } else {
       setPhase('playing')
     window.dispatchEvent(new CustomEvent('gameStart'))
     }
@@ -158,8 +157,7 @@ export default function BlackjackClient() {
      }
      setRoundResult('lose')
      setPhase('result')
-    window.dispatchEvent(new CustomEvent('gameResult'))
-     if (newChips <= 0) setTimeout(() => setPhase('gameover'), 1500)
+         if (newChips <= 0) setTimeout(() => setPhase('gameover'); window.dispatchEvent(new Event('gameResult')), 1500)
     }
   }
 
@@ -188,8 +186,7 @@ export default function BlackjackClient() {
    setPeakChips(prev => Math.max(prev, newChips))
    setRoundResult(result)
    setPhase('result')
-    window.dispatchEvent(new CustomEvent('gameResult'))
-   if (profile?.name) {
+       if (profile?.name) {
      supabase.from('profiles').update({ current_chips: Math.max(newChips, 0) }).eq('player_name', profile.name)
    }
    if (newChips <= 0) setTimeout(() => setPhase('gameover'), 1500)
