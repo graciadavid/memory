@@ -14,6 +14,7 @@ type Phase = 'rules' | 'countdown' | 'running' | 'result'
 export default function StopPage() {
   const { profile, createProfile } = usePlayer()
   const [showSavePopup, setShowSavePopup] = useState(false)
+  const hasRegistered = useRef(false)
   const [phase, setPhase] = useState<Phase>('rules')
   const [countdown, setCountdown] = useState(3)
   const [elapsed, setElapsed] = useState(0)
@@ -80,7 +81,7 @@ export default function StopPage() {
     setPhase('result')
    const {count: rankCount} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(diff))
    setWorldRank((rankCount??0)+1)
-   if (!profile?.name) setTimeout(() => setShowSavePopup(true), 800)
+   if (!profile?.name && !hasRegistered.current) setTimeout(() => setShowSavePopup(true), 800)
     if (profile?.name) {
       await supabase.from('precision_scores').insert({player_name:profile.name, difference_ms:Math.abs(diff), game_type:null})
       const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(diff))
