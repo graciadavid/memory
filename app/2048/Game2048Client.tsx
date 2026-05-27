@@ -250,7 +250,7 @@ export default function Game2048Client() {
   )
 
   return (
-    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'12px 20px', overflow:'hidden' }}
+    <main style={{ height:'calc(100dvh - 100px)', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 16px', overflow:'hidden' }}
       onTouchStart={e => { setTouchStart({x:e.touches[0].clientX, y:e.touches[0].clientY}) }}
       onTouchEnd={e => {
         if (!touchStart) return
