@@ -17,7 +17,7 @@ const WORDS = [
   'SPACE','WHILE','FLOOD','GROSS','GREET','TIGHT','ARISE','FIGHT','GRAVE','GRANT',
   'PRESS','CATER','FOUND','CLONE','CHILD','DREAM','WORRY','CLAIM','CRACK','CHANCE',
   'GRACE','STYLE','STOOD','CROSS','FLEET','RIGHT','SIGHT','STAVE','CHANT','DRESS',
-  'BOUND','DRONE','CREAM','FRAME','CRAFT','GLANCE','BROOD','SLEET','SHAVE','SCANT',
+  'BOUND','DRONE','CREAM','FRAME','CRAFT','BLANK','BROOD','SLEET','SHAVE','SCANT',
   'BLESS','WOUND','PRONE','GREED','SHAME','CRASH','FENCE','BEACH','DROOL','SHEET',
   'CHESS','HOUND','SPEED','WORDS','CRANK','HENCE','PEACH','STOOL','STEEL','STALE',
 ]
@@ -127,7 +127,8 @@ export default function WordlyClient() {
   const startGame = () => {
     const w = WORDS[Math.floor(Math.random() * WORDS.length)]
     setWord(w); wordRef.current = w
-    setGuesses([]); guessesRef.current = []
+    setGuesses([])
+    setAbsentLetters(new Set()); guessesRef.current = []
     setCurrent(''); currentRef.current = ''
     setKeyStates({}); keyStatesRef.current = {}
     setShake(false)
@@ -154,7 +155,13 @@ export default function WordlyClient() {
       if (cur.length !== 5) { setShake(true); setTimeout(() => setShake(false), 500); return }
       const states = evaluate(cur, w)
       const newGuesses = [...gs, cur]
-      setGuesses(newGuesses); guessesRef.current = newGuesses
+      // Track absent letters
+    const newAbsent = new Set(absentLetters)
+    guess.split('').forEach((letter, i) => {
+      if (!word.includes(letter)) newAbsent.add(letter)
+    })
+    setAbsentLetters(newAbsent)
+    setGuesses(newGuesses); guessesRef.current = newGuesses
       const newKeys = {...keyStatesRef.current}
       cur.split('').forEach((l,i) => {
         const s = states[i]
@@ -280,7 +287,6 @@ export default function WordlyClient() {
       </div>
       {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}><div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div></div>}
       <div style={{ display:'flex', gap:10, width:'100%' }}>
-        <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
         <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E2080' }}>Play again →</button>
       </div>
     </main>
@@ -288,7 +294,6 @@ export default function WordlyClient() {
   return (
     <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 10px 70px', overflow:'hidden', justifyContent:'space-between' }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:2 }}>
-        <button onClick={reset} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:13, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>← Back</button>
         <div style={{ textAlign:'center' }}>
           <div style={{ fontSize:13, fontWeight:900, color:'#fff' }}>Wordly</div>
           <div style={{ fontSize:18, fontWeight:900, color:GOLD, fontVariantNumeric:'tabular-nums' }}>{fmtTime(elapsed)}</div>
