@@ -382,23 +382,7 @@ export default function TetrisClient() {
             <div style={{ fontSize:40, fontWeight:900, color:GOLD, marginBottom:4 }}>{score}</div>
             <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>Level {level} · {lines} lines</div>
             {worldRank && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginBottom:16 }}>#{worldRank} in the world</div>}
-            {!profile?.name && !saved && (
-              <div style={{ marginBottom:16 }}>
-                <AuthModal onSuccess={async (playerName) => {
-                  await supabase.from('tetris_scores').insert({ player_name: playerName, score, lines, level })
-                  setSaved(true)
-                }} title="Save your result" subtitle="Free · No email needed" />
-              </div>
-            )}
-            {profile?.name && !saved && (
-              <button onClick={async () => {
-                await supabase.from('tetris_scores').insert({ player_name: profile.name, score, lines, level })
-                setSaved(true)
-              }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:12 }}>
-                Save Score
-              </button>
-            )}
-            {saved && <div style={{ fontSize:13, color:'#69F0AE', fontWeight:800, marginBottom:12 }}>✓ Saved!</div>}
+            {profile?.name && <div style={{ fontSize:13, color:'#69F0AE', fontWeight:800, marginBottom:12 }}>✓ Saved!</div>}
             <div style={{ display:'flex', gap:10 }}>
              <a href="/logic" style={{ flex:1, textDecoration:'none', display:'block', padding:'14px', borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.6)', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer', textAlign:'center' }}>← Logic</a>
              <button onClick={start} style={{ flex:2, padding:'14px', borderRadius:14, border:'none', background:'#2E7D32', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play Again →</button>
