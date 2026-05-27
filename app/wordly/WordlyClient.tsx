@@ -286,7 +286,7 @@ export default function WordlyClient() {
     </main>
   )
   return (
-    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 10px 8px', overflow:'hidden', justifyContent:'space-between' }}>
+    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 10px 70px', overflow:'hidden', justifyContent:'space-between' }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:2 }}>
         <button onClick={reset} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:13, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>← Back</button>
         <div style={{ textAlign:'center' }}>
