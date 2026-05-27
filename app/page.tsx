@@ -13,6 +13,8 @@ const GAMES: Record<string,string> = {
 
 
 function ChampionshipCountdown() {
+  const [pulse, setPulse] = useState(true)
+  useEffect(() => { const t = setInterval(() => setPulse(p => python3 << 'EOF'), 1000); return () => clearInterval(t) }, [])
  const [cd, setCd] = useState({ d:0, h:0, m:0, s:0 })
  useEffect(() => {
    const calc = () => {
@@ -33,7 +35,7 @@ function ChampionshipCountdown() {
    <div style={{ display:'flex', gap:8 }}>
      {[{v:cd.d,l:'D'},{v:cd.h,l:'H'},{v:cd.m,l:'M'},{v:cd.s,l:'S'}].map(({v,l}) => (
        <div key={l} style={{ flex:1, background:'rgba(0,0,0,0.2)', borderRadius:8, padding:'6px 4px', textAlign:'center' }}>
-         <div style={{ fontSize:18, fontWeight:900, color:'#000' }}>{String(v).padStart(2,'0')}</div>
+         <div style={{ fontSize:18, fontWeight:900, color:'#000', opacity: l === 'S' ? (pulse ? 1 : 0.4) : 1, transition:'opacity 0.5s' }}>{String(v).padStart(2,'0')}</div>
          <div style={{ fontSize:8, fontWeight:800, color:'rgba(0,0,0,0.4)', letterSpacing:1 }}>{l}</div>
        </div>
      ))}
@@ -74,6 +76,7 @@ export default function HomePage() {
      <a href='/championship' style={{ textDecoration:'none', width:'100%' }}>
        <div style={{ background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:24, padding:'20px 22px', boxShadow:'0 8px 0 rgba(100,70,0,0.5)' }}>
          <div style={{ fontSize:10, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Sunday Brain Championship</div>
+         <div style={{ fontSize:22, fontWeight:900, color:'#000', marginBottom:8, lineHeight:1.1 }}>Brain Championship</div>
          <div style={{ fontSize:22, fontWeight:900, color:'#000', marginBottom:10, display:'flex', alignItems:'center', gap:10 }}><img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:32, height:32, objectFit:'contain' }} />June 1st — Stop</div>
          <ChampionshipCountdown />
        </div>
