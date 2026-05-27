@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -267,12 +266,6 @@ export default function BlinkClient() {
         </div>
 
         {worldRank && won && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>#{worldRank} in the world</div>}
-
-        {!profile?.name && !saved && won && (
-          <AuthModal onSuccess={async (playerName) => {
-            await supabase.from('blink_scores').insert({player_name: playerName, level: level})
-            setSaved(true)
-          }} title="Save your result" subtitle="Free · No email needed" />
         )}
         {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:10, padding:'8px', marginBottom:16 }}><div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
 
