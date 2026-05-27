@@ -84,6 +84,7 @@ export default function PokeClient() {
     if (!bowl.includes(id)) {
       clearInterval(timerRef.current)
       setPhase('wrong')
+      window.dispatchEvent(new Event('gameResult'))
       supabase.from('poke_scores').select('*', { count: 'exact', head: true }).gt('level', level - 1)
         .then(({ count }) => setWorldRank((count || 0) + 1))
       return
@@ -160,10 +161,7 @@ export default function PokeClient() {
         </div>
       </div>
       {!profile?.name && !saved && (
-        <SaveButton onSave={async (playerName) => {
-          await supabase.from('poke_scores').insert({ player_name: playerName, level })
-          setSaved(true)
-        }} />
+        <SaveButton />
       )}
       {profile?.name && !saved && (
         <button onClick={async () => {
