@@ -1,7 +1,6 @@
 'use client'
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
-import AuthModal from '@/components/AuthModal'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -13,8 +12,6 @@ type Phase = 'rules' | 'countdown' | 'running' | 'result'
 
 export default function StopPage() {
   const { profile, createProfile } = usePlayer()
-  const [showSavePopup, setShowSavePopup] = useState(false)
-  const hasRegistered = useRef(false)
   const [phase, setPhase] = useState<Phase>('rules')
   const [countdown, setCountdown] = useState(3)
   const [elapsed, setElapsed] = useState(0)
@@ -81,7 +78,6 @@ export default function StopPage() {
     setPhase('result')
    const {count: rankCount} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(diff))
    setWorldRank((rankCount??0)+1)
-   if (!profile?.name && !hasRegistered.current) setTimeout(() => setShowSavePopup(true), 800)
     if (profile?.name) {
       await supabase.from('precision_scores').insert({player_name:profile.name, difference_ms:Math.abs(diff), game_type:null})
       const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(diff))
@@ -172,21 +168,6 @@ export default function StopPage() {
     </main>
   )
 
- if (showSavePopup) return (
-   <div style={{ position:'fixed', inset:0, zIndex:1000, display:'flex', alignItems:'flex-end', justifyContent:'center', padding:'24px', fontFamily:'var(--font-nunito), sans-serif' }}>
-     <div style={{ background:'#1C1C1E', borderRadius:24, padding:'28px 24px', width:'100%', maxWidth:400, border:'1px solid rgba(255,255,255,0.1)', textAlign:'center', animation:'slideUp 0.3s ease' }}>
-       <button onClick={() => setShowSavePopup(false)} style={{ position:'absolute', top:16, right:16, background:'none', border:'none', color:'rgba(255,255,255,0.3)', fontSize:20, cursor:'pointer' }}>✕</button>
-       <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>You are</div>
-       <div style={{ fontSize:64, fontWeight:900, color:'#C8960C', lineHeight:1, marginBottom:4 }}>#{worldRank}</div>
-       <div style={{ fontSize:16, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:24 }}>in the world</div>
-       <AuthModal onSuccess={async (playerName) => {
-         await supabase.from('precision_scores').insert({player_name: playerName, difference_ms: Math.abs(difference), game_type: null})
-         setShowSavePopup(false)
-         hasRegistered.current = true
-         setSaved(true)
-       }} title="Save your result" subtitle="Free · No email needed" />
-     </div>
-   </div>
  )
  if (showSharePopup) return (
    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'24px', fontFamily:'var(--font-nunito), sans-serif' }}>
