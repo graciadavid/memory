@@ -202,7 +202,6 @@ export default function NBackPage() {
      {/* Previous color — small above */}
      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
        <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.3)', textTransform:'uppercase', letterSpacing:2 }}>Previous</div>
-       <div style={{ width:64, height:64, borderRadius:18, background:COLORS[prevColor].color, opacity:0.6 }} />
      </div>
 
      {/* Current color — big */}
