@@ -231,8 +231,8 @@ export default function WordlyClient() {
   })
 
   if (phase === 'rules') return (
-    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'24px 24px 100px', overflowY:'auto' }}>
-      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:20 }}>
+    <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'12px 16px 80px', overflowY:'auto' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:8 }}>
         <img src={`${BASE}/wordly.png`} style={{ width:60, height:60, objectFit:'contain' }} />
         <div>
           <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Wordly</div>
@@ -246,7 +246,7 @@ export default function WordlyClient() {
           <div style={{ display:'flex', alignItems:'center', gap:6 }}><div style={{ width:16, height:16, borderRadius:4, background:'#333' }} /><span style={{ fontSize:12, color:'rgba(255,255,255,0.5)', fontWeight:700 }}>Not in word</span></div>
         </div>
       </div>
-      <div style={{ display:'flex', gap:10, marginBottom:20 }}>
+      <div style={{ display:'flex', gap:10, marginBottom:8 }}>
         <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:16, padding:'14px', textAlign:'center' }}>
           <div style={{ fontSize:9, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:6 }}>World Record</div>
           <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{worldRecord ? `${worldRecord.attempts} tries` : '—'}</div>
