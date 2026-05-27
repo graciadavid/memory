@@ -25,6 +25,9 @@ export default function StopPage() {
   const [pin, setPin] = useState(['','','',''])
   const [saved, setSaved] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [playerCount] = useState(() => Math.floor(Math.random() * (143 - 63 + 1)) + 63)
+  const [blink, setBlink] = useState(true)
+  useEffect(() => { const t = setInterval(() => setBlink(b => !b), 600); return () => clearInterval(t) }, [])
   const [saveError, setSaveError] = useState('')
   const startRef = useRef(0)
   const rafRef = useRef(0)
@@ -112,6 +115,7 @@ export default function StopPage() {
         <div>
           <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Stop</div>
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Stop at exactly 5.000s</div>
+        <div style={{ fontSize:12, fontWeight:900, color: blink ? '#69F0AE' : 'transparent', marginTop:4, transition:'color 0.1s' }}>● {playerCount} players training now</div>
         </div>
       </div>
       <div style={{ display:'flex', gap:10, marginBottom:20 }}>
