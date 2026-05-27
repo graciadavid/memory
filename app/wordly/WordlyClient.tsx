@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
 const GOLD = '#C8960C'
+const PURPLE = '#6A1B9A'
 const GREEN = '#2E7D32'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
@@ -268,9 +269,25 @@ export default function WordlyClient() {
     </main>
   )
 
+  if (phase === 'won' || phase === 'lost') return (
+    <main style={{ minHeight:'100dvh', background: phase==='won' ? '#0D3320' : '#1A0000', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
+      <div style={{ textAlign:'center' }}>
+        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>{phase==='won' ? 'Solved!' : 'Game Over'}</div>
+        <div style={{ fontSize:72, fontWeight:900, color: phase==='won' ? '#69F0AE' : '#FF5252', letterSpacing:-2 }}>{phase==='won' ? guesses.length : '✗'}</div>
+        {phase==='won' && <div style={{ fontSize:16, color:'rgba(255,255,255,0.5)', fontWeight:700 }}>{guesses.length === 1 ? 'try' : 'tries'} · {fmtTime(finalTime)}</div>}
+        {phase==='lost' && <div style={{ fontSize:18, fontWeight:900, color:'#fff', marginTop:8 }}>The word was <span style={{ color:'#FF5252' }}>{word}</span></div>}
+        {worldRank && phase==='won' && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
+      </div>
+      {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}><div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div></div>}
+      <div style={{ display:'flex', gap:10, width:'100%' }}>
+        <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
+        <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E2080' }}>Play again →</button>
+      </div>
+    </main>
+  )
   return (
     <main style={{ height:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', padding:'8px 10px 8px', overflow:'hidden', justifyContent:'space-between' }}>
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:4 }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:2 }}>
         <button onClick={reset} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:13, fontWeight:800, cursor:'pointer', fontFamily:'inherit' }}>← Back</button>
         <div style={{ textAlign:'center' }}>
           <div style={{ fontSize:13, fontWeight:900, color:'#fff' }}>Wordly</div>
@@ -279,12 +296,12 @@ export default function WordlyClient() {
         <div style={{ width:50 }} />
       </div>
 
-      <div style={{ display:'flex', flexDirection:'column', gap:4, alignItems:'center' }}>
+      <div style={{ display:'flex', flexDirection:'column', gap:3, alignItems:'center' }}>
         {rows.map((row, i) => (
           <div key={i} style={{ display:'flex', gap:4, animation: shake && i === guesses.length ? 'shake 0.4s ease' : undefined }}>
             {row.map((cell, j) => (
               <div key={j} style={{
-                width:46, height:46, borderRadius:6,
+                width:44, height:44, borderRadius:6,
                 display:'flex', alignItems:'center', justifyContent:'center',
                 fontSize:20, fontWeight:900, color:'#fff',
                 background: CELL_BG[cell.state],
