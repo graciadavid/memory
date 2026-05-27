@@ -2,6 +2,7 @@ import F1Client from './F1Client'
 import RelatedGames from '@/components/RelatedGames'
 import SEOWrapper from '@/components/SEOWrapper'
 import SEOWrapper from '@/components/SEOWrapper'
+import SEOWrapper from '@/components/SEOWrapper'
 
 export const metadata = {
  title: 'F1 Reaction Test — How Fast Are Your Reflexes? | MemGenius',
@@ -12,6 +13,7 @@ export default function F1Page() {
  return (
    <>
      <F1Client />
+     <SEOWrapper>
      <SEOWrapper>
      <SEOWrapper>
      <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
@@ -84,6 +86,7 @@ export default function F1Page() {
        </details>
 
        <RelatedGames category="agility" current="F1 Reaction" />
+     </SEOWrapper>
      </SEOWrapper>
      </SEOWrapper>
      </div>
