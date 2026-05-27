@@ -299,12 +299,13 @@ export default function WordlyClient() {
             {phase==='won' ? `✓ ${guesses.length} tries · ${fmtTime(finalTime)}` : `The word was ${word}`}
           </div>
           {worldRank && phase==='won' && <div style={{ fontSize:11, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{worldRank} in the world</div>}
-          {!profile?.name && !saved && phase==='won' && (
-            <AuthModal onSuccess={async (playerName) => {
-              await supabase.from('wordle_scores').insert({player_name: playerName, attempts: guesses.length, time_ms: finalTime, word_date: new Date().toISOString().split('T')[0]})
-              setSaved(true)
-            }} title="Save your result" subtitle="Free · No email needed" />
-          )}
+        <a href="/profile" style={{ textDecoration:'none', display:'block', width:'100%' }}>
+          <div style={{ background:'rgba(200,150,12,0.15)', borderRadius:20, padding:'20px', textAlign:'center', border:'1px solid rgba(200,150,12,0.3)' }}>
+            <div style={{ fontSize:16, fontWeight:900, color:'#C8960C', marginBottom:4 }}>Save your result →</div>
+            <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Create a free profile to track your scores</div>
+          </div>
+        </a>
+      )}
           {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:10, padding:'6px', marginTop:4 }}><div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
           <div style={{ display:'flex', gap:8, justifyContent:'center', marginTop:6 }}>
             <button onClick={reset} style={{ padding:'8px 14px', borderRadius:10, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>

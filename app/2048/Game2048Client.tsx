@@ -303,12 +303,13 @@ export default function Game2048Client() {
               <div style={{ fontSize:42, fontWeight:900, color:GOLD }}>{score.toLocaleString()}</div>
               {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{worldRank} in the world</div>}
             </div>
-            {!profile?.name && !saved && (
-              <div>
-                <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'10px', borderRadius:10, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:10, boxSizing:'border-box' }} />
-                <div style={{ display:'flex', gap:6, justifyContent:'center', marginBottom:10 }}>
-                  {pin.map((d,i) => (
-                    <input key={i} id={`pin2048-${i}`} type="tel" maxLength={1} value={d}
+        <a href="/profile" style={{ textDecoration:'none', display:'block', width:'100%' }}>
+          <div style={{ background:'rgba(200,150,12,0.15)', borderRadius:20, padding:'20px', textAlign:'center', border:'1px solid rgba(200,150,12,0.3)' }}>
+            <div style={{ fontSize:16, fontWeight:900, color:'#C8960C', marginBottom:4 }}>Save your result →</div>
+            <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Create a free profile to track your scores</div>
+          </div>
+        </a>
+      )}
                       onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin2048-${i+1}`) as HTMLInputElement)?.focus()}}
                       style={{ width:44, height:52, textAlign:'center', fontSize:22, fontWeight:900, borderRadius:10, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
                   ))}
