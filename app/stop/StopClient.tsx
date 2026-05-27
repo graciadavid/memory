@@ -12,7 +12,7 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 type Phase = 'rules' | 'countdown' | 'running' | 'result'
 
 export default function StopPage() {
-  const { profile } = usePlayer()
+  const { profile, createProfile } = usePlayer()
   const [phase, setPhase] = useState<Phase>('rules')
   const [countdown, setCountdown] = useState(3)
   const [elapsed, setElapsed] = useState(0)
