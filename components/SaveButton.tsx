@@ -17,7 +17,7 @@ export default function SaveButton() {
  const [blink, setBlink] = useState(true)
  const pathname = usePathname()
 
- const isGamePage = GAME_PATHS.includes(pathname)
+ const isGamePage = GAME_PATHS.some(p => pathname === p || pathname.startsWith(p + "/"))
 
  useEffect(() => {
    const stored = localStorage.getItem('memgenius_profile')
