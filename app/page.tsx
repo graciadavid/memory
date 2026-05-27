@@ -43,7 +43,7 @@ function ChampionshipCountdown() {
 
 export default function HomePage() {
  const [blink, setBlink] = useState(true)
-  const [playerCount] = useState(() => Math.floor(Math.random() * (143 - 63 + 1)) + 63)
+  const [playerCount] = useState(() => Math.floor(Math.random() * (135 - 117 + 1)) + 117)
   useEffect(() => { const t = setInterval(() => setBlink(b => !b), 600); return () => clearInterval(t) }, [])
   const [todayGame, setTodayGame] = useState('capitals')
 
