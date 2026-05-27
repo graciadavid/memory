@@ -168,10 +168,12 @@ export default function WordlyClient() {
         if (timerRef.current) clearInterval(timerRef.current)
         setFinalGuesses(newGuesses.length)
         setPhase('won')
+        window.dispatchEvent(new CustomEvent('gameResult'))
 
       } else if (newGuesses.length >= 6) {
         if (timerRef.current) clearInterval(timerRef.current)
         setPhase('lost')
+        window.dispatchEvent(new CustomEvent('gameResult'))
       }
       return
     }
