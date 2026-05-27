@@ -1,5 +1,6 @@
 import F1Client from './F1Client'
 import RelatedGames from '@/components/RelatedGames'
+import SEOWrapper from '@/components/SEOWrapper'
 
 export const metadata = {
  title: 'F1 Reaction Test — How Fast Are Your Reflexes? | MemGenius',
@@ -10,6 +11,7 @@ export default function F1Page() {
  return (
    <>
      <F1Client />
+     <SEOWrapper>
      <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
        <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>How fast are your reflexes?</h2>
        <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>F1 Reaction is a pure reflex test inspired by the Formula 1 starting procedure. Five red lights illuminate one by one. When they go out, tap as fast as you can. Your reaction time is measured to the millisecond and compared against players from all over the world.</p>
@@ -80,6 +82,7 @@ export default function F1Page() {
        </details>
 
        <RelatedGames category="agility" current="F1 Reaction" />
+     </SEOWrapper>
      </div>
    </>
  )
