@@ -199,12 +199,12 @@ export default function MastermindClient() {
                   )
                 })}
               </div>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4, width:44 }}>
+              <div style={{ display:'flex', gap:4, width:88 }}>
                 {Array.from({ length: CODE_LEN }, (_, j) => {
                   const isBlack = row && j < row.black
                   const isWhite = row && j >= row.black && j < row.black + row.white
                   return (
-                    <div key={j} style={{ width:18, height:18, borderRadius:'50%', background: isBlack ? '#fff' : isWhite ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)' }} />
+                    <div key={j} style={{ width:16, height:16, borderRadius:'50%', background: isBlack ? '#fff' : isWhite ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', flexShrink:0 }} />
                   )
                 })}
               </div>
