@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import AuthModal from '@/components/AuthModal'
+import SaveButton from '@/components/SaveButton'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
 
@@ -159,12 +160,10 @@ export default function PokeClient() {
         </div>
       </div>
       {!profile?.name && !saved && (
-        <div style={{ marginBottom:16 }}>
-          <AuthModal onSuccess={async (playerName) => {
-            await supabase.from('poke_scores').insert({ player_name: playerName, level })
-            setSaved(true)
-          }} title="Save your result" subtitle="Free · No email needed" />
-        </div>
+        <SaveButton onSave={async (playerName) => {
+          await supabase.from('poke_scores').insert({ player_name: playerName, level })
+          setSaved(true)
+        }} />
       )}
       {profile?.name && !saved && (
         <button onClick={async () => {
