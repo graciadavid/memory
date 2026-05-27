@@ -332,7 +332,7 @@ export default function BlackjackClient() {
        <div style={{ fontSize:48, fontWeight:900, color:'#fff' }}>{bet}</div>
      </div>
 
-      <div style={{ marginTop:'auto', display:'flex', flexDirection:'column', gap:12 }}>
+      <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
        <button onClick={deal} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080' }}>
          Deal →
        </button>
