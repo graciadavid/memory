@@ -115,7 +115,6 @@ export default function StopPage() {
         <div>
           <div style={{ fontSize:28, fontWeight:900, color:'#fff' }}>Stop</div>
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Stop at exactly 5.000s</div>
-        <div style={{ fontSize:12, fontWeight:900, color: blink ? '#69F0AE' : 'transparent', marginTop:4, transition:'color 0.6s' }}>● {playerCount} players training now</div>
         </div>
       </div>
       <div style={{ display:'flex', gap:10, marginBottom:20 }}>
