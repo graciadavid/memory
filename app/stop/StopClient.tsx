@@ -194,7 +194,6 @@ export default function StopPage() {
            <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Create a free profile to track your scores</div>
          </div>
        </a>
-     )}
       )}
 
       {/* Championship Banner */}
