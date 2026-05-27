@@ -299,7 +299,6 @@ export default function WordlyClient() {
           <div style={{ fontSize:13, fontWeight:900, color:'#fff' }}>Wordly</div>
           <div style={{ fontSize:18, fontWeight:900, color:GOLD, fontVariantNumeric:'tabular-nums' }}>{fmtTime(elapsed)}</div>
         </div>
-        <div style={{ width:50 }} />
       </div>
 
       <div style={{ display:'flex', flexDirection:'column', gap:3, alignItems:'center' }}>
@@ -317,8 +316,6 @@ export default function WordlyClient() {
           </div>
         ))}
       </div>
-
-
       <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
         {KEYBOARD.map((row, i) => (
           <div key={i} style={{ display:'flex', gap:4, justifyContent:'center' }}>
