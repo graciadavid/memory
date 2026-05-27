@@ -48,7 +48,7 @@ function pctColor(pct: string): string {
 
 
 function ProfileLoginButton() {
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(true)
   return (
     <div style={{ textAlign:"center" }}>
       <div style={{ fontSize:22, fontWeight:900, color:"#fff", marginBottom:8 }}>Your Profile</div>
