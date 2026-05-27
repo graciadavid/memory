@@ -359,6 +359,36 @@ export default function TetrisClient() {
           </div>
         )}
       </div>
+      {/* Board + Controls below */}
+      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:10, flex:1, width:'100%' }}>
+        <div style={{ border:'2px solid rgba(255,255,255,0.1)', borderRadius:8, overflow:'hidden', background:'rgba(0,0,0,0.5)' }}>
+          {displayBoard.map((row, r) => (
+            <div key={r} style={{ display:'flex' }}>
+              {row.map((cell, c) => (
+                <div key={c} style={{
+                  width: CELL, height: CELL,
+                  background: cell === 'ghost' ? 'rgba(255,255,255,0.1)' : cell || 'transparent',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  boxSizing:'border-box',
+                  borderRadius: cell && cell !== 'ghost' ? 3 : 0,
+                }} />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Controls below board */}
+        {phase === 'playing' && (
+          <div style={{ width:'100%', maxWidth:400, display:'flex', flexDirection:'column', gap:10, padding:'0 16px' }}>
+            <button onPointerDown={(e)=>{e.preventDefault();rotatePiece()}} style={{ width:'100%', height:64, borderRadius:18, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:20, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>↻ Rotate</button>
+            <div style={{ display:'flex', gap:10 }}>
+              <button onPointerDown={(e)=>{e.preventDefault();moveLeft()}} style={{ flex:1, height:64, borderRadius:18, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:28, cursor:'pointer', fontFamily:'inherit' }}>←</button>
+              <button onPointerDown={(e)=>{e.preventDefault();hardDrop()}} style={{ flex:1, height:64, borderRadius:18, border:'none', background:GOLD, color:'#000', fontSize:16, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>⬇</button>
+              <button onPointerDown={(e)=>{e.preventDefault();moveRight()}} style={{ flex:1, height:64, borderRadius:18, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:28, cursor:'pointer', fontFamily:'inherit' }}>→</button>
+            </div>
+          </div>
+        )}
+      </div>
       <div style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
         {/* Board */}
         <div style={{ border:'2px solid rgba(255,255,255,0.1)', borderRadius:8, overflow:'hidden', background:'rgba(0,0,0,0.5)' }}>
