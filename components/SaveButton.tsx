@@ -1,9 +1,13 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 export default function SaveButton() {
   const [show, setShow] = useState(false)
   const [blink, setBlink] = useState(true)
+  const pathname = usePathname()
+
+  const hideOn = ['/', '/profile', '/championship', '/brain-test', '/agility', '/knowledge', '/logic', '/memory-hub']
 
   useEffect(() => {
     const check = () => {
@@ -20,7 +24,7 @@ export default function SaveButton() {
     return () => clearInterval(t)
   }, [])
 
-  if (!show) return null
+  if (!show || hideOn.includes(pathname)) return null
 
   return (
     <a href="/profile" style={{ textDecoration:'none', position:'fixed', bottom:80, right:16, zIndex:999 }}>
