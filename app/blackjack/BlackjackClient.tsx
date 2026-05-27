@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
+import SaveButton from '@/components/SaveButton'
 import { supabase } from '@/lib/supabase'
 import { updateStreak } from '@/lib/streak'
 
@@ -104,7 +105,7 @@ export default function BlackjackClient() {
      supabase.from('profiles').update({ current_chips: START_CHIPS }).eq('player_name', profile.name)
    }
     setBet(100)
-    setPhase('betting')
+    setPhase('betting'); window.dispatchEvent(new Event('gameStart'))
     setDeck(createDeck())
     setSaved(false)
     setWorldRank(null)
