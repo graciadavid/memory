@@ -190,13 +190,12 @@ export default function SimonClient() {
         <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{finalLevel}</div>
         {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
       </div>
-        <a href="/profile" style={{ textDecoration:'none', display:'block', width:'100%' }}>
-          <div style={{ background:'rgba(200,150,12,0.15)', borderRadius:20, padding:'20px', textAlign:'center', border:'1px solid rgba(200,150,12,0.3)' }}>
-            <div style={{ fontSize:16, fontWeight:900, color:'#C8960C', marginBottom:4 }}>Save your result →</div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Create a free profile to track your scores</div>
-          </div>
-        </a>
-      )}
+      {!profile?.name && !saved && (
+        <div style={{ width:'100%', background:'rgba(0,0,0,0.3)', borderRadius:24, padding:'24px' }}>
+          <div style={{ fontSize:16, fontWeight:900, color:'#fff', marginBottom:4 }}>Save your score</div>
+          <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>New user? Create account. Returning? Enter your PIN.</div>
+          <input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:12, boxSizing:'border-box' }} />
+          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>PIN</div>
           <div style={{ display:'flex', gap:8, justifyContent:'center', marginBottom:16 }}>
             {pin.map((d,i) => (
               <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}

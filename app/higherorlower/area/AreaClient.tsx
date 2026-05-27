@@ -279,13 +279,12 @@ export default function HolAreaPage() {
        <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{score}</div>
        {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
      </div>
-        <a href="/profile" style={{ textDecoration:'none', display:'block', width:'100%' }}>
-          <div style={{ background:'rgba(200,150,12,0.15)', borderRadius:20, padding:'20px', textAlign:'center', border:'1px solid rgba(200,150,12,0.3)' }}>
-            <div style={{ fontSize:16, fontWeight:900, color:'#C8960C', marginBottom:4 }}>Save your result →</div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Create a free profile to track your scores</div>
-          </div>
-        </a>
-      )}
+     {!profile?.name && !saved && (
+       <AuthModal onSuccess={async (playerName) => {
+           await supabase.from('higher_lower_scores').insert({player_name: playerName, level: score, category: 'area'})
+           setSaved(true)
+         }} title="Save your result" subtitle="Free · No email needed" />
+     )}
      {saved && (
        <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
          <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>

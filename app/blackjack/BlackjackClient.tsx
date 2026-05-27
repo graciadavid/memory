@@ -415,13 +415,12 @@ export default function BlackjackClient() {
             <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>peak chips</div>
             {worldRank && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>#{worldRank} in the world</div>}
 
-        <a href="/profile" style={{ textDecoration:'none', display:'block', width:'100%' }}>
-          <div style={{ background:'rgba(200,150,12,0.15)', borderRadius:20, padding:'20px', textAlign:'center', border:'1px solid rgba(200,150,12,0.3)' }}>
-            <div style={{ fontSize:16, fontWeight:900, color:'#C8960C', marginBottom:4 }}>Save your result →</div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Create a free profile to track your scores</div>
-          </div>
-        </a>
-      )}
+            {!profile?.name && !saved && (
+              <div style={{ background:'rgba(0,0,0,0.3)', borderRadius:14, padding:'12px', marginBottom:16 }}>
+                <input value={saveName} onChange={e=>setSaveName(e.target.value)} placeholder="Your name" style={{ width:'100%', padding:'8px', borderRadius:8, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:13, fontWeight:800, fontFamily:'inherit', outline:'none', marginBottom:8, boxSizing:'border-box' }} />
+                <div style={{ display:'flex', gap:5, justifyContent:'center', marginBottom:8 }}>
+                  {pin.map((d,i) => (
+                    <input key={i} id={`pin-bj-${i}`} type="tel" maxLength={1} value={d}
                       onChange={e=>{const v=e.target.value.replace(/\D/,'');const p=[...pin];p[i]=v;setPin(p);if(v&&i<3)(document.getElementById(`pin-bj-${i+1}`) as HTMLInputElement)?.focus()}}
                       style={{ width:36, height:42, textAlign:'center', fontSize:18, fontWeight:900, borderRadius:8, border:'2px solid rgba(255,255,255,0.2)', background:'rgba(255,255,255,0.1)', color:'#fff', fontFamily:'inherit', outline:'none' }} />
                   ))}

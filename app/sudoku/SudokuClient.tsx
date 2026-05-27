@@ -272,13 +272,12 @@ export default function SudokuClient() {
           <div style={{ fontSize:48, fontWeight:900, color:GOLD }}>{fmt(elapsed)}</div>
           {worldRank && <div style={{ fontSize:18, fontWeight:900, color:'rgba(255,255,255,0.5)' }}>#{worldRank} in the world</div>}
 
-        <a href="/profile" style={{ textDecoration:'none', display:'block', width:'100%' }}>
-          <div style={{ background:'rgba(200,150,12,0.15)', borderRadius:20, padding:'20px', textAlign:'center', border:'1px solid rgba(200,150,12,0.3)' }}>
-            <div style={{ fontSize:16, fontWeight:900, color:'#C8960C', marginBottom:4 }}>Save your result →</div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Create a free profile to track your scores</div>
-          </div>
-        </a>
-      )}
+          {!profile?.name && !saved && (
+       <AuthModal onSuccess={async (playerName) => {
+           await supabase.from('sudoku_scores').insert({player_name: playerName, time_ms: elapsed})
+           setSaved(true)
+         }} title="Save your result" subtitle="Free · No email needed" />
+          )}
           {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'14px 20px', textAlign:'center' }}><div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Saved! #{worldRank}</div></div>}
           <div style={{ display:'flex', gap:10, width:'100%' }}>
             <button onClick={reset} style={{ flex:1, padding:'14px', borderRadius:14, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>

@@ -268,13 +268,12 @@ export default function BlinkClient() {
 
         {worldRank && won && <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:16 }}>#{worldRank} in the world</div>}
 
-        <a href="/profile" style={{ textDecoration:'none', display:'block', width:'100%' }}>
-          <div style={{ background:'rgba(200,150,12,0.15)', borderRadius:20, padding:'20px', textAlign:'center', border:'1px solid rgba(200,150,12,0.3)' }}>
-            <div style={{ fontSize:16, fontWeight:900, color:'#C8960C', marginBottom:4 }}>Save your result →</div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Create a free profile to track your scores</div>
-          </div>
-        </a>
-      )}
+        {!profile?.name && !saved && won && (
+          <AuthModal onSuccess={async (playerName) => {
+            await supabase.from('blink_scores').insert({player_name: playerName, level: level})
+            setSaved(true)
+          }} title="Save your result" subtitle="Free · No email needed" />
+        )}
         {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:10, padding:'8px', marginBottom:16 }}><div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
 
         {/* Show correct pattern on failure */}
