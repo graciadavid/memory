@@ -29,7 +29,7 @@ export default function LogicGamesClient() {
             <div style={{ flex:1 }}>
               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
                 <div style={{ fontSize:17, fontWeight:900, color:'#fff' }}>{g.label}</div>
-                <div style={{ fontSize:11, fontWeight:900, color: blink ? '#69F0AE' : 'transparent', transition:'color 0.1s' }}>● {counts[i]} playing</div>
+                <div style={{ fontSize:11, fontWeight:900, color: blink ? '#69F0AE' : 'transparent', transition:'color 0.6s' }}>● {counts[i]} playing</div>
               </div>
               <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{g.desc}</div>
             </div>
