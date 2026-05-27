@@ -296,7 +296,7 @@ export default function Game2048Client() {
 
       {/* Game over overlay */}
       {phase === 'gameover' && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', display:'flex', alignItems:'center', justifyContent:'center', padding:24, zIndex:1000, touchAction:'auto' }}>
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', display:'flex', alignItems:'flex-start', justifyContent:'center', paddingTop:80, padding:24, zIndex:990, touchAction:'auto' }}>
           <div style={{ background:'#1a1a1a', borderRadius:24, padding:28, width:'100%', maxWidth:380, display:'flex', flexDirection:'column', gap:16 }}>
             <div style={{ textAlign:'center' }}>
               <div style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:4 }}>Game Over</div>
