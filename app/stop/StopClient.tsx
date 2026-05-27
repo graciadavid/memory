@@ -171,17 +171,6 @@ export default function StopPage() {
       <div style={{ fontSize:13, color:'rgba(255,255,255,0.15)', fontWeight:700, marginTop:24 }}>Tap anywhere to stop</div>
     </main>
   )
-
-   <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'24px', fontFamily:'var(--font-nunito), sans-serif' }}>
-     <div style={{ background:'#1C1C1E', borderRadius:24, padding:'28px 24px', width:'100%', maxWidth:360, border:'1px solid rgba(255,255,255,0.1)', textAlign:'center' }}>
-       <div style={{ fontSize:40, marginBottom:8 }}>🔥</div>
-       <div style={{ fontSize:22, fontWeight:900, color:'#fff', marginBottom:8 }}>You're on fire!</div>
-       <div style={{ fontSize:14, color:'rgba(255,255,255,0.5)', fontWeight:700, marginBottom:24 }}>5 games played. Challenge your friends to beat your score!</div>
-       <button onClick={() => { supabase.from('events').insert({ event:'stop_share', player_name: profile?.name || 'anonymous' }); if (navigator.share) { navigator.share({ title:'Stop — MemGenius', text:'Can you stop at exactly 5 seconds? Try to beat me at memgenius.com/stop', url:'https://memgenius.com/stop' }) } else { navigator.clipboard.writeText('https://memgenius.com/stop'); alert('Link copied!') } }} style={{ width:'100%', padding:'16px', borderRadius:16, border:'none', background:'#2E7D32', color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:10 }}>🔗 Challenge a Friend</button>
-       <button onClick={() => setShowSharePopup(false)} style={{ width:'100%', padding:'12px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.5)', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Keep Playing</button>
-     </div>
-   </div>
- )
   return (
    {showSavePopup && (
      <div style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:1000, padding:'16px', fontFamily:'var(--font-nunito), sans-serif' }}>
