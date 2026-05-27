@@ -172,6 +172,23 @@ export default function StopPage() {
     </main>
   )
 
+ if (showSavePopup) return (
+   <div style={{ position:'fixed', inset:0, zIndex:1000, display:'flex', alignItems:'flex-end', justifyContent:'center', padding:'24px', fontFamily:'var(--font-nunito), sans-serif' }}>
+     <div style={{ background:'#1C1C1E', borderRadius:24, padding:'28px 24px', width:'100%', maxWidth:400, border:'1px solid rgba(255,255,255,0.1)', textAlign:'center', animation:'slideUp 0.3s ease' }}>
+       <button onClick={() => setShowSavePopup(false)} style={{ position:'absolute', top:16, right:16, background:'none', border:'none', color:'rgba(255,255,255,0.3)', fontSize:20, cursor:'pointer' }}>✕</button>
+       <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>You are</div>
+       <div style={{ fontSize:64, fontWeight:900, color:'#C8960C', lineHeight:1, marginBottom:4 }}>#{worldRank}</div>
+       <div style={{ fontSize:16, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:24 }}>in the world</div>
+       <AuthModal onSuccess={async (playerName) => {
+         await supabase.from('precision_scores').insert({player_name: playerName, difference_ms: Math.abs(difference), game_type: null})
+         setShowSavePopup(false)
+         hasRegistered.current = true
+         setSaved(true)
+       }} title="Save your result" subtitle="Free · No email needed" />
+     </div>
+   </div>
+ )
+ if (showSharePopup) return (
    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'24px', fontFamily:'var(--font-nunito), sans-serif' }}>
      <div style={{ background:'#1C1C1E', borderRadius:24, padding:'28px 24px', width:'100%', maxWidth:360, border:'1px solid rgba(255,255,255,0.1)', textAlign:'center' }}>
        <div style={{ fontSize:40, marginBottom:8 }}>🔥</div>
@@ -183,22 +200,6 @@ export default function StopPage() {
    </div>
  )
   return (
-   {showSavePopup && (
-     <div style={{ position:'fixed', bottom:0, left:0, right:0, zIndex:1000, padding:'16px', fontFamily:'var(--font-nunito), sans-serif' }}>
-       <div style={{ background:'#1C1C1E', borderRadius:'24px 24px 0 0', padding:'28px 24px 40px', width:'100%', maxWidth:430, margin:'0 auto', border:'1px solid rgba(255,255,255,0.1)', textAlign:'center', position:'relative', boxShadow:'0 -8px 40px rgba(0,0,0,0.6)' }}>
-         <button onClick={() => setShowSavePopup(false)} style={{ position:'absolute', top:16, right:16, background:'none', border:'none', color:'rgba(255,255,255,0.3)', fontSize:20, cursor:'pointer' }}>✕</button>
-         <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>You are</div>
-         <div style={{ fontSize:56, fontWeight:900, color:'#C8960C', lineHeight:1, marginBottom:4 }}>#{worldRank}</div>
-         <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:20 }}>in the world — save it!</div>
-         <AuthModal onSuccess={async (playerName) => {
-           await supabase.from('precision_scores').insert({player_name: playerName, difference_ms: Math.abs(difference), game_type: null})
-           setShowSavePopup(false)
-           hasRegistered.current = true
-           setSaved(true)
-         }} title="" subtitle="" />
-       </div>
-     </div>
-   )}
     <main style={{ minHeight:'100dvh', background:bgResult, fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20, overflowY:'auto' }}>
       <div style={{ textAlign:'center' }}>
         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Difference from 5.000s</div>
