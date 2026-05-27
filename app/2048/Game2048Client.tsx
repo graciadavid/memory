@@ -145,7 +145,6 @@ export default function Game2048Client() {
     setBoard(initBoard())
     setScore(0)
     setPhase('playing'); window.dispatchEvent(new Event('gameStart'))
-    window.dispatchEvent(new CustomEvent('gameStart'))
   }
 
   const handleMove = useCallback(async (dir: 'left'|'right'|'up'|'down') => {
@@ -160,7 +159,7 @@ export default function Game2048Client() {
         return next
       })
       if (!hasMovesLeft(withRandom)) {
-        setPhase('gameover')
+        setPhase('gameover'); window.dispatchEvent(new Event('gameResult'))
         setScore(s => {
           if (profile?.name) {
             supabase.from('game2048_scores').insert({player_name:profile.name, score:s}).then(() => {
