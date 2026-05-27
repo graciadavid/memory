@@ -12,7 +12,7 @@ const GAMES = [
  { label: 'Capitals', icon: `${BASE}/capitals.png`, href: '/capitals', desc: 'Name the capital city' },
 ]
 
-function rand() { return Math.floor(Math.random() * (23 - 7 + 1)) + 7 }
+function rand() { return Math.floor(Math.random() * (20 - 3 + 1)) + 3 }
 
 export default function KnowledgeClient() {
  const [counts] = useState(() => GAMES.map(() => rand()))

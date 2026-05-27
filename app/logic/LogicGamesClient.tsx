@@ -13,7 +13,7 @@ const GAMES = [
   { label: 'Tetris', icon: `${BASE}/mango.png`, href: '/tetris', desc: 'Stack blocks, clear lines, beat the world' },
 ]
 
-function rand() { return Math.floor(Math.random() * (23 - 7 + 1)) + 7 }
+function rand() { return Math.floor(Math.random() * (20 - 3 + 1)) + 3 }
 
 export default function LogicGamesClient() {
   const [counts] = useState(() => GAMES.map(() => rand()))

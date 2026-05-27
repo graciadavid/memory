@@ -12,7 +12,7 @@ const GAMES = [
   { label: 'Letter Rain', icon: `${BASE}/rain.png`, href: '/letter-rain', desc: 'Count the falling letters' },
 ]
 
-function rand() { return Math.floor(Math.random() * (23 - 7 + 1)) + 7 }
+function rand() { return Math.floor(Math.random() * (20 - 3 + 1)) + 3 }
 
 export default function AgilityClient() {
   const [counts] = useState(() => GAMES.map(() => rand()))

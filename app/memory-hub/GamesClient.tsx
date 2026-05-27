@@ -13,7 +13,7 @@ const GAMES = [
   { label: 'Poke', icon: `${BASE}/salmon.png`, href: '/poke', desc: 'Remember the bowl ingredients' },
 ]
 
-function rand() { return Math.floor(Math.random() * (23 - 7 + 1)) + 7 }
+function rand() { return Math.floor(Math.random() * (20 - 3 + 1)) + 3 }
 
 export default function MemoryGamesClient() {
   const [counts] = useState(() => GAMES.map(() => rand()))
