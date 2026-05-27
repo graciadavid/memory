@@ -157,7 +157,7 @@ export default function BlackjackClient() {
      }
      setRoundResult('lose')
      setPhase('result')
-         if (newChips <= 0) setTimeout(() => setPhase('gameover'); window.dispatchEvent(new Event('gameResult')), 1500)
+         if (newChips <= 0) setTimeout(() => { setPhase('gameover'); window.dispatchEvent(new Event('gameResult')) }, 1500)
     }
   }
 
