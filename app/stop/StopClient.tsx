@@ -13,6 +13,7 @@ type Phase = 'rules' | 'countdown' | 'running' | 'result'
 
 export default function StopPage() {
   const { profile, createProfile } = usePlayer()
+  const [showSavePopup, setShowSavePopup] = useState(false)
   const [phase, setPhase] = useState<Phase>('rules')
   const [countdown, setCountdown] = useState(3)
   const [elapsed, setElapsed] = useState(0)
@@ -77,6 +78,9 @@ export default function StopPage() {
       return next
     })
     setPhase('result')
+   const {count: rankCount} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(diff))
+   setWorldRank((rankCount??0)+1)
+   if (!profile?.name) setTimeout(() => setShowSavePopup(true), 800)
     if (profile?.name) {
       await supabase.from('precision_scores').insert({player_name:profile.name, difference_ms:Math.abs(diff), game_type:null})
       const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).is('game_type',null).lt('difference_ms',Math.abs(diff))
@@ -167,6 +171,21 @@ export default function StopPage() {
     </main>
   )
 
+ if (showSavePopup) return (
+   <div style={{ position:'fixed', inset:0, zIndex:1000, display:'flex', alignItems:'flex-end', justifyContent:'center', padding:'24px', fontFamily:'var(--font-nunito), sans-serif' }}>
+     <div style={{ background:'#1C1C1E', borderRadius:24, padding:'28px 24px', width:'100%', maxWidth:400, border:'1px solid rgba(255,255,255,0.1)', textAlign:'center', animation:'slideUp 0.3s ease' }}>
+       <button onClick={() => setShowSavePopup(false)} style={{ position:'absolute', top:16, right:16, background:'none', border:'none', color:'rgba(255,255,255,0.3)', fontSize:20, cursor:'pointer' }}>✕</button>
+       <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>You are</div>
+       <div style={{ fontSize:64, fontWeight:900, color:'#C8960C', lineHeight:1, marginBottom:4 }}>#{worldRank}</div>
+       <div style={{ fontSize:16, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:24 }}>in the world</div>
+       <AuthModal onSuccess={async (playerName) => {
+         await supabase.from('precision_scores').insert({player_name: playerName, difference_ms: Math.abs(difference), game_type: null})
+         setShowSavePopup(false)
+         setSaved(true)
+       }} title="Save your result" subtitle="Free · No email needed" />
+     </div>
+   </div>
+ )
  if (showSharePopup) return (
    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'24px', fontFamily:'var(--font-nunito), sans-serif' }}>
      <div style={{ background:'#1C1C1E', borderRadius:24, padding:'28px 24px', width:'100%', maxWidth:360, border:'1px solid rgba(255,255,255,0.1)', textAlign:'center' }}>
@@ -187,15 +206,6 @@ export default function StopPage() {
         </div>
         {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
       </div>
-     {!profile?.name && (
-       <a href="/profile" style={{ textDecoration:'none', display:'block', width:'100%' }}>
-         <div style={{ background:'rgba(200,150,12,0.15)', borderRadius:20, padding:'20px', textAlign:'center', border:'1px solid rgba(200,150,12,0.3)' }}>
-           <div style={{ fontSize:16, fontWeight:900, color:'#C8960C', marginBottom:4 }}>Save your result →</div>
-           <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>Create a free profile to track your scores</div>
-         </div>
-       </a>
-      )}
-
       {/* Championship Banner */}
       <a href="/championship" style={{ textDecoration:'none', display:'block', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:16, padding:'14px 18px', marginBottom:12, boxShadow:'0 4px 0 rgba(100,70,0,0.5)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
