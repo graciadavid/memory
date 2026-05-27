@@ -43,6 +43,7 @@ import StreakUpdater from '@/components/StreakUpdater'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
 import GameProfileGuard from '@/components/GameProfileGuard'
 import SaveButton
+import SaveButton from '@/components/SaveButton'
 import CookieBanner from '@/components/CookieBanner'
 
 const nunito = Nunito({
