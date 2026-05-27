@@ -158,7 +158,7 @@ export default function WordlyClient() {
       const newGuesses = [...gs, cur]
       // Track absent letters
     const newAbsent = new Set(absentLetters)
-    guess.split('').forEach((letter, i) => {
+    current.split('').forEach((letter, i) => {
       if (!word.includes(letter)) newAbsent.add(letter)
     })
     setAbsentLetters(newAbsent)
