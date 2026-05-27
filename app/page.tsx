@@ -14,7 +14,7 @@ const GAMES: Record<string,string> = {
 
 function ChampionshipCountdown() {
   const [pulse, setPulse] = useState(true)
-  useEffect(() => { const t = setInterval(() => setPulse(p => python3 << 'EOF'), 1000); return () => clearInterval(t) }, [])
+  useEffect(() => { const t = setInterval(() => setPulse(p => !p), 1000); return () => clearInterval(t) }, [])
  const [cd, setCd] = useState({ d:0, h:0, m:0, s:0 })
  useEffect(() => {
    const calc = () => {
