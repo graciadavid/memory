@@ -1,6 +1,6 @@
 'use client'
 import { supabase } from '@/lib/supabase'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 const GAME_PATHS = [
@@ -16,7 +16,6 @@ export default function SaveButton() {
   const [hasProfile, setHasProfile] = useState(true)
   const [isResult, setIsResult] = useState(false)
   const pathname = usePathname()
-  const trackedRef = useRef(false)
 
   const isGamePage = GAME_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'))
 
@@ -26,12 +25,13 @@ export default function SaveButton() {
 
     const onResult = () => {
       const profile = localStorage.getItem('memgenius_profile')
-      if (!profile) {
+      if (!profile && GAME_PATHS.some(p => window.location.pathname === p || window.location.pathname.startsWith(p + '/'))) {
         setIsResult(true)
-        trackedRef.current = false
+        // Track shown
+        supabase.from('save_button_shown').insert({ pathname: window.location.pathname, type: 'shown' })
       }
     }
-    const onStart = () => { setIsResult(false); trackedRef.current = false }
+    const onStart = () => setIsResult(false)
 
     window.addEventListener('gameResult', onResult)
     window.addEventListener('gameStart', onStart)
@@ -46,19 +46,12 @@ export default function SaveButton() {
     }
   }, [pathname])
 
-  useEffect(() => { setIsResult(false); trackedRef.current = false }, [pathname])
-
-  // Track render
-  useEffect(() => {
-    if (!isResult || hasProfile || !isGamePage || trackedRef.current) return
-    trackedRef.current = true
-    supabase.from('save_button_shown').insert({ pathname, type: 'shown', created_at: new Date().toISOString() })
-  })
+  useEffect(() => { setIsResult(false) }, [pathname])
 
   if (hasProfile || !isGamePage || !isResult) return null
 
   const handleClick = () => {
-    supabase.from('save_button_shown').insert({ pathname, type: 'clicked', created_at: new Date().toISOString() })
+    supabase.from('save_button_shown').insert({ pathname, type: 'clicked' })
   }
 
   return (
