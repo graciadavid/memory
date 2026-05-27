@@ -144,7 +144,7 @@ export default function Game2048Client() {
   const startGame = () => {
     setBoard(initBoard())
     setScore(0)
-    setPhase('playing')
+    setPhase('playing'); window.dispatchEvent(new Event('gameStart'))
     window.dispatchEvent(new CustomEvent('gameStart'))
   }
 
