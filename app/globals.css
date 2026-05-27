@@ -7,3 +7,19 @@ body {
   color: #4A2C0A;
   margin: 0;
 }
+
+/* Prevent scroll during gameplay */
+main[data-phase="playing"],
+main[data-phase="countdown"],
+main[data-phase="running"],
+main[data-phase="memorize"],
+main[data-phase="guess"],
+main[data-phase="showing"],
+main[data-phase="input"],
+main[data-phase="lighting"],
+main[data-phase="waiting"],
+main[data-phase="go"] {
+ overflow: hidden;
+ height: 100dvh;
+ max-height: 100dvh;
+}
