@@ -156,13 +156,6 @@ export default function PokeClient() {
           })}
         </div>
       </div>
-      {!profile?.name && (
-        <div style={{ marginBottom:16 }}>
-          <AuthModal onSuccess={async (playerName) => {
-            await supabase.from('poke_scores').insert({ player_name: playerName, level })
-          }} title="Save your result" subtitle="Free · No email needed" />
-        </div>
-      )}
       <div style={{ display:'flex', gap:10 }}>
         <a href="/memory-hub" style={{ flex:1, textDecoration:'none', display:'block', padding:'14px', borderRadius:14, background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.6)', fontSize:14, fontWeight:900, textAlign:'center' }}>← Memory</a>
         <button onClick={startGame} style={{ flex:2, padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play Again →</button>
