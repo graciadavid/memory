@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import ChampionshipBanner from '@/components/ChampionshipBanner'
+import PageTracker from '@/components/PageTracker'
 
 export const metadata: Metadata = {
   title: 'MemGenius — Daily Brain Games',
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GAAnalytics />
         <VercelAnalytics />
         <GameProfileGuard><ChampionshipBanner />
+        <PageTracker />
         {children}</GameProfileGuard>
         <StreakBadge />
         <StreakUpdater />
