@@ -106,7 +106,7 @@ export default function StopPage() {
     setWorldRank((count??0)+1)
     setSaving(false)
     setSaved(true)
-    localStorage.setItem('memgenius_profile', JSON.stringify({name:name.trim()}))
+    createProfile(name.trim())
     setTimeout(() => window.location.reload(), 1500)
   }
 
