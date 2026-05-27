@@ -312,19 +312,6 @@ export default function WordlyClient() {
         ))}
       </div>
 
-      {(phase === 'won' || phase === 'lost') && (
-        <div style={{ textAlign:'center' }}>
-          <div style={{ fontSize:20, fontWeight:900, color: phase==='won'?'#69F0AE':'#FF5252' }}>
-            {phase==='won' ? `✓ ${guesses.length} tries · ${fmtTime(finalTime)}` : `The word was ${word}`}
-          </div>
-          {worldRank && phase==='won' && <div style={{ fontSize:11, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{worldRank} in the world</div>}
-          {saved && <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:10, padding:'6px', marginTop:4 }}><div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>✓ Saved!</div></div>}
-          <div style={{ display:'flex', gap:8, justifyContent:'center', marginTop:6 }}>
-            <button onClick={reset} style={{ padding:'8px 14px', borderRadius:10, border:'none', background:'rgba(255,255,255,0.08)', color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
-            <button onClick={startGame} style={{ padding:'8px 14px', borderRadius:10, border:'none', background:GREEN, color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Play again →</button>
-          </div>
-        </div>
-      )}
 
       <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
         {KEYBOARD.map((row, i) => (
