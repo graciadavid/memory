@@ -1,3 +1,5 @@
+import GamesClient from './GamesClient'
+import MemoryGamesClient from './GamesClient'
 import CategoryRelated from '@/components/CategoryRelated'
 import Link from 'next/link'
 
@@ -25,21 +27,7 @@ export default function MemoryHubPage() {
        <div style={{ fontSize:11, fontWeight:800, color:COLOR, letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Category</div>
        <div style={{ fontSize:32, fontWeight:900, color:'#fff', marginBottom:8 }}>Memory</div>
        <div style={{ fontSize:14, color:'rgba(255,255,255,0.35)', fontWeight:700, marginBottom:32 }}>Train your memory and recall</div>
-       <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
-         {GAMES.map(g => (
-           <Link key={g.label} href={g.href} style={{ textDecoration:'none' }}>
-             <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:20, padding:'16px 20px', display:'flex', alignItems:'center', gap:16, border:'1px solid rgba(255,255,255,0.08)' }}>
-               <img src={g.icon} style={{ width:52, height:52, objectFit:'contain', flexShrink:0 }} />
-               <div style={{ flex:1 }}>
-                 <div style={{ fontSize:17, fontWeight:900, color:'#fff', marginBottom:4 }}>{g.label}</div>
-                 <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{g.desc}</div>
-               </div>
-               <div style={{ fontSize:18, color:'rgba(255,255,255,0.2)' }}>→</div>
-             </div>
-           </Link>
-         ))}
-       </div>
-     </main>
+      <MemoryGamesClient />     </main>
 
      <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
        <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>What does Memory training do for your brain?</h2>
