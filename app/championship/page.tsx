@@ -122,7 +122,7 @@ export default function ChampionshipPage() {
          <div style={{ fontSize:16, fontWeight:900, color:'#000' }}>Play {gameLabel} →</div>
        </a>
 
-        <button onClick={() => { if (navigator.share) { navigator.share({ title:'Sunday Brain Championship', text:'Can you beat the world? This Sunday: ' + gameLabel, url:'https://memgenius.com/championship' }) } else { navigator.clipboard.writeText('https://memgenius.com/championship'); alert('Link copied!') } }} style={{ width:'100%', marginTop:10, padding:'14px', borderRadius:16, border:'none', background:'#2E7D32', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer' }}>
+        <button onClick={() => { supabase.from('events').insert({ event: 'championship_share', player_name: profile?.name || 'anonymous', meta: week?.sunday_date });  if (navigator.share) { navigator.share({ title:'Sunday Brain Championship', text:'Can you beat the world? This Sunday: ' + gameLabel, url:'https://memgenius.com/championship' }) } else { navigator.clipboard.writeText('https://memgenius.com/championship'); alert('Link copied!') } }} style={{ width:'100%', marginTop:10, padding:'14px', borderRadius:16, border:'none', background:'#2E7D32', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer' }}>
           🔗 Share Championship
         </button>
 
