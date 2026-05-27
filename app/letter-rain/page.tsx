@@ -1,6 +1,5 @@
 import LetterRainClient from './LetterRainClient'
 import RelatedGames from '@/components/RelatedGames'
-import SEOWrapper from '@/components/SEOWrapper'
 
 export const metadata = {
  title: 'Letter Rain — Count the Falling Letters | MemGenius',
@@ -11,7 +10,6 @@ export default function LetterRainPage() {
  return (
    <>
      <LetterRainClient />
-     <SEOWrapper>
      <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
        <h2 style={{ fontSize: 20, fontWeight: 900, color: '#4A2C0A', marginBottom: 12 }}>What does Letter Rain train?</h2>
        <p style={{ fontSize: 14, lineHeight: 1.8, color: '#4A2C0A80', marginBottom: 12 }}>Letter Rain trains selective attention — the brain's ability to focus on a specific target while filtering out irrelevant information. As letters fall across the screen, your brain must constantly scan, identify and count only the ones that match the target, ignoring everything else. This is one of the most fundamental and trainable cognitive skills.</p>
@@ -64,7 +62,6 @@ export default function LetterRainPage() {
        </details>
 
        <RelatedGames category="agility" current="Letter Rain" />
-     </SEOWrapper>
      </div>
    </>
  )
