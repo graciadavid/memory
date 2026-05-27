@@ -80,6 +80,7 @@ export default function DigitsClient() {
        setTimeout(async () => {
          const fl = level - 1
          setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
          if (profile?.name && fl > 0) {
            await supabase.from('number_scores').insert({player_name:profile.name, level:fl})
            const {count} = await supabase.from('number_scores').select('*',{count:'exact',head:true}).gt('level',fl)

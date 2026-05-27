@@ -158,6 +158,7 @@ export default function FlagsClient() {
     usedRef.clear()
     setScore(0)
     setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
     setTimeout(() => nextQuestion(), 50)
   }
 
@@ -173,6 +174,7 @@ export default function FlagsClient() {
       setTimeout(async () => {
         const finalScore = score
         setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
         if (profile?.name) {
           await supabase.from('flag_scores').insert({player_name:profile.name, level:finalScore})
           const {count} = await supabase.from('flag_scores').select('*',{count:'exact',head:true}).gt('level',finalScore)

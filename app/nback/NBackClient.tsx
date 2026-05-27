@@ -103,6 +103,7 @@ export default function NBackPage() {
      setTimeout(async () => {
        const fl = streakRef.current
        setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
        if (profile?.name && fl > 0) {
          await supabase.from('nback_scores').insert({player_name:profile.name, level:fl})
          const {count} = await supabase.from('nback_scores').select('*',{count:'exact',head:true}).gt('level',fl)

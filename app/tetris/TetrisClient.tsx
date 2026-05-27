@@ -172,6 +172,7 @@ export default function TetrisClient() {
       setNext(nn)
       if (!isValid(cleared, np)) {
         setPhase('over')
+    window.dispatchEvent(new CustomEvent('gameResult'))
        if (profile?.name) { supabase.from('tetris_scores').insert({ player_name: profile.name, score: newScore, lines: newLines, level: newLevel }) }        setPiece(null)
         // Get rank
         supabase.from('tetris_scores').select('*', { count: 'exact', head: true }).gt('score', newScore)
@@ -199,6 +200,7 @@ export default function TetrisClient() {
     setPiece(p)
     setNext(randomPiece())
     setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
   }
 
   const moveLeft = () => { if (piece && isValid(board, piece, -1, 0)) setPiece({ ...piece, x: piece.x - 1 }) }
@@ -229,6 +231,7 @@ export default function TetrisClient() {
     setNext(nn)
     if (!isValid(cleared, np)) {
       setPhase('over')
+    window.dispatchEvent(new CustomEvent('gameResult'))
        if (profile?.name) { supabase.from('tetris_scores').insert({ player_name: profile.name, score: newScore, lines: newLines, level: newLevel }) }      setPiece(null)
       supabase.from('tetris_scores').select('*', { count: 'exact', head: true }).gt('score', newScore)
         .then(({ count }:any) => setWorldRank((count || 0) + 1))

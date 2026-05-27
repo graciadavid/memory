@@ -87,6 +87,7 @@ export default function SimonClient() {
       setFinalLevel(fl)
       setTimeout(async () => {
         setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
         if (profile?.name && fl > 0) {
           await supabase.from('sequence_scores').insert({player_name:profile.name, level:fl})
           const {count} = await supabase.from('sequence_scores').select('*',{count:'exact',head:true}).gt('level',fl)

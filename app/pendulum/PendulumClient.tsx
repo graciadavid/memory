@@ -51,6 +51,7 @@ export default function PendulumPage() {
    startTimeRef.current = performance.now()
    periodRef.current = 2000 + Math.random() * 1000
    setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
    const animate = () => {
      const elapsed = performance.now() - startTimeRef.current
      const a = Math.sin((elapsed / periodRef.current) * Math.PI * 2) * 80
@@ -68,6 +69,7 @@ export default function PendulumPage() {
    const diff = Math.round(Math.abs(currentAngle) * 10) // in tenths of degree
    setResultDeg(diff)
    setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
    if (profile?.name) {
      await supabase.from('precision_scores').insert({player_name:profile.name, difference_ms:diff, game_type:'pendulum'})
      const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).eq('game_type','pendulum').lt('difference_ms',diff)

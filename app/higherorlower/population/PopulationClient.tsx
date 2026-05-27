@@ -160,6 +160,7 @@ export default function HolPopPage() {
    setTop(shuffled[0])
    setBottom(shuffled[1])
    setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
  }
 
  const handleAnswer = useCallback(async (higher: boolean) => {
@@ -177,6 +178,7 @@ export default function HolPopPage() {
      setTimeout(async () => {
        const finalScore = score
        setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
        if (profile?.name) {
          await supabase.from('higher_lower_scores').insert({player_name:profile.name, level:finalScore, category:'population'})
          const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','population').gt('level',finalScore)

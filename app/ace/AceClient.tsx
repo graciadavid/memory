@@ -158,6 +158,7 @@ export default function AceClient() {
    levelRef.current = 1
    setLevel(1)
    setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
    setTimeout(() => startLevel(), 100)
  }
 
@@ -167,6 +168,7 @@ export default function AceClient() {
    const finalLevel = levelRef.current - 1
    setLevel(finalLevel)
    setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
    if (profile?.name && finalLevel > 0) {
      await supabase.from('ace_scores').insert({player_name:profile.name, level:finalLevel})
      const {count} = await supabase.from('ace_scores').select('*',{count:'exact',head:true}).gt('level',finalLevel)

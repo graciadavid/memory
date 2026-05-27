@@ -102,6 +102,7 @@ export default function MastermindClient() {
     if (timerRef.current) clearInterval(timerRef.current)
     timerRef.current = setInterval(() => setElapsed(Date.now() - t), 100)
     setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
   }
 
   const addColor = (colorIdx: number) => {
@@ -133,6 +134,7 @@ export default function MastermindClient() {
       setWon(true)
       if (timerRef.current) clearInterval(timerRef.current)
       setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
       if (profile?.name) {
         await supabase.from('mastermind_scores').insert({player_name:profile.name, attempts:newGuesses.length, time_ms:elapsed})
         const {count} = await supabase.from('mastermind_scores').select('*',{count:'exact',head:true}).lt('attempts',newGuesses.length)
@@ -146,6 +148,7 @@ export default function MastermindClient() {
       setWon(false)
       if (timerRef.current) clearInterval(timerRef.current)
       setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
       return
     }
 

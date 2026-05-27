@@ -73,6 +73,7 @@ export default function F1Page() {
      const reaction = Date.now() - goTimeRef.current
      setReactionMs(reaction)
      setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
      if (profile?.name) {
        await supabase.from('precision_scores').insert({player_name:profile.name, difference_ms:reaction, game_type:'formula1'})
        const {count} = await supabase.from('precision_scores').select('*',{count:'exact',head:true}).eq('game_type','formula1').lt('difference_ms',reaction)

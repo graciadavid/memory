@@ -107,6 +107,7 @@ export default function LetterRainClient() {
     setCorrectCount(0)
     setUserAnswer('')
     setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
 
     // Spawn all letters staggered
     const spawnDelay = config.duration / config.letterCount
@@ -173,6 +174,7 @@ export default function LetterRainClient() {
     const correct = parseInt(userAnswer) === correctCount
     setWon(correct)
     setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
 
     if (correct) {
       const nextLevel = level + 1

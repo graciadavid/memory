@@ -140,6 +140,7 @@ export default function CapitalsClient() {
     setSaved(false)
     setWorldRank(null)
     setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
     nextQuestion(0, [])
   }
 
@@ -157,6 +158,7 @@ export default function CapitalsClient() {
       // Game over
       setTimeout(async () => {
         setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
         if (profile?.name && score > 0) {
           await supabase.from('capitals_scores').insert({player_name:profile.name, level:score})
           const {count} = await supabase.from('capitals_scores').select('*',{count:'exact',head:true}).gt('level',score)
@@ -165,6 +167,7 @@ export default function CapitalsClient() {
           await updateStreak(profile.name)
         } else if (score === 0) {
           setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
         }
       }, 1200)
     }

@@ -155,6 +155,7 @@ export default function HolAreaPage() {
    setTop(shuffled[0])
    setBottom(shuffled[1])
    setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
  }
 
  const handleAnswer = useCallback(async (bigger: boolean) => {
@@ -172,6 +173,7 @@ export default function HolAreaPage() {
      setTimeout(async () => {
        const finalScore = score
        setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
        if (profile?.name) {
          await supabase.from('higher_lower_scores').insert({player_name:profile.name, level:finalScore, category:'area'})
          const {count} = await supabase.from('higher_lower_scores').select('*',{count:'exact',head:true}).eq('category','area').gt('level',finalScore)

@@ -135,6 +135,7 @@ export default function WordlyClient() {
     setFinalTime(0)
     setElapsed(0)
     setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
     if (timerRef.current) clearInterval(timerRef.current)
     timerRef.current = setInterval(() => setElapsed(Date.now() - now), 500)
   }

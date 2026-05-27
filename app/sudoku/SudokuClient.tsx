@@ -90,6 +90,7 @@ export default function SudokuClient() {
     const now = Date.now()
     setStartTime(now)
     setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
     if (timerRef.current) clearInterval(timerRef.current)
     timerRef.current = setInterval(() => setElapsed(Date.now() - now), 1000)
   }
@@ -114,6 +115,7 @@ export default function SudokuClient() {
       const finalMs = Date.now() - startTime
       setElapsed(finalMs)
       setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
       if (profile?.name) {
         supabase.from('sudoku_scores').insert({player_name:profile.name, time_ms:finalMs, difficulty}).then(() => {
           supabase.from('sudoku_scores').select('*',{count:'exact',head:true}).eq('difficulty',difficulty).lt('time_ms',finalMs).then(({count}) => { setWorldRank((count??0)+1); updateStreak(profile.name) })

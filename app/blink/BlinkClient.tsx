@@ -111,6 +111,7 @@ export default function BlinkClient() {
     const correct = pattern.every(p => selected.includes(p)) && selected.length === pattern.length
     setWon(correct)
     setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
 
     if (correct) {
       if (profile?.name) {

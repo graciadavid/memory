@@ -107,6 +107,7 @@ export default function CountriesPage() {
    usedRef.clear()
    setScore(0)
    setPhase('playing')
+    window.dispatchEvent(new CustomEvent('gameStart'))
    setTimeout(() => nextQuestion(), 50)
  }
 
@@ -122,6 +123,7 @@ export default function CountriesPage() {
      setTimeout(async () => {
        const finalScore = score
        setPhase('result')
+    window.dispatchEvent(new CustomEvent('gameResult'))
        if (profile?.name) {
          await supabase.from('shape_scores').insert({player_name:profile.name, level:finalScore})
          const {count} = await supabase.from('shape_scores').select('*',{count:'exact',head:true}).gt('level',finalScore)
