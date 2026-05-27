@@ -252,7 +252,7 @@ export default function HolAreaPage() {
          <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>{top.name}</div>
          <div style={{ fontSize:18, fontWeight:900, color:GOLD }}>{formatArea(top.area)}</div>
        </div>
-     )}
+     </div>}
      <div style={{ background:'#1C1C1E', padding:'8px', textAlign:'center', fontSize:12, fontWeight:900, color:'rgba(255,255,255,0.2)', letterSpacing:3 }}>VS</div>
      {bottom && (
        <div style={{ background: feedback === 'correct' ? 'rgba(76,175,80,0.15)' : feedback === 'wrong' ? 'rgba(211,47,47,0.15)' : 'rgba(255,255,255,0.04)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, padding:'10px', borderTop:'1px solid rgba(255,255,255,0.06)' }}>
@@ -267,7 +267,7 @@ export default function HolAreaPage() {
            </div>
          )}
        </div>
-     )}
+     </div>}
    </main>
  )
 
@@ -277,13 +277,13 @@ export default function HolAreaPage() {
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:8 }}>Correct answers</div>
        <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2 }}>{score}</div>
        {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
-     )}
+     </div>}
      {saved && (
        <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
          <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
          <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:4 }}>#{worldRank} in the world</div>
        </div>
-     )}
+     </div>}
      <div style={{ display:'flex', gap:10, width:'100%' }}>
        <button onClick={reset} style={{ flex:1, padding:'16px', borderRadius:16, border:'none', background:'rgba(255,255,255,0.1)', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>← Back</button>
        <button onClick={()=>{setSaved(false);startGame()}} style={{ flex:2, padding:'16px', borderRadius:16, border:'none', background:TEAL, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:`0 5px 0 ${TEAL}80` }}>Play again →</button>
