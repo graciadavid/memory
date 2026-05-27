@@ -60,8 +60,8 @@ export default function HomeClient({ easy, medium, hard }: Props) {
     if (profile?.name) {
       window.location.href = `/play/${slug}`
     } else {
-      setPendingSlug(slug)
-      setShowRegister(true)
+      window.location.href = `/play/${slug}`
+
     }
   }
 
