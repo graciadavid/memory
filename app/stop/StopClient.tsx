@@ -166,7 +166,10 @@ export default function StopPage() {
       <div style={{ fontSize:80, fontWeight:900, color:'#00C853', fontVariantNumeric:'tabular-nums', letterSpacing:-2 }}>5.00</div>
       <div style={{ width:60, height:2, background:'rgba(255,255,255,0.1)', margin:'8px 0' }} />
       <div style={{ fontSize:80, fontWeight:900, color:'#fff', fontVariantNumeric:'tabular-nums', letterSpacing:-2 }}>{fmt(elapsed)}</div>
-      <div style={{ fontSize:13, color:'rgba(255,255,255,0.15)', fontWeight:700, marginTop:24 }}>Tap anywhere to stop</div>
+      <button onClick={stopGame} style={{ marginTop:32, width:180, height:180, borderRadius:'50%', border:'none', background:GREEN, color:'#fff', fontSize:28, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 10px 0 #1B5E2080', display:'flex', alignItems:'center', justifyContent:'center' }}>
+        STOP
+      </button>
+      <div style={{ fontSize:13, color:'rgba(255,255,255,0.15)', fontWeight:700, marginTop:16 }}>or tap anywhere</div>
     </main>
   )
 
