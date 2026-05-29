@@ -79,8 +79,8 @@ export default function TypeDropClient() {
      if (progress >= 1) {
        setPhase('over')
        window.dispatchEvent(new Event('gameResult'))
-      if (profile?.name) {
-        supabase.from('typedrop_scores').insert({ player_name: profile.name, score: scoreRef.current })
+      if (profileRef.current?.name) {
+        supabase.from('typedrop_scores').insert({ player_name: profileRef.current.name, score: scoreRef.current })
       }
        return
      }
