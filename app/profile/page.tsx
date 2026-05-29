@@ -276,6 +276,7 @@ export default function ProfilePage() {
      { label: 'Pendulum', key: 'pendulum' },
      { label: 'Ace', key: 'ace' },
      { label: 'Letter Rain', key: 'letterRain' },
+      { label: 'TypeDrop', key: 'typedrop' },
    ]},
    { label: 'Knowledge', color: '#00796B', icon: `${BASE}/population.png`, games: [
      { label: 'Flags', key: 'flags' },
