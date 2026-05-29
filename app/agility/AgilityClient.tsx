@@ -10,6 +10,7 @@ const GAMES = [
   { label: 'Pendulum', icon: `${BASE}/pendulum.png`, href: '/pendulum', desc: 'Tap when vertical' },
   { label: 'Ace', icon: `${BASE}/padel.png`, href: '/ace', desc: 'Hit the sweet spot' },
   { label: 'Letter Rain', icon: `${BASE}/rain.png`, href: '/letter-rain', desc: 'Count the falling letters' },
+  { label: 'TypeDrop', icon: `${BASE}/type.png`, href: '/typedrop', desc: 'Type the word before it falls' },
 ]
 
 function rand() { return Math.floor(Math.random() * (20 - 3 + 1)) + 3 }
