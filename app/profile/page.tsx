@@ -149,6 +149,7 @@ export default function ProfilePage() {
      supabase.from('blackjack_scores').select('player_name', { count: 'exact', head: true }),
      supabase.from('poke_scores').select('player_name', { count: 'exact', head: true }),
      supabase.from('tetris_scores').select('player_name', { count: 'exact', head: true }),
+     supabase.from('typedrop_scores').select('player_name', { count: 'exact', head: true }),
    ])
 
    const fmt = (ms: number) => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`
@@ -203,7 +204,7 @@ export default function ProfilePage() {
      blackjack.data?.[0] ? supabase.from('blackjack_scores').select('player_name', {count:'exact',head:true}).gt('chips', blackjack.data[0].chips) : Promise.resolve({count:0}),
     poke.data?.[0] ? supabase.from('poke_scores').select('player_name', {count:'exact',head:true}).gt('level', poke.data[0].level) : Promise.resolve({count:0}),   ])
 
-   const totals = [memTotal,stopTotal,f1Total,pendulumTotal,aceTotal,flagsTotal,vPopTotal,countriesTotal,vAreaTotal,digitsTotal,seqTotal,nbackTotal,sudokuTotal,masterTotal,g2048Total,wordlyTotal,letterRainTotal,capitalsTotal,blinkTotal,blackjackTotal,pokeTotal,tetrisTotal]
+   const totals = [memTotal,stopTotal,f1Total,pendulumTotal,aceTotal,flagsTotal,vPopTotal,countriesTotal,vAreaTotal,digitsTotal,seqTotal,nbackTotal,sudokuTotal,masterTotal,g2048Total,wordlyTotal,letterRainTotal,capitalsTotal,blinkTotal,blackjackTotal,pokeTotal,tetrisTotal,typedropTotal]
    const keys = ['memory','stop','f1','pendulum','ace','flags','versusPop','countries','versusArea','digits','sequence','nback','sudoku','mastermind','game2048','wordly','letterRain','capitals','blink','blackjack','poke','tetris']
 
    const newPercentiles: any = {}
