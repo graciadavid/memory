@@ -42,7 +42,7 @@ export default function TypeDropClient() {
   const posRef = useRef(0)
 
   useEffect(() => {
-    supabase.from('typodrop_scores').select('player_name, score').order('score', { ascending: false }).limit(200)
+    supabase.from('typedrop_scores').select('player_name, score').order('score', { ascending: false }).limit(200)
       .then(({ data }) => {
         if (!data) return
         const best: Record<string, number> = {}
@@ -169,7 +169,7 @@ export default function TypeDropClient() {
 
       {profile?.name && (
         <button onClick={async () => {
-          await supabase.from('typodrop_scores').insert({ player_name: profile.name, score })
+          await supabase.from('typedrop_scores').insert({ player_name: profile.name, score })
           window.dispatchEvent(new Event('gameResult'))
         }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:12 }}>
           Save Score
