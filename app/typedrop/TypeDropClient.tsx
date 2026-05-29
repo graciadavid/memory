@@ -14,6 +14,13 @@ const WORDS = [
   'DIAMOND','THUNDER','RAINBOW','DOLPHIN','HORIZON','CRYSTAL','VOLCANO','WARRIOR','PHANTOM','ECLIPSE',
 ]
 
+
+const KEYBOARD = [
+ ['Q','W','E','R','T','Y','U','I','O','P'],
+ ['A','S','D','F','G','H','J','K','L'],
+ ['⌫','Z','X','C','V','B','N','M','↵'],
+]
+
 function getWord(score: number) {
   if (score < 5) return WORDS[Math.floor(Math.random() * 10)]
   if (score < 15) return WORDS[10 + Math.floor(Math.random() * 10)]
@@ -35,7 +42,6 @@ export default function TypeDropClient() {
   const [posY, setPosY] = useState(0)
   const [top5, setTop5] = useState<any[]>([])
   const [worldRecord, setWorldRecord] = useState<any>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
   const animRef = useRef<any>(null)
   const startRef = useRef<number>(0)
   const scoreRef = useRef(0)
@@ -89,7 +95,6 @@ export default function TypeDropClient() {
     setScore(0)
     setPhase('playing')
     window.dispatchEvent(new Event('gameStart'))
-    setTimeout(() => inputRef.current?.focus(), 100)
     spawnWord(0)
   }
 
@@ -103,8 +108,7 @@ export default function TypeDropClient() {
       scoreRef.current = newScore
       setScore(newScore)
       setTyped('')
-      setTimeout(() => inputRef.current?.focus(), 50)
-      spawnWord(newScore)
+        spawnWord(newScore)
     }
   }
 
@@ -192,7 +196,7 @@ export default function TypeDropClient() {
   const danger = posY > 70
 
   return (
-    <main style={{ height:'50dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden', position:'relative' }}>
+    <main style={{ height:'calc(100dvh - 40px)', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden', position:'relative' }}>
       
       {/* Score */}
       <div style={{ display:'flex', justifyContent:'space-between', padding:'12px 20px', alignItems:'center' }}>
@@ -236,6 +240,19 @@ export default function TypeDropClient() {
         autoCapitalize="characters"
         style={{ position:'absolute', opacity:0, pointerEvents:'none', top:0, left:0 }}
       />
-    </main>
-  )
+      {/* Keyboard */}
+     <div style={{ padding:'8px 4px', background:'#2a2a2c' }}>
+       {KEYBOARD.map((row, i) => (
+         <div key={i} style={{ display:'flex', gap:4, justifyContent:'center', marginBottom:4 }}>
+           {row.map(k => (
+             <button key={k} onPointerDown={(e) => { e.preventDefault(); handleKey(k) }}
+               style={{ height:44, minWidth: k.length > 1 ? 44 : 34, borderRadius:8, border:'none', background:'rgba(255,255,255,0.12)', color:'#fff', fontSize: k.length > 1 ? 14 : 16, fontWeight:900, cursor:'pointer', fontFamily:'inherit', padding:'0 4px' }}>
+               {k}
+             </button>
+           ))}
+         </div>
+       ))}
+     </div>
+   </main>
+ )
 }
