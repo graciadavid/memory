@@ -69,6 +69,7 @@ export default function ProfilePage() {
  const { profile, loaded } = usePlayer()
  const [records, setRecords] = useState<any>({})
  const [percentiles, setPercentiles] = useState<any>({})
+  const [worldRanks, setWorldRanks] = useState<any>({})
  const [streak, setStreak] = useState<number>(0)
   const [overallScore, setOverallScore] = useState<number>(0)
  const [editing, setEditing] = useState(false)
