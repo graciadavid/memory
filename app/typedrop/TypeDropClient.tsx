@@ -173,7 +173,7 @@ export default function TypeDropClient() {
        ))}
      </div>
 
-     <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080', marginTop:'auto' }}>
+     <button onClick={startGame} style={{ width:'100%', padding:'20px', borderRadius:20, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #1B5E2080',  }}>
        Play →
      </button>
    </main>
@@ -205,7 +205,7 @@ export default function TypeDropClient() {
 
  // PLAYING
  return (
-   <main style={{ height:'calc(100dvh - 140px)', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden', touchAction:'none' }}>
+   <main style={{ height:'calc(100dvh - 100px)', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden', touchAction:'none' }}>
 
      {/* Score */}
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 20px' }}>
