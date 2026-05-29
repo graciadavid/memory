@@ -24,9 +24,7 @@ export default function LogicPage() {
   return (
     <>
       <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
-        <div style={{ fontSize:11, fontWeight:800, color:COLOR, letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Category</div>
-        <div style={{ fontSize:32, fontWeight:900, color:'#fff', marginBottom:8 }}>Logic</div>
-        <div style={{ fontSize:14, color:'rgba(255,255,255,0.35)', fontWeight:700, marginBottom:32 }}>Challenge your reasoning and strategy</div>
+        <div style={{ fontSize:32, fontWeight:900, color:'#fff', marginBottom:24, textAlign:'center' }}>Logic</div>
        <LogicGamesClient />
       </main>
       <div style={{ maxWidth: 430, margin: '0 auto', padding: '0 24px 80px', fontFamily: 'var(--font-nunito), sans-serif' }}>
