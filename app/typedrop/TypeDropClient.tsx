@@ -242,7 +242,7 @@ export default function TypeDropClient() {
      </div>
 
      {/* Keyboard */}
-     <div style={{ background:'#2a2a2c', padding:'8px 4px 80px' }}>
+     <div style={{ background:'#2a2a2c', padding:'8px 4px 80px', marginTop:'auto' }}>
        {KEYBOARD.map((row, i) => (
          <div key={i} style={{ display:'flex', gap:4, justifyContent:'center', marginBottom:4 }}>
            {row.map(k => (
