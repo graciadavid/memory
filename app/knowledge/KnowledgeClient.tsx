@@ -21,7 +21,7 @@ export default function KnowledgeClient() {
 
  return (
    <main style={{ minHeight:'100dvh', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', padding:'32px 20px 100px' }}>
-     <div style={{ fontSize:32, fontWeight:900, color:'#fff', marginBottom:24, textAlign:'center', textAlign:'center' }}>Knowledge</div>
+     <div style={{ fontSize:32, fontWeight:900, color:'#fff', marginBottom:24, textAlign:'center' }}>Knowledge</div>
      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
        {GAMES.map((g, i) => (
          <a key={g.label} href={g.href} style={{ textDecoration:'none' }}>
