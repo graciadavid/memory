@@ -126,6 +126,7 @@ export default function ProfilePage() {
      supabase.from('blackjack_scores').select('chips').eq('player_name', name).order('chips', { ascending: false }).limit(1),
      supabase.from('poke_scores').select('level').eq('player_name', name).order('level', { ascending: false }).limit(1),
      supabase.from('tetris_scores').select('score').eq('player_name', name).order('score', { ascending: false }).limit(1),
+     supabase.from('typedrop_scores').select('score').eq('player_name', name).order('score', { ascending: false }).limit(1),
      // Total unique players per game
      supabase.from('scores').select('player_name', { count: 'exact', head: true }),
      supabase.from('precision_scores').select('player_name', { count: 'exact', head: true }).is('game_type', null),
