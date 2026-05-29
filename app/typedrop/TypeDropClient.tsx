@@ -79,9 +79,7 @@ export default function TypeDropClient() {
      if (progress >= 1) {
        setPhase('over')
        window.dispatchEvent(new Event('gameResult'))
-      if (profileRef.current?.name) {
-        supabase.from('typedrop_scores').insert({ player_name: profileRef.current.name, score: scoreRef.current })
-      }
+      window.dispatchEvent(new CustomEvent('typedropOver', { detail: { score: scoreRef.current } }))
        return
      }
      animRef.current = requestAnimationFrame(animate)
