@@ -201,7 +201,7 @@ export default function TypeDropClient() {
 
  // PLAYING
  return (
-   <main style={{ height:'calc(100dvh - 40px)', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden', touchAction:'none' }}>
+   <main style={{ height:'calc(100dvh - 140px)', background:'#1C1C1E', fontFamily:'var(--font-nunito), sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', overflow:'hidden', touchAction:'none' }}>
 
      {/* Score */}
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 20px' }}>
@@ -242,7 +242,7 @@ export default function TypeDropClient() {
      </div>
 
      {/* Keyboard */}
-     <div style={{ background:'#2a2a2c', padding:'8px 4px 70px' }}>
+     <div style={{ background:'#2a2a2c', padding:'8px 4px 80px' }}>
        {KEYBOARD.map((row, i) => (
          <div key={i} style={{ display:'flex', gap:4, justifyContent:'center', marginBottom:4 }}>
            {row.map(k => (
