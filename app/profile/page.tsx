@@ -400,15 +400,11 @@ export default function ProfilePage() {
            </div>
            <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
              {cat.games.map(g => (
-               <div key={g.key} style={{ background:'rgba(255,255,255,0.04)', borderRadius:14, padding:'12px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', border:'1px solid rgba(255,255,255,0.06)' }}>
-                 <div style={{ fontSize:14, fontWeight:800, color:'rgba(255,255,255,0.6)' }}>{g.label}</div>
-                 <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                   <div style={{ fontSize:14, fontWeight:900, color: records[g.key] ? '#fff' : 'rgba(255,255,255,0.2)' }}>{records[g.key] ?? '—'}</div>
-                   {percentiles[g.key] && (
-                     <div style={{ fontSize:10, fontWeight:900, color: pctColor(percentiles[g.key]), background:`${pctColor(percentiles[g.key])}18`, padding:'2px 8px', borderRadius:20, whiteSpace:'nowrap' }}>
-                       {percentiles[g.key]}
-                     </div>
-                   )}
+               <div key={g.key} style={{ background:'rgba(255,255,255,0.04)', borderRadius:14, padding:'10px 14px', display:'grid', gridTemplateColumns:'1fr auto auto', alignItems:'center', gap:12, border:'1px solid rgba(255,255,255,0.06)' }}>
+                 <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.6)' }}>{g.label}</div>
+                 <div style={{ fontSize:13, fontWeight:900, color: records[g.key] ? '#fff' : 'rgba(255,255,255,0.2)', textAlign:'right' }}>{records[g.key] ?? '—'}</div>
+                 <div style={{ fontSize:12, fontWeight:900, color: worldRanks[g.key] ? GOLD : 'rgba(255,255,255,0.15)', textAlign:'right', minWidth:40 }}>
+                   {worldRanks[g.key] ? `#${worldRanks[g.key]}` : '—'}
                  </div>
                </div>
              ))}
