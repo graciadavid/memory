@@ -79,7 +79,7 @@ export default function TypeDropClient() {
      if (progress >= 1) {
        setPhase('over')
       window.dispatchEvent(new Event('gameResult'))
-      window.dispatchEvent(new CustomEvent('typedropOver', { detail: { score: scoreRef.current } }))
+      localStorage.setItem('typedrop_pending', String(scoreRef.current))
        return
      }
      animRef.current = requestAnimationFrame(animate)
