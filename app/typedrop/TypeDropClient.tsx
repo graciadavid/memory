@@ -83,6 +83,10 @@ export default function TypeDropClient() {
         supabase.from('typedrop_scores').insert({ player_name: profile.name, score: scoreRef.current })
         setSaved(true)
       }
+      if (profile?.name) {
+        supabase.from('typedrop_scores').insert({ player_name: profile.name, score: scoreRef.current })
+        setSaved(true)
+      }
        return
      }
      animRef.current = requestAnimationFrame(animate)
