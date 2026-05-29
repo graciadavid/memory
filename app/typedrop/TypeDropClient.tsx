@@ -214,7 +214,7 @@ export default function TypeDropClient() {
      </div>
 
      {/* Fall area */}
-     <div style={{ flex:1, position:'relative', overflow:'hidden', background:'rgba(0,0,0,0.2)', borderRadius:'12px 12px 0 0', margin:'0 8px', flexShrink:0 }}>
+     <div style={{ flex:1, position:'relative', overflow:'hidden', background:'rgba(0,0,0,0.2)', borderRadius:'12px 12px 0 0', margin:'0 8px' }}>
        {/* Danger line */}
        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:3, background:'rgba(255,82,82,0.6)' }} />
 
@@ -246,7 +246,7 @@ export default function TypeDropClient() {
      </div>
 
      {/* Keyboard */}
-     <div style={{ background:'#2a2a2c', padding:'8px 4px 80px',  }}>
+     <div style={{ background:'#2a2a2c', padding:'6px 4px 62px'}}>
        {KEYBOARD.map((row, i) => (
          <div key={i} style={{ display:'flex', gap:4, justifyContent:'center', marginBottom:4 }}>
            {row.map(k => (
