@@ -24,19 +24,13 @@ export default function KnowledgeClient() {
      <div style={{ fontSize:11, fontWeight:800, color:COLOR, letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Category</div>
      <div style={{ fontSize:32, fontWeight:900, color:'#fff', marginBottom:8 }}>Knowledge</div>
      <div style={{ fontSize:14, color:'rgba(255,255,255,0.35)', fontWeight:700, marginBottom:32 }}>Explore the world and learn geography</div>
-     <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
        {GAMES.map((g, i) => (
          <a key={g.label} href={g.href} style={{ textDecoration:'none' }}>
-           <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:20, padding:'16px 20px', display:'flex', alignItems:'center', gap:16, border:'1px solid rgba(255,255,255,0.08)' }}>
-             <img src={g.icon} style={{ width:52, height:52, objectFit:'contain', flexShrink:0 }} />
-             <div style={{ flex:1 }}>
-               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
-                 <div style={{ fontSize:17, fontWeight:900, color:'#fff' }}>{g.label}</div>
-                 <div style={{ fontSize:11, fontWeight:900, color: blink ? '#69F0AE' : 'transparent', transition:'color 0.6s' }}>● {counts[i]} playing</div>
-               </div>
-               <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{g.desc}</div>
-             </div>
-             <div style={{ fontSize:18, color:'rgba(255,255,255,0.2)' }}>→</div>
+           <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:20, padding:'16px 12px', display:'flex', flexDirection:'column', alignItems:'center', gap:10, border:'1px solid rgba(255,255,255,0.08)', textAlign:'center' }}>
+             <img src={g.icon} style={{ width:56, height:56, objectFit:'contain' }} />
+             <div style={{ fontSize:14, fontWeight:900, color:'#fff' }}>{g.label}</div>
+             <div style={{ fontSize:11, fontWeight:900, color: blink ? '#69F0AE' : 'transparent', transition:'color 0.6s' }}>● {counts[i]} playing</div>
            </div>
          </a>
        ))}
