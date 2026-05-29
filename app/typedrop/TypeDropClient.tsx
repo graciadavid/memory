@@ -40,6 +40,7 @@ export default function TypeDropClient() {
  const [typed, setTyped] = useState('')
  const [posY, setPosY] = useState(0)
  const [saved, setSaved] = useState(false)
+  const [worldRank, setWorldRank] = useState<number|null>(null)
  const [top5, setTop5] = useState<any[]>([])
  const [worldRecord, setWorldRecord] = useState<any>(null)
  const animRef = useRef<any>(null)
