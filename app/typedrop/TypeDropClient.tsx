@@ -182,14 +182,6 @@ export default function TypeDropClient() {
      <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginBottom:8 }}>The word was <span style={{ color:'#fff', fontWeight:900 }}>{word}</span></div>
      <div style={{ fontSize:64, fontWeight:900, color:GOLD, marginBottom:24 }}>{score}</div>
 
-     {profile?.name && !saved && (
-       <button onClick={async () => {
-         await supabase.from('typedrop_scores').insert({ player_name: profile.name, score })
-         setSaved(true)
-       }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:12 }}>
-         Save Score
-       </button>
-     )}
      {saved && <div style={{ fontSize:13, color:'#69F0AE', fontWeight:800, marginBottom:12 }}>✓ Saved!</div>}
 
      <div style={{ display:'flex', gap:10 }}>
