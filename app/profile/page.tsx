@@ -96,11 +96,11 @@ export default function ProfilePage() {
    // Fetch best scores and total counts in parallel
    const [
      mem, stop, f1, pendulum, ace, flags, vPop, countries, vArea,
-     digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals, blink, blackjack, poke, tetris,
+     digits, seq, nback, sudoku, master, g2048, wordly, letterRain, capitals, blink, blackjack, poke, tetris, typedrop,
      // Totals
      memTotal, stopTotal, f1Total, pendulumTotal, aceTotal, flagsTotal,
      vPopTotal, countriesTotal, vAreaTotal, digitsTotal, seqTotal, nbackTotal,
-     sudokuTotal, masterTotal, g2048Total, wordlyTotal, letterRainTotal, capitalsTotal, blinkTotal, blackjackTotal, pokeTotal, tetrisTotal,
+     sudokuTotal, masterTotal, g2048Total, wordlyTotal, letterRainTotal, capitalsTotal, blinkTotal, blackjackTotal, pokeTotal, tetrisTotal, typedropTotal,
      // Ranks (how many are better)
    ] = await Promise.all([
      // Best scores
@@ -171,6 +171,7 @@ export default function ProfilePage() {
    if (g2048.data?.[0]) r.game2048 = `${g2048.data[0].score} pts`
    if (wordly.data?.[0]) r.wordly = `${wordly.data[0].attempts} tries`
    if (letterRain.data?.[0]) r.letterRain = `Letter ${String.fromCharCode(64 + letterRain.data[0].level)}`
+  if (typedrop.data?.[0]) r.typedrop = `${typedrop.data[0].score} words`
    if (capitals.data?.[0]) r.capitals = `${capitals.data[0].level} correct`
    if (blink.data?.[0]) r.blink = `Level ${blink.data[0].level}`
    if (blackjack.data?.[0]) r.blackjack = `${blackjack.data[0].chips.toLocaleString()} chips`
