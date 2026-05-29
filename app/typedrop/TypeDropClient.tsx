@@ -80,7 +80,6 @@ export default function TypeDropClient() {
        setPhase('over')
       window.dispatchEvent(new Event('gameResult'))
       window.dispatchEvent(new CustomEvent('typedropOver', { detail: { score: scoreRef.current } }))
-      setTimeout(() => loadTop5(), 1000)
        return
      }
      animRef.current = requestAnimationFrame(animate)
