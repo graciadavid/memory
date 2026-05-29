@@ -13,7 +13,12 @@ const KEYBOARD = [
 ]
 
 const WORDS_BY_LEVEL = [
- ['CAT','DOG','SUN','RUN','FLY','SKY','BOX','TOP','MAP','CUP'],
+  ['CAT','DOG','SUN','RUN','FLY','SKY','BOX','TOP','MAP','CUP','ARM','EAR','EGG','FAN','GUM','HAT','ICE','JAM','KEY','LAW','MIX','NET','OAK','PAN','RAG','SAP','TAR','URN','VAN','WAX'],
+  ['FIRE','JUMP','LOVE','FAST','STAR','BLUE','RAIN','DARK','COOL','BIRD','BOLD','BURN','CALM','DARE','EARN','FACE','GAME','HAND','IRIS','JEST','KEEN','LAMP','MIND','NOON','OPEN','PIPE','QUIT','RICE','SAFE','TAIL'],
+  ['BRAIN','SPEED','LIGHT','CLOUD','TIGER','FLASH','STONE','RIVER','NIGHT','SMILE','ANGLE','BRAVE','CHESS','DRIVE','EAGLE','FLAME','GRACE','HEART','IMAGE','JUDGE','KNIFE','LAYER','MUSIC','NERVE','ORBIT','PLACE','QUIET','RIDER','SLOPE','TRACE'],
+  ['ROCKET','PLANET','BRIDGE','SILVER','DRAGON','WINTER','SPRING','CASTLE','GARDEN','MONKEY','ANCHOR','BETTER','CIRCLE','DANGER','ESCAPE','FLOWER','GLOBAL','HUNTER','INSECT','JUNGLE','KITTEN','LOCKET','MIRROR','NATURE','OFFICE','PALACE','QUARTZ','RIDDLE','STREAM','TRAVEL'],
+  ['DIAMOND','THUNDER','RAINBOW','DOLPHIN','HORIZON','CRYSTAL','VOLCANO','WARRIOR','PHANTOM','ECLIPSE','BALANCE','CAPTAIN','DEFENSE','ELEGANT','FANTASY','GLACIER','HISTORY','IMAGINE','JOURNEY','KINGDOM','LANTERN','MYSTERY','NETWORK','OPINION','PATTERN','QUANTUM','RETREAT','SILENCE','TRIUMPH','UNIVERSE'],
+],
  ['FIRE','JUMP','LOVE','FAST','STAR','BLUE','RAIN','DARK','COOL','BIRD'],
  ['BRAIN','SPEED','LIGHT','CLOUD','TIGER','FLASH','STONE','RIVER','NIGHT','SMILE'],
  ['ROCKET','PLANET','BRIDGE','SILVER','DRAGON','WINTER','SPRING','CASTLE','GARDEN','MONKEY'],
@@ -218,7 +223,7 @@ export default function TypeDropClient() {
      </div>
 
      {/* Fall area */}
-     <div style={{ flex:1, position:'relative', overflow:'hidden', background:'rgba(0,0,0,0.2)', borderRadius:'12px 12px 0 0', margin:'0 8px' }}>
+     <div style={{ height:'45%', position:'relative', overflow:'hidden', background:'rgba(0,0,0,0.2)', borderRadius:'12px 12px 0 0', margin:'0 8px', flexShrink:0 }}>
        {/* Danger line */}
        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:3, background:'rgba(255,82,82,0.6)' }} />
 
