@@ -209,15 +209,18 @@ export default function ProfilePage() {
    const keys = ['memory','stop','f1','pendulum','ace','flags','versusPop','countries','versusArea','digits','sequence','nback','sudoku','mastermind','game2048','wordly','letterRain','capitals','blink','blackjack','poke','tetris','typedrop']
 
    const newPercentiles: any = {}
+   const newRanks: any = {}
    rankQueries.forEach((rank: any, i) => {
      const better = rank.count ?? 0
      const total = totals[i].count ?? 0
      if (total > 0 && r[keys[i]]) {
        newPercentiles[keys[i]] = topPct(better + 1, total)
+       newRanks[keys[i]] = better + 1
      }
    })
 
    setPercentiles(newPercentiles)
+   setWorldRanks(newRanks)
 
     const pctValues = Object.values(newPercentiles).map((p:any) => {
       if (p === 'Top 1%') return 99
