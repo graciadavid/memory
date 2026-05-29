@@ -214,7 +214,7 @@ export default function TypeDropClient() {
      </div>
 
      {/* Fall area */}
-     <div style={{ height:'45%', position:'relative', overflow:'hidden', background:'rgba(0,0,0,0.2)', borderRadius:'12px 12px 0 0', margin:'0 8px', flexShrink:0 }}>
+     <div style={{ flex:1, position:'relative', overflow:'hidden', background:'rgba(0,0,0,0.2)', borderRadius:'12px 12px 0 0', margin:'0 8px', flexShrink:0 }}>
        {/* Danger line */}
        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:3, background:'rgba(255,82,82,0.6)' }} />
 
