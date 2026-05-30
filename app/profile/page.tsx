@@ -88,7 +88,7 @@ export default function ProfilePage() {
      if (data?.streak) setStreak(data.streak)
    })
     supabase.from('profile_views').insert({ player_name: profile.name }).then(r => console.log('profile_view:', r.error))
- }, [profile?.name, mountCount])
+ }, [profile?.name])
 
  const fetchRecords = async (name: string) => {
    const r: any = {}
