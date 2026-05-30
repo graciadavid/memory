@@ -204,7 +204,10 @@ export default function ProfilePage() {
      capitals.data?.[0] ? supabase.from('capitals_scores').select('player_name', {count:'exact',head:true}).gt('level', capitals.data[0].level) : Promise.resolve({count:0}),
      blink.data?.[0] ? supabase.from('blink_scores').select('player_name', {count:'exact',head:true}).gt('level', blink.data[0].level) : Promise.resolve({count:0}),
      blackjack.data?.[0] ? supabase.from('blackjack_scores').select('player_name', {count:'exact',head:true}).gt('chips', blackjack.data[0].chips) : Promise.resolve({count:0}),
-    poke.data?.[0] ? supabase.from('poke_scores').select('player_name', {count:'exact',head:true}).gt('level', poke.data[0].level) : Promise.resolve({count:0}),   ])
+    poke.data?.[0] ? supabase.from('poke_scores').select('player_name', {count:'exact',head:true}).gt('level', poke.data[0].level) : Promise.resolve({count:0}),
+     tetris.data?.[0] ? supabase.from('tetris_scores').select('player_name', {count:'exact',head:true}).gt('score', tetris.data[0].score) : Promise.resolve({count:0}),
+     typedrop.data?.[0] ? supabase.from('typedrop_scores').select('player_name', {count:'exact',head:true}).gt('score', typedrop.data[0].score) : Promise.resolve({count:0}),
+   ])
 
    const totals = [memTotal,stopTotal,f1Total,pendulumTotal,aceTotal,flagsTotal,vPopTotal,countriesTotal,vAreaTotal,digitsTotal,seqTotal,nbackTotal,sudokuTotal,masterTotal,g2048Total,wordlyTotal,letterRainTotal,capitalsTotal,blinkTotal,blackjackTotal,pokeTotal,tetrisTotal,typedropTotal]
    const keys = ['memory','stop','f1','pendulum','ace','flags','versusPop','countries','versusArea','digits','sequence','nback','sudoku','mastermind','game2048','wordly','letterRain','capitals','blink','blackjack','poke','tetris','typedrop']
