@@ -91,12 +91,7 @@ export default function TypeDropClient() {
           .then(({ count }: any) => {
             setWorldRank((count || 0) + 1)
           })
-        // Save if profile exists
-        const p = profileRef.current
-        if (p?.name && finalScore > 0) {
-          supabase.from('typedrop_scores').insert({ player_name: p.name, score: finalScore })
-          setSaved(true)
-        }
+        localStorage.setItem('typedrop_score', String(finalScore))
         setTimeout(loadTop5, 1000)
         return
       }
@@ -135,6 +130,19 @@ export default function TypeDropClient() {
       spawnWord(newScore)
     }
   }, [spawnWord])
+
+  useEffect(() => {
+    if (phase !== 'over') return
+    const s = parseInt(localStorage.getItem('typedrop_score') || '0')
+    if (!s) return
+    localStorage.removeItem('typedrop_score')
+    if (profile?.name) {
+      supabase.from('typedrop_scores').insert({ player_name: profile.name, score: s })
+        .then(() => setSaved(true))
+      supabase.from('typedrop_scores').select('*', { count: 'exact', head: true }).gt('score', s)
+        .then(({ count }:any) => setWorldRank((count || 0) + 1))
+    }
+  }, [phase, profile?.name])
 
   useEffect(() => {
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current) }
