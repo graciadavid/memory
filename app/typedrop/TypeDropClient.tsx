@@ -78,7 +78,6 @@ export default function TypeDropClient() {
      const progress = Math.min(elapsed / duration, 1)
      setPosY(progress * 100)
      if (progress >= 1) {
-       finalScoreRef.current = scoreRef.current
       setPhase('over')
       window.dispatchEvent(new Event('gameResult'))
       localStorage.setItem('typedrop_pending_score', String(scoreRef.current))
