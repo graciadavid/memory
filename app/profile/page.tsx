@@ -84,6 +84,7 @@ export default function ProfilePage() {
  useEffect(() => {
    if (!profile?.name) return
    fetchRecords(profile.name)
+   const cleanup = () => clearTimeout(t)
    supabase.from('profiles').select('streak').eq('player_name', profile.name).single().then(({data}:any) => {
      if (data?.streak) setStreak(data.streak)
    })
