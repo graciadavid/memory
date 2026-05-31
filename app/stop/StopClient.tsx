@@ -195,6 +195,7 @@ export default function StopPage() {
       </div>
       {/* Championship Banner */}
       {champGame === 'stop' && (
+      <div>
       <a href="/championship" style={{ textDecoration:'none', display:'block', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:16, padding:'14px 16px', marginBottom:12, boxShadow:'0 4px 0 rgba(100,70,0,0.5)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom: champRanking.length > 0 ? 10 : 0 }}>
           <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:28, height:28, objectFit:'contain' }} />
@@ -215,6 +216,7 @@ export default function StopPage() {
           </div>
         )}
       </a>
+      </div>
       )}
 
       {saved && (
