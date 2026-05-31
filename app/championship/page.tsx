@@ -101,8 +101,6 @@ export default function ChampionshipPage() {
      </div>
 
       <div style={{ background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:24, padding:'14px 16px', marginBottom:12, boxShadow:'0 5px 0 rgba(100,70,0,0.5)' }}>
-       <div style={{ fontSize:11, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:2, marginBottom:8 }}>THIS WEEK</div>
-        <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:10 }}><img src={gameIcon} style={{ width:36, height:36, objectFit:'contain' }} /><div style={{ fontSize:20, fontWeight:900, color:'#000' }}>{gameLabel}</div></div>
 
        <div style={{ marginBottom:20 }}>
          <div style={{ fontSize:11, fontWeight:800, color: countdown.isActive ? '#69F0AE' : 'rgba(255,255,255,0.4)', letterSpacing:2, marginBottom:8 }}>
