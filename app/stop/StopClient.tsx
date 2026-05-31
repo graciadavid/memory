@@ -12,6 +12,25 @@ type Phase = 'rules' | 'countdown' | 'running' | 'result'
 
 export default function StopPage() {
   const { profile, createProfile } = usePlayer()
+  const [champGame, setChampGame] = useState<string|null>(null)
+  const [champRanking, setChampRanking] = useState<any[]>([])
+  useEffect(() => {
+    supabase.from('championship_weeks').select('game, sunday_date').eq('active', true).single()
+      .then(({data}:any) => {
+        if (data?.game) setChampGame(data.game)
+        if (data?.sunday_date) {
+          const start = data.sunday_date + 'T00:00:00Z'
+          const end = data.sunday_date + 'T23:59:59Z'
+          supabase.from('precision_scores').select('player_name, difference_ms').is('game_type', null).gte('created_at', start).lte('created_at', end)
+            .then(({data: scores}:any) => {
+              if (!scores) return
+              const best: Record<string,number> = {}
+              scores.forEach((s:any) => { if (!best[s.player_name] || s.difference_ms < best[s.player_name]) best[s.player_name] = s.difference_ms })
+              setChampRanking(Object.entries(best).sort((a,b) => (a[1] as number)-(b[1] as number)).slice(0,5).map(([name,ms]) => ({name,ms})))
+            })
+        }
+      })
+  }, [])
   const [phase, setPhase] = useState<Phase>('rules')
   const [countdown, setCountdown] = useState(3)
   const [elapsed, setElapsed] = useState(0)
