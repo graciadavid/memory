@@ -194,15 +194,28 @@ export default function StopPage() {
         {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
       </div>
       {/* Championship Banner */}
-      <a href="/championship" style={{ textDecoration:'none', display:'block', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:16, padding:'14px 18px', marginBottom:12, boxShadow:'0 4px 0 rgba(100,70,0,0.5)' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:36, height:36, objectFit:'contain' }} />
-          <div>
-            <div style={{ fontSize:10, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:2, textTransform:'uppercase' }}>Sunday Championship</div>
-            <div style={{ fontSize:14, fontWeight:900, color:'#000' }}>This game is featured this Sunday →</div>
+      {champGame === 'stop' && (
+      <a href="/championship" style={{ textDecoration:'none', display:'block', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:16, padding:'14px 16px', marginBottom:12, boxShadow:'0 4px 0 rgba(100,70,0,0.5)' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom: champRanking.length > 0 ? 10 : 0 }}>
+          <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:28, height:28, objectFit:'contain' }} />
+          <div style={{ flex:1 }}>
+            <div style={{ fontSize:9, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:2, textTransform:'uppercase' }}>Sunday Championship</div>
+            <div style={{ fontSize:13, fontWeight:900, color:'#000' }}>Live Ranking →</div>
           </div>
         </div>
+        {champRanking.length > 0 && (
+          <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
+            {champRanking.map((r, i) => (
+              <div key={r.name} style={{ display:'flex', alignItems:'center', gap:8, background:'rgba(0,0,0,0.12)', borderRadius:8, padding:'5px 8px' }}>
+                <div style={{ fontSize:11, fontWeight:900, color:'rgba(0,0,0,0.5)', width:16 }}>{i+1}</div>
+                <div style={{ flex:1, fontSize:12, fontWeight:800, color:'#000' }}>{r.name}</div>
+                <div style={{ fontSize:12, fontWeight:900, color:'#000' }}>{r.ms}ms</div>
+              </div>
+            ))}
+          </div>
+        )}
       </a>
+      )}
 
       {saved && (
         <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
