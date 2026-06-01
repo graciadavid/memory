@@ -8,6 +8,14 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
 
+
+if (typeof window !== 'undefined') {
+  ['aguacate','arroz','atun','cebolla','edamame','mango','pepino','salmon','zanahoria'].forEach(name => {
+    const img = new Image()
+    img.src = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/'+name+'.png'
+  })
+}
+
 const INGREDIENTS = [
  { id: 'aguacate', label: 'Aguacate', icon: 'aguacate.png' },
  { id: 'arroz', label: 'Arroz', icon: 'arroz.png' },
