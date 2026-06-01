@@ -16,9 +16,10 @@ const SECTIONS = [
   {
     title: 'Learn',
     items: [
-      { label: 'How to Improve', desc: 'Science behind brain training', icon: `${BASE}/brain-logo.webp`, href: '/how-to-improve-reaction-time' },
-      { label: 'Reaction Time', desc: 'Test and improve your reactions', icon: `${BASE}/precision.png`, href: '/reaction-time-test' },
+      { label: 'Reaction Time Test', desc: 'Test and improve your reactions', icon: `${BASE}/precision.png`, href: '/reaction-time-test' },
       { label: 'Memory Test', desc: 'Measure your working memory', icon: `${BASE}/memory.png`, href: '/memory-test' },
+      { label: 'Flag Quiz', desc: 'Test your knowledge of world flags', icon: `${BASE}/flags.png`, href: '/flag-quiz' },
+      { label: 'World Capitals Quiz', desc: 'Name the capital of every country', icon: `${BASE}/capitals.png`, href: '/world-capitals-quiz' },
     ]
   },
   {
