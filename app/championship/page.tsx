@@ -38,6 +38,7 @@ export default function ChampionshipPage() {
  const [week, setWeek] = useState<any>(null)
  const [hallOfFame, setHallOfFame] = useState<any[]>([])
   const [selectedWinner, setSelectedWinner] = useState<any>(null)
+  const [selectedWinner, setSelectedWinner] = useState<any>(null)
  const [myRank, setMyRank] = useState<number | null>(null)
 
   useEffect(() => {
