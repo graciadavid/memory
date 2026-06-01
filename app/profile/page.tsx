@@ -31,11 +31,25 @@ const GAMES = [
   { label: 'Tetris', table: 'tetris_scores', field: 'score', filter: null, lower: false },
 ]
 
+async function getGameRank(name: string, g: typeof GAMES[0]) {
+  let sq: any = supabase.from(g.table).select(g.field).eq('player_name', name)
+  if (g.filter) Object.entries(g.filter).forEach(([k,v]) => { if (v === null) sq = sq.is(k, null); else sq = sq.eq(k, v) })
+  sq = sq.order(g.field, { ascending: g.lower }).limit(1)
+  const { data } = await sq
+  if (!data || data.length === 0) return null
+  const playerScore = data[0][g.field]
+
+  let rq: any = supabase.from(g.table).select('player_name', { count: 'exact', head: true })
+  if (g.filter) Object.entries(g.filter).forEach(([k,v]) => { if (v === null) rq = rq.is(k, null); else rq = rq.eq(k, v) })
+  rq = g.lower ? rq.lt(g.field, playerScore) : rq.gt(g.field, playerScore)
+  const { count } = await rq
+  return { rank: (count || 0) + 1, score: playerScore }
+}
+
 export default function ProfilePage() {
   const { profile } = usePlayer()
   const [profileData, setProfileData] = useState<any>(null)
-  const [ranks, setRanks] = useState<Record<string, number>>({})
-  const [scores, setScores] = useState<Record<string, number>>({})
+  const [ranks, setRanks] = useState<Record<string, {rank:number, score:number}>>({})
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
@@ -43,41 +57,13 @@ export default function ProfilePage() {
     supabase.from('profiles').select('*').eq('player_name', profile.name).single()
       .then(({ data }: any) => setProfileData(data))
 
-    const fetchRanks = async () => {
-      const newRanks: Record<string,number> = {}
-      const newScores: Record<string,number> = {}
-      for (const g of GAMES) {
-        let q = supabase.from(g.table).select('*', { count: 'exact', head: true })
-        if (g.filter) {
-          Object.entries(g.filter).forEach(([k,v]) => {
-            if (v === null) q = (q as any).is(k, null)
-            else q = (q as any).eq(k, v)
-          })
-        }
-        // Get player score first
-        let sq = supabase.from(g.table).select(g.field).eq('player_name', profile.name)
-        if (g.filter) {
-          Object.entries(g.filter).forEach(([k,v]) => {
-            if (v === null) sq = (sq as any).is(k, null)
-            else sq = (sq as any).eq(k, v)
-          })
-        }
-        sq = (sq as any).order(g.field, { ascending: g.lower }).limit(1)
-        const { data: scoreData } = await sq
-        if (!scoreData || scoreData.length === 0) continue
-        const playerScore = (scoreData[0] as any)[g.field]
-        newScores[g.label] = playerScore
-
-        if (g.lower) q = (q as any).lt(g.field, playerScore)
-        else q = (q as any).gt(g.field, playerScore)
-        const { count } = await q
-        newRanks[g.label] = (count || 0) + 1
-      }
-      setRanks(newRanks)
-      setScores(newScores)
-      setLoaded(true)
-    }
-    fetchRanks()
+    Promise.all(GAMES.map(g => getGameRank(profile.name, g).then(r => ({ label: g.label, result: r }))))
+      .then(results => {
+        const newRanks: Record<string, {rank:number, score:number}> = {}
+        results.forEach(({ label, result }) => { if (result) newRanks[label] = result })
+        setRanks(newRanks)
+        setLoaded(true)
+      })
   }, [profile?.name])
 
   if (!profile?.name) return (
@@ -85,21 +71,21 @@ export default function ProfilePage() {
       <img src={`${BASE}/brain-logo.webp`} style={{ width:60, height:60, marginBottom:16, opacity:0.5 }} />
       <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:8 }}>No profile yet</div>
       <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, textAlign:'center', marginBottom:24 }}>Play a game and save your results to create your profile</div>
-      <a href="/training" style={{ textDecoration:'none', background:GREEN, borderRadius:14, padding:'14px 32px', fontSize:16, fontWeight:900, color:'#fff' }}>Start Training →</a>
+      <a href="/register" style={{ textDecoration:'none', background:GREEN, borderRadius:14, padding:'14px 32px', fontSize:16, fontWeight:900, color:'#fff' }}>Create Profile →</a>
     </main>
   )
 
-  const sortedGames = Object.entries(ranks).sort((a,b) => a[1]-b[1])
-  const maxRank = Math.max(...Object.values(ranks), 1)
+  const sortedGames = Object.entries(ranks).sort((a,b) => a[1].rank - b[1].rank)
+  const maxRank = Math.max(...Object.values(ranks).map(r => r.rank), 1)
 
   return (
     <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'16px 16px 100px' }}>
 
       {/* Profile header */}
       <div style={{ background:'#252525', borderRadius:16, padding:'20px', marginBottom:12, display:'flex', alignItems:'center', gap:16 }}>
-        <div style={{ width:60, height:60, borderRadius:'50%', background:'#1A1A1A', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+        <div style={{ width:60, height:60, borderRadius:'50%', background:'#1A1A1A', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden' }}>
           {profileData?.avatar_url
-            ? <img src={profileData.avatar_url} style={{ width:60, height:60, borderRadius:'50%', objectFit:'cover' }} />
+            ? <img src={profileData.avatar_url} style={{ width:60, height:60, objectFit:'cover' }} />
             : <img src={`${BASE}/nav-profile.webp`} style={{ width:36, height:36, objectFit:'contain', opacity:0.5 }} />
           }
         </div>
@@ -110,22 +96,28 @@ export default function ProfilePage() {
         {profileData?.streak > 0 && (
           <div style={{ textAlign:'center' }}>
             <div style={{ fontSize:22, fontWeight:900, color:'#FF6B35' }}>🔥{profileData.streak}</div>
-            <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>day streak</div>
+            <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>days</div>
           </div>
         )}
       </div>
 
       {/* Rankings */}
+      {!loaded && (
+        <div style={{ background:'#252525', borderRadius:16, padding:'20px', textAlign:'center', color:'rgba(255,255,255,0.3)', fontSize:14, fontWeight:700 }}>
+          Loading rankings...
+        </div>
+      )}
+
       {loaded && sortedGames.length > 0 && (
         <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginBottom:12 }}>
           <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:14 }}>World Rankings</div>
-          {sortedGames.map(([game, rank]) => {
+          {sortedGames.map(([game, {rank}]) => {
             const barWidth = Math.max(4, Math.round((1 - (rank-1)/Math.max(maxRank,1)) * 100))
             return (
               <div key={game} style={{ marginBottom:12 }}>
                 <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
                   <div style={{ fontSize:13, fontWeight:800, color:'#fff' }}>{game}</div>
-                  <div style={{ fontSize:13, fontWeight:900, color:GOLD }}>#{rank}</div>
+                  <div style={{ fontSize:13, fontWeight:900, color:rank<=3?GOLD:'rgba(255,255,255,0.5)' }}>#{rank}</div>
                 </div>
                 <div style={{ height:4, background:'rgba(255,255,255,0.08)', borderRadius:2 }}>
                   <div style={{ height:4, background:rank===1?GOLD:GREEN, borderRadius:2, width:`${barWidth}%` }} />
@@ -136,7 +128,6 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Logout */}
       <button onClick={() => { localStorage.removeItem('memgenius_profile'); window.location.reload() }}
         style={{ width:'100%', padding:'14px', borderRadius:14, border:'1px solid rgba(255,255,255,0.1)', background:'transparent', color:'rgba(255,255,255,0.4)', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer' }}>
         Log out
