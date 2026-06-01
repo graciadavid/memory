@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import RegisterBar from '@/components/RegisterBar'
+import RegisterBar from '@/components/RegisterBar'
 import { usePathname } from 'next/navigation'
 
 const BROWN = '#4A2C0A'
