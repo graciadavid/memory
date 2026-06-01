@@ -120,11 +120,11 @@ export default function BlackjackClient() {
    let msg = ''
 
    if (dealerTotal > 21 || playerTotal > dealerTotal) {
-     result = 'win'; setChips(c => { const nc = c + bet; return nc }); msg = 'You win! +'+bet.toLocaleString()
+     result = 'win'; setChips(c => { const nc = c + bet; return nc }); msg = 'You win! +'+bet.toLocaleString().toLocaleString()
    } else if (playerTotal === dealerTotal) {
      result = 'push'; msg = 'Push!'
    } else {
-     result = 'lose'; setChips(c => { const nc = c - bet; return nc }); msg = 'Dealer wins! -'+bet.toLocaleString()
+     result = 'lose'; setChips(c => { const nc = c - bet; return nc }); msg = 'Dealer wins! -'+bet.toLocaleString().toLocaleString()
    }
    setMessage(msg)
    setRoundResult(result)
