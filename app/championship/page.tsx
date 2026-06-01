@@ -187,8 +187,8 @@ export default function ChampionshipPage() {
                   <div style={{ fontSize:13, fontWeight:900, color:'#000' }}>{selectedWinner.participants || '—'}</div>
                 </div>
               </div>
-              <a href="https://memgenius.com/championship" style={{ textDecoration:'none', display:'block', width:'100%', padding:'14px', borderRadius:12, background:'rgba(0,0,0,0.25)', color:'#000', fontSize:15, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', textAlign:'center' }}>
-                🏆 Visit memgenius.com/championship
+              <a onClick={async () => { const imgUrl = `https://memgenius.com/api/og/championship?name=${encodeURIComponent(selectedWinner.winner_name)}&score=${selectedWinner.score}&game=${encodeURIComponent(selectedWinner.game)}&edition=${String(hallOfFame.findIndex((h:any) => h.id === selectedWinner.id) + 1).padStart(3,"0")}`; try { const blob = await fetch(imgUrl).then(r => r.blob()); const file = new File([blob], "champion.png", { type: "image/png" }); if (navigator.share && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: "Sunday Brain Championship", text: `${selectedWinner.winner_name} won! memgenius.com/championship` }) } else { navigator.clipboard.writeText(`${selectedWinner.winner_name} won the Sunday Brain Championship! memgenius.com/championship`); alert("Link copied!") } } catch { navigator.clipboard.writeText("https://memgenius.com/championship"); alert("Link copied!") } }} style={{ textDecoration:'none', display:'block', width:'100%', padding:'14px', borderRadius:12, background:'rgba(0,0,0,0.25)', color:'#000', fontSize:15, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', textAlign:'center', cursor:'pointer' }}>
+                🔗 Share Champion
               </a>
             </div>
             <button onClick={() => setSelectedWinner(null)} style={{ width:'100%', marginTop:10, padding:'12px', borderRadius:12, border:'none', background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.5)', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer' }}>
