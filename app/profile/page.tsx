@@ -29,6 +29,8 @@ const GAMES = [
   { label: '2048', table: 'game2048_scores', field: 'score', filter: null, lower: false },
   { label: 'Blackjack', table: 'blackjack_scores', field: 'chips', filter: null, lower: false },
   { label: 'Tetris', table: 'tetris_scores', field: 'score', filter: null, lower: false },
+  { label: 'Higher or Lower Pop', table: 'higher_lower_scores', field: 'level', filter: { category: 'population' }, lower: false },
+  { label: 'Higher or Lower Area', table: 'higher_lower_scores', field: 'level', filter: { category: 'area' }, lower: false },
 ]
 
 async function getGameRank(name: string, g: typeof GAMES[0]) {
