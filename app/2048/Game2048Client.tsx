@@ -173,14 +173,14 @@ export default function Game2048Client() {
  )
 
  return (
-   <main style={{ height:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', overflow:'hidden' }}>
+   <main style={{ height:'100dvh', maxHeight:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', overflow:'hidden', position:'fixed', width:'100%', maxWidth:430 }}>
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 20px', flexShrink:0 }}>
        <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{score.toLocaleString()}</div>
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>2048</div>
        <button onClick={() => endGame(score)} style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit' }}>End</button>
      </div>
 
-     <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'0 16px 80px' }}
+     <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'0 12px', overflow:'hidden' }}
        onTouchStart={e => setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY })}
        onTouchEnd={e => {
          if (!touchStart) return
@@ -194,7 +194,7 @@ export default function Game2048Client() {
          {board.map((val, i) => {
            const tc = TILE_COLORS[val] || { bg:'#f59563', color:'#fff' }
            return (
-             <div key={i} style={{ aspectRatio:'1', borderRadius:10, background:tc.bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize: val >= 1024 ? 18 : val >= 128 ? 22 : 26, fontWeight:900, color:tc.color, transition:'background 0.1s' }}>
+             <div key={i} style={{ aspectRatio:'1', borderRadius:8, background:tc.bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize: val >= 1024 ? 16 : val >= 128 ? 20 : 24, fontWeight:900, color:tc.color, transition:'background 0.1s' }}>
                {val || ''}
              </div>
            )
