@@ -16,7 +16,7 @@ export default function HallOfFamePage() {
   return (
     <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'16px 16px 100px' }}>
       <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20 }}>
-        <img src={`${BASE}/brain-logo.webp` style={{ width:32, height:32, objectFit:'contain' }} />
+        <img src={`${BASE}/brain-logo.webp`} style={{ width:32, height:32, objectFit:'contain' }} />
         <div>
           <div style={{ fontSize:22, fontWeight:900, color:'#fff' }}>Hall of Fame</div>
           <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>All-time Sunday Champions</div>
