@@ -22,6 +22,7 @@ export default function NBackClient() {
   const [top5, setTop5] = useState<any[]>([])
   const [feedback, setFeedback] = useState<'correct'|'wrong'|null>(null)
   const [waiting, setWaiting] = useState(false)
+  const [canAnswer, setCanAnswer] = useState(false)
 
   const timerRef = useRef<any>(null)
   const seqRef = useRef<number[]>([])
@@ -54,10 +55,24 @@ export default function NBackClient() {
   const showNext = useCallback(() => {
     const newColor = Math.floor(Math.random() * COLORS.length)
     seqRef.current = [...seqRef.current, newColor]
+    const idx = seqRef.current.length - 1
+    const canAns = idx >= nRef.current
+    
     setCurrent(newColor)
     setWaiting(false)
+    setCanAnswer(false)
     setFeedback(null)
-    timerRef.current = setTimeout(() => { setCurrent(null); setWaiting(true) }, 800)
+
+    timerRef.current = setTimeout(() => {
+      setCurrent(null)
+      if (canAns) {
+        setWaiting(true)
+        setCanAnswer(true)
+      } else {
+        // Not enough history yet, auto-advance
+        timerRef.current = setTimeout(showNext, 400)
+      }
+    }, 900)
   }, [])
 
   const startGame = () => {
@@ -66,17 +81,21 @@ export default function NBackClient() {
     streakRef.current = 0
     nRef.current = 2
     setN(2); setScore(0); setStreak(0); setFeedback(null)
+    setCanAnswer(false)
     setPhase('playing')
     window.dispatchEvent(new Event('gameStart'))
     showNext()
   }
 
   const handleMatch = useCallback((userSaysMatch: boolean) => {
-    if (!waiting) return
+    if (!canAnswer) return
     const idx = seqRef.current.length - 1
-    if (idx < nRef.current) { showNext(); return }
     const actualMatch = seqRef.current[idx] === seqRef.current[idx - nRef.current]
     const correct = userSaysMatch === actualMatch
+
+    setWaiting(false)
+    setCanAnswer(false)
+
     if (correct) {
       scoreRef.current++; streakRef.current++
       setScore(scoreRef.current); setStreak(streakRef.current)
@@ -85,13 +104,16 @@ export default function NBackClient() {
         nRef.current = Math.min(nRef.current + 1, 6)
         setN(nRef.current); streakRef.current = 0; setStreak(0)
       }
-      timerRef.current = setTimeout(showNext, 500)
+      timerRef.current = setTimeout(showNext, 600)
     } else {
       streakRef.current = 0; setStreak(0); setFeedback('wrong')
-      if (scoreRef.current < 3) { timerRef.current = setTimeout(endGame, 800) }
-      else { timerRef.current = setTimeout(showNext, 500) }
+      if (scoreRef.current < 3) {
+        timerRef.current = setTimeout(endGame, 800)
+      } else {
+        timerRef.current = setTimeout(showNext, 600)
+      }
     }
-  }, [waiting, showNext, endGame])
+  }, [canAnswer, showNext, endGame, nRef])
 
   useEffect(() => { return () => clearTimeout(timerRef.current) }, [])
 
@@ -106,19 +128,40 @@ export default function NBackClient() {
   )
 
   return (
-    <main style={{ height:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:24, paddingBottom:80 }}>
-      <div style={{ display:'flex', gap:16 }}>
-        <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2 }}>N-{n}</div>
-        <div style={{ fontSize:13, fontWeight:800, color:GOLD }}>Score: {score}</div>
+    <main style={{ height:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', overflow:'hidden', paddingBottom:80 }}>
+      
+      {/* Header */}
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 20px', flexShrink:0 }}>
+        <div style={{ fontSize:16, fontWeight:900, color:'rgba(255,255,255,0.4)' }}>N-{n}</div>
+        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>N-BACK</div>
+        <div style={{ fontSize:16, fontWeight:900, color:GOLD }}>Score: {score}</div>
       </div>
-      <div style={{ width:160, height:160, borderRadius:24, background: current !== null ? COLORS[current] : '#252525', transition:'background 0.15s', boxShadow: current !== null ? '0 0 40px rgba(255,255,255,0.2)' : 'none' }} />
-      <div style={{ fontSize:13, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>
-        {current !== null ? 'Watch...' : waiting ? 'Does this match '+n+' steps ago?' : ''}
+
+      {/* Color display */}
+      <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:24 }}>
+        <div style={{ width:160, height:160, borderRadius:24, background: current !== null ? COLORS[current] : '#252525', transition:'background 0.15s', boxShadow: current !== null ? '0 0 60px '+COLORS[current]+'80' : 'none' }} />
+
+        <div style={{ fontSize:13, color:'rgba(255,255,255,0.3)', fontWeight:700, height:20 }}>
+          {current !== null ? 'Remember this...' : canAnswer ? 'Does it match '+n+' steps ago?' : ''}
+        </div>
+
+        {feedback && (
+          <div style={{ fontSize:28, fontWeight:900, color: feedback === 'correct' ? '#00C853' : '#D32F2F' }}>
+            {feedback === 'correct' ? '✓ Correct!' : '✗ Wrong!'}
+          </div>
+        )}
       </div>
-      {feedback && <div style={{ fontSize:24, fontWeight:900, color: feedback === 'correct' ? '#00C853' : '#D32F2F' }}>{feedback === 'correct' ? '✓' : '✗'}</div>}
-      <div style={{ display:'flex', gap:12 }}>
-        <button onPointerDown={() => handleMatch(false)} disabled={!waiting} style={{ width:130, height:56, borderRadius:16, border:'none', background: waiting ? '#D32F2F' : '#252525', color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor: waiting ? 'pointer' : 'default', opacity: waiting ? 1 : 0.4 }}>No Match</button>
-        <button onPointerDown={() => handleMatch(true)} disabled={!waiting} style={{ width:130, height:56, borderRadius:16, border:'none', background: waiting ? GREEN : '#252525', color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor: waiting ? 'pointer' : 'default', opacity: waiting ? 1 : 0.4 }}>Match ✓</button>
+
+      {/* Buttons */}
+      <div style={{ display:'flex', gap:12, padding:'16px 20px', flexShrink:0 }}>
+        <button onPointerDown={() => handleMatch(false)} disabled={!canAnswer}
+          style={{ flex:1, height:64, borderRadius:16, border:'none', background: canAnswer ? '#D32F2F' : '#252525', color:'#fff', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor: canAnswer ? 'pointer' : 'default', opacity: canAnswer ? 1 : 0.4, boxShadow: canAnswer ? '0 5px 0 #B71C1C' : 'none' }}>
+          No Match
+        </button>
+        <button onPointerDown={() => handleMatch(true)} disabled={!canAnswer}
+          style={{ flex:1, height:64, borderRadius:16, border:'none', background: canAnswer ? GREEN : '#252525', color:'#fff', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor: canAnswer ? 'pointer' : 'default', opacity: canAnswer ? 1 : 0.4, boxShadow: canAnswer ? '0 5px 0 #1B5E20' : 'none' }}>
+          Match ✓
+        </button>
       </div>
     </main>
   )
