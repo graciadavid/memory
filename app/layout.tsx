@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import ChampionshipBanner from '@/components/ChampionshipBanner'
 import RegisterBar from '@/components/RegisterBar'
+import RegisterBar from '@/components/RegisterBar'
 import PageTracker from '@/components/PageTracker'
 
 export const metadata: Metadata = {
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GAAnalytics />
         <VercelAnalytics />
         <GameProfileGuard><RegisterBar />
+        <RegisterBar />
         <ChampionshipBanner />
         <PageTracker />
         {children}</GameProfileGuard>
