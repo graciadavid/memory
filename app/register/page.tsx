@@ -62,11 +62,11 @@ export default function RegisterPage() {
       {/* PIN */}
       <div style={{ marginBottom:24 }}>
         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>4-digit PIN</div>
-        <div style={{ display:'flex', gap:10 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:8 }}>
           {pin.map((d,i) => (
             <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
               onChange={e => { const v=e.target.value.replace(/\D/,''); const p=[...pin]; p[i]=v; setPin(p); setError(''); if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus() }}
-              style={{ flex:1, height:56, textAlign:'center', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, fontFamily:'inherit', outline:'none' }} />
+              style={{ width:'100%', height:52, textAlign:'center', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, fontFamily:'inherit', outline:'none', boxSizing:'border-box' }} />
           ))}
         </div>
         <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:6 }}>Remember your PIN — it's how you log in</div>
