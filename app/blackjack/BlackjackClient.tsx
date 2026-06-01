@@ -41,8 +41,8 @@ type Phase = 'rules' | 'betting' | 'playing' | 'dealer' | 'result' | 'gameover'
 export default function BlackjackClient() {
  const { profile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
- const [chips, setChips] = useState(100)
- const [bet, setBet] = useState(10)
+ const [chips, setChips] = useState(1000)
+ const [bet, setBet] = useState(100)
  const [deck, setDeck] = useState<Card[]>([])
  const [playerHand, setPlayerHand] = useState<Card[]>([])
  const [dealerHand, setDealerHand] = useState<Card[]>([])
@@ -155,7 +155,7 @@ export default function BlackjackClient() {
    window.dispatchEvent(new Event('gameResult'))
    const { count } = await supabase.from('blackjack_scores').select('player_name', { count: 'exact', head: true }).gt('chips', chips)
    setWorldRank((count ?? 0) + 1)
-   if (profile?.name && chips > 100) await supabase.from('blackjack_scores').insert({ player_name: profile.name, chips })
+   if (profile?.name && chips > 1000) await supabase.from('blackjack_scores').insert({ player_name: profile.name, chips })
  }, [chips, profile?.name])
 
  const worldRecord = top5[0] ? { value: top5[0].score, name: top5[0].name } : null
@@ -178,8 +178,8 @@ export default function BlackjackClient() {
  if (phase === 'gameover') return (
    <GameResultScreen
      result={chips+' chips'}
-     resultColor={chips > 100 ? '#00C853' : chips === 100 ? GOLD : RED}
-     background={chips > 100 ? '#0D3320' : chips === 100 ? '#2D1A00' : '#1A0000'}
+     resultColor={chips > 1000 ? '#00C853' : chips === 100 ? GOLD : RED}
+     background={chips > 1000 ? '#0D3320' : chips === 100 ? '#2D1A00' : '#1A0000'}
      worldRank={worldRank}
      hasProfile={!!profile?.name}
      onBack={() => { setPhase('rules'); loadData() }}
