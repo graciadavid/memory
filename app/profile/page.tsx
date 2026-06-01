@@ -65,7 +65,7 @@ export default function ProfilePage() {
         sq = (sq as any).order(g.field, { ascending: g.lower }).limit(1)
         const { data: scoreData } = await sq
         if (!scoreData || scoreData.length === 0) continue
-        const playerScore = scoreData[0][g.field]
+        const playerScore = (scoreData[0] as any)[g.field]
         newScores[g.label] = playerScore
 
         if (g.lower) q = (q as any).lt(g.field, playerScore)
