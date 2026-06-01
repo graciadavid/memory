@@ -41,7 +41,7 @@ const CATEGORIES = [
  {
    label: 'Logic',
    games: [
-     { label: 'Sudoku', icon: 'sudoku.png', table: 'sudoku_scores', field: 'time_ms', filter: null, lower: true, unit: 'ms' },
+     { label: 'Sudoku', icon: 'sudoku.png', table: 'sudoku_scores', field: 'time_ms', filter: null, lower: true, unit: 'mm:ss' },
      { label: 'Mastermind', icon: 'mastermind.png', table: 'mastermind_scores', field: 'attempts', filter: null, lower: true, unit: ' tries' },
      { label: 'Wordly', icon: 'wordly.png', table: 'wordle_scores', field: 'attempts', filter: null, lower: true, unit: ' tries' },
      { label: '2048', icon: '2048.png', table: 'game2048_scores', field: 'score', filter: null, lower: false, unit: '' },
@@ -86,7 +86,7 @@ function GameLeaderboard({ game }: { game: Game }) {
            {i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`}
          </div>
          <div style={{ flex:1, fontSize:14, fontWeight:800, color:i<3?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
-         <div style={{ fontSize:13, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.4)' }}>{p.score}{game.unit}</div>
+         <div style={{ fontSize:13, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.4)' }}>{ game.unit === 'mm:ss' ? `${Math.floor(p.score/60000)}:${String(Math.floor((p.score%60000)/1000)).padStart(2,"0")}` : `${p.score}${game.unit}` }</div>
        </div>
      ))}
      {data.length === 0 && <div style={{ padding:'12px 16px', color:'rgba(255,255,255,0.3)', fontSize:13 }}>No scores yet</div>}
