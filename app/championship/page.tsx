@@ -219,9 +219,7 @@ function ChampionshipSEO() {
          <p>All you need is a free MemGenius profile — a name and a four-digit PIN. Your scores are saved automatically, your rank updates in real time, and your place in the Hall of Fame is permanent if you win. The championship is open to players of all ages, backgrounds and experience levels worldwide.</p>
        </div>
      </details>
+      <a href="/championship/hall-of-fame" style={{ textDecoration:'none', display:'block', textAlign:'center', marginTop:16, marginBottom:8, fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>🏆 View Hall of Fame →</a>
    </div>
-      <a href="/championship/hall-of-fame" style={{ textDecoration:'none', display:'block', textAlign:'center', marginTop:16, marginBottom:8, fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>
-        🏆 View Hall of Fame →
-      </a>
  )
 }
