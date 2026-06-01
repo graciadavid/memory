@@ -203,7 +203,7 @@ export default function HigherOrLowerClient({ category }: Props) {
   const valTop = top ? (category === 'population' ? top.population : top.area) : 0
   const valBottom = bottom ? (category === 'population' ? bottom.population : bottom.area) : 0
   const worldRecord = top5[0] ? { value: top5[0].score, name: top5[0].name } : null
-  const icon = category === 'population' ? 'higher.png' : 'area.png'
+  const icon = category === 'population' ? 'population.png' : 'area.png'
   const subtitle = category === 'population' ? 'Which country has more people?' : 'Which country has more area?'
 
   if (phase === 'rules') return (

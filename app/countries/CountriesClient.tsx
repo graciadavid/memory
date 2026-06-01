@@ -116,7 +116,7 @@ export default function CountriesClient() {
  const worldRecord = top5[0] ? { value: top5[0].score, name: top5[0].name } : null
 
  if (phase === 'rules') return (
-   <GameRulesScreen icon="countries.png" title="Countries" subtitle="Identify the country by its shape" worldRecord={worldRecord} myBest={myBest !== null ? myBest+' countries' : null} top5={top5} onPlay={startGame} />
+   <GameRulesScreen icon="mapamundi.png" title="Countries" subtitle="Identify the country by its shape" worldRecord={worldRecord} myBest={myBest !== null ? myBest+' countries' : null} top5={top5} onPlay={startGame} />
  )
 
  if (phase === 'result') return (
