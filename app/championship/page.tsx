@@ -135,22 +135,68 @@ export default function ChampionshipPage() {
      )}
 
      {hallOfFame.length > 0 && (
-       <div>
-         <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Hall of Fame</div>
-         <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-           {hallOfFame.map((h) => (
-             <div key={h.id} style={{ background:'rgba(255,255,255,0.04)', borderRadius:14, padding:'12px 16px', display:'flex', alignItems:'center', gap:12, border:'1px solid rgba(255,255,255,0.06)' }}>
-               <div style={{ fontSize:20 }}>👑</div>
-               <div style={{ flex:1 }}>
-                 <div style={{ fontSize:14, fontWeight:900, color:'#fff' }}>{h.winner_name}</div>
-                 <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>{h.game} · {new Date(h.sunday_date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</div>
-               </div>
-               <div style={{ fontSize:13, fontWeight:900, color:GOLD }}>{h.score}ms</div>
-             </div>
-           ))}
-         </div>
-       </div>
-     )}
+      <div>
+        <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Hall of Fame</div>
+        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+          {hallOfFame.map((h, i) => (
+            <div key={h.id} onClick={() => setSelectedWinner(h)}
+              style={{ background:'rgba(255,255,255,0.04)', borderRadius:14, padding:'12px 16px', display:'flex', alignItems:'center', gap:12, border:'1px solid rgba(255,255,255,0.08)', cursor:'pointer' }}>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:28, height:28, objectFit:'contain' }} />
+              <div style={{ flex:1 }}>
+                <div style={{ fontSize:14, fontWeight:900, color:'#fff' }}>{h.winner_name}</div>
+                <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700, textTransform:'capitalize' }}>{h.game} · {new Date(h.sunday_date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>
+              </div>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <div style={{ fontSize:13, fontWeight:900, color:GOLD }}>{h.score}ms</div>
+                <div style={{ fontSize:11, color:'rgba(255,255,255,0.2)' }}>→</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {selectedWinner && (
+      <div onClick={() => setSelectedWinner(null)} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
+        <div onClick={e => e.stopPropagation()} style={{ width:'100%', maxWidth:380 }}>
+          <div style={{ background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:24, padding:'24px', boxShadow:'0 12px 0 rgba(100,70,0,0.5)' }}>
+            <div style={{ fontSize:10, fontWeight:900, color:'rgba(0,0,0,0.4)', letterSpacing:3, textTransform:'uppercase', marginBottom:16, textAlign:'center' }}>Sunday Brain Championship</div>
+            <div style={{ textAlign:'center', marginBottom:20 }}>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:64, height:64, objectFit:'contain', marginBottom:8 }} />
+              <div style={{ fontSize:11, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:2 }}>CHAMPION #{String(hallOfFame.findIndex(h => h.id === selectedWinner.id) + 1).padStart(3,'0')}</div>
+              <div style={{ fontSize:32, fontWeight:900, color:'#000', marginTop:4 }}>{selectedWinner.winner_name}</div>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginBottom:20 }}>
+              <div style={{ background:'rgba(0,0,0,0.15)', borderRadius:12, padding:'10px', textAlign:'center' }}>
+                <div style={{ fontSize:9, fontWeight:800, color:'rgba(0,0,0,0.4)', letterSpacing:1, textTransform:'uppercase', marginBottom:4 }}>Result</div>
+                <div style={{ fontSize:18, fontWeight:900, color:'#000' }}>{selectedWinner.score}ms</div>
+              </div>
+              <div style={{ background:'rgba(0,0,0,0.15)', borderRadius:12, padding:'10px', textAlign:'center' }}>
+                <div style={{ fontSize:9, fontWeight:800, color:'rgba(0,0,0,0.4)', letterSpacing:1, textTransform:'uppercase', marginBottom:4 }}>Game</div>
+                <div style={{ fontSize:13, fontWeight:900, color:'#000', textTransform:'capitalize' }}>{selectedWinner.game}</div>
+              </div>
+              <div style={{ background:'rgba(0,0,0,0.15)', borderRadius:12, padding:'10px', textAlign:'center' }}>
+                <div style={{ fontSize:9, fontWeight:800, color:'rgba(0,0,0,0.4)', letterSpacing:1, textTransform:'uppercase', marginBottom:4 }}>Date</div>
+                <div style={{ fontSize:13, fontWeight:900, color:'#000' }}>{new Date(selectedWinner.sunday_date).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>
+              </div>
+            </div>
+            <div style={{ fontSize:10, fontWeight:700, color:'rgba(0,0,0,0.35)', textAlign:'center', marginBottom:16 }}>{selectedWinner.participants} players competed worldwide</div>
+            <button onClick={() => {
+              if (navigator.share) {
+                navigator.share({ title:'Sunday Brain Championship', text:`${selectedWinner.winner_name} won the Sunday Brain Championship with ${selectedWinner.score}ms on ${selectedWinner.game}. Can you beat the world? memgenius.com/championship`, url:'https://memgenius.com/championship' })
+              } else {
+                navigator.clipboard.writeText(`${selectedWinner.winner_name} won the Sunday Brain Championship with ${selectedWinner.score}ms on ${selectedWinner.game}. memgenius.com/championship`)
+              }
+            }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:'rgba(0,0,0,0.25)', color:'#000', fontSize:15, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer' }}>
+              🔗 Share this champion
+            </button>
+          </div>
+          <button onClick={() => setSelectedWinner(null)} style={{ width:'100%', marginTop:12, padding:'12px', borderRadius:14, border:'none', background:'rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.5)', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer' }}>
+            Close
+          </button>
+        </div>
+      </div>
+    )}
 
    </main>
     <ChampionshipSEO />
