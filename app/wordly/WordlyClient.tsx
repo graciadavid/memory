@@ -61,6 +61,9 @@ export default function WordlyClient() {
  const [current, setCurrent] = useState('')
  const [keyColors, setKeyColors] = useState<Record<string, string>>({})
  const [won, setWon] = useState(false)
+  const [timeMs, setTimeMs] = useState(0)
+  const startTimeRef = useRef(0)
+  const timerRef = useRef<any>(null)
  const [worldRank, setWorldRank] = useState<number|null>(null)
  const [myBest, setMyBest] = useState<number|null>(null)
  const [top5, setTop5] = useState<any[]>([])
@@ -85,6 +88,8 @@ export default function WordlyClient() {
    setCurrent('')
    setKeyColors({})
    setWon(false)
+    startTimeRef.current = Date.now()
+    setTimeMs(0)
    setPhase('playing')
    window.dispatchEvent(new Event('gameStart'))
  }
@@ -141,6 +146,12 @@ export default function WordlyClient() {
    if (/^[A-Z]$/.test(key)) setCurrent(c => c.length < WORD_LENGTH ? c + key : c)
  }, [phase, word, guesses, cellStates, submitGuess])
 
+  useEffect(() => {
+    if (phase !== 'playing') { clearInterval(timerRef.current); return }
+    timerRef.current = setInterval(() => setTimeMs(Date.now() - startTimeRef.current), 100)
+    return () => clearInterval(timerRef.current)
+  }, [phase])
+
  useEffect(() => {
    const onKey = (e: KeyboardEvent) => handleKey(e.key.toUpperCase())
    window.addEventListener('keydown', onKey)
@@ -163,6 +174,7 @@ export default function WordlyClient() {
      onBack={() => { setPhase('rules'); loadData() }}
      onPlayAgain={startGame}
    >
+      {won && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{String(Math.floor(timeMs/60000)).padStart(2,'0')}:{String(Math.floor((timeMs%60000)/1000)).padStart(2,'0')}</div>}
      {!won && <div style={{ fontSize:20, fontWeight:900, color:'rgba(255,255,255,0.6)' }}>Word: {word}</div>}
    </GameResultScreen>
  )
@@ -172,7 +184,7 @@ export default function WordlyClient() {
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'10px 20px', flexShrink:0 }}>
        <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{guesses.length}/{MAX_ATTEMPTS}</div>
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>WORDLY</div>
-       <div style={{ width:40 }} />
+       <div style={{ fontSize:14, fontWeight:800, color:'rgba(255,255,255,0.5)' }}>{String(Math.floor(timeMs/60000)).padStart(2,'0')}:{String(Math.floor((timeMs%60000)/1000)).padStart(2,'0')}</div>
      </div>
 
      <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:5, padding:'0 16px' }}>
