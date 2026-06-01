@@ -5,16 +5,16 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 
 const ITEMS = [
   { href: '/', label: 'Home', icon: `${BASE}/nav-home.webp` },
-  { href: '/training', label: 'Train', icon: `${BASE}/brain-logo.webp` },
+  { href: '/training', label: 'Training', icon: `${BASE}/brain-logo.webp` },
   { href: '/championship', label: 'Championship', icon: `${BASE}/winner.png` },
-  { href: '/profile', label: 'Profile', icon: `${BASE}/nav-profile.webp` },
+  
   { href: '/more', label: 'More', icon: null },
 ]
 
 export default function BottomNav() {
   const pathname = usePathname()
 
-  if (pathname === '/') return null
+  
 
   return (
     <nav style={{
