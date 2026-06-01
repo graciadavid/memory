@@ -220,5 +220,8 @@ function ChampionshipSEO() {
        </div>
      </details>
    </div>
+      <a href="/championship/hall-of-fame" style={{ textDecoration:'none', display:'block', textAlign:'center', marginTop:16, marginBottom:8, fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>
+        🏆 View Hall of Fame →
+      </a>
  )
 }
