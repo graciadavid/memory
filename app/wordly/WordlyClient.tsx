@@ -13,33 +13,28 @@ const WORDS = [
  'BRAIN','LIGHT','CHESS','SCORE','PLANT','FLAME','STONE','CLOUD','STORM','TIGER',
  'EAGLE','SWIFT','CRANE','DANCE','EARTH','FAITH','GHOST','HEART','IVORY','JEWEL',
  'KNIFE','LASER','MAGIC','NIGHT','OCEAN','PEACE','QUEEN','RIVER','SOLAR','TRAIL',
- 'ULTRA','VALOR','WATER','XENON','YACHT','ZEBRA','ANGEL','BEACH','CANDY','DREAM',
- 'ELITE','FANCY','GRACE','HONEY','INDEX','JOKER','KARMA','LEMON','MAPLE','NOBLE',
- 'OPERA','POWER','QUEST','RADAR','SIGMA','THORN','ULTRA','VIVID','WHEAT','XENON',
- 'YOUTH','ZONAL','ABIDE','BLEND','CRISP','DERBY','EMOTE','FLAIR','GLIDE','HASTE',
- 'IDEAL','JEWEL','KINKY','LODGE','MERCY','NOVEL','OXIDE','PILOT','QUIRK','RALLY',
- 'SAINT','TABOO','UMBRA','VIOLA','WHIRL','XYLEM','YEARN','ZESTY','ADORE','BLAZE',
- 'CHANT','DEPOT','EMBER','FROST','GUSTO','HABIT','INLET','JOUST','KNEEL','LEDGE',
- 'MANOR','NERVE','ORBIT','PRISM','QUOTA','REIGN','SPARE','TEMPO','UPPER','VIOLA',
- 'WRATH','EXPEL','YIELD','ZINGY','ABBOT','BRAWL','CHOIR','DWELL','EDIFY','FUDGE',
- 'GLYPH','HINGE','IRONY','JAZZY','KINKY','LYRIC','MOOSE','NOTCH','OUGHT','PERCH',
- 'QUALM','ROUSE','SCONE','TRAWL','UNIFY','VENOM','WALTZ','EXACT','YEOMAN','ZONES',
+ 'ANGEL','BEACH','CANDY','DREAM','ELITE','FANCY','GRACE','HONEY','JOKER','KARMA',
+ 'LEMON','MAPLE','NOBLE','OPERA','POWER','QUEST','RADAR','SIGMA','THORN','VIVID',
+ 'WHEAT','YOUTH','BLEND','CRISP','EMOTE','FLAIR','GLIDE','HASTE','IDEAL','RALLY',
+ 'SAINT','TABOO','VIOLA','WHIRL','ADORE','BLAZE','CHANT','DEPOT','EMBER','FROST',
+ 'GUSTO','HABIT','INLET','SPARE','TEMPO','WRATH','YIELD','BRAWL','CHOIR','DWELL',
+ 'FUDGE','HINGE','IRONY','MOOSE','NOTCH','PERCH','ROUSE','SCONE','TRAWL','UNIFY',
+ 'VENOM','WALTZ','ABBOT','QUALM','KNEEL','LEDGE','MANOR','NERVE','ORBIT','PRISM',
 ]
 
 const KEYBOARD_ROWS = [
  ['Q','W','E','R','T','Y','U','I','O','P'],
  ['A','S','D','F','G','H','J','K','L'],
- ['ENTER','Z','X','C','V','B','N','M','⌫'],
+ ['ENTER','Z','X','C','V','B','N','M','DEL'],
 ]
 
-type LetterState = 'correct' | 'present' | 'absent' | 'empty' | 'active'
+type CellState = 'correct' | 'present' | 'absent' | 'empty' | 'active'
 type Phase = 'rules' | 'playing' | 'result'
 
-function evaluateGuess(guess: string, word: string): LetterState[] {
- const result: LetterState[] = Array(WORD_LENGTH).fill('absent')
+function evaluateGuess(guess: string, word: string): CellState[] {
+ const result: CellState[] = Array(WORD_LENGTH).fill('absent')
  const wordArr = word.split('')
  const guessArr = guess.split('')
- 
  guessArr.forEach((l, i) => { if (l === wordArr[i]) { result[i] = 'correct'; wordArr[i] = '' } })
  guessArr.forEach((l, i) => {
    if (result[i] === 'correct') return
@@ -49,7 +44,7 @@ function evaluateGuess(guess: string, word: string): LetterState[] {
  return result
 }
 
-const STATE_COLORS: Record<string, string> = {
+const BG: Record<string, string> = {
  correct: '#2E7D32',
  present: '#C8960C',
  absent: '#3a3a3a',
@@ -62,11 +57,10 @@ export default function WordlyClient() {
  const [phase, setPhase] = useState<Phase>('rules')
  const [word, setWord] = useState('')
  const [guesses, setGuesses] = useState<string[]>([])
- const [states, setStates] = useState<LetterState[][]>([])
+ const [cellStates, setCellStates] = useState<CellState[][]>([])
  const [current, setCurrent] = useState('')
- const [letterStates, setLetterStates] = useState<Record<string, LetterState>>({})
+ const [keyColors, setKeyColors] = useState<Record<string, string>>({})
  const [won, setWon] = useState(false)
- const [shake, setShake] = useState(false)
  const [worldRank, setWorldRank] = useState<number|null>(null)
  const [myBest, setMyBest] = useState<number|null>(null)
  const [top5, setTop5] = useState<any[]>([])
@@ -87,53 +81,65 @@ export default function WordlyClient() {
    const w = WORDS[Math.floor(Math.random() * WORDS.length)]
    setWord(w)
    setGuesses([])
-   setStates([])
+   setCellStates([])
    setCurrent('')
-   setLetterStates({})
+   setKeyColors({})
    setWon(false)
    setPhase('playing')
    window.dispatchEvent(new Event('gameStart'))
  }
 
- const handleKey = useCallback(async (key: string) => {
-   if (phase !== 'playing') return
-   if (key === '⌫') { setCurrent(c => c.slice(0,-1)); return }
-   if (key === 'ENTER') {
-     if (current.length !== WORD_LENGTH) { setShake(true); setTimeout(() => setShake(false), 500); return }
-     const result = evaluateGuess(current, word)
-     const newGuesses = [...guesses, current]
-     const newStates = [...states, result]
-     setGuesses(newGuesses)
-     setStates(newStates)
-     setCurrent('')
+ const submitGuess = useCallback(async (guess: string, currentWord: string, currentGuesses: string[], currentCellStates: CellState[][]) => {
+   const result = evaluateGuess(guess, currentWord)
+   const newGuesses = [...currentGuesses, guess]
+   const newCellStates = [...currentCellStates, result]
+   setGuesses(newGuesses)
+   setCellStates(newCellStates)
+   setCurrent('')
 
-     const newLetterStates: Record<string, LetterState> = { ...letterStates }
-     current.split('').forEach((l, i) => {
-       const prev = newLetterStates[l]
-       if (prev === 'correct') return
-       if (result[i] === 'correct') newLetterStates[l] = 'correct'
-       else if (result[i] === 'present' && prev !== 'correct') newLetterStates[l] = 'present'
-       else if (!prev) newLetterStates[l] = 'absent'
+   // Update key colors
+   setKeyColors(prev => {
+     const next: Record<string, string> = { ...prev }
+     guess.split('').forEach((l, i) => {
+       const state = result[i]
+       const prevColor = next[l]
+       if (prevColor === '#2E7D32') return
+       if (state === 'correct') next[l] = '#2E7D32'
+       else if (state === 'present' && prevColor !== '#2E7D32') next[l] = '#C8960C'
+       else if (state === 'absent' && !prevColor) next[l] = '#3a3a3a'
      })
-     setLetterStates(newLetterStates)
+     return next
+   })
 
-     if (current === word) {
-       setWon(true)
-       setPhase('result')
-       window.dispatchEvent(new Event('gameResult'))
-       const tries = newGuesses.length
-       const { count } = await supabase.from('wordle_scores').select('player_name', { count: 'exact', head: true }).lt('attempts', tries)
-       setWorldRank((count ?? 0) + 1)
-       if (profile?.name) await supabase.from('wordle_scores').insert({ player_name: profile.name, attempts: tries })
-     } else if (newGuesses.length >= MAX_ATTEMPTS) {
-       setWon(false)
-       setPhase('result')
-       window.dispatchEvent(new Event('gameResult'))
-     }
+   if (guess === currentWord) {
+     setWon(true)
+     setPhase('result')
+     window.dispatchEvent(new Event('gameResult'))
+     const tries = newGuesses.length
+     const { count } = await supabase.from('wordle_scores').select('player_name', { count: 'exact', head: true }).lt('attempts', tries)
+     setWorldRank((count ?? 0) + 1)
+     if (profile?.name) await supabase.from('wordle_scores').insert({ player_name: profile.name, attempts: tries })
+   } else if (newGuesses.length >= MAX_ATTEMPTS) {
+     setWon(false)
+     setPhase('result')
+     window.dispatchEvent(new Event('gameResult'))
+   }
+ }, [profile?.name])
+
+ const handleKey = useCallback((key: string) => {
+   if (phase !== 'playing') return
+   if (key === 'DEL' || key === 'BACKSPACE') { setCurrent(c => c.slice(0,-1)); return }
+   if (key === 'ENTER') {
+     setCurrent(curr => {
+       if (curr.length === WORD_LENGTH) {
+         submitGuess(curr, word, guesses, cellStates)
+       }
+       return curr
+     })
      return
    }
-   if (current.length < WORD_LENGTH && /^[A-Z]$/.test(key)) setCurrent(c => c + key)
- }, [phase, current, word, guesses, states, letterStates, profile?.name])
+   if (/^[A-Z]$/.test(key)) setCurrent(c => c.length < WORD_LENGTH ? c + key : c)
+ }, [phase, word, guesses, cellStates, submitGuess])
 
  useEffect(() => {
    const onKey = (e: KeyboardEvent) => handleKey(e.key.toUpperCase())
@@ -169,20 +175,19 @@ export default function WordlyClient() {
        <div style={{ width:40 }} />
      </div>
 
-     {/* Grid */}
-     <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:6, padding:'0 16px' }}>
+     <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:5, padding:'0 16px' }}>
        {Array.from({ length: MAX_ATTEMPTS }).map((_, row) => {
          const guess = guesses[row]
-         const rowStates = states[row]
+         const rowStates = cellStates[row]
          const isActive = row === guesses.length
          const letters = isActive ? current.padEnd(WORD_LENGTH) : (guess || '').padEnd(WORD_LENGTH)
          return (
-           <div key={row} style={{ display:'flex', gap:6, animation: isActive && shake ? 'shake 0.5s' : 'none' }}>
+           <div key={row} style={{ display:'flex', gap:5 }}>
              {Array.from({ length: WORD_LENGTH }).map((_, col) => {
                const letter = letters[col] === ' ' ? '' : letters[col]
-               const state: LetterState = rowStates ? rowStates[col] : (isActive ? 'active' : 'empty')
+               const state: CellState = rowStates ? rowStates[col] : (isActive ? 'active' : 'empty')
                return (
-                 <div key={col} style={{ width:52, height:52, borderRadius:8, background:STATE_COLORS[state], border: state === 'empty' || state === 'active' ? '2px solid rgba(255,255,255,0.15)' : 'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:900, color:'#fff', transition:'background 0.3s' }}>
+                 <div key={col} style={{ width:52, height:52, borderRadius:8, background:BG[state], border: (state === 'empty' || state === 'active') ? '2px solid rgba(255,255,255,0.15)' : 'none', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, fontWeight:900, color:'#fff', transition:'background 0.3s' }}>
                    {letter}
                  </div>
                )
@@ -192,19 +197,15 @@ export default function WordlyClient() {
        })}
      </div>
 
-     {/* Keyboard */}
      <div style={{ padding:'8px 8px 80px', flexShrink:0 }}>
        {KEYBOARD_ROWS.map((row, i) => (
-         <div key={i} style={{ display:'flex', gap:5, justifyContent:'center', marginBottom:5 }}>
-           {row.map(k => {
-             const state = letterStates[k]
-             return (
-               <button key={k} onPointerDown={() => handleKey(k)}
-                 style={{ height:44, minWidth: k.length > 1 ? 52 : 34, borderRadius:6, border:'none', background: state === 'correct' ? GREEN : state === 'present' ? GOLD : state === 'absent' ? '#1a1a1a' : '#3a3a3a', color:'#fff', fontSize: k.length > 1 ? 11 : 16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', padding:'0 4px', userSelect:'none', transition:'background 0.2s' }}>
-                 {k}
-               </button>
-             )
-           })}
+         <div key={i} style={{ display:'flex', gap:4, justifyContent:'center', marginBottom:4 }}>
+           {row.map(k => (
+             <button key={k} onPointerDown={() => handleKey(k)}
+               style={{ height:44, minWidth: k.length > 1 ? 52 : 32, borderRadius:6, border:'none', background: keyColors[k] || '#3a3a3a', color:'#fff', fontSize: k.length > 1 ? 10 : 15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', padding:'0 3px', userSelect:'none', transition:'background 0.2s' }}>
+               {k}
+             </button>
+           ))}
          </div>
        ))}
      </div>
