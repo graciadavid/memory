@@ -173,7 +173,7 @@ export default function Game2048Client() {
  )
 
  return (
-   <main style={{ height:'100dvh', maxHeight:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', overflow:'hidden', position:'fixed', width:'100%', maxWidth:430 }}>
+   <main style={{ height:'100dvh', maxHeight:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', overflow:'hidden', position:'fixed', width:'100%', maxWidth:430, overscrollBehavior:'none', touchAction:'none' }}>
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 20px', flexShrink:0 }}>
        <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{score.toLocaleString()}</div>
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>2048</div>
