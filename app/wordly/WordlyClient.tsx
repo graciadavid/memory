@@ -202,7 +202,7 @@ export default function WordlyClient() {
          <div key={i} style={{ display:'flex', gap:4, justifyContent:'center', marginBottom:4 }}>
            {row.map(k => (
              <button key={k} onPointerDown={() => handleKey(k)}
-               style={{ height:44, minWidth: k.length > 1 ? 52 : 32, borderRadius:6, border:'none', background: keyColors[k] || '#3a3a3a', color:'#fff', fontSize: k.length > 1 ? 10 : 15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', padding:'0 3px', userSelect:'none', transition:'background 0.2s' }}>
+               style={{ height:44, minWidth: k.length > 1 ? 52 : 32, borderRadius:6, border:'none', background: k === 'ENTER' ? '#2E7D32' : keyColors[k] === '#3a3a3a' ? '#1a1a1a' : keyColors[k] || '#3a3a3a', color: keyColors[k] === '#3a3a3a' ? 'rgba(255,255,255,0.2)' : '#fff', fontSize: k.length > 1 ? 10 : 15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', padding:'0 3px', userSelect:'none', transition:'all 0.2s', boxShadow: k === 'ENTER' ? '0 3px 0 #1B5E20' : 'none' }}>
                {k}
              </button>
            ))}
