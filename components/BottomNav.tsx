@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import RegisterBar from '@/components/RegisterBar'
 import { usePathname } from 'next/navigation'
 
 const BROWN = '#4A2C0A'
@@ -17,6 +18,8 @@ export default function BottomNav() {
   const path = usePathname()
 
   return (
+    <>
+    <RegisterBar />
     <nav style={{
       position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
       width: '100%', maxWidth: 430,
@@ -37,5 +40,6 @@ export default function BottomNav() {
         )
       })}
     </nav>
+    </>
   )
 }
