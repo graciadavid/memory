@@ -132,7 +132,7 @@ export default function MastermindClient() {
       <div style={{ flex:1, overflowY:'auto', padding:'0 16px' }}>
         {attempts.map((att, i) => (
           <div key={i} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
-            <div style={{ display:'flex', gap:6 }}>
+            <div style={{ display:'flex', gap:6, flex:1 }}>
               {att.guess.map((c,j) => (
                 <div key={j} style={{ width:36, height:36, borderRadius:'50%', background:COLORS[c], boxShadow:'0 2px 4px rgba(0,0,0,0.3)' }} />
               ))}
@@ -154,10 +154,10 @@ export default function MastermindClient() {
       </div>
 
       {/* Color picker */}
-      <div style={{ padding:'12px 16px', flexShrink:0 }}>
-        <div style={{ display:'flex', gap:10, justifyContent:'center', marginBottom:12 }}>
+      <div style={{ padding:'12px 16px 90px', flexShrink:0 }}>
+        <div style={{ display:'flex', gap:8, justifyContent:'space-between', marginBottom:12 }}>
           {COLORS.map((color, i) => (
-            <button key={i} onClick={() => addColor(i)} style={{ width:44, height:44, borderRadius:'50%', border:'none', background:color, cursor:'pointer', boxShadow:'0 3px 6px rgba(0,0,0,0.3)' }} />
+            <button key={i} onClick={() => addColor(i)} style={{ flex:1, height:48, borderRadius:12, border:'none', background:color, cursor:'pointer', boxShadow:'0 3px 6px rgba(0,0,0,0.3)' }} />
           ))}
         </div>
         <div style={{ display:'flex', gap:10 }}>
