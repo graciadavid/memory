@@ -154,59 +154,45 @@ export default function ProfilePage() {
   }
 
   return (
-    <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'16px 16px 100px' }}>
-
-      {/* Profile header */}
-      <div style={{ background:'#252525', borderRadius:16, padding:'20px', marginBottom:12, display:'flex', alignItems:'center', gap:16 }}>
-        <div style={{ width:60, height:60, borderRadius:'50%', background:GREEN, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-          <span style={{ fontSize:26, fontWeight:900, color:'#fff' }}>{profile.name.charAt(0).toUpperCase()}</span>
-        </div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:2 }}>{profile.name}</div>
-          {profileData?.country && <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{profileData.country}</div>}
-        </div>
-        {streak > 0 && (
-          <div style={{ textAlign:'center' }}>
-            <div style={{ fontSize:22, fontWeight:900, color:'#FF6B35' }}>{streak}</div>
-            <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>streak</div>
+      {/* Unified profile card */}
+      <div style={{ background:'#252525', borderRadius:16, padding:'20px', marginBottom:12 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom: (globalPct !== null || streak > 0) ? 16 : 0 }}>
+          <div style={{ width:56, height:56, borderRadius:'50%', background:GREEN, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+            <span style={{ fontSize:24, fontWeight:900, color:'#fff' }}>{profile.name.charAt(0).toUpperCase()}</span>
           </div>
-        )}
-      </div>
-
-      {/* Global rank */}
-      {globalPct !== null && (
-        <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginBottom:12, textAlign:'center' }}>
-          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>World Ranking</div>
-          <div style={{ fontSize:36, fontWeight:900, color: globalPct <= 10 ? '#69F0AE' : globalPct <= 50 ? GOLD : '#FF5252' }}>
-            Top {globalPct}%
+          <div style={{ flex:1 }}>
+            <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:2 }}>{profile.name}</div>
+            {profileData?.country && <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{profileData.country}</div>}
           </div>
-          <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{myGlobalRank} of {totalPlayers} players worldwide</div>
-        </div>
-      )}
-
-      {/* Streak level */}
-      {streak > 0 && (
-        <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginBottom:12 }}>
-          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Streak Level</div>
-          <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:8 }}>
-            <img src={`${BASE}/${streakLevel.emoji}`} style={{ width:40, height:40, objectFit:'contain' }} />
-            <div>
-              <div style={{ fontSize:18, fontWeight:900, color:'#fff' }}>{streakLevel.name}</div>
-              <div style={{ fontSize:36, color:'#FF6B35', fontWeight:900 }}>{streak}</div>
-            </div>
-          </div>
-          <div style={{ fontSize:13, color:'rgba(255,255,255,0.5)', fontWeight:700, lineHeight:1.6, marginBottom:12 }}>{streakLevel.benefit}</div>
-          {nextLevel && (
-            <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:10, padding:'10px' }}>
-              <div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>Next level → {nextLevel.name}</div>
-              
+          {streak > 0 && (
+            <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+              <img src={`${BASE}/${streakLevel.emoji}`} style={{ width:22, height:22, objectFit:'contain' }} />
+              <span style={{ fontSize:18, fontWeight:900, color:'#FF6B35' }}>{streak}</span>
             </div>
           )}
         </div>
-      )}
-
-      {/* Rankings */}
-      {!loaded && (
+        {globalPct !== null && (
+          <div style={{ borderTop:'1px solid rgba(255,255,255,0.06)', paddingTop:14, marginBottom: streak > 0 ? 14 : 0 }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div>
+                <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>World Ranking</div>
+                <div style={{ fontSize:28, fontWeight:900, color: globalPct <= 10 ? '#69F0AE' : globalPct <= 50 ? GOLD : '#FF5252' }}>Top {globalPct}%</div>
+                <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{myGlobalRank} of {totalPlayers} players</div>
+              </div>
+              <img src={`${BASE}/population.png`} style={{ width:36, height:36, objectFit:'contain', opacity:0.4 }} />
+            </div>
+          </div>
+        )}
+        {streak > 0 && (
+          <div style={{ borderTop:'1px solid rgba(255,255,255,0.06)', paddingTop:14 }}>
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6 }}>
+              <div style={{ fontSize:15, fontWeight:900, color:'#fff' }}>{streakLevel.name}</div>
+              {nextLevel && <div style={{ fontSize:12, fontWeight:800, color:'#69F0AE' }}>Next → {nextLevel.name}</div>}
+            </div>
+            <div style={{ fontSize:12, color:'rgba(255,255,255,0.5)', fontWeight:700, lineHeight:1.5 }}>{streakLevel.benefit}</div>
+          </div>
+        )}
+      </div>
         <div style={{ background:'#252525', borderRadius:16, padding:'20px', textAlign:'center', color:'rgba(255,255,255,0.3)', fontSize:14, fontWeight:700 }}>
           Loading rankings...
         </div>
