@@ -32,7 +32,7 @@ const KEYBOARD_ROWS = [
  ['ENTER','Z','X','C','V','B','N','M','⌫'],
 ]
 
-type LetterState = 'correct' | 'present' | 'absent' | 'empty' | 'active' | 'none'
+type LetterState = 'correct' | 'present' | 'absent' | 'empty' | 'active'
 type Phase = 'rules' | 'playing' | 'result'
 
 function evaluateGuess(guess: string, word: string): LetterState[] {
@@ -49,7 +49,7 @@ function evaluateGuess(guess: string, word: string): LetterState[] {
  return result
 }
 
-const STATE_COLORS: Record<LetterState, string> = {
+const STATE_COLORS: Record<string, string> = {
  correct: '#2E7D32',
  present: '#C8960C',
  absent: '#3a3a3a',
