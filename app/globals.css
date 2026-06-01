@@ -1,22 +1,28 @@
 * {
- box-sizing: border-box;
- margin: 0;
- padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
- background: #1A1A1A;
- color: #fff;
- font-family: var(--font-nunito), sans-serif;
- max-width: 430px;
- margin: 0 auto;
- min-height: 100dvh;
+  background: #1A1A1A;
+  color: #fff;
+  font-family: var(--font-nunito), sans-serif;
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100dvh;
 }
 
 input, button {
- font-family: var(--font-nunito), sans-serif;
+  font-family: var(--font-nunito), sans-serif;
 }
 
 ::-webkit-scrollbar {
- display: none;
+  display: none;
+}
+
+/* Prevent content hiding behind header and bottom nav */
+main {
+  padding-top: 0;
+  padding-bottom: 80px;
 }
