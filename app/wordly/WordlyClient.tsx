@@ -107,7 +107,7 @@ export default function WordlyClient() {
      setStates(newStates)
      setCurrent('')
 
-     const newLetterStates = { ...letterStates }
+     const newLetterStates: Record<string, LetterState> = { ...letterStates }
      current.split('').forEach((l, i) => {
        const prev = newLetterStates[l]
        if (prev === 'correct') return
