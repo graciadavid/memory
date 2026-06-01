@@ -77,10 +77,12 @@ export default function LetterRainClient() {
     setFeedback(null)
     setTimeLeft(10)
 
-    const target = LETTERS[idx]
+    const target = LETTERS[idx % 26]
     setPhase('falling')
 
     // Spawn letters
+    const spawnInterval = Math.max(150, 500 - (levelIdxRef.current % 26) * 14)
+    const letterSpeed = 0.4 + (Math.floor(levelIdxRef.current / 26) * 0.3)
     intervalRef.current = setInterval(() => {
       const isTarget = Math.random() < 0.35
       const char = isTarget ? target : LETTERS.replace(target, '')[Math.floor(Math.random() * 25)]
@@ -93,12 +95,13 @@ export default function LetterRainClient() {
         char,
         x: Math.random() * 80 + 10,
         y: 0,
-        speed: 0.4 + Math.random() * 0.4,
+        speed: letterSpeed + Math.random() * 0.3,
       }])
-    }, 500)
+    }, spawnInterval)
 
     // Timer
-    let t = 10
+    const baseDuration = 10 + Math.floor(levelIdxRef.current / 26) * 3
+    let t = baseDuration
     timerRef.current = setInterval(() => {
       t--
       setTimeLeft(t)
@@ -150,7 +153,7 @@ export default function LetterRainClient() {
     }
   }, [])
 
-  const target = LETTERS[levelIdx]
+  const target = LETTERS[levelIdx % 26]
   const worldRecord = top5[0] ? { value: top5[0].score, name: top5[0].name } : null
 
   if (phase === 'rules') return (
