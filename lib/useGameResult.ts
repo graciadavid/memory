@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabase'
 import { usePlayer } from './usePlayer'
-import { updateStreak } from './updateStreak'
+import { updateStreak } from './streak'
 
 interface UseGameResultOptions {
   table: string
