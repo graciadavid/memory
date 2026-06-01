@@ -32,7 +32,7 @@ const KEYBOARD_ROWS = [
  ['ENTER','Z','X','C','V','B','N','M','⌫'],
 ]
 
-type LetterState = 'correct' | 'present' | 'absent' | 'empty' | 'active'
+type LetterState = 'correct' | 'present' | 'absent' | 'empty' | 'active' | 'none'
 type Phase = 'rules' | 'playing' | 'result'
 
 function evaluateGuess(guess: string, word: string): LetterState[] {
