@@ -34,12 +34,12 @@ const GAMES = [
 ]
 
 const STREAK_LEVELS = [
-  { min: 1, max: 5, name: 'Beginner', emoji: '🌱', benefit: 'You are building the habit. Consistency is the first step to cognitive improvement.' },
-  { min: 6, max: 10, name: 'Consistent', emoji: '🔥', benefit: 'Neural pathways are starting to strengthen. Your brain is adapting to regular training.' },
-  { min: 11, max: 20, name: 'Focused', emoji: '⚡', benefit: 'Regular training is measurably improving your reaction time and memory capacity.' },
-  { min: 21, max: 50, name: 'Dedicated', emoji: '🧠', benefit: 'You are in the top tier of brain trainers. Cognitive benefits are compounding daily.' },
-  { min: 51, max: 99, name: 'Elite', emoji: '💎', benefit: 'Elite level consistency. Your brain is operating at peak training efficiency.' },
-  { min: 100, max: Infinity, name: 'Legend', emoji: '👑', benefit: 'Legendary. You are among the most consistent brain trainers in the world.' },
+  { min: 1, max: 5, name: 'Beginner', emoji: 'seed.png', benefit: 'You are building the habit. Consistency is the first step to cognitive improvement.' },
+  { min: 6, max: 10, name: 'Consistent', emoji: 'streak.png', benefit: 'Neural pathways are starting to strengthen. Your brain is adapting to regular training.' },
+  { min: 11, max: 20, name: 'Focused', emoji: 'brain-logo.webp', benefit: 'Regular training is measurably improving your reaction time and memory capacity.' },
+  { min: 21, max: 50, name: 'Dedicated', emoji: 'ray.png', benefit: 'You are in the top tier of brain trainers. Cognitive benefits are compounding daily.' },
+  { min: 51, max: 99, name: 'Elite', emoji: 'winner.png', benefit: 'Elite level consistency. Your brain is operating at peak training efficiency.' },
+  { min: 100, max: Infinity, name: 'Legend', emoji: 'target.png', benefit: 'Legendary. You are among the most consistent brain trainers in the world.' },
 ]
 
 async function getGameRank(name: string, g: typeof GAMES[0]) {
@@ -188,7 +188,7 @@ export default function ProfilePage() {
         <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginBottom:12 }}>
           <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Streak Level</div>
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:8 }}>
-            <div style={{ fontSize:32 }}>{streakLevel.emoji}</div>
+            <img src={`${BASE}/${streakLevel.emoji}`} style={{ width:40, height:40, objectFit:'contain' }} />
             <div>
               <div style={{ fontSize:18, fontWeight:900, color:'#fff' }}>{streakLevel.name}</div>
               <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{streak} day streak</div>
@@ -197,7 +197,7 @@ export default function ProfilePage() {
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.5)', fontWeight:700, lineHeight:1.6, marginBottom:12 }}>{streakLevel.benefit}</div>
           {nextLevel && (
             <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:10, padding:'10px' }}>
-              <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', marginBottom:4 }}>Next level: {nextLevel.emoji} {nextLevel.name}</div>
+              <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', marginBottom:4 }}>Next level: {nextLevel.name}</div>
               <div style={{ fontSize:12, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>{nextLevel.min - streak} more days to go</div>
             </div>
           )}
