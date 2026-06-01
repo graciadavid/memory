@@ -120,11 +120,11 @@ export default function BlackjackClient() {
    let msg = ''
 
    if (dealerTotal > 21 || playerTotal > dealerTotal) {
-     result = 'win'; setChips(c => { const nc = c + bet; return nc }); msg = 'You win! +'+bet
+     result = 'win'; setChips(c => { const nc = c + bet; return nc }); msg = 'You win! +'+bet.toLocaleString()
    } else if (playerTotal === dealerTotal) {
      result = 'push'; msg = 'Push!'
    } else {
-     result = 'lose'; setChips(c => { const nc = c - bet; return nc }); msg = 'Dealer wins! -'+bet
+     result = 'lose'; setChips(c => { const nc = c - bet; return nc }); msg = 'Dealer wins! -'+bet.toLocaleString()
    }
    setMessage(msg)
    setRoundResult(result)
@@ -190,7 +190,7 @@ export default function BlackjackClient() {
  return (
    <main style={{ height:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', overflow:'hidden' }}>
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 20px', flexShrink:0 }}>
-       <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{chips} chips</div>
+       <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{chips.toLocaleString()} chips</div>
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>BLACKJACK</div>
        <button onClick={quitGame} style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit' }}>Quit</button>
      </div>
