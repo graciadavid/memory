@@ -250,7 +250,7 @@ export default function TetrisClient() {
        <div style={{ fontSize:14, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>Lv {level}</div>
      </div>
 
-     <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'0 16px' }}
+     <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'0 16px', overflow:'hidden' }}
        onTouchStart={e => setTouchX(e.touches[0].clientX)}
        onTouchEnd={e => {
          if (touchX === null) return
@@ -259,14 +259,14 @@ export default function TetrisClient() {
          else rotatePiece()
          setTouchX(null)
        }}>
-       <div style={{ display:'grid', gridTemplateColumns:`repeat(${COLS},1fr)`, gap:1, background:'#111', padding:4, borderRadius:8 }}>
+       <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gap:1, background:'#111', padding:4, borderRadius:8, width:'min(300px, calc(100vw - 48px))' }}>
          {display.map((row, r) => row.map((cell, c) => (
-           <div key={r+'-'+c} style={{ width:28, height:28, borderRadius:3, background: cell || '#1a1a1a', border: cell ? 'none' : '1px solid #222' }} />
+           <div key={r+'-'+c} style={{ aspectRatio:'1', borderRadius:2, background: cell || '#1a1a1a', border: cell ? 'none' : '1px solid #222' }} />
          )))}
        </div>
      </div>
 
-     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, padding:'8px 16px 80px', flexShrink:0 }}>
+     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, padding:'8px 16px 80px', flexShrink:0, background:'#1A1A1A' }}>
        <button onPointerDown={() => move(-1)} style={{ padding:'14px', borderRadius:12, border:'none', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>←</button>
        <button onPointerDown={drop} style={{ padding:'14px', borderRadius:12, border:'none', background:GREEN, color:'#fff', fontSize:18, fontWeight:900, cursor:'pointer', fontFamily:'inherit', boxShadow:'0 4px 0 #1B5E20' }}>DROP</button>
        <button onPointerDown={() => move(1)} style={{ padding:'14px', borderRadius:12, border:'none', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>→</button>
