@@ -1,32 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+* {
+ box-sizing: border-box;
+ margin: 0;
+ padding: 0;
+}
 
 body {
-  background: #FAF7F2;
-  color: #4A2C0A;
-  margin: 0;
+ background: #1A1A1A;
+ color: #fff;
+ font-family: var(--font-nunito), sans-serif;
+ max-width: 430px;
+ margin: 0 auto;
+ min-height: 100dvh;
 }
 
-/* Prevent scroll during gameplay */
-main[data-phase="playing"],
-main[data-phase="countdown"],
-main[data-phase="running"],
-main[data-phase="memorize"],
-main[data-phase="guess"],
-main[data-phase="showing"],
-main[data-phase="input"],
-main[data-phase="lighting"],
-main[data-phase="waiting"],
-main[data-phase="go"] {
- overflow: hidden;
- height: 100dvh;
- max-height: 100dvh;
+input, button {
+ font-family: var(--font-nunito), sans-serif;
 }
 
-/* Lock scroll on game pages during play */
-body:has(main[style*="cursor:pointer"]),
-body:has(main[style*="cursor: pointer"]) {
-  overflow: hidden;
-  height: 100dvh;
+::-webkit-scrollbar {
+ display: none;
 }
