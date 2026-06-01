@@ -45,12 +45,12 @@ export default function HallOfFameClient() {
 
      <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
        {winners.map((w, i) => (
-         <div key={w.id} style={{ background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:20, padding:'16px 20px', boxShadow:'0 6px 0 rgba(100,70,0,0.4)' }}>
+         <div key={w.id} style={{ background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:16, padding:'12px 16px', boxShadow:'0 4px 0 rgba(100,70,0,0.4)' }}>
            <div style={{ display:'flex', alignItems:'center', gap:12 }}>
              <div style={{ fontSize:22, fontWeight:900, color:'rgba(0,0,0,0.4)', minWidth:32 }}>#{winners.length - i}</div>
-             <img src={GAME_ICONS[w.game] || `${BASE}/precision.png`} style={{ width:40, height:40, objectFit:'contain' }} />
+             <img src={GAME_ICONS[w.game] || `${BASE}/precision.png`} style={{ width:32, height:32, objectFit:'contain' }} />
              <div style={{ flex:1 }}>
-               <div style={{ fontSize:18, fontWeight:900, color:'#000' }}>{w.player_name}</div>
+               <div style={{ fontSize:16, fontWeight:900, color:'#000' }}>{w.winner_name}</div>
                <div style={{ fontSize:11, fontWeight:800, color:'rgba(0,0,0,0.5)', letterSpacing:1, textTransform:'uppercase' }}>
                  {w.game} · {new Date(w.sunday_date).toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })}
                </div>
