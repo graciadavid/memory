@@ -19,7 +19,7 @@ function ChampionshipCountdown() {
  useEffect(() => {
    const calc = () => {
      const now = new Date()
-     const sunday = new Date('2026-06-01T00:00:00Z')
+     const sunday = new Date('2026-06-07T00:00:00Z')
      const diff = Math.max(0, sunday.getTime() - now.getTime())
      const d = Math.floor(diff / 86400000)
      const h = Math.floor((diff % 86400000) / 3600000)
@@ -83,13 +83,13 @@ export default function HomePage() {
        <div style={{ background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', borderRadius:24, padding:'20px 22px', boxShadow:'0 8px 0 rgba(100,70,0,0.5)' }}>
          
          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginBottom:8 }}><img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:28, height:28, objectFit:'contain' }} /><div style={{ fontSize:26, fontWeight:900, color:'#000', lineHeight:1.1, textAlign:'center' }}>Sunday Brain<br />Championship</div><img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png" style={{ width:28, height:28, objectFit:'contain' }} /></div>
-         <div style={{ fontSize:16, fontWeight:800, color:'rgba(0,0,0,0.6)', marginBottom:10, textAlign:'center' }}> Game June 1st · Stop</div>
+         <div style={{ fontSize:16, fontWeight:800, color:'rgba(0,0,0,0.6)', marginBottom:10, textAlign:'center' }}> Game June 7th · Blink</div>
          <ChampionshipCountdown />
        </div>
      </a>
 
      {/* Train button */}
-     <a href='/stop' style={{ textDecoration: 'none', width: '100%' }}>
+     <a href='/blink' style={{ textDecoration: 'none', width: '100%' }}>
        <div style={{ background: GREEN, borderRadius: 24, padding: '20px', textAlign: 'center', boxShadow: '0 10px 0 #1B5E2070' }}>
          <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.6)', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 6 }}>Train for the championship</div>
          <div style={{ fontSize: 24, fontWeight: 900, color: '#fff' }}>Play Stop →</div>
