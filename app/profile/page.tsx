@@ -46,6 +46,16 @@ async function getGameRank(name: string, g: typeof GAMES[0]) {
   return { rank: (count || 0) + 1, score: playerScore }
 }
 
+function LoadingRankings() {
+ const [blink, setBlink] = useState(true)
+ useEffect(() => { const t = setInterval(() => setBlink(b => !b), 600); return () => clearInterval(t) }, [])
+ return (
+   <div style={{ background:'#252525', borderRadius:16, padding:'20px', textAlign:'center' }}>
+     <div style={{ fontSize:14, fontWeight:900, color: blink ? '#69F0AE' : 'transparent', transition:'color 0.3s' }}>● Loading rankings...</div>
+   </div>
+ )
+}
+
 export default function ProfilePage() {
   const { profile } = usePlayer()
   const [profileData, setProfileData] = useState<any>(null)
@@ -129,7 +139,7 @@ export default function ProfilePage() {
       )}
 
       <button onClick={() => { localStorage.removeItem('memgenius_profile'); window.location.reload() }}
-        style={{ width:'100%', padding:'14px', borderRadius:14, border:'1px solid rgba(255,255,255,0.1)', background:'transparent', color:'rgba(255,255,255,0.4)', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer' }}>
+        style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:'#2E7D32', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer' }}>
         Log out
       </button>
     </main>
