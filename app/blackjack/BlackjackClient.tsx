@@ -230,13 +230,17 @@ export default function BlackjackClient() {
        {phase === 'betting' && (
          <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
            <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)', textAlign:'center' }}>Bet: {bet} chips</div>
-           <div style={{ display:'flex', gap:8, justifyContent:'center' }}>
-             {[5,10,25,50].map(amount => (
-               <button key={amount} onClick={() => setBet(Math.min(amount, chips))}
-                 style={{ padding:'8px 14px', borderRadius:10, border: bet === amount ? '2px solid '+GOLD : '2px solid transparent', background:'#252525', color: bet === amount ? GOLD : '#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
-                 {amount}
-               </button>
-             ))}
+            <div style={{ display:'flex', gap:8 }}>
+             {[{label:'10%',pct:0.1},{label:'25%',pct:0.25},{label:'50%',pct:0.5},{label:'ALL',pct:1}].map(({label,pct}) => {
+               const amount = Math.max(1, Math.floor(chips * pct))
+               return (
+                 <button key={label} onClick={() => setBet(amount)}
+                   style={{ flex:1, padding:'10px 4px', borderRadius:10, border: bet === amount ? '2px solid '+GOLD : '2px solid transparent', background:'#252525', color: bet === amount ? GOLD : '#fff', fontSize:13, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+                   <div>{label}</div>
+                   <div style={{ fontSize:10, opacity:0.6 }}>{amount.toLocaleString()}</div>
+                 </button>
+               )
+             })}
            </div>
            <button onClick={dealCards} style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:17, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E20' }}>
              Deal →
