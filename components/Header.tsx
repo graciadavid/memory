@@ -23,7 +23,7 @@ export default function Header() {
     if (rank) setWorldRank(parseInt(rank))
   }, [])
 
-  if (pathname === '/') return null
+  
 
   return (
     <header style={{
