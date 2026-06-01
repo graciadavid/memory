@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import ChampionshipBanner from '@/components/ChampionshipBanner'
+import RegisterBar from '@/components/RegisterBar'
 import PageTracker from '@/components/PageTracker'
 
 export const metadata: Metadata = {
@@ -78,7 +79,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${nunito.variable} font-nunito`} style={{ background: '#f2f2f2', margin: 0 }}>
         <GAAnalytics />
         <VercelAnalytics />
-        <GameProfileGuard><ChampionshipBanner />
+        <GameProfileGuard><RegisterBar />
+        <ChampionshipBanner />
         <PageTracker />
         {children}</GameProfileGuard>
         <StreakBadge />
