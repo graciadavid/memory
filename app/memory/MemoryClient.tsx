@@ -8,6 +8,15 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
 
+
+// Preload all brain images
+if (typeof window !== 'undefined') {
+ ['brain-blue','brain-green','brain-light','brain-red','brain-white','brain-yellow'].forEach(name => {
+   const img = new Image()
+   img.src = BASE+'/'+name+'.png'
+ })
+}
+
 const BRAINS = [
  'brain-blue.png',
  'brain-green.png',
@@ -151,7 +160,7 @@ export default function MemoryClient() {
          <div key={card.id} onClick={() => handleCard(idx)}
            style={{ aspectRatio:'1', borderRadius:12, cursor:'pointer', background: card.flipped || card.matched ? '#252525' : '#252525', border: card.matched ? '2px solid #2E7D32' : card.flipped ? '2px solid '+GOLD : '2px solid rgba(255,255,255,0.08)', display:'flex', alignItems:'center', justifyContent:'center', transition:'all 0.2s' }}>
            {(card.flipped || card.matched) ? (
-             <img src={`${BASE}/${card.image}`} style={{ width:'85%', height:'85%', objectFit:'contain', opacity: card.matched ? 0.5 : 1 }} />
+             <img src={`${BASE}/${card.image}`} style={{ width:'85%', height:'85%', objectFit:'contain', opacity: 1 }} />
            ) : (
              <div style={{ width:'60%', height:'60%', borderRadius:'50%', background:'rgba(255,255,255,0.05)' }} />
            )}
