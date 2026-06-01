@@ -194,6 +194,7 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+{!loaded && (
         <div style={{ background:'#252525', borderRadius:16, padding:'20px', textAlign:'center', color:'rgba(255,255,255,0.3)', fontSize:14, fontWeight:700 }}>
           Loading rankings...
         </div>
