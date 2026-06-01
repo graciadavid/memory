@@ -4,68 +4,65 @@ import { usePathname } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+const GREEN = '#2E7D32'
 
 export default function Header() {
- const [profile, setProfile] = useState<any>(null)
- const [streak, setStreak] = useState(0)
- const [worldRank, setWorldRank] = useState<number|null>(null)
- const pathname = usePathname()
+  const [profile, setProfile] = useState<any>(null)
+  const [streak, setStreak] = useState(0)
+  const pathname = usePathname()
 
- useEffect(() => {
-   const stored = localStorage.getItem('memgenius_profile')
-   if (!stored) return
-   const p = JSON.parse(stored)
-   setProfile(p)
-   supabase.from('profiles').select('streak').eq('player_name', p.name).single()
-     .then(({ data }: any) => { if (data?.streak) setStreak(data.streak) })
- }, [])
+  useEffect(() => {
+    const stored = localStorage.getItem('memgenius_profile')
+    if (!stored) return
+    const p = JSON.parse(stored)
+    setProfile(p)
+    supabase.from('profiles').select('streak').eq('player_name', p.name).single()
+      .then(({ data }: any) => { if (data?.streak) setStreak(data.streak) })
+  }, [])
 
- if (pathname === '/') return null
+  if (pathname === '/') return null
 
- return (
-   <header style={{
-     position: 'sticky', top: 0, zIndex: 100,
-     background: '#1A1A1A',
-     borderBottom: '1px solid rgba(255,255,255,0.06)',
-     padding: '10px 16px',
-     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-     maxWidth: 430, margin: '0 auto',
-   }}>
-     {/* Left — world rank */}
-     <div style={{ width: 60 }}>
-       {profile && worldRank && (
-         <div style={{ fontSize: 11, fontWeight: 800, color: 'rgba(255,255,255,0.5)' }}>
-           🌍 #{worldRank}
-         </div>
-       )}
-     </div>
+  return (
+    <header style={{
+      position: 'sticky', top: 0, zIndex: 100,
+      background: '#1A1A1A',
+      borderBottom: '1px solid rgba(255,255,255,0.06)',
+      padding: '10px 16px',
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      maxWidth: 430, margin: '0 auto',
+    }}>
+      {/* Left — streak */}
+      <div style={{ width: 60 }}>
+        {profile && streak > 0 && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <img src={`${BASE}/streak.png`} style={{ width: 18, height: 18, objectFit: 'contain' }} />
+            <span style={{ fontSize: 13, fontWeight: 900, color: '#FF6B35' }}>{streak}</span>
+          </div>
+        )}
+      </div>
 
-     {/* Center — logo */}
-     <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
-       <img src={`${BASE}/brain-logo.webp`} style={{ width: 28, height: 28, objectFit: 'contain' }} />
-       <span style={{ fontSize: 17, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>MemGenius</span>
-     </a>
+      {/* Center — logo */}
+      <a href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <img src={`${BASE}/brain-logo.webp`} style={{ width: 28, height: 28, objectFit: 'contain' }} />
+        <span style={{ fontSize: 17, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>MemGenius</span>
+      </a>
 
-     {/* Right — streak + avatar */}
-     <div style={{ width: 60, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
-       {profile && streak > 0 && (
-         <div style={{ fontSize: 12, fontWeight: 900, color: '#FF6B35' }}>🔥{streak}</div>
-       )}
-       <a href={profile ? '/profile' : '/register'} style={{ textDecoration: 'none' }}>
-         <div style={{
-           width: 32, height: 32, borderRadius: '50%',
-           background: 'rgba(255,255,255,0.1)',
-           border: '1px solid rgba(255,255,255,0.15)',
-           display: 'flex', alignItems: 'center', justifyContent: 'center',
-           overflow: 'hidden',
-         }}>
-           {profile?.avatar
-             ? <img src={profile.avatar} style={{ width: 32, height: 32, objectFit: 'cover' }} />
-             : <img src={`${BASE}/nav-profile.webp`} style={{ width: 20, height: 20, objectFit: 'contain', opacity: 0.5 }} />
-           }
-         </div>
-       </a>
-     </div>
-   </header>
- )
+      {/* Right — avatar inicial */}
+      <div style={{ width: 60, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+        <a href={profile ? '/profile' : '/profile'} style={{ textDecoration: 'none' }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: '50%',
+            background: profile ? GREEN : 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            {profile
+              ? <span style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>{profile.name?.charAt(0).toUpperCase()}</span>
+              : <img src={`${BASE}/nav-profile.webp`} style={{ width: 20, height: 20, objectFit: 'contain', opacity: 0.5 }} />
+            }
+          </div>
+        </a>
+      </div>
+    </header>
+  )
 }
