@@ -101,6 +101,9 @@ export default function Game2048Client() {
  const [myBest, setMyBest] = useState<number|null>(null)
  const [top5, setTop5] = useState<any[]>([])
  const [touchStart, setTouchStart] = useState<{x:number,y:number}|null>(null)
+  const [timeMs, setTimeMs] = useState(0)
+  const startTimeRef = useRef(0)
+  const timerIntervalRef = useRef<any>(null)
 
  const loadData = useCallback(async () => {
    const { data } = await supabase.from('game2048_scores').select('player_name, score').order('score', { ascending: false }).limit(5000)
