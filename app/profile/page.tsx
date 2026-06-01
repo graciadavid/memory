@@ -154,6 +154,7 @@ export default function ProfilePage() {
   }
 
   return (
+    <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'16px 16px 100px' }}>
       {/* Unified profile card */}
       <div style={{ background:'#252525', borderRadius:16, padding:'20px', marginBottom:12 }}>
         <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom: (globalPct !== null || streak > 0) ? 16 : 0 }}>

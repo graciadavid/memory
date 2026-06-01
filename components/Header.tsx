@@ -38,14 +38,14 @@ export default function Header() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 80 }}>
         {profile && streak > 0 && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <img src={`${BASE}/streak.png`} style={{ width: 16, height: 16, objectFit: 'contain' }} />
-            <span style={{ fontSize: 13, fontWeight: 900, color: '#FF6B35' }}>{streak}</span>
+            <img src={`${BASE}/streak.png`} style={{ width: 20, height: 20, objectFit: 'contain' }} />
+            <span style={{ fontSize: 15, fontWeight: 900, color: '#FF6B35' }}>{streak}</span>
           </div>
         )}
         {profile && worldRank && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <img src={`${BASE}/population.png`} style={{ width: 16, height: 16, objectFit: 'contain' }} />
-            <span style={{ fontSize: 13, fontWeight: 900, color: 'rgba(255,255,255,0.5)' }}>#{worldRank}</span>
+            <img src={`${BASE}/population.png`} style={{ width: 20, height: 20, objectFit: 'contain' }} />
+            <span style={{ fontSize: 15, fontWeight: 900, color: 'rgba(255,255,255,0.6)' }}>#{worldRank}</span>
           </div>
         )}
       </div>
