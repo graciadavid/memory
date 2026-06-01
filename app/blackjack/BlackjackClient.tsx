@@ -65,8 +65,8 @@ export default function BlackjackClient() {
  useState(() => { loadData() })
 
  const startGame = () => {
-   setChips(100)
-   setBet(10)
+   setChips(1000)
+   setBet(100)
    setDeck(createDeck())
    setPhase('betting')
    window.dispatchEvent(new Event('gameStart'))
