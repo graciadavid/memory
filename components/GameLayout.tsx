@@ -89,7 +89,7 @@ export function GameResultScreen({ result, resultColor, background, worldRank, h
       {/* Result */}
       <div style={{ textAlign:'center' }}>
         <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2, lineHeight:1 }}>{result}</div>
-        {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:12 }}>#{worldRank} in the world</div>}
+        {worldRank && <div style={{ fontSize:22, fontWeight:900, color:'rgba(255,255,255,0.6)', marginTop:12 }}>#{worldRank} <span style={{ fontSize:14, fontWeight:700 }}>in the world</span></div>}
       </div>
 
       {/* Extra content */}
