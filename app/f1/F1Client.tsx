@@ -118,19 +118,17 @@ export default function F1Client() {
 
  return (
    <main style={{ height:'100dvh', background:'#111', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:32, paddingBottom:80, fontFamily:'var(--font-nunito),sans-serif' }}>
-     <div style={{ display:'flex', gap:16 }}>
-       {[1,2,3,4,5].map(i => {
-         const isOn = i <= lightsOn
-         return (
-           <div key={i} style={{
-             width:52, height:52, borderRadius:'50%',
-             background: isOn ? '#D32F2F' : '#1a1a1a',
-             border:'3px solid #333',
-             boxShadow: isOn ? '0 0 24px rgba(211,47,47,0.9)' : 'none',
-             transition:'all 0.15s',
-           }} />
-         )
-       })}
+     <div style={{ display:'flex', gap:8 }}>
+      {[1,2,3,4,5].map(i => {
+        const isOn = i <= lightsOn
+        return (
+          <div key={i} style={{ background:'#111', borderRadius:10, padding:'8px 6px', display:'flex', flexDirection:'column', gap:8, border:'2px solid #222' }}>
+            <div style={{ width:44, height:44, borderRadius:'50%', background: isOn ? '#D32F2F' : '#222', boxShadow: isOn ? '0 0 20px rgba(211,47,47,0.9)' : 'none', transition:'all 0.2s' }} />
+            <div style={{ width:44, height:44, borderRadius:'50%', background: isOn ? '#D32F2F' : '#222', boxShadow: isOn ? '0 0 20px rgba(211,47,47,0.9)' : 'none', transition:'all 0.2s' }} />
+          </div>
+        )
+      })}
+    </div>
      </div>
      <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.3)' }}>
        {phase === 'sequence' ? 'Wait...' : 'TAP NOW!'}
