@@ -1,5 +1,5 @@
 'use client'
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { usePlayer } from '@/lib/usePlayer'
 import { supabase } from '@/lib/supabase'
 import { GameRulesScreen, GameResultScreen } from '@/components/GameLayout'
@@ -118,6 +118,8 @@ export default function Game2048Client() {
    setBoard(newBoard())
    setScore(0)
    setWorldRank(null)
+    startTimeRef.current = Date.now()
+    setTimeMs(0)
    setPhase('playing')
    window.dispatchEvent(new Event('gameStart'))
  }
@@ -144,6 +146,12 @@ export default function Game2048Client() {
      return newB
    })
  }, [phase, endGame])
+
+  useEffect(() => {
+    if (phase !== 'playing') { clearInterval(timerIntervalRef.current); return }
+    timerIntervalRef.current = setInterval(() => setTimeMs(Date.now() - startTimeRef.current), 100)
+    return () => clearInterval(timerIntervalRef.current)
+  }, [phase])
 
  useEffect(() => {
    const onKey = (e: KeyboardEvent) => {
@@ -177,7 +185,7 @@ export default function Game2048Client() {
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 20px', flexShrink:0 }}>
        <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{score.toLocaleString()}</div>
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>2048</div>
-       <button onClick={() => endGame(score)} style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit' }}>End</button>
+        <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.5)' }}>{String(Math.floor(timeMs/60000)).padStart(2,'0')}:{String(Math.floor((timeMs%60000)/1000)).padStart(2,'0')}</div>
      </div>
 
      <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'0 12px', overflow:'hidden' }}
