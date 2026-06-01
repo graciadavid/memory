@@ -17,15 +17,15 @@ if (typeof window !== 'undefined') {
 }
 
 const INGREDIENTS = [
- { id: 'aguacate', label: 'Aguacate', icon: 'aguacate.png' },
- { id: 'arroz', label: 'Arroz', icon: 'arroz.png' },
- { id: 'atun', label: 'Atun', icon: 'atun.png' },
- { id: 'cebolla', label: 'Cebolla', icon: 'cebolla.png' },
+ { id: 'aguacate', label: 'Avocado', icon: 'aguacate.png' },
+ { id: 'arroz', label: 'Rice', icon: 'arroz.png' },
+ { id: 'atun', label: 'Tuna', icon: 'atun.png' },
+ { id: 'cebolla', label: 'Onion', icon: 'cebolla.png' },
  { id: 'edamame', label: 'Edamame', icon: 'edamame.png' },
  { id: 'mango', label: 'Mango', icon: 'mango.png' },
- { id: 'pepino', label: 'Pepino', icon: 'pepino.png' },
+ { id: 'pepino', label: 'Cucumber', icon: 'pepino.png' },
  { id: 'salmon', label: 'Salmon', icon: 'salmon.png' },
- { id: 'zanahoria', label: 'Zanahoria', icon: 'zanahoria.png' },
+ { id: 'zanahoria', label: 'Carrot', icon: 'zanahoria.png' },
 ]
 
 type Phase = 'rules' | 'show' | 'input' | 'result'
