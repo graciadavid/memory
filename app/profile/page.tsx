@@ -122,6 +122,7 @@ export default function ProfilePage() {
     ? Math.round(sortedGames.reduce((acc,[,{rank,total}]) => acc + rank/total, 0) / sortedGames.length * totalPlayers)
     : null
   const globalPct = myGlobalRank ? Math.round(myGlobalRank / totalPlayers * 100) : null
+  if (myGlobalRank) localStorage.setItem("memgenius_world_rank", String(myGlobalRank))
 
   const renderGameCard = (game: string, rank: number, total: number, href: string) => {
     const pct = rank / total
