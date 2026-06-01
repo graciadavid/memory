@@ -33,7 +33,7 @@ const CATEGORIES = [
    games: [
      { label: 'Flags', icon: 'flags.png', table: 'flag_scores', field: 'level', filter: null, lower: false, unit: '' },
      { label: 'Capitals', icon: 'capitals.png', table: 'capitals_scores', field: 'level', filter: null, lower: false, unit: '' },
-     { label: 'Countries', icon: 'countries.png', table: 'shape_scores', field: 'level', filter: null, lower: false, unit: '' },
+     { label: 'Countries', icon: 'mapamundi.png', table: 'shape_scores', field: 'level', filter: null, lower: false, unit: '' },
      { label: 'Higher or Lower Pop', icon: 'population.png', table: 'higher_lower_scores', field: 'level', filter: { category: 'population' }, lower: false, unit: '' },
      { label: 'Higher or Lower Area', icon: 'population.png', table: 'higher_lower_scores', field: 'level', filter: { category: 'area' }, lower: false, unit: '' },
    ]
@@ -46,7 +46,7 @@ const CATEGORIES = [
      { label: 'Wordly', icon: 'wordly.png', table: 'wordle_scores', field: 'attempts', filter: null, lower: true, unit: ' tries' },
      { label: '2048', icon: '2048.png', table: 'game2048_scores', field: 'score', filter: null, lower: false, unit: '' },
      { label: 'Blackjack', icon: 'blackjack.png', table: 'blackjack_scores', field: 'chips', filter: null, lower: false, unit: ' chips' },
-     { label: 'Tetris', icon: 'tetris.png', table: 'tetris_scores', field: 'score', filter: null, lower: false, unit: '' },
+     { label: 'Tetris', icon: 'mango.png', table: 'tetris_scores', field: 'score', filter: null, lower: false, unit: '' },
    ]
  },
 ]
