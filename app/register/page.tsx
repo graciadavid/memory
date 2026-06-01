@@ -6,8 +6,7 @@ const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/
 const GREEN = '#2E7D32'
 
 const AVATARS = [
-  'memory-cat.png', 'memory-dog.png', 'memory-elephant.png', 'memory-lion.png',
-  'memory-monkey.png', 'memory-panda.png', 'memory-penguin.png', 'memory-tiger.png',
+  'panda.png', 'lion.png', 'tiger.png', 'eagle.png', 'penguin.png', 'kangaroo.png', 'elephant.png', 'monkey.png',
 ]
 
 export default function RegisterPage() {
