@@ -138,14 +138,14 @@ export default function ProfilePage() {
         </div>
         <div style={{ display:'flex', gap:8 }}>
           <a href={href} style={{ textDecoration:'none', flex:1 }}>
-            <div style={{ background:'rgba(46,125,50,0.2)', borderRadius:8, padding:'6px', textAlign:'center', fontSize:11, fontWeight:800, color:'#69F0AE' }}>▶ Train</div>
+            <div style={{ background:'rgba(230,81,0,0.2)', borderRadius:8, padding:'6px', textAlign:'center', fontSize:11, fontWeight:800, color:'#FF6B35' }}>Training</div>
           </a>
           <button onClick={() => {
             const text = `I ranked #${rank} out of ${total} players in ${game} on MemGenius! Can you beat me? memgenius.com`
             if (navigator.share) { navigator.share({ title: 'MemGenius', text, url: 'https://memgenius.com' }) }
             else { navigator.clipboard.writeText(text); alert('Copied!') }
-          }} style={{ flex:1, background:'rgba(200,150,12,0.2)', borderRadius:8, padding:'6px', textAlign:'center', fontSize:11, fontWeight:800, color:GOLD, border:'none', cursor:'pointer', fontFamily:'inherit' }}>
-            🔗 Share
+          }} style={{ flex:1, background:'rgba(46,125,50,0.2)', borderRadius:8, padding:'6px', textAlign:'center', fontSize:11, fontWeight:800, color:'#69F0AE', border:'none', cursor:'pointer', fontFamily:'inherit' }}>
+            Share
           </button>
         </div>
       </div>
@@ -191,14 +191,14 @@ export default function ProfilePage() {
             <img src={`${BASE}/${streakLevel.emoji}`} style={{ width:40, height:40, objectFit:'contain' }} />
             <div>
               <div style={{ fontSize:18, fontWeight:900, color:'#fff' }}>{streakLevel.name}</div>
-              <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{streak} day streak</div>
+              <div style={{ fontSize:36, color:'#FF6B35', fontWeight:900 }}>{streak}</div>
             </div>
           </div>
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.5)', fontWeight:700, lineHeight:1.6, marginBottom:12 }}>{streakLevel.benefit}</div>
           {nextLevel && (
             <div style={{ background:'rgba(255,255,255,0.04)', borderRadius:10, padding:'10px' }}>
-              <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', marginBottom:4 }}>Next level: {nextLevel.name}</div>
-              <div style={{ fontSize:12, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>{nextLevel.min - streak} more days to go</div>
+              <div style={{ fontSize:13, fontWeight:900, color:'#69F0AE' }}>Next level → {nextLevel.name}</div>
+              
             </div>
           )}
         </div>
