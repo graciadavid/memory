@@ -115,7 +115,7 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 function getOptions(correct: typeof COUNTRIES[0], all: typeof COUNTRIES) {
- const others = shuffle(all.filter(c => c.code !== correct.code)).slice(0, 2)
+ const others = shuffle(all.filter(c => c.code !== correct.code)).slice(0, 3)
  return shuffle([correct, ...others])
 }
 
@@ -210,7 +210,7 @@ export default function CapitalsClient() {
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 20px', flexShrink:0 }}>
        <div style={{ fontSize:22, fontWeight:900, color:GOLD }}>{level}</div>
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>CAPITALS</div>
-       <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>{COUNTRIES.length - pool.length}/{COUNTRIES.length}</div>
+       <div style={{ width:40 }} />
      </div>
 
      <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:24, padding:'0 24px 80px' }}>
