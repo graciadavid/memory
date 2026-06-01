@@ -69,13 +69,18 @@ export default function ProfilePage() {
     supabase.from('profiles').select('*').eq('player_name', profile.name).single()
       .then(({ data }: any) => setProfileData(data))
 
-    Promise.all(GAMES.map(g => getGameRank(profile.name, g).then(r => ({ label: g.label, result: r }))))
-      .then(results => {
-        const newRanks: Record<string, {rank:number, score:number}> = {}
-        results.forEach(({ label, result }) => { if (result) newRanks[label] = result })
-        setRanks(newRanks)
-        setLoaded(true)
-      })
+    const newRanks: Record<string, {rank:number, score:number}> = {}
+    let completed = 0
+    GAMES.forEach(g => {
+      getGameRank(profile.name, g).then(r => {
+        completed++
+        if (r) {
+          newRanks[g.label] = r
+          setRanks({...newRanks})
+        }
+        if (completed === GAMES.length) setLoaded(true)
+      }).catch(() => { completed++; if (completed === GAMES.length) setLoaded(true) })
+    })
   }, [profile?.name])
 
   if (!profile?.name) return (
