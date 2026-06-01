@@ -147,7 +147,7 @@ export default function SudokuClient() {
    else newErrors.delete(selected)
    setErrors(newErrors)
 
-   if (num === solution[selected] && isComplete(newGrid, solution)) {
+   if (isValidSudoku(newGrid)) {
      clearInterval(timerRef.current)
      const elapsed = Date.now() - startRef.current
      setTimeMs(elapsed)
