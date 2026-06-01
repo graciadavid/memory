@@ -90,7 +90,7 @@ export default function Home() {
       )}
 
       {/* Train your Brain */}
-      <a href="/train" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
+      <a href="/training" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
         <div style={{ background: '#252525', borderRadius: 16, overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
           <div style={{ width: 100, height: 100, flexShrink: 0, background: '#2a2a2a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <img src={`${BASE}/brain-logo.webp`} style={{ width: 56, height: 56, objectFit: 'contain' }} />
