@@ -130,6 +130,7 @@ export default function StopClient() {
        </div>
      </div>
 
+     <button onClick={startCountdown} style={{ width:'100%', padding:'20px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 6px 0 #1B5E20', marginBottom:16 }}>
      <div style={{ background:'#252525', borderRadius:14, padding:'14px', marginBottom:16 }}>
        <div style={{ fontSize:9, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:10 }}>Top Players</div>
        {top5.map((p,i) => (
@@ -154,7 +155,6 @@ export default function StopClient() {
        </div>
      )}
 
-     <button onClick={startCountdown} style={{ width:'100%', padding:'20px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 6px 0 #1B5E20', marginTop:'auto' }}>
        Play →
      </button>
    </main>
@@ -189,12 +189,6 @@ export default function StopClient() {
        {worldRank && <div style={{ fontSize:14, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:8 }}>#{worldRank} in the world</div>}
      </div>
 
-     {saved && (
-       <div style={{ background:'rgba(46,125,50,0.3)', borderRadius:16, padding:'16px 20px', textAlign:'center' }}>
-         <div style={{ fontSize:16, fontWeight:900, color:'#69F0AE' }}>✓ Score saved!</div>
-         <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, marginTop:4 }}>#{worldRank} in the world</div>
-       </div>
-     )}
 
      {!profile?.name && (
        <a href="/register" style={{ textDecoration:'none', display:'block', width:'100%' }}>
