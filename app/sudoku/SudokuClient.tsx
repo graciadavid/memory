@@ -78,6 +78,24 @@ function isComplete(grid: number[], solution: number[]): boolean {
  return grid.every((v, i) => v === solution[i])
 }
 
+function isValidSudoku(grid: number[]): boolean {
+  if (grid.includes(0)) return false
+  for (let r = 0; r < 9; r++) {
+    const row = grid.slice(r*9, r*9+9)
+    if (new Set(row).size !== 9) return false
+  }
+  for (let col = 0; col < 9; col++) {
+    const column = [0,1,2,3,4,5,6,7,8].map(r => grid[r*9+col])
+    if (new Set(column).size !== 9) return false
+  }
+  for (let br = 0; br < 3; br++) for (let bc = 0; bc < 3; bc++) {
+    const box: number[] = []
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) box.push(grid[(br*3+r)*9+(bc*3+c)])
+    if (new Set(box).size !== 9) return false
+  }
+  return true
+}
+
 export default function SudokuClient() {
  const { profile } = usePlayer()
  const [phase, setPhase] = useState<Phase>('rules')
