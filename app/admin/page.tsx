@@ -81,10 +81,7 @@ export default function AdminPage() {
  }
 
  const loadStats = async (filter: string) => {
-   const { data } = await supabase.rpc('exec_sql', { query: `
-     SELECT COUNT(*) as games, COUNT(DISTINCT player_name) as players
-     FROM (${ALL_GAMES_QUERY}) g WHERE ${filter}
-   ` }).catch(() => ({ data: null }))
+    // individual queries below
 
    // Fallback - use individual queries
    const tables = [
