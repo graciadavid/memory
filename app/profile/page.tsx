@@ -217,6 +217,13 @@ export default function ProfilePage() {
               <div style={{ fontSize:28, fontWeight:900, color:'#FF6B35', lineHeight:1 }}>{streak} <span style={{ fontSize:16, fontWeight:700 }}>days</span></div>
               {streakTitle && <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,107,53,0.7)', marginTop:3, letterSpacing:1, textTransform:'uppercase' }}>{streakTitle}</div>}
             </div>
+          <button onClick={() => {
+            const text = 'I am ranked #' + globalRank + ' in the world on MemGenius 🧠\n🔥 ' + streak + ' day streak\nCan you beat me? memgenius.com'
+            if (navigator.share) navigator.share({ text: text, url: 'https://memgenius.com' })
+            else navigator.clipboard.writeText(text)
+          }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:'#C8960C', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer', boxShadow:'0 5px 0 #8B6914', marginTop:16 }}>
+            Share my world ranking →
+          </button>
           </div>
         </div>
       )
