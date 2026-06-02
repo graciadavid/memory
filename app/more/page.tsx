@@ -32,33 +32,31 @@ const SECTIONS = [
 ]
 
 function WorldRankingWidget() {
-  const [players, setPlayers] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+ const [players, setPlayers] = useState<any[]>([])
+ const [open, setOpen] = useState(false)
 
-  useEffect(() => {
-    supabase.from('global_rankings').select('*').order('world_rank', { ascending: true }).limit(10)
-      .then(({ data }: any) => { if (data) setPlayers(data); setLoading(false) })
-  }, [])
+ useEffect(() => {
+   supabase.from('global_rankings').select('*').order('world_rank', { ascending: true }).limit(10)
+     .then(({ data }: any) => { if (data) setPlayers(data) })
+ }, [])
 
-  return (
-    <div style={{ background:'#252525', borderRadius:16, overflow:'hidden', marginBottom:24 }}>
-      <div style={{ padding:'14px 16px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', gap:10 }}>
-        <img src={`${BASE}/winner.png`} style={{ width:28, height:28, objectFit:'contain' }} />
-        <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>World Ranking</div>
-      </div>
-      {loading && <div style={{ padding:20, textAlign:'center', color:'rgba(255,255,255,0.3)', fontSize:13 }}>Loading...</div>}
-      {players.map((p, i) => (
-        <div key={p.player_name} style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 16px', borderBottom:'1px solid rgba(255,255,255,0.04)' }}>
-          <div style={{ fontSize:14, fontWeight:900, color: i===0?GOLD:i===1?'#aaa':i===2?'#cd7f32':'rgba(255,255,255,0.3)', width:28, textAlign:'center' }}>
-            {i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+p.world_rank}
-          </div>
-          <div style={{ flex:1, fontSize:14, fontWeight:800, color:'#fff' }}>{p.player_name}</div>
-          <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>Top {p.top_pct}%</div>
-          <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.3)' }}>{p.games_played}g</div>
-        </div>
-      ))}
-    </div>
-  )
+ return (
+   <div style={{ background:'#252525', borderRadius:16, overflow:'hidden', marginBottom:24 }}>
+     <div onClick={() => setOpen(!open)} style={{ padding:'14px 16px', display:'flex', alignItems:'center', gap:10, cursor:'pointer' }}>
+       <img src={`${BASE}/winner.png`} style={{ width:28, height:28, objectFit:'contain' }} />
+       <div style={{ flex:1, fontSize:16, fontWeight:900, color:'#fff' }}>World Ranking</div>
+       <div style={{ fontSize:14, color:'rgba(255,255,255,0.3)' }}>{open ? '▲' : '▼'}</div>
+     </div>
+     {open && players.map((p, i) => (
+       <div key={p.player_name} style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 16px', borderTop:'1px solid rgba(255,255,255,0.04)' }}>
+         <div style={{ fontSize:14, fontWeight:900, color: i===0?GOLD:i===1?'#aaa':i===2?'#cd7f32':'rgba(255,255,255,0.3)', width:28, textAlign:'center' }}>
+           {i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+p.world_rank}
+         </div>
+         <div style={{ fontSize:14, fontWeight:800, color:'#fff' }}>{p.player_name}</div>
+       </div>
+     ))}
+   </div>
+ )
 }
 
 export default function MorePage() {
