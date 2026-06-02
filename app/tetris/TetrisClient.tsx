@@ -259,14 +259,14 @@ export default function TetrisClient() {
          else rotatePiece()
          setTouchX(null)
        }}>
-       <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gap:1, background:'#111', padding:3, borderRadius:8, width:'min(220px, 45vw)', aspectRatio:'1/2' }}>
+       <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gap:1, background:'#bbb', padding:3, borderRadius:8, width:'min(240px, calc(100vw - 32px))', aspectRatio:'1/2' }}>
          {display.map((row, r) => row.map((cell, c) => (
-           <div key={r+'-'+c} style={{ borderRadius:1, background: cell || '#1a1a1a', border: cell ? 'none' : '1px solid #1f1f1f', aspectRatio:'1' }} />
+           <div key={r+'-'+c} style={{ borderRadius:1, background: cell || '#e0e0e0', border: cell ? 'none' : '1px solid #ccc', aspectRatio:'1' }} />
          )))}
        </div>
      </div>
 
-     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, padding:'8px 16px 80px', flexShrink:0 }}>
+     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, padding:'8px 16px 90px', flexShrink:0 }}>
        <button onPointerDown={() => move(-1)} style={{ padding:'14px', borderRadius:12, border:'none', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>←</button>
        <button onPointerDown={drop} style={{ padding:'14px', borderRadius:12, border:'none', background:GREEN, color:'#fff', fontSize:18, fontWeight:900, cursor:'pointer', fontFamily:'inherit', boxShadow:'0 4px 0 #1B5E20' }}>DROP</button>
        <button onPointerDown={() => move(1)} style={{ padding:'14px', borderRadius:12, border:'none', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>→</button>
