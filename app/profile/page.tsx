@@ -1,48 +1,38 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { usePlayer } from '@/lib/usePlayer'
-import AuthModal from '@/components/AuthModal'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
 
 const GAMES = [
-  { label: 'Stop', table: 'precision_scores', field: 'difference_ms', filter: { game_type: null }, lower: true, href: '/stop' },
-  { label: 'F1 Reaction', table: 'precision_scores', field: 'difference_ms', filter: { game_type: 'formula1' }, lower: true, href: '/f1' },
-  { label: 'Pendulum', table: 'precision_scores', field: 'difference_ms', filter: { game_type: 'pendulum' }, lower: true, href: '/pendulum' },
-  { label: 'Ace', table: 'ace_scores', field: 'level', filter: null, lower: false, href: '/ace' },
-  { label: 'Letter Rain', table: 'letter_rain_scores', field: 'level', filter: null, lower: false, href: '/letter-rain' },
-  { label: 'Memory', table: 'scores', field: 'time_ms', filter: null, lower: true, href: '/memory' },
-  { label: 'Digits', table: 'number_scores', field: 'level', filter: null, lower: false, href: '/digits' },
-  { label: 'Simon Says', table: 'sequence_scores', field: 'level', filter: null, lower: false, href: '/simon' },
-  { label: 'N-Back', table: 'nback_scores', field: 'level', filter: null, lower: false, href: '/nback' },
-  { label: 'Blink', table: 'blink_scores', field: 'level', filter: null, lower: false, href: '/blink' },
-  { label: 'Poke', table: 'poke_scores', field: 'level', filter: null, lower: false, href: '/poke' },
-  { label: 'Flags', table: 'flag_scores', field: 'level', filter: null, lower: false, href: '/flags' },
-  { label: 'Capitals', table: 'capitals_scores', field: 'level', filter: null, lower: false, href: '/capitals' },
-  { label: 'Countries', table: 'shape_scores', field: 'level', filter: null, lower: false, href: '/countries' },
-  { label: 'Sudoku', table: 'sudoku_scores', field: 'time_ms', filter: null, lower: true, href: '/sudoku' },
-  { label: 'Mastermind', table: 'mastermind_scores', field: 'attempts', filter: null, lower: true, href: '/mastermind' },
-  { label: 'Wordly', table: 'wordle_scores', field: 'attempts', filter: null, lower: true, href: '/wordly' },
-  { label: '2048', table: 'game2048_scores', field: 'score', filter: null, lower: false, href: '/2048' },
-  { label: 'Blackjack', table: 'blackjack_scores', field: 'chips', filter: null, lower: false, href: '/blackjack' },
-  { label: 'Higher or Lower Pop', table: 'higher_lower_scores', field: 'level', filter: { category: 'population' }, lower: false, href: '/higherorlower/population' },
-  { label: 'Higher or Lower Area', table: 'higher_lower_scores', field: 'level', filter: { category: 'area' }, lower: false, href: '/higherorlower/area' },
+  { label: 'Stop', table: 'precision_scores', field: 'difference_ms', filter: { game_type: null }, lower: true },
+  { label: 'F1 Reaction', table: 'precision_scores', field: 'difference_ms', filter: { game_type: 'formula1' }, lower: true },
+  { label: 'Pendulum', table: 'precision_scores', field: 'difference_ms', filter: { game_type: 'pendulum' }, lower: true },
+  { label: 'Ace', table: 'ace_scores', field: 'level', filter: null, lower: false },
+  { label: 'Letter Rain', table: 'letter_rain_scores', field: 'level', filter: null, lower: false },
+  { label: 'TypeDrop', table: 'typedrop_scores', field: 'score', filter: null, lower: false },
+  { label: 'Memory', table: 'scores', field: 'time_ms', filter: null, lower: true },
+  { label: 'Digits', table: 'number_scores', field: 'level', filter: null, lower: false },
+  { label: 'Simon Says', table: 'sequence_scores', field: 'level', filter: null, lower: false },
+  { label: 'N-Back', table: 'nback_scores', field: 'level', filter: null, lower: false },
+  { label: 'Blink', table: 'blink_scores', field: 'level', filter: null, lower: false },
+  { label: 'Poke', table: 'poke_scores', field: 'level', filter: null, lower: false },
+  { label: 'Flags', table: 'flag_scores', field: 'level', filter: null, lower: false },
+  { label: 'Capitals', table: 'capitals_scores', field: 'level', filter: null, lower: false },
+  { label: 'Countries', table: 'shape_scores', field: 'level', filter: null, lower: false },
+  { label: 'Higher or Lower Pop', table: 'higher_lower_scores', field: 'level', filter: { category: 'population' }, lower: false },
+  { label: 'Higher or Lower Area', table: 'higher_lower_scores', field: 'level', filter: { category: 'area' }, lower: false },
+  { label: 'Sudoku', table: 'sudoku_scores', field: 'time_ms', filter: null, lower: true },
+  { label: 'Mastermind', table: 'mastermind_scores', field: 'attempts', filter: null, lower: true },
+  { label: 'Wordly', table: 'wordle_scores', field: 'attempts', filter: null, lower: true },
+  { label: '2048', table: 'game2048_scores', field: 'score', filter: null, lower: false },
+  { label: 'Blackjack', table: 'blackjack_scores', field: 'chips', filter: null, lower: false },
 ]
 
-const STREAK_LEVELS = [
-  { min: 1, max: 5, name: 'Beginner', emoji: 'seed.png', benefit: 'You are building the habit. Consistency is the first step to cognitive improvement.' },
-  { min: 6, max: 10, name: 'Consistent', emoji: 'streak.png', benefit: 'Neural pathways are starting to strengthen. Your brain is adapting to regular training.' },
-  { min: 11, max: 20, name: 'Focused', emoji: 'brain-logo.webp', benefit: 'Regular training is measurably improving your reaction time and memory capacity.' },
-  { min: 21, max: 50, name: 'Dedicated', emoji: 'ray.png', benefit: 'You are in the top tier of brain trainers. Cognitive benefits are compounding daily.' },
-  { min: 51, max: 99, name: 'Elite', emoji: 'winner.png', benefit: 'Elite level consistency. Your brain is operating at peak training efficiency.' },
-  { min: 100, max: Infinity, name: 'Legend', emoji: 'target.png', benefit: 'Legendary. You are among the most consistent brain trainers in the world.' },
-]
-
-async function getGameRank(name: string, g: typeof GAMES[0]) {
-  // Get player's best score
+async function getGameRank(name: string, g: typeof GAMES[0]): Promise<{rank:number, score:number, total:number} | null> {
   let sq: any = supabase.from(g.table).select('player_name, '+g.field).eq('player_name', name)
   if (g.filter) Object.entries(g.filter).forEach(([k,v]) => { if (v === null) sq = sq.is(k, null); else sq = sq.eq(k, v) })
   sq = sq.order(g.field, { ascending: g.lower }).limit(1)
@@ -50,33 +40,22 @@ async function getGameRank(name: string, g: typeof GAMES[0]) {
   if (!data || data.length === 0) return null
   const playerScore = (data[0] as any)[g.field]
 
-  // Get all scores to find best per player
   let rq: any = supabase.from(g.table).select('player_name, '+g.field)
   if (g.filter) Object.entries(g.filter).forEach(([k,v]) => { if (v === null) rq = rq.is(k, null); else rq = rq.eq(k, v) })
   const { data: allScores } = await rq
-  if (!allScores) return { rank: 1, score: playerScore }
+  if (!allScores) return { rank: 1, score: playerScore, total: 1 }
 
   const bestPerPlayer: Record<string, number> = {}
   allScores.forEach((s: any) => {
     const val = (s as any)[g.field]
-    if (!bestPerPlayer[s.player_name] || (g.lower ? val < bestPerPlayer[s.player_name] : val > bestPerPlayer[s.player_name])) {
+    if (s.player_name && (!bestPerPlayer[s.player_name] || (g.lower ? val < bestPerPlayer[s.player_name] : val > bestPerPlayer[s.player_name]))) {
       bestPerPlayer[s.player_name] = val
     }
   })
+  const total = Object.keys(bestPerPlayer).length
   const betterCount = Object.values(bestPerPlayer).filter(v => g.lower ? v < playerScore : v > playerScore).length
-  return { rank: betterCount + 1, score: playerScore }
+  return { rank: betterCount + 1, score: playerScore, total }
 }
-
-function ProfileLoginButton() {
-  const [show, setShow] = useState(true)
-  if (!show) return null
-  return (
-    <div style={{ padding: '0 0 16px' }}>
-      <AuthModal onSuccess={() => window.location.reload()} />
-    </div>
-  )
-}
-
 
 function RegisterForm() {
   const [name, setName] = useState('')
@@ -107,14 +86,11 @@ function RegisterForm() {
     <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'32px 20px 100px', fontFamily:'var(--font-nunito),sans-serif' }}>
       <div style={{ fontSize:24, fontWeight:900, color:'#fff', marginBottom:4 }}>Create your profile</div>
       <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:28 }}>Free · No email · Rank globally</div>
-
       <div style={{ marginBottom:16 }}>
         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Your name</div>
-        <input value={name} onChange={e => { setName(e.target.value); setError('') }}
-          placeholder="Enter your name" maxLength={20} autoFocus
+        <input value={name} onChange={e => { setName(e.target.value); setError('') }} placeholder="Enter your name" maxLength={20} autoFocus
           style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:16, fontWeight:800, fontFamily:'var(--font-nunito),sans-serif', outline:'none', boxSizing:'border-box' }} />
       </div>
-
       <div style={{ marginBottom:24 }}>
         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>4-digit PIN</div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:8 }}>
@@ -126,11 +102,9 @@ function RegisterForm() {
         </div>
         <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:6 }}>Remember your PIN — it's how you log in</div>
       </div>
-
       {error && <div style={{ fontSize:13, color:'#FF5252', fontWeight:800, marginBottom:16 }}>{error}</div>}
-
       <button onClick={handleSave} disabled={saving}
-        style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background:'#2E7D32', color:'#fff', fontSize:17, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer', boxShadow:'0 6px 0 #1B5E20' }}>
+        style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:17, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer', boxShadow:'0 6px 0 #1B5E20' }}>
         {saving ? 'Saving...' : 'Start Playing →'}
       </button>
     </main>
@@ -140,30 +114,16 @@ function RegisterForm() {
 export default function ProfilePage() {
   const { profile } = usePlayer()
   const [profileData, setProfileData] = useState<any>(null)
-  const [ranks, setRanks] = useState<Record<string, {rank:number, score:number}>>({})
+  const [ranks, setRanks] = useState<Record<string, {rank:number, score:number, total:number}>>({})
   const [loaded, setLoaded] = useState(false)
-  const [totalPlayers, setTotalPlayers] = useState(0)
-
-  useEffect(() => {
-    const onGameResult = () => {
-      if (profile?.name) {
-        supabase.from('profiles').select('*').eq('player_name', profile.name).single()
-          .then(({ data }: any) => setProfileData(data))
-      }
-    }
-    window.addEventListener('gameResult', onGameResult)
-    return () => window.removeEventListener('gameResult', onGameResult)
-  }, [profile?.name])
 
   useEffect(() => {
     if (!profile?.name) return
     supabase.from('profiles').select('*').eq('player_name', profile.name).single()
       .then(({ data }: any) => setProfileData(data))
 
-    supabase.from('profiles').select('player_name', { count: 'exact', head: true })
-      .then(({ count }: any) => setTotalPlayers(count || 0))
-
-    const newRanks: Record<string, {rank:number, score:number}> = {}
+    setLoaded(false)
+    const newRanks: Record<string, {rank:number, score:number, total:number}> = {}
     let completed = 0
     GAMES.forEach(g => {
       getGameRank(profile.name, g).then(r => {
@@ -174,139 +134,88 @@ export default function ProfilePage() {
     })
   }, [profile?.name])
 
-  if (!profile?.name) return (
-    <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'16px 16px 100px' }}>
-      <ProfileLoginButton />
-    </main>
-  )
+  if (!profile?.name) return <RegisterForm />
 
-  const streak = profileData?.streak || 0
-  const streakLevel = STREAK_LEVELS.find(l => streak >= l.min && streak <= l.max) || STREAK_LEVELS[0]
-  const nextLevel = STREAK_LEVELS.find(l => l.min > streak)
-
-  const sortedGames = Object.entries(ranks).sort((a,b) => {
+  // Sort by rank ascending
   const sortedGames = Object.entries(ranks).sort((a,b) => a[1].rank - b[1].rank)
-  const topGames = sortedGames.filter(([,{rank,total}]) => rank/total <= 0.1)
-  const midGames = sortedGames.filter(([,{rank,total}]) => rank/total > 0.1 && rank/total <= 0.5)
-  const lowGames = sortedGames.filter(([,{rank,total}]) => rank/total > 0.5)
 
-  const myGlobalRank = sortedGames.length > 0
-    ? Math.round(sortedGames.reduce((acc,[,{rank,total}]) => acc + rank/total, 0) / sortedGames.length * totalPlayers)
-    : null
-  const globalPct = myGlobalRank ? Math.round(myGlobalRank / totalPlayers * 100) : null
-  if (myGlobalRank) localStorage.setItem("memgenius_world_rank", String(myGlobalRank))
+  // Group by percentile based on rank/total
+  const top10 = sortedGames.filter(([,{rank,total}]) => total > 0 && rank/total <= 0.1)
+  const top50 = sortedGames.filter(([,{rank,total}]) => total > 0 && rank/total > 0.1 && rank/total <= 0.5)
+  const rest = sortedGames.filter(([,{rank,total}]) => total > 0 && rank/total > 0.5)
 
-  const renderGameCard = (game: string, rank: number, total: number, href: string) => {
+  const renderGame = (label: string, rank: number, total: number) => {
     const pct = rank / total
     const barColor = pct <= 0.1 ? '#69F0AE' : pct <= 0.5 ? GOLD : '#FF5252'
     const barWidth = Math.max(4, Math.round((1 - (rank-1)/Math.max(total,1)) * 100))
     return (
-      <div key={game} style={{ marginBottom: 14 }}>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:4 }}>
-          <div style={{ fontSize:13, fontWeight:800, color:'#fff' }}>{game}</div>
-          <div style={{ fontSize:13, fontWeight:900, color: rank<=3?GOLD:'rgba(255,255,255,0.6)' }}>#{rank} / {total}</div>
+      <div key={label} style={{ marginBottom:12 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
+          <div style={{ fontSize:13, fontWeight:800, color:'#fff' }}>{label}</div>
+          <div style={{ fontSize:13, fontWeight:900, color: rank<=3 ? GOLD : 'rgba(255,255,255,0.6)' }}>#{rank} / {total}</div>
         </div>
-        <div style={{ height:4, background:'rgba(255,255,255,0.08)', borderRadius:2, marginBottom:6 }}>
-          <div style={{ height:4, background:barColor, borderRadius:2, width:`${barWidth}%` }} />
-        </div>
-        <div style={{ display:'flex', gap:8 }}>
-          <a href={href} style={{ textDecoration:'none', flex:1 }}>
-            <div style={{ background:'rgba(230,81,0,0.2)', borderRadius:8, padding:'6px', textAlign:'center', fontSize:11, fontWeight:800, color:'#FF6B35' }}>Training</div>
-          </a>
-          <button onClick={() => {
-            const text = `I ranked #${rank} out of ${total} players in ${game} on MemGenius! Can you beat me? memgenius.com`
-            if (navigator.share) { navigator.share({ title: 'MemGenius', text, url: 'https://memgenius.com' }) }
-            else { navigator.clipboard.writeText(text); alert('Copied!') }
-          }} style={{ flex:1, background:'rgba(46,125,50,0.2)', borderRadius:8, padding:'6px', textAlign:'center', fontSize:11, fontWeight:800, color:'#69F0AE', border:'none', cursor:'pointer', fontFamily:'inherit' }}>
-            Share
-          </button>
+        <div style={{ height:4, background:'rgba(255,255,255,0.08)', borderRadius:2 }}>
+          <div style={{ height:4, background:barColor, borderRadius:2, width:barWidth+'%' }} />
         </div>
       </div>
     )
   }
 
   return (
-    <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'16px 16px 100px' }}>
-      {/* Unified profile card */}
-      <div style={{ background:'#252525', borderRadius:16, padding:'20px', marginBottom:12 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom: (globalPct !== null || streak > 0) ? 16 : 0 }}>
-          <div style={{ width:56, height:56, borderRadius:'50%', background:GREEN, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-            <span style={{ fontSize:24, fontWeight:900, color:'#fff' }}>{profile.name.charAt(0).toUpperCase()}</span>
-          </div>
-          <div style={{ flex:1 }}>
-            <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:2 }}>{profile.name}</div>
-            {profileData?.country && <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{profileData.country}</div>}
-          </div>
-          {streak > 0 && (
-            <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-              <img src={`${BASE}/${streakLevel.emoji}`} style={{ width:22, height:22, objectFit:'contain' }} />
-              <span style={{ fontSize:18, fontWeight:900, color:'#FF6B35' }}>{streak}</span>
-            </div>
-          )}
+    <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'16px 16px 100px', fontFamily:'var(--font-nunito),sans-serif' }}>
+
+      {/* Profile header */}
+      <div style={{ background:'#252525', borderRadius:16, padding:'20px', marginBottom:12, display:'flex', alignItems:'center', gap:16 }}>
+        <div style={{ width:60, height:60, borderRadius:'50%', background:'#1A1A1A', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden' }}>
+          {profileData?.avatar_url
+            ? <img src={profileData.avatar_url} style={{ width:60, height:60, objectFit:'cover' }} />
+            : <img src={`${BASE}/nav-profile.webp`} style={{ width:36, height:36, objectFit:'contain', opacity:0.5 }} />
+          }
         </div>
-        {globalPct !== null && (
-          <div style={{ borderTop:'1px solid rgba(255,255,255,0.06)', paddingTop:14, marginBottom: streak > 0 ? 14 : 0 }}>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <div>
-                <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>World Ranking</div>
-                <div style={{ fontSize:28, fontWeight:900, color: globalPct <= 10 ? '#69F0AE' : globalPct <= 50 ? GOLD : '#FF5252' }}>Top {globalPct}%</div>
-                <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>#{myGlobalRank} of {totalPlayers} players</div>
-              </div>
-              <img src={`${BASE}/population.png`} style={{ width:36, height:36, objectFit:'contain', opacity:0.4 }} />
-            </div>
-          </div>
-        )}
-        {streak > 0 && (
-          <div style={{ borderTop:'1px solid rgba(255,255,255,0.06)', paddingTop:14 }}>
-            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6 }}>
-              <div style={{ fontSize:15, fontWeight:900, color:'#fff' }}>{streakLevel.name}</div>
-              {nextLevel && <div style={{ fontSize:12, fontWeight:800, color:'#69F0AE' }}>Next → {nextLevel.name}</div>}
-            </div>
-            <div style={{ fontSize:12, color:'rgba(255,255,255,0.5)', fontWeight:700, lineHeight:1.5 }}>{streakLevel.benefit}</div>
+        <div style={{ flex:1 }}>
+          <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:2 }}>{profile.name}</div>
+          {profileData?.country && <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{profileData.country}</div>}
+        </div>
+        {profileData?.streak > 0 && (
+          <div style={{ textAlign:'center' }}>
+            <div style={{ fontSize:22, fontWeight:900, color:'#FF6B35' }}>🔥{profileData.streak}</div>
+            <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>days</div>
           </div>
         )}
       </div>
-{!loaded && (
+
+      {/* Rankings */}
+      {!loaded && (
         <div style={{ background:'#252525', borderRadius:16, padding:'20px', textAlign:'center', color:'rgba(255,255,255,0.3)', fontSize:14, fontWeight:700 }}>
           Loading rankings...
         </div>
       )}
 
-      {loaded && topGames.length > 0 && (
+      {loaded && top10.length > 0 && (
         <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginBottom:12 }}>
-          <div style={{ fontSize:13, fontWeight:800, color:'#69F0AE', letterSpacing:2, textTransform:'uppercase', marginBottom:14 }}>🏆 World Top 10%</div>
-          {topGames.map(([game, {rank, total}]) => {
-            const g = GAMES.find(x => x.label === game)!
-            return renderGameCard(game, rank, total, g.href)
-          })}
+          <div style={{ fontSize:11, fontWeight:800, color:'#69F0AE', letterSpacing:2, marginBottom:12 }}>🏆 TOP 10%</div>
+          {top10.map(([label, {rank, total}]) => renderGame(label, rank, total))}
         </div>
       )}
 
-      {loaded && midGames.length > 0 && (
+      {loaded && top50.length > 0 && (
         <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginBottom:12 }}>
-          <div style={{ fontSize:13, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:14 }}>⚡ Top 50%</div>
-          {midGames.map(([game, {rank, total}]) => {
-            const g = GAMES.find(x => x.label === game)!
-            return renderGameCard(game, rank, total, g.href)
-          })}
+          <div style={{ fontSize:11, fontWeight:800, color:GOLD, letterSpacing:2, marginBottom:12 }}>⭐ TOP 50%</div>
+          {top50.map(([label, {rank, total}]) => renderGame(label, rank, total))}
         </div>
       )}
 
-      {loaded && lowGames.length > 0 && (
+      {loaded && rest.length > 0 && (
         <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginBottom:12 }}>
-          <div style={{ fontSize:13, fontWeight:800, color:'#FF5252', letterSpacing:2, textTransform:'uppercase', marginBottom:14 }}>💪 Keep Improving</div>
-          {lowGames.map(([game, {rank, total}]) => {
-            const g = GAMES.find(x => x.label === game)!
-            return renderGameCard(game, rank, total, g.href)
-          })}
+          <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, marginBottom:12 }}>KEEP TRAINING</div>
+          {rest.map(([label, {rank, total}]) => renderGame(label, rank, total))}
         </div>
       )}
 
       <button onClick={() => { localStorage.removeItem('memgenius_profile'); window.location.reload() }}
-        style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:'rgba(255,255,255,0.06)', color:'rgba(255,255,255,0.4)', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer' }}>
+        style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:14, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer' }}>
         Log out
       </button>
-
     </main>
   )
 }
