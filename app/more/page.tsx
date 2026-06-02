@@ -23,6 +23,15 @@ const SECTIONS = [
     ]
   },
   {
+    title: 'Blog',
+    items: [
+      { label: 'How to Train Your Brain Daily', desc: 'Science-backed daily routine', icon: null, href: '/blog/how-to-train-your-brain-daily' },
+      { label: 'What Is a Good Reaction Time?', desc: 'Average times by age and sport', icon: null, href: '/blog/reaction-time-test' },
+      { label: 'The Science of Memory Training', desc: 'What actually works', icon: null, href: '/blog/memory-training-science' },
+      { label: 'View all articles', desc: 'memgenius.com/blog', icon: null, href: '/blog' },
+    ]
+  },
+  {
     title: 'Account',
     items: [
       { label: 'Profile', desc: 'Your stats and rankings', icon: `${BASE}/nav-profile.webp`, href: '/profile' },
