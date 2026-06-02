@@ -99,7 +99,7 @@ export default function TypeDropClient() {
    supabase.from('typedrop_scores').select('*', { count: 'exact', head: true }).gt('score', s)
      .then(({ count }: any) => setWorldRank((count || 0) + 1))
    if (profile?.name && s > 0) {
-     supabase.from('typedrop_scores').insert({ player_name: profile.name, score: s })
+     supabase.from('typedrop_scores').insert({ player_name: profile.name, score: s }).then(() => loadData())
    }
    loadTop5()
  }, [phase, profile?.name])
