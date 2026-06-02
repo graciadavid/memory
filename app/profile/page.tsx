@@ -28,7 +28,7 @@ const GAMES = [
   { label: 'Sudoku', table: 'sudoku_scores', field: 'time_ms', filter: null, lower: true },
   { label: 'Mastermind', table: 'mastermind_scores', field: 'attempts', filter: null, lower: true },
   { label: 'Wordly', table: 'wordle_scores', field: 'attempts', filter: null, lower: true },
-  { label: '2048', table: 'game2048_scores', field: 'score', filter: null, lower: false },
+  { label: '2048', table: 'game2048_scores', field: 'best_tile', filter: null, lower: false },
   { label: 'Blackjack', table: 'blackjack_scores', field: 'chips', filter: null, lower: false },
 ]
 
