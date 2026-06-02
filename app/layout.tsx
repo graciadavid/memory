@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/Header'
 import BottomNav from '@/components/BottomNav'
 import GAAnalytics from './analytics'
+import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
 
 const nunito = Nunito({ subsets: ['latin'], variable: '--font-nunito' })
 
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={nunito.variable} style={{ margin: 0, padding: 0, background: '#1A1A1A' }}>
         <div style={{ maxWidth: 430, margin: '0 auto', minHeight: '100dvh', position: 'relative' }}>
           <GAAnalytics />
+          <VercelAnalytics />
           <Header />
           {children}
           <BottomNav />
