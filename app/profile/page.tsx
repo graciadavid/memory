@@ -129,7 +129,16 @@ export default function ProfilePage() {
       getGameRank(profile.name, g).then(r => {
         completed++
         if (r) { newRanks[g.label] = r; setRanks({...newRanks}) }
-        if (completed === GAMES.length) setLoaded(true)
+        if (completed === GAMES.length) {
+          setLoaded(true)
+          // Calculate and save global rank
+          const sorted = Object.entries(newRanks).sort((a,b) => a[1].rank - b[1].rank)
+          if (sorted.length > 0) {
+            const avg = Math.round(sorted.reduce((acc,[,{rank,total}]) => acc + rank/Math.max(total,1), 0) / sorted.length * 100)
+            localStorage.setItem('memgenius_world_rank', String(avg))
+            window.dispatchEvent(new Event('profileUpdated'))
+          }
+        }
       }).catch(() => { completed++; if (completed === GAMES.length) setLoaded(true) })
     })
   }, [profile?.name])
