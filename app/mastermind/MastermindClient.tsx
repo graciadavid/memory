@@ -53,7 +53,8 @@ export default function MastermindClient() {
     data.forEach((s:any) => { if (!best[s.player_name] || s.attempts < best[s.player_name]) best[s.player_name] = s.attempts })
     const sorted = Object.entries(best).sort((a,b) => (a[1] as number)-(b[1] as number))
     setTop5(sorted.slice(0,5).map(([name,a]) => ({name, score:a+' tries'})))
-    const pName = profileRef.current?.name || JSON.parse(localStorage.getItem('memgenius_profile') || '{}').name
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('memgenius_profile') : null
+    const pName = stored ? JSON.parse(stored).name : null
     if (pName && best[pName] !== undefined) setMyBest(best[pName])
   }, [profile?.name])
 

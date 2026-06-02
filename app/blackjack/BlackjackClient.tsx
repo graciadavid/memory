@@ -59,7 +59,8 @@ export default function BlackjackClient() {
    data.forEach((s:any) => { if (!best[s.player_name] || s.chips > best[s.player_name]) best[s.player_name] = s.chips })
    const sorted = Object.entries(best).sort((a,b) => (b[1] as number)-(a[1] as number))
    setTop5(sorted.slice(0,5).map(([name,c]) => ({name, score:(c as number).toLocaleString()+' chips'})))
-   const pName = profileRef.current?.name || JSON.parse(localStorage.getItem('memgenius_profile') || '{}').name
+   const stored = typeof window !== 'undefined' ? localStorage.getItem('memgenius_profile') : null
+    const pName = stored ? JSON.parse(stored).name : null
     if (pName && best[pName] !== undefined) setMyBest(best[pName])
  }, [profile?.name])
 
