@@ -57,6 +57,9 @@ export function GameRulesScreen({ icon, title, subtitle, worldRecord, myBest, to
         </div>
       </div>
 
+      {/* Extra content before play */}
+      {children}
+
       {/* Play button */}
       <button onClick={onPlay} style={{ width:'100%', padding:'20px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 6px 0 #1B5E20', marginBottom:16 }}>
         Play →
@@ -76,8 +79,6 @@ export function GameRulesScreen({ icon, title, subtitle, worldRecord, myBest, to
         </div>
       )}
 
-      {/* Extra content */}
-      {children}
     </main>
   )
 }

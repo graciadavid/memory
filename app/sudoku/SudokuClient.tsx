@@ -231,7 +231,7 @@ export default function SudokuClient() {
 
      {/* Grid */}
      <div style={{ display:'flex', justifyContent:'center', padding:'0 16px', flexShrink:0 }}>
-       <div style={{ display:'grid', gridTemplateColumns:'repeat(9,1fr)', gap:1, background:'#444', padding:1, borderRadius:8, width:'100%', maxWidth:380 }}>
+       <div style={{ display:'grid', gridTemplateColumns:'repeat(9,1fr)', gap:0, background:'#000', padding:2, borderRadius:8, width:'100%', maxWidth:380 }}>
          {grid.map((val, idx) => {
            const row = Math.floor(idx/9)
            const col = idx%9
@@ -265,13 +265,13 @@ export default function SudokuClient() {
        <div style={{ display:'flex', gap:6 }}>
          {[1,2,3,4,5,6,7,8,9].map(n => (
            <button key={n} onClick={() => handleNumber(n)}
-             style={{ flex:1, aspectRatio:'1', borderRadius:10, border:'none', background:'#252525', color:'#fff', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+             style={{ flex:1, aspectRatio:'1', borderRadius:10, border:'none', background:'#333', color:'#fff', fontSize:18, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
              {n}
            </button>
          ))}
        </div>
        <button onClick={() => handleNumber(0)}
-         style={{ width:'100%', padding:'12px', borderRadius:10, border:'none', background:'#252525', color:'rgba(255,255,255,0.5)', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+         style={{ width:'100%', padding:'12px', borderRadius:10, border:'none', background:'#D32F2F', color:'#fff', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 4px 0 #B71C1C' }}>
          Erase
        </button>
      </div>
