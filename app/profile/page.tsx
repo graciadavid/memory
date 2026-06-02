@@ -140,7 +140,7 @@ function RegisterForm() {
 export default function ProfilePage() {
   const { profile } = usePlayer()
   const [profileData, setProfileData] = useState<any>(null)
-  const [ranks, setRanks] = useState<Record<string, {rank:number, score:number, total:number}>>({})
+  const [ranks, setRanks] = useState<Record<string, {rank:number, score:number}>>({})
   const [loaded, setLoaded] = useState(false)
   const [totalPlayers, setTotalPlayers] = useState(0)
 
@@ -163,7 +163,7 @@ export default function ProfilePage() {
     supabase.from('profiles').select('player_name', { count: 'exact', head: true })
       .then(({ count }: any) => setTotalPlayers(count || 0))
 
-    const newRanks: Record<string, {rank:number, score:number, total:number}> = {}
+    const newRanks: Record<string, {rank:number, score:number}> = {}
     let completed = 0
     GAMES.forEach(g => {
       getGameRank(profile.name, g).then(r => {
