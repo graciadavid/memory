@@ -165,7 +165,7 @@ export default function ProfilePage() {
         <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
           <div style={{ flex:1, fontSize:13, fontWeight:800, color:'#fff' }}>{label}</div>
           <div style={{ fontSize:13, fontWeight:900, color: rank<=3 ? GOLD : 'rgba(255,255,255,0.6)' }}>#{rank}</div>
-          <a href={href} style={{ textDecoration:'none', background:'#2E7D32', borderRadius:6, padding:'3px 8px', fontSize:10, fontWeight:900, color:'#fff' }}>Train</a>
+          <a href={href} style={{ textDecoration:'none', background:'#2E7D32', borderRadius:6, padding:'3px 8px', fontSize:10, fontWeight:900, color:'#fff' }}>Improve</a>
           <button onClick={() => navigator.share ? navigator.share({text:shareText,url:'https://memgenius.com'+href}) : navigator.clipboard.writeText(shareText)}
             style={{ background:'none', border:'none', cursor:'pointer', fontSize:12, color:GOLD, fontWeight:900, padding:'3px 6px', fontFamily:'inherit' }}>Share</button>
         </div>
