@@ -113,7 +113,7 @@ export default function MastermindClient() {
       onPlayAgain={startGame}
     >
       {!won && (
-        <div style={{ display:'flex', gap:8, justifyContent:'center' }}>
+        <div style={{ display:'flex', gap:8, width:216, marginBottom:0 }}>
           {code.map((c,i) => <div key={i} style={{ width:32, height:32, borderRadius:'50%', background:COLORS[c] }} />)}
         </div>
       )}
@@ -129,10 +129,10 @@ export default function MastermindClient() {
       </div>
 
       {/* Attempts history */}
-      <div style={{ flex:1, overflowY:'auto', padding:'0 16px' }}>
+      <div style={{ flex:1, overflowY:'auto', padding:'0 16px', display:'flex', flexDirection:'column', alignItems:'center' }}>
         {attempts.map((att, i) => (
           <div key={i} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
-            <div style={{ display:'flex', gap:8, justifyContent:'center' }}>
+            <div style={{ display:'flex', gap:8, width:216 }}>
               {att.guess.map((c,j) => (
                 <div key={j} style={{ width:44, height:44, borderRadius:10, flexShrink:0, background:COLORS[c], border:'2px solid rgba(255,255,255,0.15)' }} />
               ))}
