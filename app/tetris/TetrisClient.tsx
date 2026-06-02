@@ -223,7 +223,7 @@ export default function TetrisClient() {
  const worldRecord = top5[0] ? { value: top5[0].score, name: top5[0].name } : null
 
  if (phase === 'rules') return (
-   <GameRulesScreen icon="tetris.png" title="Tetris" subtitle="Stack the blocks. Clear the lines." worldRecord={worldRecord} myBest={myBest !== null ? myBest.toLocaleString() : null} top5={top5} onPlay={startGame} />
+   <GameRulesScreen icon="mango.png" title="Tetris" subtitle="Stack the blocks. Clear the lines." worldRecord={worldRecord} myBest={myBest !== null ? myBest.toLocaleString() : null} top5={top5} onPlay={startGame} />
  )
 
  if (phase === 'result') return (
@@ -250,7 +250,7 @@ export default function TetrisClient() {
        <div style={{ fontSize:14, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>Lv {level}</div>
      </div>
 
-      <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'4px 8px', minHeight:0, overflow:'hidden' }}
+      <div style={{ flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', padding:'4px 16px 0' }}
        onTouchStart={e => setTouchX(e.touches[0].clientX)}
        onTouchEnd={e => {
          if (touchX === null) return
@@ -259,7 +259,7 @@ export default function TetrisClient() {
          else rotatePiece()
          setTouchX(null)
        }}>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gap:1, background:'#bbb', padding:2, borderRadius:6, height:'calc(100dvh - 200px)', aspectRatio:'1/2', maxHeight:'calc(100dvh - 200px)' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gridTemplateRows:'repeat(20, 1fr)', gap:1, background:'#bbb', padding:2, borderRadius:6, height:'calc(100dvh - 195px)', width:'auto' }}>
          {display.map((row, r) => row.map((cell, c) => (
            <div key={r+'-'+c} style={{ borderRadius:1, background: cell || '#e0e0e0', border: cell ? 'none' : '1px solid #ccc', aspectRatio:'1' }} />
          )))}
