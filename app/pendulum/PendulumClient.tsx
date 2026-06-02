@@ -144,7 +144,7 @@ export default function PendulumClient() {
 
  if (phase === 'result') return (
    <GameResultScreen
-     result={`${Math.round(Math.abs(getAngle ? 0 : 0))}°`}
+     result={`${diffDeg}°`}
      resultColor={resultColor}
      background={bgResult}
      worldRank={worldRank}
