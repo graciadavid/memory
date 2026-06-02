@@ -106,10 +106,10 @@ export default function Game2048Client() {
   const timerIntervalRef = useRef<any>(null)
 
  const loadData = useCallback(async () => {
-   const { data } = await supabase.from('game2048_scores').select('player_name, score').order('score', { ascending: false }).limit(5000)
+   const { data } = await supabase.from('game2048_scores').select('player_name, best_tile').order('best_tile', { ascending: false }).limit(5000)
    if (!data) return
    const best: Record<string,number> = {}
-   data.forEach((s:any) => { if (!best[s.player_name] || s.score > best[s.player_name]) best[s.player_name] = s.score })
+   data.forEach((s:any) => { if (!best[s.player_name] || s.best_tile > best[s.player_name]) best[s.player_name] = s.best_tile })
    const sorted = Object.entries(best).sort((a,b) => (b[1] as number)-(a[1] as number))
    setTop5(sorted.slice(0,5).map(([name,s]) => ({name, score:s.toLocaleString()})))
    const stored = typeof window !== 'undefined' ? localStorage.getItem('memgenius_profile') : null
@@ -132,9 +132,9 @@ export default function Game2048Client() {
  const endGame = useCallback(async (finalScore: number) => {
    setPhase('result')
    window.dispatchEvent(new Event('gameResult'))
-   const { count } = await supabase.from('game2048_scores').select('player_name', { count: 'exact', head: true }).gt('score', finalScore)
+   const { count } = await supabase.from('game2048_scores').select('player_name', { count: 'exact', head: true }).gt('best_tile', Math.max(...board.flat().filter(v => v > 0)))
    setWorldRank((count ?? 0) + 1)
-   if (profile?.name && finalScore > 0) await supabase.from('game2048_scores').insert({ player_name: profile.name, score: finalScore })
+   if (profile?.name && finalScore > 0) await supabase.from('game2048_scores').insert({ player_name: profile.name, best_tile: Math.max(...board.flat().filter(v => v > 0)), time_ms: Date.now() - startTimeRef.current })
  }, [profile?.name])
 
  const handleMove = useCallback((dir: string) => {
