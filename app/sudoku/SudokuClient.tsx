@@ -74,9 +74,6 @@ function getPuzzle(difficulty: Difficulty): { puzzle: number[], solution: number
  return { puzzle: [...puzzle], solution: [...solution] }
 }
 
-function isComplete(grid: number[], solution: number[]): boolean {
- return grid.every((v, i) => v === solution[i])
-}
 
 function isValidSudoku(grid: number[]): boolean {
   if (grid.includes(0)) return false
