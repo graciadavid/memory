@@ -191,34 +191,31 @@ export default function ProfilePage() {
 
      {/* Profile header */}
      {(() => {
-       const streak = profileData?.streak || 0
-       const streakTitle = streak >= 100 ? 'Legend' : streak >= 51 ? 'Elite' : streak >= 21 ? 'Dedicated' : streak >= 11 ? 'Focused' : streak >= 6 ? 'Consistent' : streak >= 1 ? 'Beginner' : null
-       const bestRank = loaded && sortedGames.length > 0 ? sortedGames[0][1].rank : null
-       const avgPct = loaded && sortedGames.length > 0 ? Math.round(sortedGames.reduce((acc,[,{rank,total}]) => acc + rank/Math.max(total,1), 0) / sortedGames.length * 100) : null
-       return (
-         <div style={{ background:'#252525', borderRadius:16, padding:'20px', marginBottom:12, display:'flex', alignItems:'center', gap:14 }}>
-           <div style={{ width:56, height:56, borderRadius:'50%', background:'#1A1A1A', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden', border:'2px solid rgba(255,255,255,0.1)' }}>
-             {profileData?.avatar_url
-               ? <img src={profileData.avatar_url} style={{ width:56, height:56, objectFit:'cover' }} />
-               : <img src={`${BASE}/nav-profile.webp`} style={{ width:32, height:32, objectFit:'contain', opacity:0.5 }} />
-             }
-           </div>
-           <div style={{ flex:1 }}>
-             <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:6 }}>{profile.name}</div>
-             <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:4 }}>
-               <span style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>WORLD RANKING</span>
-               <span style={{ fontSize:18, fontWeight:900, color:'#C8960C' }}>{bestRank ? '#'+bestRank : '—'}</span>
-               {avgPct !== null && <span style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>Top {avgPct}%</span>}
-             </div>
-             <div style={{ display:'flex', alignItems:'center', gap:5 }}>
-               <span style={{ fontSize:15 }}>🔥</span>
-               <span style={{ fontSize:15, fontWeight:900, color:'#FF6B35' }}>{streak} days</span>
-               {streakTitle && <span style={{ fontSize:11, fontWeight:900, color:'#FF6B35', background:'rgba(255,107,53,0.15)', borderRadius:6, padding:'2px 8px' }}>{streakTitle}</span>}
-             </div>
-           </div>
-         </div>
-       )
-     })()}
+      const streak = profileData?.streak || 0
+      const streakTitle = streak >= 100 ? 'Legend' : streak >= 51 ? 'Elite' : streak >= 21 ? 'Dedicated' : streak >= 11 ? 'Focused' : streak >= 6 ? 'Consistent' : streak >= 1 ? 'Beginner' : null
+      const totalPlayers = loaded && sortedGames.length > 0 ? Math.max(...sortedGames.map(([,{total}]) => total)) : 0
+      const globalRank = loaded && sortedGames.length > 0
+        ? Math.round(sortedGames.reduce((acc,[,{rank,total}]) => acc + rank/Math.max(total,1), 0) / sortedGames.length * totalPlayers)
+        : null
+      if (globalRank) localStorage.setItem('memgenius_world_rank', String(globalRank))
+      return (
+        <div style={{ background:'linear-gradient(135deg,#1a1a2e,#16213e)', borderRadius:20, padding:'24px', marginBottom:12, border:'1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ fontSize:14, fontWeight:800, color:'rgba(255,255,255,0.4)', marginBottom:12 }}>{profile.name} {profileData?.country || ''}</div>
+          <div style={{ marginBottom:20 }}>
+            <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, marginBottom:4 }}>WORLD RANKING</div>
+            <div style={{ fontSize:64, fontWeight:900, color:'#C8960C', lineHeight:1, letterSpacing:-2 }}>{globalRank ? '#'+globalRank : '—'}</div>
+            <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.3)', marginTop:4 }}>{loaded ? 'out of '+totalPlayers+' players' : 'calculating...'}</div>
+          </div>
+          <div style={{ display:'flex', alignItems:'center', gap:12, background:'rgba(255,107,53,0.1)', borderRadius:12, padding:'12px 16px' }}>
+            <span style={{ fontSize:32 }}>🔥</span>
+            <div>
+              <div style={{ fontSize:32, fontWeight:900, color:'#FF6B35', lineHeight:1 }}>{streak} <span style={{ fontSize:16 }}>days</span></div>
+              {streakTitle && <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,107,53,0.7)', marginTop:2 }}>{streakTitle}</div>}
+            </div>
+          </div>
+        </div>
+      )
+    })()}
 
       {/* Rankings */}
       {!loaded && (
