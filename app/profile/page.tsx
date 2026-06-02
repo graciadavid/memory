@@ -222,15 +222,6 @@ export default function ProfilePage() {
       )
      })()}
 
-      {!loaded && (
-        <div style={{ background:'#252525', borderRadius:16, padding:'20px', textAlign:'center', color:'rgba(255,255,255,0.3)', fontSize:14, fontWeight:700 }}>
-          Loading rankings...
-        </div>
-      )}
-
-      {loaded && top10.length > 0 && (
-      {loaded && top10.length > 0 && (
-      {loaded && top10.length > 0 && (
       {loaded && top10.length > 0 && (
         <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginBottom:12 }}>
           <div style={{ fontSize:11, fontWeight:800, color:'#69F0AE', letterSpacing:2, marginBottom:12 }}><img src='https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/trophy.png' style={{ width:16, height:16, objectFit:'contain', verticalAlign:'middle', marginRight:4 }} />TOP 10%</div>
