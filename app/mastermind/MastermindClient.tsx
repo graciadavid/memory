@@ -129,30 +129,24 @@ export default function MastermindClient() {
       </div>
 
       {/* Attempts history */}
-      <div style={{ flex:1, overflowY:'auto', padding:'0 16px' }}>
+      <div style={{ flex:1, overflowY:'auto', padding:'0 16px', display:'flex', flexDirection:'column', alignItems:'center' }}>
         {attempts.map((att, i) => (
-          <div key={i} style={{ display:'flex', alignItems:'center', gap:12, marginBottom:8, justifyContent:'center' }}>
+          <div key={i} style={{ display:'flex', alignItems:'center', gap:12, marginBottom:8 }}>
             <div style={{ display:'flex', gap:6 }}>
               {att.guess.map((c,j) => (
                 <div key={j} style={{ width:44, height:44, borderRadius:10, background:COLORS[c], border:'2px solid rgba(255,255,255,0.15)' }} />
               ))}
             </div>
-          <div style={{ display:'flex', gap:6 }}>
-            {Array.from({ length: CODE_LENGTH }).map((_,j) => (
-              <div key={j} style={{ width:16, height:16, borderRadius:'50%', background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.2)' }} />
-            ))}
-          </div>
+            <div style={{ display:'flex', gap:6 }}>
               {Array.from({ length: CODE_LENGTH }).map((_,j) => {
                 const isBlack = j < att.black
-                const isWhite = j < att.black + att.white && j >= att.black
-                return <div key={j} style={{ width:16, height:16, borderRadius:'50%', background: isBlack ? '#fff' : isWhite ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)' }} />
+                const isWhite = j >= att.black && j < att.black + att.white
+                return <div key={j} style={{ width:16, height:16, borderRadius:'50%', background: isBlack ? '#fff' : isWhite ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.12)', border:'1px solid rgba(255,255,255,0.3)' }} />
               })}
             </div>
           </div>
         ))}
-
-        {/* Current guess - same layout */}
-        <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:8, justifyContent:'center' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:8 }}>
           <div style={{ display:'flex', gap:6 }}>
             {Array.from({ length: CODE_LENGTH }).map((_, i) => (
               <div key={i} style={{ width:44, height:44, borderRadius:10, background: current[i] !== undefined ? COLORS[current[i]] : '#2a2a2a', border:'2px solid rgba(255,255,255,0.15)' }} />
