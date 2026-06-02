@@ -250,7 +250,7 @@ export default function TetrisClient() {
        <div style={{ fontSize:14, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>Lv {level}</div>
      </div>
 
-      <div style={{ flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', padding:'4px 16px 0' }}
+      <div style={{ flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', padding:'4px 16px 0', width:'100%' }}
        onTouchStart={e => setTouchX(e.touches[0].clientX)}
        onTouchEnd={e => {
          if (touchX === null) return
@@ -259,7 +259,7 @@ export default function TetrisClient() {
          else rotatePiece()
          setTouchX(null)
        }}>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gridTemplateRows:'repeat(20, 1fr)', gap:1, background:'#bbb', padding:2, borderRadius:6, height:'calc(100dvh - 195px)', width:'auto' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gridTemplateRows:'repeat(20, 1fr)', gap:1, background:'#bbb', padding:2, borderRadius:6, width:'calc(100vw - 32px)', maxWidth:360, height:'auto', aspectRatio:'1/2' }}>
          {display.map((row, r) => row.map((cell, c) => (
            <div key={r+'-'+c} style={{ borderRadius:1, background: cell || '#e0e0e0', border: cell ? 'none' : '1px solid #ccc', aspectRatio:'1' }} />
          )))}
