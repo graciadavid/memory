@@ -144,15 +144,30 @@ export default function ProfilePage() {
   const top50 = sortedGames.filter(([,{rank,total}]) => total > 0 && rank/total > 0.1 && rank/total <= 0.5)
   const rest = sortedGames.filter(([,{rank,total}]) => total > 0 && rank/total > 0.5)
 
+  const GAME_HREFS: Record<string,string> = {
+    'Stop':'/stop','F1 Reaction':'/f1','Pendulum':'/pendulum','Ace':'/ace',
+    'Letter Rain':'/letter-rain','TypeDrop':'/typedrop','Memory':'/memory',
+    'Digits':'/digits','Simon Says':'/simon-says','N-Back':'/nback','Blink':'/blink',
+    'Poke':'/poke','Flags':'/flags','Capitals':'/capitals','Countries':'/countries',
+    'Higher or Lower Pop':'/higherorlower/population','Higher or Lower Area':'/higherorlower/area',
+    'Sudoku':'/sudoku','Mastermind':'/mastermind','Wordly':'/wordly',
+    '2048':'/2048','Blackjack':'/blackjack'
+  }
+
   const renderGame = (label: string, rank: number, total: number) => {
     const pct = rank / total
     const barColor = pct <= 0.1 ? '#69F0AE' : pct <= 0.5 ? GOLD : '#FF5252'
     const barWidth = Math.max(4, Math.round((1 - (rank-1)/Math.max(total,1)) * 100))
+    const href = GAME_HREFS[label] || '/'
+    const shareText = `I'm #${rank} in ${label} on MemGenius! Can you beat me? memgenius.com${href}`
     return (
       <div key={label} style={{ marginBottom:12 }}>
-        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
-          <div style={{ fontSize:13, fontWeight:800, color:'#fff' }}>{label}</div>
-          <div style={{ fontSize:13, fontWeight:900, color: rank<=3 ? GOLD : 'rgba(255,255,255,0.6)' }}>#{rank} / {total}</div>
+        <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:4 }}>
+          <div style={{ flex:1, fontSize:13, fontWeight:800, color:'#fff' }}>{label}</div>
+          <div style={{ fontSize:13, fontWeight:900, color: rank<=3 ? GOLD : 'rgba(255,255,255,0.6)' }}>#{rank}</div>
+          <a href={href} style={{ textDecoration:'none', background:'#2E7D32', borderRadius:6, padding:'3px 8px', fontSize:10, fontWeight:900, color:'#fff' }}>Train</a>
+          <button onClick={() => navigator.share ? navigator.share({text:shareText,url:'https://memgenius.com'+href}) : navigator.clipboard.writeText(shareText)}
+            style={{ background:'none', border:'none', cursor:'pointer', fontSize:12, color:GOLD, fontWeight:900, padding:'3px 6px', fontFamily:'inherit' }}>Share</button>
         </div>
         <div style={{ height:4, background:'rgba(255,255,255,0.08)', borderRadius:2 }}>
           <div style={{ height:4, background:barColor, borderRadius:2, width:barWidth+'%' }} />
