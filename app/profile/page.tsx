@@ -116,13 +116,15 @@ export default function ProfilePage() {
   const [profileData, setProfileData] = useState<any>(null)
   const [ranks, setRanks] = useState<Record<string, {rank:number, score:number, total:number}>>({})
   const [loaded, setLoaded] = useState(false)
+  const [worldRank, setWorldRank] = useState<number|null>(null)
+  const [totalPlayers, setTotalPlayers] = useState(0)
 
   useEffect(() => {
     if (!profile?.name) return
     supabase.from('profiles').select('*').eq('player_name', profile.name).single()
       .then(({ data }: any) => setProfileData(data))
     supabase.from('global_rankings').select('world_rank').eq('player_name', profile.name).single()
-      .then(({ data }: any) => { if (data?.world_rank) { localStorage.setItem('memgenius_world_rank', String(data.world_rank)); window.dispatchEvent(new Event('profileUpdated')) } })
+      .then(({ data }: any) => { if (data?.world_rank) { setWorldRank(data.world_rank); localStorage.setItem("memgenius_world_rank", String(data.world_rank)) } })
 
     setLoaded(false)
     const newRanks: Record<string, {rank:number, score:number, total:number}> = {}
@@ -195,11 +197,8 @@ export default function ProfilePage() {
      {(() => {
       const streak = profileData?.streak || 0
       const streakTitle = streak >= 100 ? 'Legend' : streak >= 51 ? 'Elite' : streak >= 21 ? 'Dedicated' : streak >= 11 ? 'Focused' : streak >= 6 ? 'Consistent' : streak >= 1 ? 'Beginner' : null
-      const totalPlayers = loaded && sortedGames.length > 0 ? Math.max(...sortedGames.map(([,{total}]) => total)) : 0
-      const globalRank = loaded && sortedGames.length > 0
-        ? Math.round(sortedGames.reduce((acc,[,{rank,total}]) => acc + rank/Math.max(total,1), 0) / sortedGames.length * totalPlayers)
-        : null
-      if (globalRank) { localStorage.setItem('memgenius_world_rank', String(globalRank)); }
+      
+      
       return (
         <div style={{ background:'linear-gradient(135deg,#1A1200,#2D2000)', borderRadius:20, padding:'24px', marginBottom:12, border:'2px solid rgba(200,150,12,0.25)', boxShadow:'0 8px 32px rgba(200,150,12,0.15)' }}>
           <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:20 }}>
@@ -210,7 +209,7 @@ export default function ProfilePage() {
             </div>
             <div style={{ textAlign:'right' }}>
               <div style={{ fontSize:11, fontWeight:800, color:'rgba(200,150,12,0.6)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>World Ranking</div>
-              <div style={{ fontSize:52, fontWeight:900, color:'#C8960C', lineHeight:1, letterSpacing:-2 }}>{globalRank ? '#'+globalRank : '—'}</div>
+              <div style={{ fontSize:52, fontWeight:900, color:'#C8960C', lineHeight:1, letterSpacing:-2 }}>{worldRank ? "#"+worldRank : "—"}</div>
             </div>
           </div>
           <div style={{ display:'flex', alignItems:'center', gap:12, background:'rgba(255,107,53,0.12)', borderRadius:14, padding:'14px 18px', border:'1px solid rgba(255,107,53,0.2)' }}>
@@ -220,7 +219,7 @@ export default function ProfilePage() {
               {streakTitle && <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,107,53,0.7)', marginTop:3, letterSpacing:1, textTransform:'uppercase' }}>{streakTitle}</div>}
             </div>
           <button onClick={() => {
-            const text = 'I am ranked #' + globalRank + ' in the world on MemGenius 🧠\n🔥 ' + streak + ' day streak\nCan you beat me? memgenius.com'
+            const text = 'I am ranked #' + worldRank + ' in the world on MemGenius 🧠\n🔥 ' + streak + ' day streak\nCan you beat me? memgenius.com'
             if (navigator.share) navigator.share({ text: text, url: 'https://memgenius.com' })
             else navigator.clipboard.writeText(text)
           }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:'#C8960C', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer', boxShadow:'0 5px 0 #8B6914', marginTop:16 }}>
