@@ -243,14 +243,14 @@ export default function TetrisClient() {
  const display = renderBoard()
 
  return (
-   <main style={{ height:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', overflow:'hidden', position:'fixed', width:'100%', maxWidth:430 }}>
+    <main style={{ position:'fixed', top:0, left:'50%', transform:'translateX(-50%)', width:'100%', maxWidth:430, height:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', overflow:'hidden' }}>
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 20px', flexShrink:0 }}>
        <div style={{ fontSize:18, fontWeight:900, color:GOLD }}>{score.toLocaleString()}</div>
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>TETRIS</div>
        <div style={{ fontSize:14, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>Lv {level}</div>
      </div>
 
-     <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'4px 16px', overflow:'hidden' }}
+      <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'4px 8px', minHeight:0, overflow:'hidden' }}
        onTouchStart={e => setTouchX(e.touches[0].clientX)}
        onTouchEnd={e => {
          if (touchX === null) return
@@ -259,7 +259,7 @@ export default function TetrisClient() {
          else rotatePiece()
          setTouchX(null)
        }}>
-       <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gap:1, background:'#bbb', padding:3, borderRadius:8, width:'min(240px, calc(100vw - 32px))', aspectRatio:'1/2' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gap:1, background:'#bbb', padding:2, borderRadius:6, height:'calc(100dvh - 200px)', aspectRatio:'1/2', maxHeight:'calc(100dvh - 200px)' }}>
          {display.map((row, r) => row.map((cell, c) => (
            <div key={r+'-'+c} style={{ borderRadius:1, background: cell || '#e0e0e0', border: cell ? 'none' : '1px solid #ccc', aspectRatio:'1' }} />
          )))}
