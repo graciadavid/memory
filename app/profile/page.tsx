@@ -42,23 +42,29 @@ const STREAK_LEVELS = [
 ]
 
 async function getGameRank(name: string, g: typeof GAMES[0]) {
-  let sq: any = supabase.from(g.table).select(g.field).eq('player_name', name)
+  // Get player's best score
+  let sq: any = supabase.from(g.table).select('player_name, '+g.field).eq('player_name', name)
   if (g.filter) Object.entries(g.filter).forEach(([k,v]) => { if (v === null) sq = sq.is(k, null); else sq = sq.eq(k, v) })
   sq = sq.order(g.field, { ascending: g.lower }).limit(1)
   const { data } = await sq
   if (!data || data.length === 0) return null
-  const playerScore = data[0][g.field]
+  const playerScore = (data[0] as any)[g.field]
 
-  let rq: any = supabase.from(g.table).select('player_name', { count: 'exact', head: true })
+  // Get all scores to find best per player
+  let rq: any = supabase.from(g.table).select('player_name, '+g.field)
   if (g.filter) Object.entries(g.filter).forEach(([k,v]) => { if (v === null) rq = rq.is(k, null); else rq = rq.eq(k, v) })
-  rq = g.lower ? rq.lt(g.field, playerScore) : rq.gt(g.field, playerScore)
-  const { count: better } = await rq
+  const { data: allScores } = await rq
+  if (!allScores) return { rank: 1, score: playerScore }
 
-  let tq: any = supabase.from(g.table).select('player_name', { count: 'exact', head: true })
-  if (g.filter) Object.entries(g.filter).forEach(([k,v]) => { if (v === null) tq = tq.is(k, null); else tq = tq.eq(k, v) })
-  const { count: total } = await tq
-
-  return { rank: (better || 0) + 1, score: playerScore, total: total || 1 }
+  const bestPerPlayer: Record<string, number> = {}
+  allScores.forEach((s: any) => {
+    const val = (s as any)[g.field]
+    if (!bestPerPlayer[s.player_name] || (g.lower ? val < bestPerPlayer[s.player_name] : val > bestPerPlayer[s.player_name])) {
+      bestPerPlayer[s.player_name] = val
+    }
+  })
+  const betterCount = Object.values(bestPerPlayer).filter(v => g.lower ? v < playerScore : v > playerScore).length
+  return { rank: betterCount + 1, score: playerScore }
 }
 
 function ProfileLoginButton() {
