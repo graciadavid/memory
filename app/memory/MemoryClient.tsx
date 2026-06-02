@@ -115,7 +115,7 @@ export default function MemoryClient() {
          window.dispatchEvent(new Event('gameResult'))
          const { count } = await supabase.from('scores').select('player_name', { count: 'exact', head: true }).lt('time_ms', elapsed)
          setWorldRank((count ?? 0) + 1)
-         if (profile?.name) await supabase.from('scores').insert({ player_name: profile.name, time_ms: elapsed }); loadData()
+         if (profile?.name) { await supabase.from('scores').insert({ player_name: profile.name, time_ms: elapsed }); loadData() }
        }
      } else {
        setTimeout(() => {
