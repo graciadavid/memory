@@ -121,6 +121,8 @@ export default function ProfilePage() {
     if (!profile?.name) return
     supabase.from('profiles').select('*').eq('player_name', profile.name).single()
       .then(({ data }: any) => setProfileData(data))
+    supabase.from('global_rankings').select('world_rank').eq('player_name', profile.name).single()
+      .then(({ data }: any) => { if (data?.world_rank) { localStorage.setItem('memgenius_world_rank', String(data.world_rank)); window.dispatchEvent(new Event('profileUpdated')) } })
 
     setLoaded(false)
     const newRanks: Record<string, {rank:number, score:number, total:number}> = {}
