@@ -219,7 +219,6 @@ export default function ProfilePage() {
          </div>
        )
      })()}
-        )}
       </div>
 
       {/* Rankings */}
