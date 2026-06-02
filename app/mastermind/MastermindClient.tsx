@@ -129,27 +129,32 @@ export default function MastermindClient() {
       </div>
 
       {/* Attempts history */}
-      <div style={{ flex:1, overflowY:'auto', padding:'0 16px', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+      <div style={{ flex:1, overflowY:'auto', padding:'0 16px' }}>
         {attempts.map((att, i) => (
-          <div key={i} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
-            <div style={{ display:'flex', gap:8, width:216 }}>
+          <div key={i} style={{ display:'flex', alignItems:'center', marginBottom:6 }}>
+            <div style={{ display:'flex', gap:6, width:196, flexShrink:0 }}>
               {att.guess.map((c,j) => (
-                <div key={j} style={{ width:44, height:44, borderRadius:10, flexShrink:0, background:COLORS[c], border:'2px solid rgba(255,255,255,0.15)' }} />
+                <div key={j} style={{ width:44, height:44, borderRadius:10, background:COLORS[c], border:'2px solid rgba(255,255,255,0.15)' }} />
               ))}
             </div>
-            <div style={{ display:'flex', gap:4, marginLeft:4 }}>
-              {Array.from({ length: att.black }).map((_,j) => <div key={'b'+j} style={{ width:12, height:12, borderRadius:'50%', background:'#fff' }} />)}
-              {Array.from({ length: att.white }).map((_,j) => <div key={'w'+j} style={{ width:12, height:12, borderRadius:'50%', background:'rgba(255,255,255,0.35)', border:'1px solid rgba(255,255,255,0.5)' }} />)}
-              {Array.from({ length: CODE_LENGTH - att.black - att.white }).map((_,j) => <div key={'e'+j} style={{ width:12, height:12, borderRadius:'50%', background:'rgba(255,255,255,0.1)' }} />)}
+            <div style={{ width:70, display:'grid', gridTemplateColumns:'1fr 1fr', gap:4, padding:'0 8px' }}>
+              {Array.from({ length: CODE_LENGTH }).map((_,j) => {
+                const isBlack = j < att.black
+                const isWhite = j < att.black + att.white && j >= att.black
+                return <div key={j} style={{ width:12, height:12, borderRadius:'50%', background: isBlack ? '#fff' : isWhite ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)' }} />
+              })}
             </div>
           </div>
         ))}
 
-        {/* Current guess */}
-        <div style={{ display:'flex', gap:8, width:216, margin:'0 auto 8px' }}>
-          {Array.from({ length: CODE_LENGTH }).map((_, i) => (
-            <div key={i} style={{ width:44, height:44, borderRadius:10, flexShrink:0, background: current[i] !== undefined ? COLORS[current[i]] : '#2a2a2a', border:'2px solid rgba(255,255,255,0.15)' }} />
-          ))}
+        {/* Current guess - same layout */}
+        <div style={{ display:'flex', alignItems:'center', marginBottom:6 }}>
+          <div style={{ display:'flex', gap:6, width:196, flexShrink:0 }}>
+            {Array.from({ length: CODE_LENGTH }).map((_, i) => (
+              <div key={i} style={{ width:44, height:44, borderRadius:10, background: current[i] !== undefined ? COLORS[current[i]] : '#2a2a2a', border:'2px solid rgba(255,255,255,0.15)' }} />
+            ))}
+          </div>
+          <div style={{ width:70 }} />
         </div>
       </div>
 
