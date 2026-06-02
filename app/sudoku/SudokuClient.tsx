@@ -226,7 +226,7 @@ export default function SudokuClient() {
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'10px 20px', flexShrink:0 }}>
        <div style={{ fontSize:18, fontWeight:900, color:GOLD }}>{fmt(timeMs)}</div>
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase' }}>{difficulty}</div>
-       <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>{errors.size > 0 ? errors.size+' errors' : ''}</div>
+        <div style={{ width:40 }} />
      </div>
 
      {/* Grid */}
@@ -236,11 +236,7 @@ export default function SudokuClient() {
            const row = Math.floor(idx/9)
            const col = idx%9
            const isSelected = selected === idx
-           const isError = errors.has(idx)
            const isInit = initial[idx]
-           const sameBox = selected !== null && Math.floor(Math.floor(selected/9)/3) === Math.floor(row/3) && Math.floor((selected%9)/3) === Math.floor(col/3)
-           const sameRowCol = selected !== null && (Math.floor(selected/9) === row || selected%9 === col)
-           const sameVal = selected !== null && val !== 0 && val === grid[selected]
 
            return (
              <div key={idx} onClick={() => handleCell(idx)}
@@ -248,8 +244,8 @@ export default function SudokuClient() {
                  aspectRatio:'1', display:'flex', alignItems:'center', justifyContent:'center',
                  fontSize: BOX_SIZE > 36 ? 18 : 15, fontWeight: isInit ? 900 : 700,
                  cursor: isInit ? 'default' : 'pointer',
-                 background: isSelected ? '#1565C0' : isError ? 'rgba(211,47,47,0.3)' : sameVal ? 'rgba(21,101,192,0.2)' : sameRowCol || sameBox ? 'rgba(255,255,255,0.05)' : '#1A1A1A',
-                 color: isError ? '#FF5252' : isInit ? '#fff' : '#90CAF9',
+                background: isSelected ? '#dbeafe' : '#fff',
+                color: isInit ? '#111' : '#1d4ed8',
                  borderRight: (col+1)%3===0 && col!==8 ? '2px solid #666' : '1px solid #333',
                  borderBottom: (row+1)%3===0 && row!==8 ? '2px solid #666' : '1px solid #333',
                }}>
