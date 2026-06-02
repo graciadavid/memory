@@ -119,8 +119,8 @@ export default function BlinkClient() {
        </div>
      </div>
 
-     <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 16px 80px', gap:16 }}>
-       <div style={{ display:'grid', gap: cols >= 5 ? 4 : 8, gridTemplateColumns:'repeat('+cols+',1fr)', width: cols >= 5 ? 'min(320px, calc(100vw - 32px))' : cols >= 4 ? 'min(340px, calc(100vw - 32px))' : 'min(300px, calc(100vw - 32px))' }}>
+     <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 16px 80px', gap:8 }}>
+       <div style={{ display:'grid', gap: cols >= 5 ? 4 : 8, gridTemplateColumns:'repeat('+cols+',1fr)', width: 'min(' + (cols * 60) + 'px, calc(100vw - 32px))', maxHeight: 'calc(100dvh - 200px)' }}>
          {Array.from({ length: total }, (_, idx) => {
            const isTarget = target.includes(idx)
            const isSelected = selected.includes(idx)
