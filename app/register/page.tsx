@@ -5,14 +5,10 @@ import { supabase } from '@/lib/supabase'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const GREEN = '#2E7D32'
 
-const AVATARS = [
-  'panda.png', 'lion.png', 'tiger.png', 'eagle.png', 'penguin.png', 'kangaroo.png', 'elephant.png', 'monkey.png',
-]
 
 export default function RegisterPage() {
   const [name, setName] = useState('')
   const [pin, setPin] = useState(['','','',''])
-  const [avatar, setAvatar] = useState(AVATARS[0])
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -27,9 +23,9 @@ export default function RegisterPage() {
     if (existing && existing.length > 0) {
       if (existing[0].password_hash !== pinHash) { setError('Wrong PIN for this name'); setSaving(false); return }
     } else {
-      await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pinHash, country, avatar_url: `${BASE}/${avatar}` })
+      await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pinHash, country })
     }
-    localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim(), avatar: `${BASE}/${avatar}` }))
+    localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
     setSaving(false)
     window.location.href = '/profile'
   }
@@ -41,31 +37,6 @@ export default function RegisterPage() {
 
       {/* Avatar picker */}
       <div style={{ marginBottom:24 }}>
-        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Choose your avatar</div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:10 }}>
-          {AVATARS.map(a => (
-            <div key={a} onClick={() => setAvatar(a)} style={{ background: avatar===a ? 'rgba(200,150,12,0.2)' : '#252525', borderRadius:12, padding:10, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', border: avatar===a ? '2px solid #C8960C' : '2px solid transparent' }}>
-              <img src={`${BASE}/${a}`} style={{ width:44, height:44, objectFit:'contain' }} />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Name */}
-      <div style={{ marginBottom:16 }}>
-        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Your name</div>
-        <input value={name} onChange={e => { setName(e.target.value); setError('') }}
-          placeholder="Enter your name" maxLength={20}
-          style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:16, fontWeight:800, fontFamily:'var(--font-nunito),sans-serif', outline:'none', boxSizing:'border-box' }} />
-      </div>
-
-      {/* PIN */}
-      <div style={{ marginBottom:24 }}>
-        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>4-digit PIN</div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:8 }}>
-          {pin.map((d,i) => (
-            <input key={i} id={`pin-${i}`} type="tel" maxLength={1} value={d}
-              onChange={e => { const v=e.target.value.replace(/\D/,''); const p=[...pin]; p[i]=v; setPin(p); setError(''); if(v&&i<3)(document.getElementById(`pin-${i+1}`) as HTMLInputElement)?.focus() }}
               style={{ width:'100%', height:52, textAlign:'center', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, fontFamily:'inherit', outline:'none', boxSizing:'border-box' }} />
           ))}
         </div>
