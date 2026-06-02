@@ -17,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={nunito.variable} style={{ margin: 0, padding: 0, background: '#1A1A1A' }}>
         <div style={{ maxWidth: 430, margin: '0 auto', minHeight: '100dvh', position: 'relative' }}>
+          <GAAnalytics />
           <Header />
           {children}
           <BottomNav />
