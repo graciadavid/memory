@@ -231,7 +231,7 @@ export default function SudokuClient() {
 
      {/* Grid */}
      <div style={{ display:'flex', justifyContent:'center', padding:'0 16px', flexShrink:0 }}>
-       <div style={{ display:'grid', gridTemplateColumns:'repeat(9,1fr)', gap:0, background:'#000', padding:2, borderRadius:8, width:'100%', maxWidth:380 }}>
+       <div style={{ display:'grid', gridTemplateColumns:'repeat(9,1fr)', gap:0, background:'#000', padding:2, borderRadius:4, width:'100%', maxWidth:380, boxShadow:'0 2px 8px rgba(0,0,0,0.3)' }}>
          {grid.map((val, idx) => {
            const row = Math.floor(idx/9)
            const col = idx%9
