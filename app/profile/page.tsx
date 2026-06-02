@@ -188,23 +188,37 @@ export default function ProfilePage() {
   return (
     <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'16px 16px 100px', fontFamily:'var(--font-nunito),sans-serif' }}>
 
-      {/* Profile header */}
-      <div style={{ background:'#252525', borderRadius:16, padding:'20px', marginBottom:12, display:'flex', alignItems:'center', gap:16 }}>
-        <div style={{ width:60, height:60, borderRadius:'50%', background:'#1A1A1A', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden' }}>
-          {profileData?.avatar_url
-            ? <img src={profileData.avatar_url} style={{ width:60, height:60, objectFit:'cover' }} />
-            : <img src={`${BASE}/nav-profile.webp`} style={{ width:36, height:36, objectFit:'contain', opacity:0.5 }} />
-          }
-        </div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:2 }}>{profile.name}</div>
-          {profileData?.country && <div style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{profileData.country}</div>}
-        </div>
-        {profileData?.streak > 0 && (
-          <div style={{ textAlign:'center' }}>
-            <div style={{ fontSize:22, fontWeight:900, color:'#FF6B35' }}>🔥{profileData.streak}</div>
-            <div style={{ fontSize:10, color:'rgba(255,255,255,0.3)', fontWeight:700 }}>days</div>
-          </div>
+
+     {/* Profile header */}
+     {(() => {
+       const streak = profileData?.streak || 0
+       const streakTitle = streak >= 100 ? 'Legend' : streak >= 51 ? 'Elite' : streak >= 21 ? 'Dedicated' : streak >= 11 ? 'Focused' : streak >= 6 ? 'Consistent' : streak >= 1 ? 'Beginner' : null
+       const bestRank = loaded && sortedGames.length > 0 ? sortedGames[0][1].rank : null
+       const avgPct = loaded && sortedGames.length > 0 ? Math.round(sortedGames.reduce((acc,[,{rank,total}]) => acc + rank/Math.max(total,1), 0) / sortedGames.length * 100) : null
+       return (
+         <div style={{ background:'#252525', borderRadius:16, padding:'20px', marginBottom:12, display:'flex', alignItems:'center', gap:14 }}>
+           <div style={{ width:56, height:56, borderRadius:'50%', background:'#1A1A1A', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, overflow:'hidden', border:'2px solid rgba(255,255,255,0.1)' }}>
+             {profileData?.avatar_url
+               ? <img src={profileData.avatar_url} style={{ width:56, height:56, objectFit:'cover' }} />
+               : <img src={`${BASE}/nav-profile.webp`} style={{ width:32, height:32, objectFit:'contain', opacity:0.5 }} />
+             }
+           </div>
+           <div style={{ flex:1 }}>
+             <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:6 }}>{profile.name}</div>
+             <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:4 }}>
+               <span style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>WORLD RANKING</span>
+               <span style={{ fontSize:18, fontWeight:900, color:'#C8960C' }}>{bestRank ? '#'+bestRank : '—'}</span>
+               {avgPct !== null && <span style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>Top {avgPct}%</span>}
+             </div>
+             <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+               <span style={{ fontSize:15 }}>🔥</span>
+               <span style={{ fontSize:15, fontWeight:900, color:'#FF6B35' }}>{streak} days</span>
+               {streakTitle && <span style={{ fontSize:11, fontWeight:900, color:'#FF6B35', background:'rgba(255,107,53,0.15)', borderRadius:6, padding:'2px 8px' }}>{streakTitle}</span>}
+             </div>
+           </div>
+         </div>
+       )
+     })()}
         )}
       </div>
 
