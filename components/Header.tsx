@@ -19,11 +19,9 @@ export default function Header() {
     setProfile(p)
     supabase.from('profiles').select('streak').eq('player_name', p.name).single()
       .then(({ data }: any) => { if (data?.streak) setStreak(data.streak) })
-    const rank = localStorage.getItem('memgenius_world_rank')
-    if (rank) setWorldRank(parseInt(rank))
+    supabase.from('global_rankings').select('world_rank').eq('player_name', p.name).single()
+      .then(({ data }: any) => { if (data?.world_rank) setWorldRank(data.world_rank) })
   }, [])
-
-  
 
   return (
     <header style={{
@@ -43,10 +41,10 @@ export default function Header() {
           </div>
         )}
         {profile && worldRank && (
-          <a href="/rankings" style={{ textDecoration:'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <img src={`${BASE}/population.png`} style={{ width: 20, height: 20, objectFit: 'contain' }} />
-            <span style={{ fontSize: 15, fontWeight: 900, color: 'rgba(255,255,255,0.6)' }}>#{worldRank}</span>
-          </a>
+            <span style={{ fontSize: 15, fontWeight: 900, color: 'rgba(255,255,255,0.5)' }}>#{worldRank}</span>
+          </div>
         )}
       </div>
 
@@ -56,7 +54,7 @@ export default function Header() {
         <span style={{ fontSize: 17, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>MemGenius</span>
       </a>
 
-      {/* Right — avatar inicial */}
+      {/* Right — avatar */}
       <div style={{ minWidth: 80, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
         <a href="/profile" style={{ textDecoration: 'none' }}>
           <div style={{
