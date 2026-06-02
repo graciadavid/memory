@@ -29,7 +29,8 @@ export default function DigitsClient() {
     data.forEach((s:any) => { if (!best[s.player_name] || s.level > best[s.player_name]) best[s.player_name] = s.level })
     const sorted = Object.entries(best).sort((a,b) => (b[1] as number)-(a[1] as number))
     setTop5(sorted.slice(0,5).map(([name,l]) => ({name, score: l+' digits'})))
-    if (profile?.name && best[profile.name] !== undefined) setMyBest(best[profile.name])
+    const pName = profileRef.current?.name || JSON.parse(localStorage.getItem('memgenius_profile') || '{}').name
+    if (pName && best[pName] !== undefined) setMyBest(best[pName])
   }, [profile?.name])
 
   useEffect(() => { loadData() }, [loadData])

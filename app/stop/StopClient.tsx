@@ -34,7 +34,8 @@ export default function StopClient() {
     data.forEach((s:any) => { if (!best[s.player_name] || s.difference_ms < best[s.player_name]) best[s.player_name] = s.difference_ms })
     const sorted = Object.entries(best).sort((a,b) => (a[1] as number)-(b[1] as number))
     setTop5(sorted.slice(0,5).map(([name,ms]) => ({name, score:`${ms}ms`})))
-    if (profile?.name && best[profile.name] !== undefined) setMyBest(best[profile.name])
+    const pName = profileRef.current?.name || JSON.parse(localStorage.getItem('memgenius_profile') || '{}').name
+    if (pName && best[pName] !== undefined) setMyBest(best[pName])
   }, [profile?.name])
 
   useEffect(() => { loadData() }, [loadData])
