@@ -185,11 +185,7 @@ export default function ProfilePage() {
   const nextLevel = STREAK_LEVELS.find(l => l.min > streak)
 
   const sortedGames = Object.entries(ranks).sort((a,b) => {
-    const pctA = a[1].rank / a[1].total
-    const pctB = b[1].rank / b[1].total
-    return pctA - pctB
-  })
-
+  const sortedGames = Object.entries(ranks).sort((a,b) => a[1].rank - b[1].rank)
   const topGames = sortedGames.filter(([,{rank,total}]) => rank/total <= 0.1)
   const midGames = sortedGames.filter(([,{rank,total}]) => rank/total > 0.1 && rank/total <= 0.5)
   const lowGames = sortedGames.filter(([,{rank,total}]) => rank/total > 0.5)
