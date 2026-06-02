@@ -139,6 +139,17 @@ export default function ProfilePage() {
   const [totalPlayers, setTotalPlayers] = useState(0)
 
   useEffect(() => {
+    const onGameResult = () => {
+      if (profile?.name) {
+        supabase.from('profiles').select('*').eq('player_name', profile.name).single()
+          .then(({ data }: any) => setProfileData(data))
+      }
+    }
+    window.addEventListener('gameResult', onGameResult)
+    return () => window.removeEventListener('gameResult', onGameResult)
+  }, [profile?.name])
+
+  useEffect(() => {
     if (!profile?.name) return
     supabase.from('profiles').select('*').eq('player_name', profile.name).single()
       .then(({ data }: any) => setProfileData(data))
