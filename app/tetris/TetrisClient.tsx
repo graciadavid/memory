@@ -243,14 +243,14 @@ export default function TetrisClient() {
  const display = renderBoard()
 
  return (
-   <main style={{ height:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', overflow:'hidden' }}>
+   <main style={{ height:'100dvh', background:'#1A1A1A', fontFamily:'var(--font-nunito),sans-serif', display:'flex', flexDirection:'column', overflow:'hidden', position:'fixed', width:'100%', maxWidth:430 }}>
      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 20px', flexShrink:0 }}>
        <div style={{ fontSize:18, fontWeight:900, color:GOLD }}>{score.toLocaleString()}</div>
        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>TETRIS</div>
        <div style={{ fontSize:14, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>Lv {level}</div>
      </div>
 
-     <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'4px 16px 0', overflow:'hidden', maxHeight:'calc(100dvh - 180px)' }}
+     <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'4px 16px', overflow:'hidden' }}
        onTouchStart={e => setTouchX(e.touches[0].clientX)}
        onTouchEnd={e => {
          if (touchX === null) return
@@ -259,14 +259,14 @@ export default function TetrisClient() {
          else rotatePiece()
          setTouchX(null)
        }}>
-       <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gap:1, background:'#111', padding:3, borderRadius:8, width:'min(260px, calc(100vw - 48px))', aspectRatio:'10/20' }}>
+       <div style={{ display:'grid', gridTemplateColumns:'repeat(10, 1fr)', gap:1, background:'#111', padding:3, borderRadius:8, width:'min(220px, 45vw)', aspectRatio:'1/2' }}>
          {display.map((row, r) => row.map((cell, c) => (
            <div key={r+'-'+c} style={{ borderRadius:1, background: cell || '#1a1a1a', border: cell ? 'none' : '1px solid #1f1f1f', aspectRatio:'1' }} />
          )))}
        </div>
      </div>
 
-     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, padding:'8px 16px 80px', flexShrink:0, background:'#1A1A1A' }}>
+     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, padding:'8px 16px 80px', flexShrink:0 }}>
        <button onPointerDown={() => move(-1)} style={{ padding:'14px', borderRadius:12, border:'none', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>←</button>
        <button onPointerDown={drop} style={{ padding:'14px', borderRadius:12, border:'none', background:GREEN, color:'#fff', fontSize:18, fontWeight:900, cursor:'pointer', fontFamily:'inherit', boxShadow:'0 4px 0 #1B5E20' }}>DROP</button>
        <button onPointerDown={() => move(1)} style={{ padding:'14px', borderRadius:12, border:'none', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, cursor:'pointer', fontFamily:'inherit' }}>→</button>
