@@ -28,7 +28,6 @@ const GAMES = [
   { label: 'Wordly', table: 'wordle_scores', field: 'attempts', filter: null, lower: true, href: '/wordly' },
   { label: '2048', table: 'game2048_scores', field: 'score', filter: null, lower: false, href: '/2048' },
   { label: 'Blackjack', table: 'blackjack_scores', field: 'chips', filter: null, lower: false, href: '/blackjack' },
-  { label: 'Tetris', table: 'tetris_scores', field: 'score', filter: null, lower: false, href: '/tetris' },
   { label: 'Higher or Lower Pop', table: 'higher_lower_scores', field: 'level', filter: { category: 'population' }, lower: false, href: '/higherorlower/population' },
   { label: 'Higher or Lower Area', table: 'higher_lower_scores', field: 'level', filter: { category: 'area' }, lower: false, href: '/higherorlower/area' },
 ]
