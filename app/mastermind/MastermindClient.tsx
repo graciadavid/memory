@@ -134,7 +134,7 @@ export default function MastermindClient() {
           <div key={i} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
             <div style={{ display:'flex', gap:6, flex:1 }}>
               {att.guess.map((c,j) => (
-                <div key={j} style={{ flex:1, height:44, borderRadius:10, background:COLORS[c], boxShadow:'0 2px 4px rgba(0,0,0,0.3)' }} />
+                <div key={j} style={{ flex:1, height:44, borderRadius:10, background:COLORS[c], boxShadow:'0 2px 4px rgba(0,0,0,0.3)', border:'2px solid rgba(255,255,255,0.15)' }} />
               ))}
             </div>
             <div style={{ display:'flex', gap:4, marginLeft:4 }}>
@@ -148,7 +148,7 @@ export default function MastermindClient() {
         {/* Current guess */}
         <div style={{ display:'flex', gap:8, marginBottom:8, width:'100%' }}>
           {Array.from({ length: CODE_LENGTH }).map((_, i) => (
-            <div key={i} style={{ flex:1, height:44, borderRadius:10, background: current[i] !== undefined ? COLORS[current[i]] : '#2a2a2a', border:'2px solid rgba(255,255,255,0.1)' }} />
+            <div key={i} style={{ flex:1, height:44, borderRadius:10, background: current[i] !== undefined ? COLORS[current[i]] : '#2a2a2a', border:'2px solid rgba(255,255,255,0.15)', boxShadow: current[i] !== undefined ? '0 2px 4px rgba(0,0,0,0.3)' : 'none' }} />
           ))}
         </div>
       </div>
@@ -161,7 +161,7 @@ export default function MastermindClient() {
           ))}
         </div>
         <div style={{ display:'flex', gap:10 }}>
-          <button onClick={removeColor} style={{ flex:1, padding:'12px', borderRadius:12, border:'none', background:'#252525', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Erase</button>
+          <button onClick={removeColor} style={{ flex:1, padding:'12px', borderRadius:12, border:'none', background:'#D32F2F', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 4px 0 #B71C1C' }}>Erase</button>
           <button onClick={submitGuess} disabled={current.length !== CODE_LENGTH}
             style={{ flex:2, padding:'12px', borderRadius:12, border:'none', background: current.length === CODE_LENGTH ? GREEN : '#252525', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor: current.length === CODE_LENGTH ? 'pointer' : 'default', opacity: current.length === CODE_LENGTH ? 1 : 0.5, boxShadow: current.length === CODE_LENGTH ? '0 4px 0 #1B5E20' : 'none' }}>
             Submit →
