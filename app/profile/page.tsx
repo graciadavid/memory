@@ -218,18 +218,18 @@ export default function ProfilePage() {
               <div style={{ fontSize:28, fontWeight:900, color:'#FF6B35', lineHeight:1 }}>{streak} <span style={{ fontSize:16, fontWeight:700 }}>days</span></div>
               {streakTitle && <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,107,53,0.7)', marginTop:3, letterSpacing:1, textTransform:'uppercase' }}>{streakTitle}</div>}
             </div>
-          <button onClick={() => {
-            const text = 'I am ranked #' + worldRank + ' in the world on MemGenius 🧠\n🔥 ' + streak + ' day streak\nCan you beat me? memgenius.com'
-            if (navigator.share) navigator.share({ text: text, url: 'https://memgenius.com' })
-            else navigator.clipboard.writeText(text)
-          }} style={{ width:'100%', padding:'14px', borderRadius:14, border:'none', background:'#C8960C', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer', boxShadow:'0 5px 0 #8B6914', marginTop:16 }}>
-            Share my world ranking →
-          </button>
           </div>
         </div>
       )
      })()}
 
+     <button onClick={() => {
+       const text = "I am ranked #" + worldRank + " in the world on MemGenius 🧠\n🔥 " + (profileData?.streak || 0) + " day streak\nCan you beat me? memgenius.com"
+       if (navigator.share) navigator.share({ text: text, url: "https://memgenius.com" })
+       else navigator.clipboard.writeText(text)
+     }} style={{ width:"100%", padding:"16px", borderRadius:14, border:"none", background:"#2E7D32", color:"#fff", fontSize:16, fontWeight:900, fontFamily:"var(--font-nunito),sans-serif", cursor:"pointer", boxShadow:"0 6px 0 #1B5E20", marginBottom:12 }}>
+       🌍 Share my world ranking →
+     </button>
       {loaded && top10.length > 0 && (
         <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginBottom:12 }}>
           <div style={{ fontSize:11, fontWeight:800, color:'#69F0AE', letterSpacing:2, marginBottom:12 }}><img src='https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/winner.png' style={{ width:18, height:18, objectFit:'contain', verticalAlign:'middle', marginRight:4 }} />TOP 10%</div>
