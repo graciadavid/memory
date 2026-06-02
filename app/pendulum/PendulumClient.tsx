@@ -28,7 +28,7 @@ export default function PendulumClient() {
 
  const loadData = useCallback(async () => {
    const { data } = await supabase.from('precision_scores')
-     .select('player_name, difference_ms').eq('game_type', 'pendulum')
+     .select('player_name, difference_ms').eq('game_type', 'pendulum').not('player_name', 'is', null)
      .order('difference_ms', { ascending: true }).limit(5000)
    if (!data) return
    const best: Record<string,number> = {}
@@ -116,7 +116,7 @@ export default function PendulumClient() {
    window.dispatchEvent(new Event('gameResult'))
 
    const { count } = await supabase.from('precision_scores')
-     .select('player_name', { count: 'exact', head: true }).eq('game_type', 'pendulum').lt('difference_ms', diff)
+     .select('player_name', { count: 'exact', head: true }).eq('game_type', 'pendulum').not('player_name', 'is', null).lt('difference_ms', diff)
    setWorldRank((count ?? 0) + 1)
 
    if (profile?.name) {
