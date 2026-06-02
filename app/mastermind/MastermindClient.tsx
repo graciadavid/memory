@@ -148,7 +148,7 @@ export default function MastermindClient() {
         {/* Current guess */}
         <div style={{ display:'flex', gap:8, marginBottom:8, width:'100%' }}>
           {Array.from({ length: CODE_LENGTH }).map((_, i) => (
-            <div key={i} style={{ flex:1, height:44, borderRadius:10, background: current[i] !== undefined ? COLORS[current[i]] : 'rgba(255,255,255,0.1)', border:'2px solid rgba(255,255,255,0.2)' }} />
+            <div key={i} style={{ flex:1, height:44, borderRadius:10, background: current[i] !== undefined ? COLORS[current[i]] : '#2a2a2a', border:'2px solid rgba(255,255,255,0.1)' }} />
           ))}
         </div>
       </div>
