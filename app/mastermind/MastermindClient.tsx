@@ -161,7 +161,7 @@ export default function MastermindClient() {
           ))}
         </div>
         <div style={{ display:'flex', gap:10 }}>
-          <button onClick={removeColor} style={{ flex:1, padding:'12px', borderRadius:12, border:'none', background:'#252525', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>⌫</button>
+          <button onClick={removeColor} style={{ flex:1, padding:'12px', borderRadius:12, border:'none', background:'#252525', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>Erase</button>
           <button onClick={submitGuess} disabled={current.length !== CODE_LENGTH}
             style={{ flex:2, padding:'12px', borderRadius:12, border:'none', background: current.length === CODE_LENGTH ? GREEN : '#252525', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor: current.length === CODE_LENGTH ? 'pointer' : 'default', opacity: current.length === CODE_LENGTH ? 1 : 0.5, boxShadow: current.length === CODE_LENGTH ? '0 4px 0 #1B5E20' : 'none' }}>
             Submit →
