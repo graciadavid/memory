@@ -98,7 +98,7 @@ export function GameResultScreen({ result, resultColor, background, worldRank, h
 
       {/* Save result if no profile */}
       {!hasProfile && (
-        <a href="/register" style={{ textDecoration:'none', display:'block', width:'100%' }}>
+        <a href="/profile" style={{ textDecoration:'none', display:'block', width:'100%' }}>
           <div style={{ background:'#D32F2F', borderRadius:16, padding:'16px', textAlign:'center', boxShadow:'0 4px 0 #B71C1C' }}>
             <div style={{ fontSize:15, fontWeight:900, color:'#fff' }}>💾 Save your result</div>
             <div style={{ fontSize:12, color:'rgba(255,255,255,0.7)', fontWeight:700, marginTop:2 }}>Create your free profile →</div>
