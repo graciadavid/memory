@@ -40,6 +40,41 @@ const SECTIONS = [
   },
 ]
 
+'use client'
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
+
+const GOLD = '#C8960C'
+const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+
+function WorldRankingWidget() {
+ const [players, setPlayers] = useState<any[]>([])
+
+ useEffect(() => {
+   supabase.from('global_rankings').select('*').order('world_rank', { ascending: true }).limit(10)
+     .then(({ data }: any) => { if (data) setPlayers(data) })
+ }, [])
+
+ return (
+   <div style={{ background:'#252525', borderRadius:16, overflow:'hidden', marginBottom:24 }}>
+     <div style={{ padding:'14px 16px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', gap:10 }}>
+       <img src={`${BASE}/winner.png`} style={{ width:28, height:28, objectFit:'contain' }} />
+       <div style={{ fontSize:16, fontWeight:900, color:'#fff' }}>World Ranking</div>
+     </div>
+     {players.map((p, i) => (
+       <div key={p.player_name} style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 16px', borderBottom:'1px solid rgba(255,255,255,0.04)' }}>
+         <div style={{ fontSize:14, fontWeight:900, color: i===0?GOLD:i===1?'#aaa':i===2?'#cd7f32':'rgba(255,255,255,0.3)', width:28, textAlign:'center' }}>
+           {i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+p.world_rank}
+         </div>
+         <div style={{ flex:1, fontSize:14, fontWeight:800, color:'#fff' }}>{p.player_name}</div>
+         <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>Top {p.top_pct}%</div>
+         <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.3)' }}>{p.games_played} games</div>
+       </div>
+     ))}
+   </div>
+ )
+}
+
 export default function MorePage() {
   const [profile, setProfile] = useState<any>(null)
 
@@ -51,6 +86,7 @@ export default function MorePage() {
   return (
     <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'16px 16px 100px' }}>
       <div style={{ fontSize:22, fontWeight:900, color:'#fff', marginBottom:20 }}>More</div>
+      <WorldRankingWidget />
 
       {SECTIONS.map(section => (
         <div key={section.title} style={{ marginBottom:24 }}>
