@@ -197,38 +197,38 @@ export default function ProfilePage() {
       const globalRank = loaded && sortedGames.length > 0
         ? Math.round(sortedGames.reduce((acc,[,{rank,total}]) => acc + rank/Math.max(total,1), 0) / sortedGames.length * totalPlayers)
         : null
-      if (globalRank) localStorage.setItem('memgenius_world_rank', String(globalRank))
+      if (globalRank) { localStorage.setItem('memgenius_world_rank', String(globalRank)); }
       return (
-       <div style={{ background:'linear-gradient(135deg,#1A1200,#2D2000)', borderRadius:20, padding:'24px', marginBottom:12, border:'2px solid #C8960C40', boxShadow:'0 8px 32px rgba(200,150,12,0.15)' }}>
-         {/* Name + World Rank */}
-         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:20 }}>
-           <div>
-             <div style={{ fontSize:11, fontWeight:800, color:'rgba(200,150,12,0.6)', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Brain Athlete</div>
-             <div style={{ fontSize:32, fontWeight:900, color:'#fff', lineHeight:1 }}>{profile.name}</div>
-             {profileData?.country && <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.3)', marginTop:4 }}>{profileData.country}</div>}
-           </div>
-           <div style={{ textAlign:'right' }}>
-             <div style={{ fontSize:11, fontWeight:800, color:'rgba(200,150,12,0.6)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>World Ranking</div>
-             <div style={{ fontSize:52, fontWeight:900, color:'#C8960C', lineHeight:1, letterSpacing:-2 }}>{globalRank ? '#'+globalRank : '—'}</div>
-           </div>
-         </div>
-         {/* Streak */}
-         <div style={{ display:'flex', alignItems:'center', gap:12, background:'rgba(255,107,53,0.12)', borderRadius:14, padding:'14px 18px', border:'1px solid rgba(255,107,53,0.2)' }}>
-           <span style={{ fontSize:36 }}>🔥</span>
-           <div>
-             <div style={{ fontSize:28, fontWeight:900, color:'#FF6B35', lineHeight:1 }}>{streak} <span style={{ fontSize:16, fontWeight:700 }}>days</span></div>
-             {streakTitle && <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,107,53,0.7)', marginTop:3, letterSpacing:1, textTransform:'uppercase' }}>{streakTitle}</div>}
-           </div>
-         </div>
-       </div>
-     )
+        <div style={{ background:'linear-gradient(135deg,#1A1200,#2D2000)', borderRadius:20, padding:'24px', marginBottom:12, border:'2px solid rgba(200,150,12,0.25)', boxShadow:'0 8px 32px rgba(200,150,12,0.15)' }}>
+          <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:20 }}>
+            <div>
+              <div style={{ fontSize:11, fontWeight:800, color:'rgba(200,150,12,0.6)', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Brain Athlete</div>
+              <div style={{ fontSize:32, fontWeight:900, color:'#fff', lineHeight:1 }}>{profile.name}</div>
+              {profileData?.country && <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.3)', marginTop:4 }}>{profileData.country}</div>}
+            </div>
+            <div style={{ textAlign:'right' }}>
+              <div style={{ fontSize:11, fontWeight:800, color:'rgba(200,150,12,0.6)', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>World Ranking</div>
+              <div style={{ fontSize:52, fontWeight:900, color:'#C8960C', lineHeight:1, letterSpacing:-2 }}>{globalRank ? '#'+globalRank : '—'}</div>
+            </div>
+          </div>
+          <div style={{ display:'flex', alignItems:'center', gap:12, background:'rgba(255,107,53,0.12)', borderRadius:14, padding:'14px 18px', border:'1px solid rgba(255,107,53,0.2)' }}>
+            <span style={{ fontSize:36 }}>🔥</span>
+            <div>
+              <div style={{ fontSize:28, fontWeight:900, color:'#FF6B35', lineHeight:1 }}>{streak} <span style={{ fontSize:16, fontWeight:700 }}>days</span></div>
+              {streakTitle && <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,107,53,0.7)', marginTop:3, letterSpacing:1, textTransform:'uppercase' }}>{streakTitle}</div>}
+            </div>
+          </div>
+        </div>
+      )
+     })()}
+
       {!loaded && (
-        <div style={{ background:'#252525', borderRadius:16, padding:'20px', textAlign:'center', color:'rgba(255,255,255,0.3)', fontSize:14, fontWeight:700 }}>
         <div style={{ background:'#252525', borderRadius:16, padding:'20px', textAlign:'center', color:'rgba(255,255,255,0.3)', fontSize:14, fontWeight:700 }}>
           Loading rankings...
         </div>
       )}
 
+      {loaded && top10.length > 0 && (
       {loaded && top10.length > 0 && (
         <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginBottom:12 }}>
           <div style={{ fontSize:11, fontWeight:800, color:'#69F0AE', letterSpacing:2, marginBottom:12 }}><img src='https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/trophy.png' style={{ width:16, height:16, objectFit:'contain', verticalAlign:'middle', marginRight:4 }} />TOP 10%</div>
