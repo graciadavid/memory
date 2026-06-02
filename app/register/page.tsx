@@ -2,9 +2,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const GREEN = '#2E7D32'
-
 
 export default function RegisterPage() {
   const [name, setName] = useState('')
@@ -27,17 +25,29 @@ export default function RegisterPage() {
     }
     localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
     setSaving(false)
+    window.dispatchEvent(new Event('profileUpdated'))
     window.location.href = '/profile'
   }
 
   return (
-    <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'32px 20px 100px' }}>
+    <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'32px 20px 100px', fontFamily:'var(--font-nunito),sans-serif' }}>
       <div style={{ fontSize:24, fontWeight:900, color:'#fff', marginBottom:4 }}>Create your profile</div>
       <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:28 }}>Free · No email · Rank globally</div>
 
-      {/* Avatar picker */}
+      <div style={{ marginBottom:16 }}>
+        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Your name</div>
+        <input value={name} onChange={e => { setName(e.target.value); setError('') }}
+          placeholder="Enter your name" maxLength={20}
+          style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:16, fontWeight:800, fontFamily:'var(--font-nunito),sans-serif', outline:'none', boxSizing:'border-box' }} />
+      </div>
+
       <div style={{ marginBottom:24 }}>
-              style={{ width:'100%', height:52, textAlign:'center', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, fontFamily:'inherit', outline:'none', boxSizing:'border-box' }} />
+        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>4-digit PIN</div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:8 }}>
+          {pin.map((d,i) => (
+            <input key={i} id={'pin-'+i} type="tel" maxLength={1} value={d}
+              onChange={e => { const v=e.target.value.replace(/\D/,''); const p=[...pin]; p[i]=v; setPin(p); setError(''); if(v&&i<3)(document.getElementById('pin-'+(i+1)) as HTMLInputElement)?.focus() }}
+              style={{ height:56, textAlign:'center', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:22, fontWeight:900, fontFamily:'inherit', outline:'none' }} />
           ))}
         </div>
         <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:6 }}>Remember your PIN — it's how you log in</div>
