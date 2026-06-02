@@ -43,10 +43,10 @@ export default function Header() {
           </div>
         )}
         {profile && worldRank && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <a href="/rankings" style={{ textDecoration:'none', display: 'flex', alignItems: 'center', gap: 4 }}>
             <img src={`${BASE}/population.png`} style={{ width: 20, height: 20, objectFit: 'contain' }} />
             <span style={{ fontSize: 15, fontWeight: 900, color: 'rgba(255,255,255,0.6)' }}>#{worldRank}</span>
-          </div>
+          </a>
         )}
       </div>
 
