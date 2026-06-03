@@ -140,8 +140,7 @@ export default function BlackjackClient() {
        const finalChips = chips + (result === 'win' ? bet : result === 'lose' ? -bet : 0)
        const { count } = await supabase.from('blackjack_scores').select('player_name', { count: 'exact', head: true }).gt('chips', finalChips)
        setWorldRank((count ?? 0) + 1)
-       if (profile?.name) await supabase.from('blackjack_scores').insert({ player_name: profile.name, chips: finalChips })
-     supabase.rpc('update_streak', { p_player_name: profile.name })
+       if (profile?.name) { await supabase.from("blackjack_scores").insert({ player_name: profile.name, chips: finalChips }); supabase.rpc("update_streak", { p_player_name: profile.name }) }
      }
    }, 100)
  }, [dealerHand, deck, playerHand, bet, chips, profile?.name])
