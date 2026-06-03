@@ -66,8 +66,7 @@ export default function LetterRainClient() {
     setWorldRank((count ?? 0) + 1)
 
     if (profile?.name && finalLevel > 0) {
-      await supabase.from('letter_rain_scores').insert({ player_name: profile.name, level: finalLevel })
-     supabase.rpc('update_streak', { p_player_name: profile.name })    }
+      { await supabase.from('letter_rain_scores').insert({ player_name: profile.name, level: finalLevel }); supabase.rpc("update_streak", { p_player_name: profile.name }) }
   }, [profile?.name])
 
   const startLevel = useCallback((idx: number) => {
