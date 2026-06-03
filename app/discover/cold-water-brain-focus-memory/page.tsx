@@ -8,12 +8,10 @@ export default function Page() {
     <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'0 0 100px' }}>
       <div style={{ maxWidth:430, margin:'0 auto' }}>
 
-        {/* NAV */}
         <div style={{ padding:'16px 16px 0' }}>
           <a href="/discover" style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:700, textDecoration:'none', display:'block', marginBottom:16 }}>← Discover</a>
         </div>
 
-        {/* HERO IMAGE */}
         <div style={{ position:'relative', width:'100%', aspectRatio:'1/1', overflow:'hidden' }}>
           <img
             src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/ducha.png"
@@ -25,10 +23,8 @@ export default function Page() {
           <div style={{ position:'absolute', top:12, right:12, background:'rgba(0,0,0,0.5)', color:'rgba(255,255,255,0.6)', fontSize:10, fontWeight:700, padding:'4px 10px', borderRadius:20 }}>01 / Discover</div>
         </div>
 
-        {/* CONTENT */}
         <div style={{ padding:'0 16px' }}>
 
-          {/* TITLE */}
           <div style={{ fontSize:11, fontWeight:800, color:'#C8960C', letterSpacing:2, textTransform:'uppercase', marginBottom:8, marginTop:4 }}>Brain Science · 4 min read</div>
           <h1 style={{ fontSize:28, fontWeight:900, color:'#fff', marginBottom:12, lineHeight:1.15 }}>
             Cold Water Rewires Your Brain in 30 Seconds
@@ -37,7 +33,6 @@ export default function Page() {
             Science shows a brief cold shower floods your brain with the same chemical that ADHD medication targets — and you already have a shower at home.
           </p>
 
-          {/* STATS */}
           <div style={{ display:'flex', gap:8, marginBottom:24 }}>
             {[['300%','Focus boost'],['30s','Time needed'],['3h','Effect lasts']].map(([num, lbl]) => (
               <div key={lbl} style={{ flex:1, background:'#252525', borderRadius:12, padding:'12px 8px', textAlign:'center', border:'1px solid rgba(0,180,216,0.2)' }}>
@@ -49,7 +44,6 @@ export default function Page() {
 
           <div style={{ height:1, background:'rgba(255,255,255,0.07)', marginBottom:24 }} />
 
-          {/* SCIENCE */}
           <div style={{ fontSize:14, color:'rgba(255,255,255,0.7)', lineHeight:1.8, display:'flex', flexDirection:'column', gap:14 }}>
 
             <div style={{ fontSize:11, fontWeight:800, color:'#00b4d8', letterSpacing:2, textTransform:'uppercase' }}>The Science</div>
@@ -57,7 +51,6 @@ export default function Page() {
 
             <p>When cold water hits your skin, your nervous system fires an emergency signal upward. Your brain responds with a surge of <strong style={{color:'#fff'}}>norepinephrine</strong> — the neurotransmitter that controls attention, alertness, and memory encoding.</p>
 
-            {/* SCIENCE CARD */}
             <div style={{ background:'#252525', borderRadius:14, padding:'16px', border:'1px solid rgba(0,180,216,0.2)' }}>
               <div style={{ fontSize:10, fontWeight:800, color:'#00b4d8', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>📄 Peer-reviewed study</div>
               <p style={{ fontSize:13, color:'rgba(255,255,255,0.6)', lineHeight:1.7, margin:0 }}>Cold water immersion increases norepinephrine by up to <strong style={{color:'#fff'}}>300%</strong> and dopamine by up to <strong style={{color:'#fff'}}>250%</strong> — both critical for focus and learning.</p>
@@ -66,7 +59,6 @@ export default function Page() {
 
             <p>This is the exact same neurochemical pathway targeted by common ADHD medications. Except this is free, has no side effects, and takes 30 seconds.</p>
 
-            {/* QUOTE */}
             <div style={{ borderLeft:'3px solid #00b4d8', paddingLeft:14, background:'rgba(0,180,216,0.05)', borderRadius:'0 10px 10px 0', padding:'12px 14px' }}>
               <p style={{ fontSize:15, fontWeight:900, color:'#fff', lineHeight:1.3, margin:0 }}>"Cold exposure is one of the most powerful tools for shifting brain state available to humans."</p>
               <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:8 }}>— Dr. Andrew Huberman, Stanford Neuroscience Lab</div>
@@ -76,7 +68,6 @@ export default function Page() {
 
             <div style={{ height:1, background:'rgba(255,255,255,0.07)' }} />
 
-            {/* HOW TO */}
             <div style={{ fontSize:11, fontWeight:800, color:'#00b4d8', letterSpacing:2, textTransform:'uppercase' }}>Apply It Today</div>
             <h2 style={{ fontSize:18, fontWeight:900, color:'#fff', lineHeight:1.2 }}>The Exact Protocol. 3 Steps.</h2>
 
@@ -97,7 +88,6 @@ export default function Page() {
 
           </div>
 
-          {/* CTA */}
           <a href="/" style={{ textDecoration:'none', display:'block', marginTop:28 }}>
             <div style={{ background:'linear-gradient(135deg, #0077b6, #005f8e)', borderRadius:16, padding:'20px 16px', textAlign:'center' }}>
               <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:6 }}>Your Brain is Ready.</div>
@@ -106,14 +96,14 @@ export default function Page() {
             </div>
           </a>
 
-          {/* NEXT TEASER */}
+          {/* NEXT TEASER → ahora apunta a sleep */}
           <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginTop:16, border:'1px solid rgba(255,255,255,0.06)' }}>
             <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.25)', letterSpacing:2, textTransform:'uppercase', marginBottom:10 }}>🔒 Tomorrow's discovery</div>
             <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-              <div style={{ fontSize:32, opacity:0.3 }}>🏃</div>
+              <div style={{ fontSize:32, opacity:0.3 }}>😴</div>
               <div>
-                <div style={{ fontSize:14, fontWeight:900, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>The Exercise That Creates New Neurons</div>
-                <div style={{ fontSize:12, color:'rgba(255,255,255,0.25)', lineHeight:1.5, marginBottom:6 }}>Scientists found one specific movement grows brain cells at any age.</div>
+                <div style={{ fontSize:14, fontWeight:900, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>The 90-Minute Sleep Cycle That Doubles Your Memory</div>
+                <div style={{ fontSize:12, color:'rgba(255,255,255,0.25)', lineHeight:1.5, marginBottom:6 }}>It is not about how many hours you sleep. It is about when you wake up.</div>
                 <div style={{ fontSize:11, fontWeight:800, color:'#C8960C' }}>Come back tomorrow to unlock →</div>
               </div>
             </div>

@@ -7,8 +7,8 @@ export const metadata = {
 
 const POSTS = [
   { slug: 'cold-water-brain-focus-memory', title: 'Cold Water Rewires Your Brain in 30 Seconds', desc: 'A 30-second cold shower increases norepinephrine by 300%. Here is exactly how to use it.', emoji: '💧', tag: 'Focus', locked: false },
+  { slug: 'sleep-cycles-memory', title: 'The 90-Minute Sleep Cycle That Doubles Your Memory', desc: 'It is not about how many hours you sleep. It is about when you wake up.', emoji: '😴', tag: 'Sleep', locked: false },
   { slug: 'exercise-neurogenesis-brain', title: 'The Exercise That Creates New Neurons', desc: 'Scientists found one specific movement grows brain cells at any age. It is not what you think.', emoji: '🏃', tag: 'Memory', locked: true },
-  { slug: 'perfect-nap-duration-memory', title: 'The Exact Nap Length for Memory', desc: 'Too short does nothing. Too long leaves you groggy. The sweet spot is very specific.', emoji: '😴', tag: 'Sleep', locked: true },
   { slug: 'forgetting-curve-memory-hack', title: 'Why You Forget 70% of Everything', desc: 'Ebbinghaus discovered the forgetting curve in 1885. Most people still ignore the fix.', emoji: '📉', tag: 'Learning', locked: true },
   { slug: 'sugar-cognitive-decline-brain', title: 'What Sugar Does to Your Memory', desc: 'The effect is faster and more measurable than most people expect.', emoji: '🍬', tag: 'Nutrition', locked: true },
 ]
