@@ -80,7 +80,7 @@ function RegisterForm() {
     setSaving(false)
     window.dispatchEvent(new Event('profileUpdated'))
     window.location.reload()
-  }
+    const isNew = !existing || existing.length === 0; if (isNew) { window.location.href = "/training" } else { window.location.reload() }
 
   return (
     <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'32px 20px 100px', fontFamily:'var(--font-nunito),sans-serif' }}>
