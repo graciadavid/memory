@@ -68,7 +68,7 @@ function RegisterForm() {
     if (pin.join('').length !== 4) { setError('Enter a 4-digit PIN'); return }
     setSaving(true); setError('')
     let country = ''
-    try { const geo = await fetch('https://ipapi.co/json/'); const d = await geo.json(); country = d.country_code || '' } catch {}
+    try { const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 2000); const geo = await fetch("https://ipapi.co/json/", { signal: controller.signal }); clearTimeout(timeout); const d = await geo.json(); country = d.country_code || "" } catch {}
     const pinHash = btoa(pin.join(''))
     const { data: existing } = await supabase.from('profiles').select('player_name, password_hash').eq('player_name', name.trim()).limit(1)
     if (existing && existing.length > 0) {
