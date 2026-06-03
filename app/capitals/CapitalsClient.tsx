@@ -164,7 +164,7 @@ export default function CapitalsClient() {
    const { count } = await supabase.from('capitals_scores').select('player_name', { count: 'exact', head: true }).gt('level', finalLevel)
    setWorldRank((count ?? 0) + 1)
    if (profile?.name && finalLevel > 0) await supabase.from('capitals_scores').insert({ player_name: profile.name, level: finalLevel })
- }, [profile?.name])
+     supabase.rpc('update_streak', { p_player_name: profile.name }) }, [profile?.name])
 
  const startGame = () => {
    const shuffled = shuffle(COUNTRIES)

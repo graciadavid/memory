@@ -135,7 +135,7 @@ export default function Game2048Client() {
    const { count } = await supabase.from('game2048_scores').select('player_name', { count: 'exact', head: true }).gt('best_tile', Math.max(...board.flat().filter(v => v > 0)))
    setWorldRank((count ?? 0) + 1)
    if (profile?.name && finalScore > 0) await supabase.from('game2048_scores').insert({ player_name: profile.name, best_tile: Math.max(...board.flat().filter(v => v > 0)), time_ms: Date.now() - startTimeRef.current })
- }, [profile?.name])
+     supabase.rpc('update_streak', { p_player_name: profile.name }) }, [profile?.name])
 
  const handleMove = useCallback((dir: string) => {
    if (phase !== 'playing') return

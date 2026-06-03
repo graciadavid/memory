@@ -98,7 +98,7 @@ export default function PokeClient() {
      const { count } = await supabase.from('poke_scores').select('player_name', { count: 'exact', head: true }).gt('level', level - 1)
      setWorldRank((count ?? 0) + 1)
      if (profile?.name && level > 1) await supabase.from('poke_scores').insert({ player_name: profile.name, level: level - 1 })
-   }
+     supabase.rpc('update_streak', { p_player_name: profile.name })   }
  }, [bowl, selected, level, startLevel, profile?.name])
 
  const worldRecord = top5[0] ? { value: top5[0].score, name: top5[0].name } : null

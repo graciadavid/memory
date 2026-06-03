@@ -92,7 +92,7 @@ export default function SequenceClient() {
      const { count } = await supabase.from('sequence_scores').select('player_name', { count: 'exact', head: true }).gt('level', finalLevel)
      setWorldRank((count ?? 0) + 1)
      if (profile?.name && finalLevel > 0) await supabase.from('sequence_scores').insert({ player_name: profile.name, level: finalLevel })
-     return
+     supabase.rpc('update_streak', { p_player_name: profile.name })     return
    }
 
    if (newInput.length === sequence.length) {

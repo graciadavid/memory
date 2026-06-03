@@ -121,7 +121,7 @@ export default function PendulumClient() {
 
    if (profile?.name) {
      await supabase.from('precision_scores').insert({ player_name: profile.name, difference_ms: diff, game_type: 'pendulum' })
-   }
+     supabase.rpc('update_streak', { p_player_name: profile.name })   }
  }, [phase, profile?.name])
 
  useEffect(() => { return () => cancelAnimationFrame(animRef.current) }, [])

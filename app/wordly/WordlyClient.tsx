@@ -126,7 +126,7 @@ export default function WordlyClient() {
      const { count } = await supabase.from('wordle_scores').select('player_name', { count: 'exact', head: true }).lt('attempts', tries)
      setWorldRank((count ?? 0) + 1)
      if (profile?.name) await supabase.from('wordle_scores').insert({ player_name: profile.name, attempts: tries })
-   } else if (newGuesses.length >= MAX_ATTEMPTS) {
+     supabase.rpc('update_streak', { p_player_name: profile.name })   } else if (newGuesses.length >= MAX_ATTEMPTS) {
      setWon(false)
      setPhase('result')
      window.dispatchEvent(new Event('gameResult'))
