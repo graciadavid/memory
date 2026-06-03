@@ -30,7 +30,7 @@ function WelcomePopup({ onComplete }: { onComplete: () => void }) {
     } else {
       let country = ''
       try { const controller = new AbortController(); setTimeout(() => controller.abort(), 2000); const geo = await fetch('https://ipapi.co/json/', { signal: controller.signal }); const d = await geo.json(); country = d.country_code || '' } catch {}
-      await supabase.from("profiles").upsert({ player_name: name.trim(), password_hash: pinHash, country, streak: 1, last_played: new Date().toISOString().split("T")[0] })
+      await supabase.from("profiles").upsert({ player_name: name.trim(), password_hash: pinHash, country, streak: 1, last_played_date: new Date().toISOString().split("T")[0] })
     }
     localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
     setSaving(false)
