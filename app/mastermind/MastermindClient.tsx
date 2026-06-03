@@ -89,8 +89,8 @@ export default function MastermindClient() {
       const tries = newAttempts.length
       const { count } = await supabase.from('mastermind_scores').select('player_name', { count: 'exact', head: true }).lt('attempts', tries)
       setWorldRank((count ?? 0) + 1)
-      if (profile?.name) await supabase.from('mastermind_scores').insert({ player_name: profile.name, attempts: tries })
-     supabase.rpc('update_streak', { p_player_name: profile.name })    } else if (newAttempts.length >= MAX_ATTEMPTS) {
+      if (profile?.name) { await supabase.from("mastermind_scores").insert({ player_name: profile.name, attempts: tries }); supabase.rpc("update_streak", { p_player_name: profile.name }) }
+    } else if (newAttempts.length >= MAX_ATTEMPTS) {
       setWon(false)
       setPhase('result')
       window.dispatchEvent(new Event('gameResult'))
