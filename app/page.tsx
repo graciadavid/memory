@@ -46,13 +46,13 @@ function WelcomePopup({ onComplete }: { onComplete: () => void }) {
             <div style={{ position:'absolute', left:-8, top:16, width:0, height:0, borderTop:'8px solid transparent', borderBottom:'8px solid transparent', borderRight:'8px solid #252525' }} />
             <div style={{ fontSize:13, fontWeight:800, color:GREEN, marginBottom:4 }}>Mem Genius</div>
             <div style={{ fontSize:15, fontWeight:700, color:'#fff', lineHeight:1.6 }}>
-              Hola, soy Mem Genius.<br />Si juegas cada día, tu cerebro mejorará muchísimo.
+              Hi, I am Mem Genius.<br />Train every day and your brain will improve massively.
             </div>
           </div>
         </div>
-        <input value={name} onChange={e => { setName(e.target.value); setError('') }} placeholder="Tu nombre" maxLength={20} autoFocus
+        <input value={name} onChange={e => { setName(e.target.value); setError('') }} placeholder="Your name" maxLength={20} autoFocus
           style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:16, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', marginBottom:16 }} />
-        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Código secreto</div>
+        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Secret code</div>
         <div style={{ display:'flex', gap:8, marginBottom:20 }}>
           {pin.map((d,i) => (
             <input key={i} id={`wp-${i}`} type="tel" maxLength={1} value={d}
@@ -64,10 +64,10 @@ function WelcomePopup({ onComplete }: { onComplete: () => void }) {
         {error && <div style={{ fontSize:13, color:'#FF5252', fontWeight:800, marginBottom:12 }}>{error}</div>}
         <button onClick={handleSave} disabled={saving}
           style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E20' }}>
-          {saving ? 'Guardando...' : '¡Empezar a entrenar! →'}
+          {saving ? 'Guardando...' : 'Start training! →'}
         </button>
         <div style={{ fontSize:11, color:'rgba(255,255,255,0.25)', fontWeight:700, textAlign:'center', marginTop:10 }}>
-          Gratis · Sin email · Ranking mundial
+          Free · No email · World ranking
         </div>
       </div>
     </div>
