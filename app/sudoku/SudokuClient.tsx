@@ -172,8 +172,8 @@ export default function SudokuClient() {
      window.dispatchEvent(new Event('gameResult'))
      const { count } = await supabase.from('sudoku_scores').select('player_name', { count: 'exact', head: true }).lt('time_ms', elapsed)
      setWorldRank((count ?? 0) + 1)
-     if (profile?.name) await supabase.from('sudoku_scores').insert({ player_name: profile.name, time_ms: elapsed, difficulty })
-     supabase.rpc('update_streak', { p_player_name: profile.name })   }
+     if (profile?.name) { await supabase.from("sudoku_scores").insert({ player_name: profile.name, time_ms: elapsed, difficulty }); supabase.rpc("update_streak", { p_player_name: profile.name }) }
+ }
  }, [selected, initial, grid, solution, errors, profile?.name, difficulty])
 
  useEffect(() => {
