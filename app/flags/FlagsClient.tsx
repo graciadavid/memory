@@ -119,8 +119,8 @@ export default function FlagsClient() {
     window.dispatchEvent(new Event('gameResult'))
     const { count } = await supabase.from('flag_scores').select('player_name', { count: 'exact', head: true }).gt('level', finalLevel)
     setWorldRank((count ?? 0) + 1)
-    if (profile?.name && finalLevel > 0) await supabase.from('flag_scores').insert({ player_name: profile.name, level: finalLevel })
-     supabase.rpc('update_streak', { p_player_name: profile.name })  }, [profile?.name])
+   if (profile?.name && finalLevel > 0) { await supabase.from("flag_scores").insert({ player_name: profile.name, level: finalLevel }); supabase.rpc("update_streak", { p_player_name: profile.name }) }
+ }, [profile?.name])
 
   const handleAnswer = useCallback((country: typeof COUNTRIES[0]) => {
     if (feedback) return
