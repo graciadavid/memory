@@ -77,6 +77,7 @@ export default function StopClient() {
     if (profile?.name) {
       await supabase.from('precision_scores').insert({ player_name: profile.name, difference_ms: absDiff, game_type: null })
       await supabase.rpc('update_streak', { p_player_name: profile.name })
+      await supabase.rpc('update_streak', { p_player_name: profile.name })
       if (myBest === null || absDiff < myBest) setMyBest(absDiff)
     }
   }, [phase, profile?.name, myBest])
