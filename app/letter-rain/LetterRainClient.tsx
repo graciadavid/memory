@@ -67,7 +67,6 @@ export default function LetterRainClient() {
 
     if (profile?.name && finalLevel > 0) { await supabase.from("letter_rain_scores").insert({ player_name: profile.name, level: finalLevel }); supabase.rpc("update_streak", { p_player_name: profile.name }) }
  }, [profile?.name])
-  }, [profile?.name])
 
   const startLevel = useCallback((idx: number) => {
     levelIdxRef.current = idx
