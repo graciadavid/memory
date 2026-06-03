@@ -120,7 +120,6 @@ export default function AceClient() {
 
    if (profile?.name && finalLevel > 0) { await supabase.from("ace_scores").insert({ player_name: profile.name, level: finalLevel }); supabase.rpc("update_streak", { p_player_name: profile.name }) }
  }, [profile?.name])
- }, [profile?.name])
 
  const startGame = () => {
    levelRef.current = 1
