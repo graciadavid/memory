@@ -11,8 +11,10 @@ type Phase = 'rules' | 'show' | 'input' | 'result'
 
 function getCells(level: number) {
  if (level <= 3) return { cols: 3, rows: 3, count: level + 1 }
- if (level <= 6) return { cols: 4, rows: 4, count: level + 1 }
- return { cols: 5, rows: 5, count: level + 1 }
+ if (level <= 24) return { cols: level <= 6 ? 4 : 5, rows: level <= 6 ? 4 : 5, count: level + 1 }
+ return { cols: 6, rows: 6, count: level + 1 }
+ 
+ 
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -126,10 +128,10 @@ export default function BlinkClient() {
            const isSelected = selected.includes(idx)
            const showHighlight = phase === 'show' && isTarget
            const showSelected = phase === 'input' && isSelected
-           const showCorrect = phase === 'input' && isTarget && isSelected
+           
            return (
              <div key={idx} onClick={() => toggleCell(idx)}
-               style={{ aspectRatio:'1', borderRadius:10, cursor: phase === 'input' ? 'pointer' : 'default', background: showHighlight ? '#C8960C' : showCorrect ? '#2E7D32' : showSelected ? 'rgba(46,125,50,0.4)' : '#252525', border: showHighlight ? '2px solid #FFD740' : showSelected ? '2px solid #2E7D32' : '2px solid rgba(255,255,255,0.06)', transition:'all 0.15s', boxShadow: showHighlight ? '0 0 16px #C8960C80' : 'none' }} />
+               style={{ aspectRatio:'1', borderRadius:10, cursor: phase === 'input' ? 'pointer' : 'default', background: showHighlight ? '#C8960C' : showSelected ? 'rgba(46,125,50,0.4)' : '#252525', border: showHighlight ? '2px solid #FFD740' : showSelected ? '2px solid #2E7D32' : '2px solid rgba(255,255,255,0.06)', transition:'all 0.15s', boxShadow: showHighlight ? '0 0 16px #C8960C80' : 'none' }} />
            )
          })}
        </div>
