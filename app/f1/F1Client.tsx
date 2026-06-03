@@ -73,9 +73,8 @@ export default function F1Client() {
    setWorldRank((count ?? 0) + 1)
 
    if (profile?.name) {
-     { await supabase.from('precision_scores').insert({ player_name: profile.name, difference_ms: reaction, game_type: 'formula1' }); supabase.rpc("update_streak", { p_player_name: profile.name }) }
- }, [phase, profile?.name])
-
+     await supabase.from("precision_scores").insert({ player_name: profile.name, difference_ms: reaction, game_type: "formula1" }); supabase.rpc("update_streak", { p_player_name: profile.name })
+   }
  const resultColor = reactionMs < 200 ? '#00C853' : reactionMs < 300 ? '#C8960C' : '#D32F2F'
  const bgResult = reactionMs < 200 ? '#0D3320' : reactionMs < 300 ? '#2D1A00' : '#1A0000'
  const worldRecord = top5[0] ? { value: top5[0].score, name: top5[0].name } : null
