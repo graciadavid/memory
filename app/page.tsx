@@ -64,7 +64,7 @@ function WelcomePopup({ onComplete }: { onComplete: () => void }) {
         {error && <div style={{ fontSize:13, color:'#FF5252', fontWeight:800, marginBottom:12 }}>{error}</div>}
         <button onClick={handleSave} disabled={saving}
           style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E20' }}>
-          {saving ? 'Guardando...' : 'Start training! →'}
+          {saving ? 'Saving...' : 'Start training! →'}
         </button>
         <div style={{ fontSize:11, color:'rgba(255,255,255,0.25)', fontWeight:700, textAlign:'center', marginTop:10 }}>
           Free · No email · World ranking
