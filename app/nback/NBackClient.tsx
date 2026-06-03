@@ -54,8 +54,8 @@ export default function NBackClient() {
    window.dispatchEvent(new Event('gameResult'))
    const { count } = await supabase.from('nback_scores').select('player_name', { count: 'exact', head: true }).gt('level', finalLevel)
    setWorldRank((count ?? 0) + 1)
-   if (profile?.name && finalLevel > 0) await supabase.from('nback_scores').insert({ player_name: profile.name, level: finalLevel })
-     supabase.rpc('update_streak', { p_player_name: profile.name }) }, [profile?.name])
+   if (profile?.name && finalLevel > 0) { await supabase.from("nback_scores").insert({ player_name: profile.name, level: finalLevel }); supabase.rpc("update_streak", { p_player_name: profile.name }) }
+ }, [profile?.name])
 
  const nextTurn = useCallback(() => {
    const newColor = Math.floor(Math.random() * COLORS.length)
