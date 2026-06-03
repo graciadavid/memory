@@ -80,7 +80,7 @@ export default function Home() {
      {!profile && (
        <a href="/profile" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
          <div style={{ background: GREEN, borderRadius: 16, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 0 #1B5E20' }}>
-           <div style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>Create your profile — Free</div>
+           <div style={{ fontSize: 15, fontWeight: 900, color: '#fff' }}>Login · Always free · No email</div>
            <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.7)' }}>Rank globally →</div>
          </div>
        </a>
