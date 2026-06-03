@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import WelcomePopup from '@/components/WelcomePopup'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const GREEN = '#2E7D32'
@@ -16,6 +17,7 @@ const CATEGORIES = [
 export default function Home() {
  const [splash, setSplash] = useState(true)
  const [profile, setProfile] = useState<any>(null)
+  const [showWelcome, setShowWelcome] = useState(false)
  const [champWeek, setChampWeek] = useState<any>(null)
  const [countdown, setCountdown] = useState('')
 
@@ -26,7 +28,7 @@ export default function Home() {
 
  useEffect(() => {
    const stored = localStorage.getItem('memgenius_profile')
-   if (stored) setProfile(JSON.parse(stored))
+   if (stored) setProfile(JSON.parse(stored)); else setShowWelcome(true)
    supabase.from('championship_weeks').select('*').eq('active', true).single()
      .then(({ data }: any) => { if (data) setChampWeek(data) })
  }, [])
