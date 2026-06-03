@@ -11,6 +11,7 @@ const SECTIONS = [
     items: [
       { label: 'Championship', desc: 'Sunday Brain Championship', icon: `${BASE}/winner.png`, href: '/championship' },
       { label: 'Rankings', desc: 'World leaderboard by game', icon: `${BASE}/target.png`, href: '/rankings' },
+      { label: 'Hall of Fame', desc: 'All-time Sunday Champions', icon: `${BASE}/winner.png`, href: '/championship/hall-of-fame' },
     ]
   },
   {
