@@ -317,7 +317,7 @@ export default function BrainAgeTestPage() {
        logic_pct: results.logic || 0,
        knowledge_pct: results.knowledge || 0,
        birth_year: parseInt(birthYear) || 0
-     })
+     }).then(({ error }: any) => { if (error) console.error('brain_age_results error:', error) else console.log('brain_age_results saved') })
    }
    setShowResult(true)
    setTimeout(fireConfetti, 100)
