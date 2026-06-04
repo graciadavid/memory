@@ -72,7 +72,7 @@ export default function Page() {
 
            {[
              ['1','Cut liquid sugar first','Soft drinks and fruit juice are the highest-impact source. Replacing one can of soda per day with water reduces daily fructose load by around 25g — enough to measurably change brain inflammation markers within two weeks.','Start here'],
-             ['2','Eat before you train your brain','Blood sugar spikes impair working memory for up to 2 hours after a high-sugar meal. Schedule cognitive work — including MemGenius sessions — before meals or after protein-and-fat-based ones, not after carb-heavy food.','Time your sessions'],
+             ['2','Eat before you train your brain','Blood sugar spikes impair working memory for up to 2 hours after a high-sugar meal. Schedule cognitive work — including MemGenius sessions — before meals or after protein-and-fat-based ones.','Time your sessions'],
              ['3','Replace with slow carbs','Oats, sweet potato, and legumes release glucose slowly, providing steady brain fuel without the insulin spike. Your hippocampus gets the energy it needs without the inflammatory hit.','Stable fuel, stable memory'],
            ].map(([num, title, desc, tip]) => (
              <div key={num} style={{ display:'flex', gap:12, alignItems:'flex-start', background:'#252525', borderRadius:14, padding:'14px' }}>
@@ -98,7 +98,7 @@ export default function Page() {
          <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginTop:16, border:'1px solid rgba(255,255,255,0.06)' }}>
            <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.25)', letterSpacing:2, textTransform:'uppercase', marginBottom:10 }}>Tomorrow's discovery</div>
            <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-             <div style={{ width:56, height:56, minWidth:56, borderRadius:10, background:'#333', opacity:0.35 }} />
+             <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/exercise.png" alt="Exercise" style={{ width:56, height:56, borderRadius:10, objectFit:'cover', opacity:0.35 }} />
              <div>
                <div style={{ fontSize:14, fontWeight:900, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>The Exercise That Creates New Neurons</div>
                <div style={{ fontSize:11, fontWeight:800, color:'#C8960C' }}>Come back tomorrow to unlock</div>

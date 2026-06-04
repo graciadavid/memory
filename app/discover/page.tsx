@@ -9,7 +9,7 @@ const POSTS = [
  { slug: 'cold-water-brain-focus-memory', title: 'Cold Water Rewires Your Brain in 30 Seconds', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/ducha.png', locked: false },
  { slug: 'sleep-cycles-memory', title: 'The 90-Minute Sleep Cycle That Doubles Your Memory', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sleep.png', locked: false },
  { slug: 'sugar-cognitive-decline-brain', title: 'What Sugar Does to Your Brain', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sugar.png', locked: false },
- { slug: 'exercise-neurogenesis-brain', title: 'The Exercise That Creates New Neurons', image: null, locked: true },
+ { slug: 'exercise-neurogenesis-brain', title: 'The Exercise That Creates New Neurons', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/exercise.png', locked: false },
  { slug: 'forgetting-curve-memory-hack', title: 'Why You Forget 70% of Everything', image: null, locked: true },
 ]
 
