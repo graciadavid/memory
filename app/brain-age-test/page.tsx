@@ -255,8 +255,7 @@ export default function BrainAgeTestPage() {
   const calcAge = () => new Date().getFullYear() - parseInt(birthYear)
 
   const calcBrainAge = () => {
-    const percentiles = Object.values(results)
-    const avg = percentiles.reduce((a, b) => a + b, 0) / percentiles.length
+    const avg = (results.agility || 0) * 0.30 + (results.memory || 0) * 0.30 + (results.logic || 0) * 0.10 + (results.knowledge || 0) * 0.30
     const age = new Date().getFullYear() - parseInt(birthYear)
     if (avg <= 10) return Math.max(5, age - 12)
     if (avg <= 25) return Math.max(5, age - 7)
