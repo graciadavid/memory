@@ -21,9 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div style={{ maxWidth: 430, margin: '0 auto', minHeight: '100dvh', position: 'relative' }}>
           <GAAnalytics />
           <VercelAnalytics />
-          <HeaderWrapper />
-         {children}
-         <NavWrapper />
+          <HeaderNavWrapper />
+          {children}
         </div>
       </body>
     </html>
