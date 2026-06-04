@@ -171,14 +171,13 @@ export default function BrainAgeTestPage() {
    <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'24px 16px 100px', fontFamily:'var(--font-nunito),sans-serif', maxWidth:430, margin:'0 auto' }}>
 
      <div style={{ textAlign:'center', marginBottom:24 }}>
-       <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>Your Result</div>
+       <div style={{ fontSize:26, fontWeight:900, color:"#fff", lineHeight:1.2, marginBottom:12 }}>What is your Brain Age?</div>
        <div style={{ width:140, height:140, borderRadius:'50%', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700)', margin:'0 auto 12px', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 40px rgba(200,150,12,0.3)' }}>
          <div style={{ width:124, height:124, borderRadius:'50%', background:'#1A1A1A', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
            <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2 }}>BRAIN AGE</div>
            <div style={{ fontSize:52, fontWeight:900, color:'rgba(255,255,255,0.15)' }}>?</div>
          </div>
        </div>
-       <div style={{ fontSize:26, fontWeight:900, color:'#fff', lineHeight:1.2, marginBottom:8 }}>What is your Brain Age?</div>
        <div style={{ display:'inline-flex', background:'rgba(200,150,12,0.15)', borderRadius:20, padding:'5px 14px' }}>
          <span style={{ fontSize:12, fontWeight:800, color:GOLD }}>4 tests · 4 minutes · free</span>
        </div>
