@@ -141,31 +141,35 @@ export default function Exactly5Page() {
        </button>
      )}
 
-     {/* My bests */}
+     {/* Your best */}
      {myBests.length > 0 && (
-       <div style={{ background:'#1a1a1a', borderRadius:14, padding:'16px', marginBottom:16 }}>
-         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase', marginBottom:10 }}>Your Best Times</div>
-         {myBests.map((b, i) => (
-           <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'6px 0', borderBottom: i < myBests.length-1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
-             <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)' }}>#{i+1}</div>
-             <div style={{ fontSize:16, fontWeight:900, color: i===0 ? '#FFD700' : '#fff' }}>{b}ms off</div>
-           </div>
-         ))}
+       <div style={{ background:'#1a1a1a', borderRadius:14, padding:'14px 16px', marginBottom:12, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase' }}>Your Best</div>
+         <div style={{ fontSize:20, fontWeight:900, color:'#FFD700' }}>{myBests[0]}ms off</div>
        </div>
      )}
 
-     {/* Last times */}
-     {lastTimes.length > 0 && (
-       <div style={{ background:'#1a1a1a', borderRadius:14, padding:'16px' }}>
-         <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase', marginBottom:10 }}>Latest Attempts</div>
+     {/* Two columns */}
+     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+       <div style={{ background:'#1a1a1a', borderRadius:14, padding:'14px' }}>
+         <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:10 }}>Last Games</div>
          {lastTimes.slice(0,10).map((t, i) => (
-           <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'6px 0', borderBottom: i < 9 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
-             <div style={{ fontSize:14, fontWeight:800, color:'rgba(255,255,255,0.7)' }}>{t.name}</div>
-             <div style={{ fontSize:14, fontWeight:900, color: t.diff < 100 ? GREEN : t.diff < 300 ? '#FFD700' : 'rgba(255,255,255,0.5)' }}>{t.diff}ms off</div>
+           <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'5px 0', borderBottom: i < 9 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+             <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.6)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:60 }}>{t.name}</div>
+             <div style={{ fontSize:12, fontWeight:900, color: t.diff < 100 ? GREEN : t.diff < 300 ? '#FFD700' : 'rgba(255,255,255,0.4)' }}>{t.diff}ms</div>
            </div>
          ))}
        </div>
-     )}
+       <div style={{ background:'#1a1a1a', borderRadius:14, padding:'14px' }}>
+         <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:10 }}>Best Times</div>
+         {[...lastTimes].sort((a,b) => a.diff - b.diff).slice(0,10).map((t, i) => (
+           <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'5px 0', borderBottom: i < 9 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+             <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.6)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:60 }}>{t.name}</div>
+             <div style={{ fontSize:12, fontWeight:900, color: i===0 ? '#FFD700' : t.diff < 100 ? GREEN : 'rgba(255,255,255,0.4)' }}>{t.diff}ms</div>
+           </div>
+         ))}
+       </div>
+     </div>
 
      {/* Footer */}
      <div style={{ textAlign:'center', marginTop:24, fontSize:12, color:'rgba(255,255,255,0.2)', fontWeight:700 }}>
