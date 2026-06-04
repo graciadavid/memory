@@ -26,7 +26,7 @@ export default function Exactly5Page() {
    const { data } = await supabase
      .from('precision_scores')
      .select('player_name, difference_ms, created_at')
-     .is('game_type', null)
+     .eq('game_type', 'exactly5')
      .order('created_at', { ascending: false })
      .limit(20)
    if (data) setLastTimes(data.map((d: any) => ({ name: d.player_name || 'anon', diff: d.difference_ms, stopped: 5000 + d.difference_ms })))
@@ -54,7 +54,7 @@ export default function Exactly5Page() {
    setDiff(absDiff)
    setMyBests(prev => [...prev, absDiff].sort((a,b) => a-b).slice(0,5))
    setPhase('result')
-   supabase.from('precision_scores').insert({ player_name: name.trim(), difference_ms: absDiff, game_type: null })
+   supabase.from('precision_scores').insert({ player_name: name.trim(), difference_ms: absDiff, game_type: 'exactly5' })
    loadLastTimes()
  }
 
@@ -109,7 +109,7 @@ export default function Exactly5Page() {
      {phase === 'result' && (
        <div style={{ textAlign:'center', marginBottom:24 }}>
          <div style={{ fontSize:32, fontWeight:900, color: diff < 100 ? GREEN : diff < 300 ? '#FFD700' : RED, marginBottom:4 }}>
-           {diff < 10 ? '🎯 PERFECT!' : diff < 50 ? '⚡ INCREDIBLE!' : diff < 100 ? '🔥 AMAZING!' : diff < 200 ? '💪 GREAT!' : diff < 500 ? '👍 GOOD' : '😤 TRY AGAIN'}
+           {diff < 10 ? 'PERFECT!' : diff < 50 ? 'INCREDIBLE!' : diff < 100 ? 'AMAZING!' : diff < 200 ? 'GREAT!' : diff < 500 ? 'GOOD' : 'TRY AGAIN'}
          </div>
          <div style={{ fontSize:18, fontWeight:700, color:'rgba(255,255,255,0.5)' }}>
            Off by <span style={{ color:'#fff', fontWeight:900 }}>{diff}ms</span>
