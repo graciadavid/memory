@@ -218,6 +218,7 @@ export default function BrainAgeTestPage() {
   const [brainAge, setBrainAge] = useState<number|null>(null)
   const [error, setError] = useState('')
   const [openSeo, setOpenSeo] = useState<number|null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [countdown, setCountdown] = useState<number|null>(null)
   const [showResult, setShowResult] = useState(false)
 
@@ -233,7 +234,7 @@ export default function BrainAgeTestPage() {
       return
     }
     const stored = localStorage.getItem('memgenius_profile')
-    if (stored) setName(JSON.parse(stored).name)
+    if (stored) { setName(JSON.parse(stored).name); setIsLoggedIn(true) }
     const session = localStorage.getItem('braintest_session')
     if (session) {
       const s = JSON.parse(session)
@@ -246,7 +247,7 @@ export default function BrainAgeTestPage() {
 
   const handleStart = () => {
     if (!name.trim()) { setError('Enter your name'); return }
-    if (!birthYear) { setError('Select your birth year'); return }
+    if (!isLoggedIn && !birthYear) { setError('Select your birth year'); return }
     localStorage.setItem('braintest_session', JSON.stringify({ name: name.trim(), birthYear, results: {}, step: 'tests' }))
     setStep('tests')
   }
@@ -294,14 +295,16 @@ export default function BrainAgeTestPage() {
     setBrainAge(ba)
     setStep('result')
     localStorage.setItem('braintest_result', JSON.stringify({ brainAge: ba, results, name: name.trim(), birthYear, date: new Date().toISOString() }))
-    const pinHash = btoa(birthYear)
-    const { data: existing } = await supabase.from('profiles').select('player_name').eq('player_name', name.trim()).limit(1)
-    if (!existing || existing.length === 0) {
-      let country = ''
-      try { const controller = new AbortController(); setTimeout(() => controller.abort(), 2000); const geo = await fetch('https://ipapi.co/json/', { signal: controller.signal }); const d = await geo.json(); country = d.country_code || '' } catch {}
-      await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pinHash, country, streak: 1, last_played_date: new Date().toISOString().split('T')[0] })
+    if (!isLoggedIn) {
+      const pinHash = btoa(birthYear)
+      const { data: existing } = await supabase.from('profiles').select('player_name').eq('player_name', name.trim()).limit(1)
+      if (!existing || existing.length === 0) {
+        let country = ''
+        try { const controller = new AbortController(); setTimeout(() => controller.abort(), 2000); const geo = await fetch('https://ipapi.co/json/', { signal: controller.signal }); const d = await geo.json(); country = d.country_code || '' } catch {}
+        await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pinHash, country, streak: 1, last_played_date: new Date().toISOString().split('T')[0] })
+      }
+      localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
     }
-    localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
     localStorage.removeItem('braintest_session')
     window.dispatchEvent(new Event('profileUpdated'))
     setShowResult(true)
@@ -422,12 +425,16 @@ export default function BrainAgeTestPage() {
       <input value={name} onChange={e => { setName(e.target.value); setError('') }} placeholder="Your name" maxLength={20}
         style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:16, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', marginBottom:10 }} />
 
-      <select value={birthYear} onChange={e => { setBirthYear(e.target.value); setError('') }}
-        style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color: birthYear ? '#fff' : 'rgba(255,255,255,0.4)', fontSize:16, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', marginBottom:4, appearance:'none', cursor:'pointer' }}>
-        <option value="">Select your birth year</option>
-        {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-      </select>
-      <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700, marginBottom:20 }}>Your birth year becomes your secret login code</div>
+      {!isLoggedIn && (
+        <>
+          <select value={birthYear} onChange={e => { setBirthYear(e.target.value); setError('') }}
+            style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color: birthYear ? '#fff' : 'rgba(255,255,255,0.4)', fontSize:16, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', marginBottom:4, appearance:'none', cursor:'pointer' }}>
+            <option value="">Select your birth year</option>
+            {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+          </select>
+          <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700, marginBottom:20 }}>Your birth year becomes your secret login code</div>
+        </>
+      )}
 
       {error && <div style={{ fontSize:13, color:'#FF5252', fontWeight:800, marginBottom:12 }}>{error}</div>}
 
