@@ -387,14 +387,14 @@ export default function BrainAgeTestPage() {
           return (
             <a key={t.key} href={done ? undefined : t.href} style={{ textDecoration:'none' }}>
               <div style={{ background: active ? '#2a2a2a' : '#1e1e1e', borderRadius:16, padding:'14px 16px', display:'flex', alignItems:'center', gap:14, border: done ? `2px solid ${GREEN}` : active ? `2px solid ${GOLD}` : '2px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ width:40, height:40, borderRadius:'50%', background: done ? GREEN : active ? GOLD : '#333', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
+                <div style={{ width:36, height:36, borderRadius:'50%', background: done ? GREEN : active ? GOLD : '#333', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                   {done
                     ? <span style={{ fontSize:18, color:'#fff' }}>✓</span>
                     : <span style={{ fontSize:14, fontWeight:900, color: active ? '#000' : 'rgba(255,255,255,0.3)' }}>{t.step}</span>
                   }
                 </div>
-                <img src={t.icon} style={{ width:28, height:28, objectFit:'contain' }} />
-                <div style={{ flex:1, fontSize:16, fontWeight:900, color: done ? 'rgba(255,255,255,0.5)' : '#fff' }}>{t.label}</div>
+                <img src={t.icon} style={{ width:36, height:36, objectFit:'contain' }} />
+                <div style={{ flex:1, fontSize:15, fontWeight:900, color: done ? 'rgba(255,255,255,0.5)' : '#fff' }}>{t.label}</div>
                 {done
                   ? <div style={{ fontSize:14, fontWeight:900, color:GREEN }}>Top {results[t.key]}%</div>
                   : <div style={{ fontSize:18, color: active ? GOLD : 'rgba(255,255,255,0.2)' }}>›</div>
