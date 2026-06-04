@@ -307,9 +307,22 @@ export default function BrainAgeTestPage() {
     }
     localStorage.removeItem('braintest_session')
     window.dispatchEvent(new Event('profileUpdated'))
-    setShowResult(true)
-    setTimeout(fireConfetti, 100)
-  }
+    // Save to Supabase
+   const pname = name.trim() || JSON.parse(localStorage.getItem('memgenius_profile') || '{}').name
+   if (pname) {
+     supabase.from('brain_age_results').insert({
+       player_name: pname,
+       brain_age: ba,
+       agility_pct: results.agility || 0,
+       memory_pct: results.memory || 0,
+       logic_pct: results.logic || 0,
+       knowledge_pct: results.knowledge || 0,
+       birth_year: parseInt(birthYear) || 0
+     })
+   }
+   setShowResult(true)
+   setTimeout(fireConfetti, 100)
+ }
 
   const completedTests = Object.keys(results).length
 
