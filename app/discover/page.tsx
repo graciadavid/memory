@@ -17,9 +17,9 @@ export default function DiscoverPage() {
  return (
    <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'16px 16px 100px' }}>
      <div style={{ maxWidth:430, margin:'0 auto' }}>
-       <div style={{ fontSize:11, fontWeight:800, color:'#C8960C', letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>MemGenius</div>
+ 
        <div style={{ fontSize:22, fontWeight:900, color:'#fff', marginBottom:4 }}>Discover</div>
-       <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700, marginBottom:24 }}>Brain science you can use today. One fact unlocks every day.</div>
+ 
        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
          {POSTS.map((post) => (
            post.locked
