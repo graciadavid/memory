@@ -1,5 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+ async rewrites() {
+   return {
+     beforeFiles: [
+       {
+         source: '/:path*',
+         has: [{ type: 'host', value: 'exactly5.com' }],
+         destination: '/exactly5/:path*',
+       },
+       {
+         source: '/',
+         has: [{ type: 'host', value: 'exactly5.com' }],
+         destination: '/exactly5',
+       },
+     ]
+   }
+ },
  async redirects() {
    return [
      { source: '/geoshape', destination: '/countries', permanent: true },
