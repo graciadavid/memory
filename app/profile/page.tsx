@@ -224,6 +224,17 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+          {brainAgeResult && (
+            <a href="/brain-age-test" style={{ textDecoration:"none", flex:1 }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(200,150,12,0.12)", borderRadius:14, padding:"12px 14px", border:"1px solid rgba(200,150,12,0.2)" }}>
+                <div style={{ fontSize:28 }}>🧠</div>
+                <div>
+                  <div style={{ fontSize:22, fontWeight:900, color:"#C8960C", lineHeight:1 }}>{brainAgeResult.brainAge}</div>
+                  <div style={{ fontSize:11, fontWeight:800, color:"rgba(200,150,12,0.6)", marginTop:2, letterSpacing:1, textTransform:"uppercase" }}>Brain Age</div>
+                </div>
+              </div>
+            </a>
+          )}
       )
      })()}
 
