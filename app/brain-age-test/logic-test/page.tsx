@@ -197,8 +197,8 @@ export default function LogicTestPage() {
 
          <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:24 }}>
            {won
-             ? attempts.length <= 3 ? '🧠 Brilliant logic!' : attempts.length <= 5 ? '💪 Good solve!' : '🔥 Keep training!'
-             : '😤 Try again — you\'ll get it!'}
+             ? attempts.length <= 3 ? 'Brilliant logic!' : attempts.length <= 5 ? 'Good solve!' : 'Keep training!'
+             : 'Good effort. Move to the next test.'}
          </div>
 
          <button onClick={saveAndContinue}
