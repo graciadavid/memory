@@ -98,9 +98,9 @@ export default function Page() {
          <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginTop:16, border:'1px solid rgba(255,255,255,0.06)' }}>
            <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.25)', letterSpacing:2, textTransform:'uppercase', marginBottom:10 }}>Tomorrow's discovery</div>
            <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-             <div style={{ width:56, height:56, minWidth:56, borderRadius:10, background:'#333', opacity:0.35 }} />
+             <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sugar.png" alt="Sugar" style={{ width:56, height:56, borderRadius:10, objectFit:'cover', opacity:0.35 }} />
              <div>
-               <div style={{ fontSize:14, fontWeight:900, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>The Exercise That Creates New Neurons</div>
+               <div style={{ fontSize:14, fontWeight:900, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>What Sugar Does to Your Brain</div>
                <div style={{ fontSize:11, fontWeight:800, color:'#C8960C' }}>Come back tomorrow to unlock</div>
              </div>
            </div>
