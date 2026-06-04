@@ -89,7 +89,7 @@ export default function Exactly5Page() {
 
      {/* Timer display */}
      <div style={{ textAlign:'center', marginBottom:24 }}>
-       <div style={{ fontSize:80, fontWeight:900, color: phase === 'running' && elapsed > 4500 && elapsed < 5500 ? '#FFD700' : phase === 'result' ? (diff < 100 ? GREEN : diff < 300 ? '#FFD700' : RED) : 'rgba(255,255,255,0.15)', lineHeight:1, fontVariantNumeric:'tabular-nums', letterSpacing:-2, transition:'color 0.1s' }}>
+       <div style={{ fontSize:80, fontWeight:900, color: phase === 'running' && elapsed > 4500 && elapsed < 5500 ? '#FFD700' : phase === 'result' ? (diff < 100 ? GREEN : diff < 300 ? '#FFD700' : RED) : '#fff', lineHeight:1, fontVariantNumeric:'tabular-nums', letterSpacing:-2, transition:'color 0.1s' }}>
          {phase === 'running'
            ? (elapsed/1000).toFixed(3)
            : phase === 'result'
