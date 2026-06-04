@@ -102,7 +102,6 @@ export default function TypeDropClient() {
      .then(({ count }: any) => setWorldRank((count || 0) + 1))
    const pname = profileRef.current?.name || JSON.parse(localStorage.getItem("memgenius_profile") || "{}").name
    if (pname && s > 0) { supabase.from("typedrop_scores").insert({ player_name: pname, score: s }).then(() => { loadData(); supabase.rpc("update_streak", { p_player_name: pname }) }) }
-   }
    loadTop5()
  }, [phase, profile?.name])
 
