@@ -235,14 +235,19 @@ export default function BrainAgeTestPage() {
     }
     const stored = localStorage.getItem('memgenius_profile')
     if (stored) { setName(JSON.parse(stored).name); setIsLoggedIn(true) }
-    const session = localStorage.getItem('braintest_session')
-    if (session) {
-      const s = JSON.parse(session)
-      if (s.name) setName(s.name)
-      if (s.birthYear) setBirthYear(s.birthYear)
-      if (s.results) setResults(s.results)
-      if (s.step) setStep(s.step)
+    const loadSession = () => {
+      const session = localStorage.getItem('braintest_session')
+      if (session) {
+        const s = JSON.parse(session)
+        if (s.name) setName(s.name)
+        if (s.birthYear) setBirthYear(s.birthYear)
+        if (s.results) setResults(s.results)
+        if (s.step) setStep(s.step)
+      }
     }
+    loadSession()
+    window.addEventListener('focus', loadSession)
+    return () => window.removeEventListener('focus', loadSession)
   }, [])
 
   const handleStart = () => {
