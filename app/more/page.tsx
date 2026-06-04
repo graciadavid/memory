@@ -60,7 +60,7 @@ function WorldRankingWidget() {
      {open && players.map((p, i) => (
        <div key={p.player_name} style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 16px', borderTop:'1px solid rgba(255,255,255,0.04)' }}>
          <div style={{ fontSize:14, fontWeight:900, color: i===0?GOLD:i===1?'#aaa':i===2?'#cd7f32':'rgba(255,255,255,0.3)', width:28, textAlign:'center' }}>
-           {i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+p.world_rank}
+           {i===0?<img src={`${BASE}/oro.png`} style={{width:20,height:20,objectFit:'contain'}} />:i===1?<img src={`${BASE}/plata.png`} style={{width:20,height:20,objectFit:'contain'}} />:i===2?<img src={`${BASE}/bronce.png`} style={{width:20,height:20,objectFit:'contain'}} />:'#'+p.world_rank}
          </div>
          <div style={{ fontSize:14, fontWeight:800, color:'#fff' }}>{p.player_name}</div>
        </div>
