@@ -26,7 +26,7 @@ export default function Exactly5Page() {
    const { data } = await supabase
      .from('precision_scores')
      .select('player_name, difference_ms, created_at')
-     .is('game_type', null)
+     .eq('game_type', 'exactly5')
      .order('created_at', { ascending: false })
      .limit(20)
    if (data) setLastTimes(data.map((d: any) => ({ name: d.player_name || 'anon', diff: d.difference_ms, stopped: 5000 + d.difference_ms })))
@@ -54,7 +54,7 @@ export default function Exactly5Page() {
    setDiff(absDiff)
    setMyBests(prev => [...prev, absDiff].sort((a,b) => a-b).slice(0,5))
    setPhase('result')
-   supabase.from('precision_scores').insert({ player_name: name.trim(), difference_ms: absDiff, game_type: null })
+   supabase.from('precision_scores').insert({ player_name: name.trim(), difference_ms: absDiff, game_type: 'exactly5' })
    loadLastTimes()
  }
 
