@@ -100,8 +100,8 @@ export default function TypeDropClient() {
    localStorage.removeItem('typedrop_score')
    supabase.from('typedrop_scores').select('*', { count: 'exact', head: true }).gt('score', s)
      .then(({ count }: any) => setWorldRank((count || 0) + 1))
-   if (profileRef.current?.name && s > 0) {
-     supabase.from("typedrop_scores").insert({ player_name: profileRef.current.name, score: s }).then(() => { loadData(); supabase.rpc("update_streak", { p_player_name: profileRef.current.name }) })
+   const pname = profileRef.current?.name || JSON.parse(localStorage.getItem("memgenius_profile") || "{}").name
+   if (pname && s > 0) { supabase.from("typedrop_scores").insert({ player_name: pname, score: s }).then(() => { loadData(); supabase.rpc("update_streak", { p_player_name: pname }) }) }
    }
    loadTop5()
  }, [phase, profile?.name])
