@@ -24,7 +24,9 @@ export default function BrainAgeTestPage() {
  useEffect(() => {
    const stored = localStorage.getItem('memgenius_profile')
    if (stored) setName(JSON.parse(stored).name)
-   const session = localStorage.getItem('braintest_session')
+   const saved = localStorage.getItem("braintest_result")
+    if (saved) { const r = JSON.parse(saved); setBrainAge(r.brainAge); setResults(r.results); setName(r.name); setBirthYear(r.birthYear); setStep("result") }
+    const session = localStorage.getItem("braintest_session")
    if (session) {
      const s = JSON.parse(session)
      if (s.name) setName(s.name)
@@ -66,7 +68,8 @@ export default function BrainAgeTestPage() {
      await supabase.from('profiles').upsert({ player_name: name.trim(), password_hash: pinHash, country, streak: 1, last_played_date: new Date().toISOString().split('T')[0] })
    }
    localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
-   localStorage.removeItem('braintest_session')
+   localStorage.removeItem("braintest_session")
+    localStorage.setItem("braintest_result", JSON.stringify({ brainAge: ba, results, name: name.trim(), birthYear, date: new Date().toISOString() }))
    window.dispatchEvent(new Event('profileUpdated'))
  }
 

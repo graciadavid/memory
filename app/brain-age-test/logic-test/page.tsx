@@ -8,7 +8,7 @@ const GOLD = '#C8960C'
 const COLORS = ['#D32F2F', '#1565C0', '#F9A825', '#2E7D32']
 const COLOR_NAMES = ['Red', 'Blue', 'Yellow', 'Green']
 const CODE_LENGTH = 4
-const MAX_ATTEMPTS = 8
+const MAX_ATTEMPTS = 6
 
 function getPercentile(attempts: number, birthYear: number): number {
  const age = new Date().getFullYear() - birthYear
@@ -118,7 +118,7 @@ export default function LogicTestPage() {
              {COLORS.map((c, i) => <div key={i} style={{ width:32, height:32, borderRadius:'50%', background:c }} />)}
            </div>
            <div style={{ fontSize:15, fontWeight:700, color:'rgba(255,255,255,0.7)', lineHeight:1.6, textAlign:'center' }}>
-             Crack a secret 4-color code in {MAX_ATTEMPTS} attempts. After each guess you get hints.
+             Crack a secret 4-color code in 6 attempts. After each guess you get hints.
            </div>
            <div style={{ marginTop:12, fontSize:13, color:'rgba(255,255,255,0.4)', lineHeight:1.6 }}>
              ⚫ = right color, right position<br/>
