@@ -216,25 +216,25 @@ export default function ProfilePage() {
             </div>
           </div>
           <div style={{ display:"flex", gap:10, marginTop:4 }}>
-          <div style={{ flex:1, display:"flex", alignItems:"center", gap:12, background:"rgba(255,107,53,0.12)", borderRadius:14, padding:"12px 14px", border:"1px solid rgba(255,107,53,0.2)" }}>
-            <span style={{ fontSize:36 }}>🔥</span>
-            <div>
-              <div style={{ fontSize:28, fontWeight:900, color:'#FF6B35', lineHeight:1 }}>{streak} <span style={{ fontSize:16, fontWeight:700 }}>days</span></div>
-              {streakTitle && <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,107,53,0.7)', marginTop:3, letterSpacing:1, textTransform:'uppercase' }}>{streakTitle}</div>}
-            </div>
-          </div>
-        </div>
-          {brainAgeResult && (
-            <a href="/brain-age-test" style={{ textDecoration:"none", flex:1 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(200,150,12,0.12)", borderRadius:14, padding:"12px 14px", border:"1px solid rgba(200,150,12,0.2)" }}>
-                <div style={{ fontSize:28 }}>🧠</div>
-                <div>
-                  <div style={{ fontSize:22, fontWeight:900, color:"#C8960C", lineHeight:1 }}>{brainAgeResult.brainAge}</div>
-                  <div style={{ fontSize:11, fontWeight:800, color:"rgba(200,150,12,0.6)", marginTop:2, letterSpacing:1, textTransform:"uppercase" }}>Brain Age</div>
-                </div>
+            <div style={{ flex:1, display:"flex", alignItems:"center", gap:12, background:"rgba(255,107,53,0.12)", borderRadius:14, padding:"12px 14px", border:"1px solid rgba(255,107,53,0.2)" }}>
+              <span style={{ fontSize:36 }}>🔥</span>
+              <div>
+                <div style={{ fontSize:28, fontWeight:900, color:"#FF6B35", lineHeight:1 }}>{streak} <span style={{ fontSize:16, fontWeight:700 }}>days</span></div>
+                {streakTitle && <div style={{ fontSize:12, fontWeight:800, color:"rgba(255,107,53,0.7)", marginTop:3, letterSpacing:1, textTransform:"uppercase" }}>{streakTitle}</div>}
               </div>
-            </a>
-          )}
+            </div>
+            {brainAgeResult && (
+              <a href="/brain-age-test" style={{ textDecoration:"none", flex:1 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(200,150,12,0.12)", borderRadius:14, padding:"12px 14px", border:"1px solid rgba(200,150,12,0.2)", height:"100%" }}>
+                  <div style={{ fontSize:28 }}>🧠</div>
+                  <div>
+                    <div style={{ fontSize:22, fontWeight:900, color:"#C8960C", lineHeight:1 }}>{brainAgeResult.brainAge}</div>
+                    <div style={{ fontSize:11, fontWeight:800, color:"rgba(200,150,12,0.6)", marginTop:2, letterSpacing:1, textTransform:"uppercase" }}>Brain Age</div>
+                  </div>
+                </div>
+              </a>
+            )}
+          </div>
       )
      })()}
 
