@@ -201,12 +201,10 @@ export default function LogicTestPage() {
              : '😤 Try again — you\'ll get it!'}
          </div>
 
-         {won ? (
-           <button onClick={saveAndContinue}
-             style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #8B6914' }}>
-             Save & Continue →
-           </button>
-         )}
+         <button onClick={saveAndContinue}
+           style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #8B6914' }}>
+           Save & Continue →
+         </button>
        </div>
      )}
 
