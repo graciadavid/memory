@@ -32,19 +32,19 @@ Your result is not a diagnosis. It is a snapshot of your current cognitive perfo
     title: 'The Reaction Time Test: Agility and Processing Speed',
     content: `The reaction time component of this brain age test measures cognitive agility — specifically, your brain's ability to perceive a time interval and respond with precision. In our test, you are asked to stop a running timer at exactly 5 seconds without counting. This deceptively simple task activates multiple neural systems simultaneously.
 
-**What it measures**
+What it measures
 
 Precision timing engages the basal ganglia, cerebellum, and prefrontal cortex in concert. The basal ganglia maintain your internal clock. The cerebellum coordinates the motor response. The prefrontal cortex suppresses the impulse to act too early or too late. Performing well on this task indicates strong connectivity between these regions — a hallmark of a cognitively young brain.
 
 Traditional reaction time tests measure simple responses to visual or auditory stimuli. Our precision timing approach is more cognitively demanding because it requires sustained attention, temporal estimation, and inhibitory control simultaneously. Research shows this combination predicts broader cognitive health more accurately than simple reaction time alone.
 
-**Benchmarks by age**
+Benchmarks by age
 
 In a study of 10,000 adults aged 18–75, mean precision timing error was approximately 150ms in the 18–25 age group, rising to 280ms for 36–50 year olds and 420ms for those over 60. However, the distribution is wide: trained individuals in their 50s regularly achieve precision under 100ms, outperforming untrained 20-year-olds.
 
 F1 racing drivers, who train reaction time professionally, achieve precision errors under 50ms. Elite esports players typically score between 60–90ms. The average untrained adult scores between 200–350ms depending on age and attentional state.
 
-**How to improve your cognitive agility**
+How to improve your cognitive agility
 
 Aerobic exercise is the most evidence-backed intervention for improving processing speed. A meta-analysis of 29 randomized controlled trials found that regular aerobic exercise reduced reaction time by an average of 15% across all age groups. The mechanism involves increased cerebral blood flow, elevated BDNF (brain-derived neurotrophic factor) levels, and enhanced white matter integrity.
 
@@ -56,23 +56,23 @@ Regular practice on precision timing games — like the Stop and F1 Reaction gam
     title: 'The Memory Test: Working Memory and Visual Recall',
     content: `The memory component of this brain age test uses a card-matching paradigm to assess working memory capacity and visual recall speed. You are shown 12 face-down cards containing 6 pairs of images. Your goal is to find all matching pairs as quickly as possible.
 
-**What it measures**
+What it measures
 
 Working memory is your brain's mental workspace — the cognitive system that temporarily holds and manipulates information while you are using it. In the card-matching test, working memory is engaged continuously: you must remember which cards have been revealed, where they are located, and use that information to make efficient decisions.
 
 Visual recall specifically measures the hippocampus and surrounding medial temporal lobe structures, which encode and retrieve episodic memories. The speed at which you complete the task reflects the efficiency of communication between the prefrontal cortex (executive control), the hippocampus (memory encoding), and the visual cortex (image processing).
 
-**Why working memory matters**
+Why working memory matters
 
 Working memory capacity is one of the strongest predictors of general intelligence, academic achievement, and professional performance ever identified in cognitive psychology. A landmark study by Klingberg et al. (2005) demonstrated that working memory can be significantly improved through training, with gains that transfer to untrained tasks including reading comprehension and mathematical reasoning.
 
 Age-related decline in working memory typically begins in the mid-30s, with the most pronounced changes occurring after age 50. However, this decline is highly variable and strongly modulated by lifestyle factors. Bilingual individuals, for example, show working memory performance on average 5–8 years younger than monolingual peers of the same age, likely because managing two languages exercises the executive control components of working memory continuously.
 
-**Benchmarks**
+Benchmarks
 
 The average time to complete our 12-card memory test is approximately 35 seconds for adults aged 18–25, rising to 55 seconds for 36–50 year olds. Elite performers complete the test in under 20 seconds. The number of incorrect flips is also tracked — experienced memory trainees make fewer than 2 errors, while the average adult makes 4–6.
 
-**How to improve your working memory**
+How to improve your working memory
 
 The most evidence-based approach is dual n-back training, a working memory exercise in which you must recall items from n steps back in a sequence. A 2008 study by Jaeggi et al. published in PNAS showed that 19 days of dual n-back training produced significant improvements in fluid intelligence, a finding that has been partially replicated in multiple subsequent studies.
 
@@ -84,21 +84,21 @@ The N-Back game on MemGenius provides structured working memory training that di
     title: 'The Logic Test: Deductive Reasoning and Pattern Recognition',
     content: `The logic component uses a Mastermind-style code-breaking game with 4 colors and a maximum of 6 attempts. You must deduce a hidden 4-color sequence using only the feedback from your previous guesses: black pegs indicate the right color in the right position, white pegs indicate the right color in the wrong position.
 
-**What it measures**
+What it measures
 
 This task is a direct measure of deductive reasoning — the ability to draw logical conclusions from incomplete information and systematically eliminate possibilities. Solving Mastermind efficiently requires hypothesis generation, hypothesis testing, information integration, and adaptive strategy revision. These are the same cognitive processes involved in scientific thinking, strategic planning, and complex problem solving.
 
 Neuroimaging studies show that Mastermind-type tasks activate the dorsolateral prefrontal cortex (DLPFC), the anterior cingulate cortex (ACC), and the inferior frontal gyrus — regions associated with working memory, cognitive control, and logical inference. Performance on these tasks correlates strongly with scores on the Raven's Progressive Matrices, one of the most widely used measures of general intelligence.
 
-**The mathematics of optimal play**
+The mathematics of optimal play
 
 Knuth (1977) proved that Mastermind can always be solved in 5 moves or fewer using an optimal strategy. For the 4-color, 4-position variant used in this test, the theoretical minimum number of guesses needed to guarantee a solution is 5. Players who solve the code in 3 moves or fewer are demonstrating exceptional logical reasoning — placing them in approximately the top 5% of the population on deductive reasoning tests.
 
-**Benchmarks**
+Benchmarks
 
 Our data shows that adults aged 18–25 solve the 4-color code in an average of 4.2 attempts. Adults aged 36–50 average 4.8 attempts. The difference is modest, suggesting that logical reasoning is relatively well-preserved with age compared to processing speed or working memory — consistent with the research literature showing that crystallized intelligence (knowledge and reasoning built over a lifetime) is more stable than fluid intelligence (the capacity for novel problem solving).
 
-**How to improve your logical reasoning**
+How to improve your logical reasoning
 
 Chess and strategy games have the strongest evidence base for improving deductive reasoning. A meta-analysis of 24 studies found that chess instruction improved logical reasoning scores by an average of 0.35 standard deviations — a meaningful effect equivalent to roughly 5 IQ points.
 
@@ -110,7 +110,7 @@ Puzzle games like Mastermind, Wordle, and Sudoku provide accessible daily traini
     title: 'The Flag Quiz: Long-term Memory and Knowledge',
     content: `The knowledge component tests your ability to identify national flags from around the world, starting with well-known countries and progressively moving to more obscure ones. A single wrong answer ends the test, and your score is the number of consecutive correct identifications.
 
-**What it measures**
+What it measures
 
 Flag identification is a measure of semantic long-term memory — the stored knowledge of facts, concepts, and associations accumulated over a lifetime. Unlike episodic memory (memory for personal experiences) or working memory (temporary information holding), semantic memory is highly stable with age and can continue growing well into old age with sufficient intellectual stimulation.
 
@@ -118,19 +118,19 @@ The progressive difficulty structure of this test also assesses the depth and br
 
 Visual pattern recognition is also engaged: flags are visual stimuli that must be matched to semantic labels. This requires integration of visual cortex processing with anterior temporal lobe semantic stores, a pathway that neuroscientists call the ventral visual stream or the "what" pathway.
 
-**Geography knowledge and cognitive health**
+Geography knowledge and cognitive health
 
 A 2019 study by Singh-Manoux et al. found that adults with higher levels of general knowledge showed significantly slower rates of cognitive decline over a 25-year follow-up period. The researchers hypothesized that knowledge accumulation builds cognitive reserve — the brain's resilience to damage and disease — by creating denser and more redundant neural networks.
 
 Flag knowledge specifically correlates with travel experience, reading habits, and general intellectual curiosity. Research consistently shows that intellectual curiosity — the trait that drives people to learn about the world — is independently associated with better cognitive aging outcomes, above and beyond education level or socioeconomic status.
 
-**Benchmarks**
+Benchmarks
 
 The average adult can correctly identify approximately 30–40 flags from memory. People who score above 50 on our progressive test are in the top 20% of geography knowledge. Scores above 80 represent exceptional geographic knowledge, typical of frequent travelers, geographers, or dedicated trivia enthusiasts.
 
 The progressive nature of the test means that early questions (well-known flags of large nations) are solved by most adults, while later questions (flags of smaller or less prominent nations) differentiate the top performers.
 
-**How to improve your knowledge and long-term memory**
+How to improve your knowledge and long-term memory
 
 Learning new information is the most straightforward way to expand semantic memory. Spaced repetition — the technique of reviewing information at increasing intervals — is dramatically more effective than massed practice ("cramming"). Apps like Anki implement spaced repetition algorithms that maximize long-term retention with minimal time investment.
 
@@ -142,7 +142,7 @@ Regular practice on the Flags, Capitals, and Countries games on MemGenius builds
     title: 'How is the Brain Age Calculated?',
     content: `Your Brain Age is calculated by combining your percentile scores across all four cognitive tests and mapping the result to an age offset relative to your chronological age.
 
-**The calculation process**
+The calculation process
 
 Each test produces a percentile score between 0 and 100, representing the percentage of age-matched individuals you outperformed. A percentile of 75 means you performed better than 75% of people your age on that test.
 
@@ -156,13 +156,13 @@ The four percentile scores are averaged to produce a composite cognitive percent
 - Bottom 25% (composite ≤ 25): Brain Age = Chronological Age + 8
 - Bottom 10% (composite ≤ 10): Brain Age = Chronological Age + 13
 
-**Important caveats**
+Important caveats
 
 This brain age calculation is an estimate based on population-level norms. It is not a clinical diagnosis and should not be used to make medical decisions. Many factors beyond cognitive ability influence performance on any given day, including sleep quality, caffeine intake, stress levels, familiarity with similar tests, and internet connection speed.
 
 A single test session provides a useful baseline but not a definitive measure. For the most accurate assessment of your cognitive health, repeat the test multiple times over several weeks and track your average score. Consistent improvement over time is a reliable indicator that your cognitive training is working.
 
-**The science of brain age**
+The science of brain age
 
 The concept of brain age has been validated in neuroimaging research using structural MRI and functional connectivity analyses. Studies by Cole et al. (2017) and others have shown that brain age estimated from neuroimaging data predicts mortality, cognitive decline, and dementia risk above and beyond chronological age. Behavioral measures of cognitive performance — like those used in this test — correlate significantly with neuroimaging-based brain age estimates, making them useful proxies in the absence of expensive scanning equipment.
 
@@ -172,7 +172,7 @@ Regular cognitive training has been shown in multiple longitudinal studies to re
     title: 'How to Improve Your Brain Age',
     content: `The most important insight from decades of cognitive neuroscience research is that brain age is modifiable. The brain retains neuroplasticity — the capacity to form new connections and strengthen existing ones — throughout life. Here are the most evidence-backed strategies for reducing your brain age.
 
-**1. Aerobic exercise: the single most powerful intervention**
+1. Aerobic exercise: the single most powerful intervention
 
 A landmark meta-analysis by Northey et al. (2018) examined 39 randomized controlled trials involving 2,788 participants and found that aerobic exercise significantly improved cognitive function across all age groups. The effect was largest for executive function (reasoning, planning, cognitive flexibility) and processing speed.
 
@@ -180,7 +180,7 @@ The optimal dose appears to be 150 minutes per week of moderate-intensity aerobi
 
 The mechanism involves increased production of BDNF (brain-derived neurotrophic factor), a protein that promotes the growth and maintenance of neurons, particularly in the hippocampus — the brain region most critical for memory formation.
 
-**2. Sleep: the foundation of cognitive performance**
+2. Sleep: the foundation of cognitive performance
 
 Sleep deprivation is one of the most powerful negative influences on brain age. A single night of sleeping less than 6 hours increases reaction time by 25–40%, reduces working memory capacity by approximately 20%, and impairs logical reasoning to a degree equivalent to mild alcohol intoxication.
 
@@ -188,7 +188,7 @@ Chronic sleep restriction — getting less than 7 hours per night over weeks or 
 
 The recommended sleep duration for cognitive optimization is 7–9 hours for adults aged 18–65, with consistent sleep and wake times being as important as total duration.
 
-**3. Cognitive training: use it or lose it**
+3. Cognitive training: use it or lose it
 
 The brain follows a "use it or lose it" principle: neural circuits that are regularly activated are maintained and strengthened, while unused circuits gradually weaken. Cognitive training programs that challenge the brain in targeted ways have been shown to produce measurable improvements in the trained domains, with some evidence of transfer to untrained tasks.
 
@@ -196,13 +196,13 @@ The most effective cognitive training programs combine multiple domains (not jus
 
 MemGenius is designed with these principles in mind. With 22 games across agility, memory, knowledge, and logic, daily training on the platform provides varied cognitive stimulation that targets all four domains assessed in this brain age test.
 
-**4. Social engagement and emotional wellbeing**
+4. Social engagement and emotional wellbeing
 
 Social isolation is one of the strongest risk factors for accelerated cognitive aging. A study by Holt-Lunstad et al. found that social isolation increases mortality risk by 29% and is comparable to smoking 15 cigarettes per day in its health impact. For cognitive health specifically, maintaining rich social networks has been associated with a 2–4 year younger brain age in multiple longitudinal studies.
 
 Emotional wellbeing — specifically the management of chronic stress — is also critical. Chronic stress elevates cortisol levels, which over time damages hippocampal neurons and accelerates cognitive aging. Mindfulness meditation, regular exercise, and strong social connections are the most evidence-backed interventions for reducing chronic stress.
 
-**5. Nutrition and hydration**
+5. Nutrition and hydration
 
 The Mediterranean diet — characterized by high consumption of vegetables, fruits, whole grains, fish, olive oil, and nuts — has the strongest evidence base for supporting cognitive health. A study by Morris et al. (2015) found that adherence to the MIND diet (a variant of the Mediterranean diet optimized for brain health) reduced the risk of Alzheimer's disease by 53% in the highest-adherence group.
 
