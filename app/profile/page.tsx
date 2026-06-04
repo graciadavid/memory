@@ -118,12 +118,15 @@ export default function ProfilePage() {
   const [loaded, setLoaded] = useState(false)
   const [worldRank, setWorldRank] = useState<number|null>(null)
   const [totalPlayers, setTotalPlayers] = useState(0)
+  const [brainAgeResult, setBrainAgeResult] = useState<any>(null)
 
   useEffect(() => {
     if (!profile?.name) return
     supabase.from('profiles').select('*').eq('player_name', profile.name).single()
       .then(({ data }: any) => setProfileData(data))
-    supabase.from('global_rankings').select('world_rank').eq('player_name', profile.name).single()
+    supabase.from("global_rankings").select("world_rank").eq("player_name", profile.name).single()
+    const saved = localStorage.getItem("braintest_result")
+    if (saved) setBrainAgeResult(JSON.parse(saved))
       .then(({ data }: any) => { if (data?.world_rank) { setWorldRank(data.world_rank); localStorage.setItem("memgenius_world_rank", String(data.world_rank)) } })
 
     setLoaded(false)
@@ -212,7 +215,8 @@ export default function ProfilePage() {
               <div style={{ fontSize:52, fontWeight:900, color:'#C8960C', lineHeight:1, letterSpacing:-2 }}>{worldRank ? "#"+worldRank : "—"}</div>
             </div>
           </div>
-          <div style={{ display:'flex', alignItems:'center', gap:12, background:'rgba(255,107,53,0.12)', borderRadius:14, padding:'14px 18px', border:'1px solid rgba(255,107,53,0.2)' }}>
+          <div style={{ display:"flex", gap:10, marginTop:4 }}>
+          <div style={{ flex:1, display:"flex", alignItems:"center", gap:12, background:"rgba(255,107,53,0.12)", borderRadius:14, padding:"12px 14px", border:"1px solid rgba(255,107,53,0.2)" }}>
             <span style={{ fontSize:36 }}>🔥</span>
             <div>
               <div style={{ fontSize:28, fontWeight:900, color:'#FF6B35', lineHeight:1 }}>{streak} <span style={{ fontSize:16, fontWeight:700 }}>days</span></div>
