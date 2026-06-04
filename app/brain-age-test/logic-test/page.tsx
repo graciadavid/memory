@@ -89,7 +89,7 @@ export default function LogicTestPage() {
      }
    } else if (newAttempts.length >= MAX_ATTEMPTS) {
      setWon(false)
-     setPercentile(5)
+     setPercentile(50)
      setPhase('result')
    }
  }
@@ -201,11 +201,7 @@ export default function LogicTestPage() {
              : '😤 Try again — you\'ll get it!'}
          </div>
 
-         <button onClick={startGame}
-           style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:'#252525', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:10 }}>
-           Try Again
-         </button>
-         {won && (
+         {won ? (
            <button onClick={saveAndContinue}
              style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #8B6914' }}>
              Save & Continue →
