@@ -103,8 +103,8 @@ const COUNTRIES = [
 function shuffle<T>(arr: T[]): T[] { return [...arr].sort(() => Math.random() - 0.5) }
 
 function getPercentile(level: number, birthYear: number): number {
-  const map: Record<number, number> = { 0:5, 1:15, 2:22, 3:30, 4:38, 5:46, 6:54, 7:62, 8:69, 9:75, 10:80, 11:84, 12:87, 13:90, 14:92, 15:94, 16:95, 17:96, 18:97, 19:98, 20:99 }
-  return map[Math.min(level, 20)] || 99
+  const map: Record<number, number> = { 0:10, 1:20, 2:32, 3:44, 4:55, 5:64, 6:72, 7:79, 8:85, 9:90, 10:95 }
+  return map[Math.min(level, 10)] || 95
 }
 
 type Phase = 'intro' | 'playing' | 'result'
