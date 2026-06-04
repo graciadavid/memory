@@ -64,7 +64,7 @@ export default function Exactly5Page() {
  }
 
  return (
-   <main style={{ minHeight:'100dvh', background:'#0a0a0a', fontFamily:'system-ui, sans-serif', color:'#fff', maxWidth:430, margin:'0 auto', padding:'24px 16px 40px' }}>
+   <main style={{ minHeight:'100dvh', background:'#0a0a0a', fontFamily:'var(--font-nunito), sans-serif', color:'#fff', maxWidth:430, margin:'0 auto', padding:'24px 16px 40px' }}>
 
      {/* Header */}
      <div style={{ textAlign:'center', marginBottom:32 }}>
