@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 
 const GREEN = '#2E7D32'
@@ -17,23 +17,23 @@ export default function Exactly5Page() {
   const startRef = useRef(0)
   const rafRef = useRef(0)
 
+  const loadLastTimes = useCallback(async () => {
+    const { data } = await supabase
+      .from('precision_scores')
+      .select('player_name, difference_ms')
+      .eq('game_type', 'exactly5')
+      .order('created_at', { ascending: false })
+      .limit(30)
+    if (data) setLastTimes(data.map((d: any) => ({ name: d.player_name || 'anon', diff: d.difference_ms })))
+  }, [])
+
   useEffect(() => {
     const stored = localStorage.getItem('exactly5_name')
     if (stored) setName(stored)
     loadLastTimes()
     const interval = setInterval(loadLastTimes, 5000)
     return () => clearInterval(interval)
-  }, [])
-
-  const loadLastTimes = async () => {
-    const { data } = await supabase
-      .from('precision_scores')
-      .select('player_name, difference_ms, created_at')
-      .eq('game_type', 'exactly5')
-      .order('created_at', { ascending: false })
-      .limit(30)
-    if (data) setLastTimes(data.map((d: any) => ({ name: d.player_name || 'anon', diff: d.difference_ms })))
-  }
+  }, [loadLastTimes])
 
   const startTimer = () => {
     if (!name.trim()) return
@@ -70,36 +70,31 @@ export default function Exactly5Page() {
     : '#fff'
 
   return (
-    <main style={{ minHeight:'100dvh', background:'#0a0a0a', fontFamily:'var(--font-nunito), sans-serif', color:'#fff', maxWidth:430, margin:'0 auto', padding:'24px 16px 40px' }}>
+    <div style={{ minHeight:'100dvh', background:'#0a0a0a', fontFamily:'var(--font-nunito), sans-serif', color:'#fff', maxWidth:430, margin:'0 auto', padding:'24px 16px 120px' }}>
 
       {/* Title */}
-      <div style={{ textAlign:'center', marginBottom:24 }}>
-        <div style={{ fontSize:40, fontWeight:900, letterSpacing:-1, marginBottom:12 }}>
+      <div style={{ textAlign:'center', marginBottom:28 }}>
+        <div style={{ fontSize:40, fontWeight:900, letterSpacing:-1, marginBottom:16 }}>
           <span style={{ color:'#fff' }}>Exactly</span><span style={{ color:GREEN }}>5</span><span style={{ color:'#fff' }}>.com</span>
         </div>
-        <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)', letterSpacing:4, textTransform:'uppercase', marginBottom:8 }}>Can you stop at</div>
+        <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)', letterSpacing:4, textTransform:'uppercase', marginBottom:6 }}>Can you stop at</div>
         <div style={{ fontSize:80, fontWeight:900, color:GREEN, lineHeight:1, letterSpacing:-2 }}>5.000</div>
-        <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.3)', letterSpacing:2 }}>seconds</div>
-      </div>
+        <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.3)', letterSpacing:2, marginBottom:24 }}>seconds</div>
 
-      {/* Name input */}
-      {phase === 'intro' && (
-        <div style={{ marginBottom:16 }}>
-          <input
-            value={name}
-            onChange={e => setName(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && startTimer()}
-            placeholder="Your name"
-            maxLength={20}
-            autoFocus
-            style={{ width:'100%', padding:'16px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#1a1a1a', color:'#fff', fontSize:18, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', textAlign:'center' }}
-          />
-        </div>
-      )}
+        {/* Name input */}
+        <input
+          value={name}
+          onChange={e => setName(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && phase === 'intro' && startTimer()}
+          placeholder="Your name"
+          maxLength={20}
+          style={{ width:'60%', padding:'10px 14px', borderRadius:10, border: name.trim() ? `2px solid ${GREEN}` : '2px solid rgba(255,255,255,0.12)', background:'#1a1a1a', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'var(--font-nunito), sans-serif', outline:'none', boxSizing:'border-box', textAlign:'center', display: phase === 'intro' ? 'block' : 'none', margin:'0 auto 16px' }}
+        />
+      </div>
 
       {/* Timer */}
       <div style={{ textAlign:'center', marginBottom:16 }}>
-        <div style={{ fontSize:80, fontWeight:900, color:timerColor, lineHeight:1, fontVariantNumeric:'tabular-nums', letterSpacing:-2, transition:'color 0.1s' }}>
+        <div style={{ fontSize:72, fontWeight:900, color:timerColor, lineHeight:1, fontVariantNumeric:'tabular-nums', letterSpacing:-2, transition:'color 0.1s' }}>
           {phase === 'running' ? (elapsed/1000).toFixed(3) : phase === 'result' ? (stopped/1000).toFixed(3) : '0.000'}
         </div>
       </div>
@@ -107,7 +102,7 @@ export default function Exactly5Page() {
       {/* Progress bar */}
       {phase === 'running' && (
         <div style={{ background:'#1a1a1a', borderRadius:8, height:8, marginBottom:20, overflow:'hidden' }}>
-          <div style={{ height:'100%', borderRadius:8, background: elapsed < 5000 ? GREEN : RED, width:`${Math.min((elapsed/8000)*100,100)}%`, transition:'width 0.05s' }} />
+          <div style={{ height:'100%', borderRadius:8, background: elapsed < 5000 ? GREEN : RED, width:`${Math.min((elapsed/8000)*100,100)}%` }} />
         </div>
       )}
 
@@ -126,7 +121,7 @@ export default function Exactly5Page() {
       {/* START */}
       {phase === 'intro' && (
         <button onClick={startTimer} disabled={!name.trim()}
-          style={{ width:'100%', padding:'22px', borderRadius:16, border:'none', background: name.trim() ? GREEN : '#1a1a1a', color:'#fff', fontSize:22, fontWeight:900, fontFamily:'inherit', cursor: name.trim() ? 'pointer' : 'not-allowed', boxShadow: name.trim() ? '0 6px 0 #1B5E20' : 'none', marginBottom:16, letterSpacing:2 }}>
+          style={{ width:'100%', padding:'22px', borderRadius:16, border:'none', background: name.trim() ? GREEN : '#222', color: name.trim() ? '#fff' : 'rgba(255,255,255,0.3)', fontSize:22, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor: name.trim() ? 'pointer' : 'not-allowed', boxShadow: name.trim() ? '0 6px 0 #1B5E20' : 'none', marginBottom:16, letterSpacing:2, transition:'all 0.2s' }}>
           START
         </button>
       )}
@@ -134,7 +129,7 @@ export default function Exactly5Page() {
       {/* STOP */}
       {phase === 'running' && (
         <button onClick={stopTimer}
-          style={{ width:'100%', padding:'28px', borderRadius:16, border:'none', background:RED, color:'#fff', fontSize:28, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 8px 0 #B71C1C', letterSpacing:4 }}>
+          style={{ width:'100%', padding:'28px', borderRadius:16, border:'none', background:RED, color:'#fff', fontSize:28, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer', boxShadow:'0 8px 0 #B71C1C', letterSpacing:4 }}>
           STOP
         </button>
       )}
@@ -142,7 +137,7 @@ export default function Exactly5Page() {
       {/* TRY AGAIN */}
       {phase === 'result' && (
         <button onClick={reset}
-          style={{ width:'100%', padding:'22px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 6px 0 #1B5E20', marginBottom:16, letterSpacing:2 }}>
+          style={{ width:'100%', padding:'22px', borderRadius:16, border:'none', background:GREEN, color:'#fff', fontSize:20, fontWeight:900, fontFamily:'var(--font-nunito), sans-serif', cursor:'pointer', boxShadow:'0 6px 0 #1B5E20', marginBottom:16, letterSpacing:2 }}>
           TRY AGAIN
         </button>
       )}
@@ -181,6 +176,6 @@ export default function Exactly5Page() {
         a <a href="https://memgenius.com" style={{ color:'rgba(255,255,255,0.3)', textDecoration:'none' }}>MemGenius</a> game
       </div>
 
-    </main>
+    </div>
   )
 }
