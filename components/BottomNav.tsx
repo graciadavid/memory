@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
 const ITEMS = [
-  { href: '/', label: 'Home', icon: `${BASE}/nav-home.webp` },
+  { href: '/discover', label: 'Discover', icon: `${BASE}/seed.png` },
   { href: '/training', label: 'Training', icon: `${BASE}/brain-logo.webp` },
   { href: '/championship', label: 'Championship', icon: `${BASE}/winner.png` },
   
