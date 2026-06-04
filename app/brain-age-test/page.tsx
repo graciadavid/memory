@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
@@ -218,6 +218,8 @@ export default function BrainAgeTestPage() {
   const [brainAge, setBrainAge] = useState<number|null>(null)
   const [error, setError] = useState('')
   const [openSeo, setOpenSeo] = useState<number|null>(null)
+  const [countdown, setCountdown] = useState<number|null>(null)
+  const [showResult, setShowResult] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem('braintest_result')
@@ -249,6 +251,8 @@ export default function BrainAgeTestPage() {
     setStep('tests')
   }
 
+  const calcAge = () => new Date().getFullYear() - parseInt(birthYear)
+
   const calcBrainAge = () => {
     const percentiles = Object.values(results)
     const avg = percentiles.reduce((a, b) => a + b, 0) / percentiles.length
@@ -262,7 +266,30 @@ export default function BrainAgeTestPage() {
     return age + 13
   }
 
+  const fireConfetti = () => {
+    if (typeof window !== 'undefined') {
+      import('canvas-confetti').then(m => {
+        m.default({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#C8960C','#FFD700','#2E7D32','#fff'] })
+      })
+    }
+  }
+
   const handleSeeResult = async () => {
+    setCountdown(3)
+    let c = 3
+    const interval = setInterval(() => {
+      c--
+      if (c <= 0) {
+        clearInterval(interval)
+        setCountdown(null)
+        doSeeResult()
+      } else {
+        setCountdown(c)
+      }
+    }, 800)
+  }
+
+  const doSeeResult = async () => {
     const ba = calcBrainAge()
     setBrainAge(ba)
     setStep('result')
@@ -277,6 +304,8 @@ export default function BrainAgeTestPage() {
     localStorage.setItem('memgenius_profile', JSON.stringify({ name: name.trim() }))
     localStorage.removeItem('braintest_session')
     window.dispatchEvent(new Event('profileUpdated'))
+    setShowResult(true)
+    setTimeout(fireConfetti, 100)
   }
 
   const completedTests = Object.keys(results).length
@@ -286,37 +315,19 @@ export default function BrainAgeTestPage() {
     <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'24px 16px 100px', fontFamily:'var(--font-nunito),sans-serif', maxWidth:430, margin:'0 auto' }}>
       <div style={{ textAlign:'center', marginBottom:32 }}>
         <div style={{ fontSize:26, fontWeight:900, color:'#fff', marginBottom:12 }}>Your Brain Age</div>
-        <div style={{ width:160, height:160, borderRadius:'50%', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700)', margin:'0 auto 16px', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 40px rgba(200,150,12,0.4)' }}>
-          <div style={{ width:144, height:144, borderRadius:'50%', background:'#1A1A1A', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
-            <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2 }}>BRAIN AGE</div>
-            <div style={{ fontSize:56, fontWeight:900, color:GOLD, lineHeight:1 }}>{brainAge}</div>
+        <div style={{ width:180, height:180, borderRadius:'50%', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700)', margin:'0 auto 16px', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 60px rgba(200,150,12,0.5)' }}>
+          <div style={{ width:162, height:162, borderRadius:'50%', background:'#1A1A1A', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
+            <div style={{ fontSize:64, fontWeight:900, color:GOLD, lineHeight:1 }}>{brainAge}</div>
+            <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.5)', letterSpacing:1 }}>years old</div>
           </div>
         </div>
-        <div style={{ fontSize:15, fontWeight:700, color:'rgba(255,255,255,0.6)' }}>
-          {brainAge < parseInt(birthYear)
-            ? `🧠 Your brain is ${parseInt(birthYear) - brainAge} years younger than your age`
-            : brainAge > parseInt(birthYear)
-            ? `Your brain is ${brainAge - parseInt(birthYear)} years older than your age`
-            : 'Your brain age matches your real age'}
-        </div>
-      </div>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:24 }}>
-        {TESTS.map(t => (
-          <div key={t.key} style={{ background:'#252525', borderRadius:14, padding:'14px', textAlign:'center' }}>
-            <img src={t.icon} style={{ width:28, height:28, objectFit:'contain', marginBottom:6 }} />
-            <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.6)', marginBottom:4 }}>{t.label}</div>
-            <div style={{ fontSize:20, fontWeight:900, color: (results[t.key]||50) <= 50 ? '#FF5252' : GREEN }}>
-              {results[t.key] ? `Top ${results[t.key]}%` : '—'}
-            </div>
-          </div>
-        ))}
       </div>
       <a href="/training" style={{ textDecoration:'none', display:'block', marginBottom:10 }}>
-        <button style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:16, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer', boxShadow:'0 5px 0 #1B5E20' }}>
+        <button style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:17, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer', boxShadow:'0 6px 0 #1B5E20' }}>
           Start Training Now →
         </button>
       </a>
-      <button onClick={() => { setStep('intro'); setResults({}); setBrainAge(null); localStorage.removeItem('braintest_result') }}
+      <button onClick={() => { setStep('intro'); setResults({}); setBrainAge(null); setShowResult(false); localStorage.removeItem('braintest_result') }}
         style={{ width:'100%', padding:'14px', borderRadius:14, border:'1px solid rgba(255,255,255,0.15)', background:'transparent', color:'rgba(255,255,255,0.5)', fontSize:14, fontWeight:800, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer', marginBottom:40 }}>
         Repeat Test
       </button>
@@ -332,6 +343,13 @@ export default function BrainAgeTestPage() {
           )}
         </div>
       ))}
+    </main>
+  )
+
+  // COUNTDOWN OVERLAY
+  if (countdown !== null) return (
+    <main style={{ height:'100dvh', background:'#1A1A1A', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:'var(--font-nunito),sans-serif' }}>
+      <div style={{ fontSize:120, fontWeight:900, color:GOLD, lineHeight:1, textAlign:'center' }}>{countdown}</div>
     </main>
   )
 
@@ -353,6 +371,12 @@ export default function BrainAgeTestPage() {
         <div style={{ height:'100%', borderRadius:8, background:GREEN, width:`${(completedTests/4)*100}%`, transition:'width 0.5s' }} />
       </div>
 
+      {completedTests === 4 && (
+        <button onClick={handleSeeResult}
+          style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background:`linear-gradient(135deg, ${GOLD}, #FFD700)`, color:'#000', fontSize:17, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer', boxShadow:'0 6px 0 #8B6914', marginBottom:16 }}>
+          See my Brain Age →
+        </button>
+      )}
       <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
         {TESTS.map((t, i) => {
           const done = !!results[t.key]
@@ -378,12 +402,7 @@ export default function BrainAgeTestPage() {
         })}
       </div>
 
-      {completedTests === 4 && (
-        <button onClick={handleSeeResult}
-          style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background:`linear-gradient(135deg, ${GOLD}, #FFD700)`, color:'#000', fontSize:17, fontWeight:900, fontFamily:'var(--font-nunito),sans-serif', cursor:'pointer', boxShadow:'0 6px 0 #8B6914', marginTop:20 }}>
-          See my Brain Age →
-        </button>
-      )}
+
     </main>
   )
 
