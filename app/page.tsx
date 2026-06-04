@@ -52,7 +52,7 @@ function WelcomePopup({ onComplete }: { onComplete: () => void }) {
         </div>
         <input value={name} onChange={e => { setName(e.target.value); setError('') }} placeholder="Your name" maxLength={20} autoFocus
           style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:16, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', marginBottom:16 }} />
-        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Secret code</div>
+        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Birth year</div>
         <div style={{ display:'flex', gap:8, marginBottom:20 }}>
           {pin.map((d,i) => (
             <input key={i} id={`wp-${i}`} type="tel" maxLength={1} value={d}
