@@ -262,12 +262,12 @@ export default function BrainAgeTestPage() {
   const calcBrainAge = () => {
     const avg = (results.agility || 0) * 0.35 + (results.memory || 0) * 0.35 + (results.logic || 0) * 0.15 + (results.knowledge || 0) * 0.15
     const age = new Date().getFullYear() - parseInt(birthYear)
-    if (avg <= 10) return Math.max(5, age - 12)
-    if (avg <= 25) return Math.max(5, age - 7)
-    if (avg <= 40) return Math.max(5, age - 3)
-    if (avg <= 60) return age
-    if (avg <= 75) return age + 4
-    if (avg <= 90) return age + 8
+    if (avg >= 90) return Math.max(5, age - 12)
+    if (avg >= 75) return Math.max(5, age - 7)
+    if (avg >= 60) return Math.max(5, age - 3)
+    if (avg >= 40) return age
+    if (avg >= 25) return age + 4
+    if (avg >= 10) return age + 8
     return age + 13
   }
 
