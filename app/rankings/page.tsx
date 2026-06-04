@@ -82,7 +82,7 @@ function GameLeaderboard({ game }: { game: Game }) {
      {data.map((p, i) => (
        <div key={p.name} style={{ display:'flex', alignItems:'center', gap:12, padding:'10px 16px', borderTop:'1px solid rgba(255,255,255,0.04)' }}>
          <div style={{ fontSize:13, fontWeight:900, color:i===0?GOLD:i===1?'#aaa':i===2?'#cd7f32':'rgba(255,255,255,0.3)', width:28, textAlign:'center' }}>
-           {i===0?'🥇':i===1?'🥈':i===2?'🥉':`#${i+1}`}
+           {i===0?<img src={`${BASE}/oro.png`} style={{width:20,height:20,objectFit:'contain'}} />:i===1?<img src={`${BASE}/plata.png`} style={{width:20,height:20,objectFit:'contain'}} />:i===2?<img src={`${BASE}/bronce.png`} style={{width:20,height:20,objectFit:'contain'}} />:`#${i+1}`}
          </div>
          <div style={{ flex:1, fontSize:14, fontWeight:800, color:i<3?'#fff':'rgba(255,255,255,0.6)' }}>{p.name}</div>
          <div style={{ fontSize:13, fontWeight:900, color:i===0?GOLD:'rgba(255,255,255,0.4)' }}>{ game.unit === 'mm:ss' ? `${Math.floor(p.score/60000)}:${String(Math.floor((p.score%60000)/1000)).padStart(2,"0")}` : `${p.score}${game.unit}` }</div>
