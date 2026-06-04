@@ -113,11 +113,12 @@ export default function ReactionTimeTestPage() {
       )}
 
       {phase === 'running' && (
-        <div style={{ textAlign:'center' }} onClick={stopTimer}>
+        <div style={{ textAlign:"center" }}>
           <div style={{ fontSize:72, fontWeight:900, color: elapsed > 4500 && elapsed < 5500 ? GOLD : '#fff', lineHeight:1, marginBottom:8, fontVariantNumeric:'tabular-nums' }}>
             {displayTime.toFixed(3)}
           </div>
-          <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)', marginBottom:32 }}>Tap to stop at 5.000</div>
+          <div style={{ fontSize:13, fontWeight:700, color:"rgba(255,255,255,0.4)", marginBottom:24 }}>Tap the button when you reach 5 seconds</div>
+          <button onClick={stopTimer} style={{ width:"100%", padding:"20px", borderRadius:14, border:"none", background:"#D32F2F", color:"#fff", fontSize:20, fontWeight:900, fontFamily:"var(--font-nunito),sans-serif", cursor:"pointer", boxShadow:"0 6px 0 #B71C1C", marginBottom:24 }}>STOP</button>
           <div style={{ width:'100%', background:'#252525', borderRadius:8, height:8, overflow:'hidden' }}>
             <div style={{ height:'100%', background: elapsed < 5000 ? GREEN : '#D32F2F', borderRadius:8, width:`${Math.min((elapsed/8000)*100, 100)}%`, transition:'width 0.05s' }} />
           </div>
