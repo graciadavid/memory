@@ -10,11 +10,9 @@ const COLOR_NAMES = ['Red', 'Blue', 'Yellow', 'Green']
 const CODE_LENGTH = 4
 const MAX_ATTEMPTS = 6
 
-function getPercentile(attempts: number, birthYear: number): number {
- const age = new Date().getFullYear() - birthYear
- const median = age <= 25 ? 4 : age <= 35 ? 5 : age <= 50 ? 6 : 7
- const map: Record<number, number> = { 1: 99, 2: 92, 3: 80, 4: 65, 5: 50, 6: 35, 7: 20, 8: 10 }
- return map[attempts] || 5
+function getPercentile(attempts: number): number {
+  const map: Record<number, number> = { 1: 99, 2: 95, 3: 87, 4: 72, 5: 52, 6: 30 }
+  return map[attempts] || 8
 }
 
 function generateCode(): number[] {
@@ -81,7 +79,7 @@ export default function LogicTestPage() {
    if (result.exact === CODE_LENGTH) {
      setWon(true)
      const birthYear = session?.birthYear ? parseInt(session.birthYear) : 1990
-     const pct = getPercentile(newAttempts.length, birthYear)
+     const pct = getPercentile(newAttempts.length)
      setPercentile(pct)
      setPhase('result')
      const name = session?.name || JSON.parse(localStorage.getItem('memgenius_profile') || '{}').name
