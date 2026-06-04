@@ -125,10 +125,10 @@ export default function ProfilePage() {
     supabase.from('profiles').select('*').eq('player_name', profile.name).single()
       .then(({ data }: any) => setProfileData(data))
     supabase.from("global_rankings").select("world_rank").eq("player_name", profile.name).single()
-    const saved = localStorage.getItem("braintest_result")
-    if (saved) setBrainAgeResult(JSON.parse(saved))
       .then(({ data }: any) => { if (data?.world_rank) { setWorldRank(data.world_rank); localStorage.setItem("memgenius_world_rank", String(data.world_rank)) } })
 
+    const saved = localStorage.getItem("braintest_result")
+    if (saved) setBrainAgeResult(JSON.parse(saved))
     setLoaded(false)
     const newRanks: Record<string, {rank:number, score:number, total:number}> = {}
     let completed = 0
