@@ -101,7 +101,7 @@ export default function FlagQuizPage() {
      <a href="/brain-age-test" style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.4)', textDecoration:'none', display:'block', marginBottom:20 }}>← Brain Age Test</a>
 
      <div style={{ fontSize:11, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>Step 4 of 4</div>
-     <div style={{ fontSize:22, fontWeight:900, color:'#fff', marginBottom:4 }}>Flag Quiz</div>
+     <div style={{ fontSize:22, fontWeight:900, color:"#fff", marginBottom:4 }}>Knowledge Test</div>
      <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)', marginBottom:24 }}>How many flags can you identify?</div>
 
      {phase === 'intro' && (

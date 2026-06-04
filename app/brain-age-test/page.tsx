@@ -10,7 +10,7 @@ const TESTS = [
   { key: 'agility', label: 'Reaction Time', icon: `${BASE}/precision.png`, href: '/brain-age-test/reaction-time-test', step: 1 },
   { key: 'memory', label: 'Memory', icon: `${BASE}/brain-logo.webp`, href: '/brain-age-test/memory-test', step: 2 },
   { key: 'logic', label: 'Logic', icon: `${BASE}/mastermind.png`, href: '/brain-age-test/logic-test', step: 3 },
-  { key: 'knowledge', label: 'Flag Quiz', icon: `${BASE}/flags.png`, href: '/brain-age-test/flag-quiz', step: 4 },
+  { key: 'knowledge', label: 'Knowledge', icon: `${BASE}/flags.png`, href: '/brain-age-test/flag-quiz', step: 4 },
 ]
 
 const YEARS = Array.from({ length: 71 }, (_, i) => String(2010 - i))
@@ -107,7 +107,7 @@ Mathematical training, particularly exposure to formal proof-based mathematics, 
 Puzzle games like Mastermind, Wordle, and Sudoku provide accessible daily training for logical reasoning. Research by Brookfield et al. (2019) found that adults who regularly engaged with word and number puzzles had brain function equivalent to people 10 years younger on tests of reasoning, attention, and memory.`
   },
   {
-    title: 'The Flag Quiz: Long-term Memory and Knowledge',
+    title: 'The Knowledge: Long-term Memory and Knowledge',
     content: `The knowledge component tests your ability to identify national flags from around the world, starting with well-known countries and progressively moving to more obscure ones. A single wrong answer ends the test, and your score is the number of consecutive correct identifications.
 
 What it measures
