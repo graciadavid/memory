@@ -2,29 +2,23 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 
-const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 const GREEN = '#2E7D32'
 const GOLD = '#C8960C'
 
 function getPercentile(diffMs: number, birthYear: number): number {
   const age = new Date().getFullYear() - birthYear
-  // Lower diff is better - benchmarks are absolute difference from 5000ms
   const base = age <= 25 ? 150 : age <= 35 ? 200 : age <= 50 ? 280 : 380
   const worst = base * 8
-  const pct = Math.max(0, Math.min(100, Math.round((1 - (diffMs - base * 0.2) / worst) * 100)))
-  return pct
+  return Math.max(0, Math.min(100, Math.round((1 - (diffMs - base * 0.2) / worst) * 100)))
 }
 
-type Phase = 'intro' | 'running' | 'result'
+type Phase = 'intro' | 'running' | 'between' | 'done'
 
 export default function ReactionTimeTestPage() {
   const [phase, setPhase] = useState<Phase>('intro')
   const [elapsed, setElapsed] = useState(0)
-  const [stopped, setStopped] = useState(0)
-  const [diff, setDiff] = useState(0)
+  const [attempts, setAttempts] = useState<number[]>([])
   const [percentile, setPercentile] = useState(0)
-  const [attempt, setAttempt] = useState(0)
-  const [best, setBest] = useState<number|null>(null)
   const startRef = useRef(0)
   const rafRef = useRef(0)
   const [session, setSession] = useState<any>(null)
@@ -50,31 +44,29 @@ export default function ReactionTimeTestPage() {
     cancelAnimationFrame(rafRef.current)
     const ms = Date.now() - startRef.current
     const absDiff = Math.abs(ms - 5000)
-    setStopped(ms)
-    setDiff(absDiff)
+    const newAttempts = [...attempts, absDiff]
+    setAttempts(newAttempts)
     const birthYear = session?.birthYear ? parseInt(session.birthYear) : 1990
-    const pct = getPercentile(absDiff, birthYear)
+    const best = Math.min(...newAttempts)
+    const pct = getPercentile(best, birthYear)
     setPercentile(pct)
-    if (!best || absDiff < best) setBest(absDiff)
-    setAttempt(a => a + 1)
-    setPhase('result')
     const name = session?.name || JSON.parse(localStorage.getItem('memgenius_profile') || '{}').name
     if (name) {
       supabase.from('precision_scores').insert({ player_name: name, difference_ms: absDiff, game_type: null })
       supabase.rpc('update_streak', { p_player_name: name })
     }
+    if (newAttempts.length >= 3) setPhase('done')
+    else setPhase('between')
   }
 
   const saveAndContinue = () => {
     if (!session) return
-    const birthYear = parseInt(session.birthYear)
-    const pct = best ? getPercentile(best, birthYear) : percentile
-    const updated = { ...session, results: { ...session.results, agility: pct } }
+    const updated = { ...session, results: { ...session.results, agility: percentile } }
     localStorage.setItem('braintest_session', JSON.stringify(updated))
     window.location.href = '/brain-age-test'
   }
 
-  const displayTime = (phase === 'running' ? elapsed : stopped) / 1000
+  const best = attempts.length > 0 ? Math.min(...attempts) : null
 
   return (
     <main style={{ minHeight:'100dvh', background:'#1A1A1A', padding:'24px 16px 100px', fontFamily:'var(--font-nunito),sans-serif', maxWidth:430, margin:'0 auto' }}>
@@ -82,68 +74,80 @@ export default function ReactionTimeTestPage() {
 
       <div style={{ fontSize:11, fontWeight:800, color:GOLD, letterSpacing:2, textTransform:'uppercase', marginBottom:4 }}>Step 1 of 4</div>
       <div style={{ fontSize:22, fontWeight:900, color:'#fff', marginBottom:4 }}>Reaction Time Test</div>
-      <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)', marginBottom:24 }}>Stop the timer at exactly 5 seconds</div>
+      <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)', marginBottom:24 }}>Stop the timer at exactly 5 seconds · 3 attempts</div>
+
+      {/* Attempt indicators */}
+      <div style={{ display:'flex', gap:8, marginBottom:24 }}>
+        {[0,1,2].map(i => (
+          <div key={i} style={{ flex:1, height:6, borderRadius:4, background: i < attempts.length ? GREEN : '#333' }} />
+        ))}
+      </div>
 
       {phase === 'intro' && (
         <>
           <div style={{ background:'#252525', borderRadius:16, padding:'20px', marginBottom:20, textAlign:'center' }}>
             <div style={{ fontSize:64, fontWeight:900, color:'rgba(255,255,255,0.15)', marginBottom:8 }}>5.000</div>
             <div style={{ fontSize:15, fontWeight:700, color:'rgba(255,255,255,0.7)', lineHeight:1.6 }}>
-              Press Start, then tap Stop when you think exactly 5 seconds have passed. No counting allowed!
+              Press Start, then tap Stop when you think exactly 5 seconds have passed. Best of 3 attempts counts.
             </div>
           </div>
-          {best !== null && (
-            <div style={{ background:'#252525', borderRadius:14, padding:'14px', marginBottom:16, textAlign:'center' }}>
-              <div style={{ fontSize:12, fontWeight:800, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>BEST RESULT</div>
-              <div style={{ fontSize:28, fontWeight:900, color:GOLD }}>{best}ms off</div>
-              <div style={{ fontSize:13, fontWeight:700, color:GREEN }}>Top {percentile}%</div>
-            </div>
-          )}
           <button onClick={startTimer}
-            style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:17, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E20', marginBottom:10 }}>
-            {attempt === 0 ? 'Start →' : 'Try Again →'}
+            style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:17, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E20' }}>
+            Start →
           </button>
-          {attempt > 0 && (
-            <button onClick={saveAndContinue}
-              style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #8B6914' }}>
-              Save & Continue →
-            </button>
-          )}
         </>
       )}
 
       {phase === 'running' && (
-        <div style={{ textAlign:"center" }}>
+        <div style={{ textAlign:'center' }}>
           <div style={{ fontSize:72, fontWeight:900, color: elapsed > 4500 && elapsed < 5500 ? GOLD : '#fff', lineHeight:1, marginBottom:8, fontVariantNumeric:'tabular-nums' }}>
-            {displayTime.toFixed(3)}
+            {(elapsed/1000).toFixed(3)}
           </div>
-          <div style={{ fontSize:13, fontWeight:700, color:"rgba(255,255,255,0.4)", marginBottom:24 }}>Tap the button when you reach 5 seconds</div>
-          <button onClick={stopTimer} style={{ width:"100%", padding:"20px", borderRadius:14, border:"none", background:"#D32F2F", color:"#fff", fontSize:20, fontWeight:900, fontFamily:"var(--font-nunito),sans-serif", cursor:"pointer", boxShadow:"0 6px 0 #B71C1C", marginBottom:24 }}>STOP</button>
-          <div style={{ width:'100%', background:'#252525', borderRadius:8, height:8, overflow:'hidden' }}>
-            <div style={{ height:'100%', background: elapsed < 5000 ? GREEN : '#D32F2F', borderRadius:8, width:`${Math.min((elapsed/8000)*100, 100)}%`, transition:'width 0.05s' }} />
+          <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)', marginBottom:24 }}>Tap the button when you reach 5 seconds</div>
+          <div style={{ width:'100%', background:'#252525', borderRadius:8, height:8, overflow:'hidden', marginBottom:32 }}>
+            <div style={{ height:'100%', background: elapsed < 5000 ? GREEN : '#D32F2F', borderRadius:8, width:`${Math.min((elapsed/8000)*100,100)}%` }} />
           </div>
+          <button onClick={stopTimer}
+            style={{ width:'100%', padding:'22px', borderRadius:14, border:'none', background:'#D32F2F', color:'#fff', fontSize:22, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 6px 0 #B71C1C' }}>
+            STOP
+          </button>
         </div>
       )}
 
-      {phase === 'result' && (
+      {phase === 'between' && (
+        <div style={{ textAlign:'center' }}>
+          <div style={{ fontSize:18, fontWeight:900, color:'#fff', marginBottom:8 }}>
+            Attempt {attempts.length} done — off by {attempts[attempts.length-1]}ms
+          </div>
+          {attempts.map((a, i) => (
+            <div key={i} style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>
+              Attempt {i+1}: {a}ms off
+            </div>
+          ))}
+          <button onClick={startTimer}
+            style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:17, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E20', marginTop:20 }}>
+            Attempt {attempts.length + 1} →
+          </button>
+        </div>
+      )}
+
+      {phase === 'done' && (
         <div style={{ textAlign:'center' }}>
           <div style={{ width:140, height:140, borderRadius:'50%', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700)', margin:'0 auto 16px', display:'flex', alignItems:'center', justifyContent:'center' }}>
             <div style={{ width:124, height:124, borderRadius:'50%', background:'#1A1A1A', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
-              <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:1 }}>OFF BY</div>
-              <div style={{ fontSize:32, fontWeight:900, color:GOLD, lineHeight:1 }}>{diff}ms</div>
+              <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.4)', letterSpacing:1 }}>BEST</div>
+              <div style={{ fontSize:32, fontWeight:900, color:GOLD, lineHeight:1 }}>{best}ms</div>
               <div style={{ fontSize:13, fontWeight:800, color:GREEN }}>Top {percentile}%</div>
             </div>
           </div>
-          <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:8 }}>
-            You stopped at {(stopped/1000).toFixed(3)}s
+          {attempts.map((a, i) => (
+            <div key={i} style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>
+              Attempt {i+1}: {a}ms off {a === best ? '⭐' : ''}
+            </div>
+          ))}
+          <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.5)', margin:'16px 0 24px' }}>
+            {best! < 100 ? '🎯 Incredible precision!' : best! < 200 ? '⚡ Great timing!' : best! < 400 ? '💪 Good attempt!' : '🔥 Keep training!'}
           </div>
-          <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:24 }}>
-            {diff < 50 ? '🎯 Incredible precision!' : diff < 150 ? '⚡ Great timing!' : diff < 300 ? '💪 Good attempt!' : '🔥 Keep training!'}
-          </div>
-          <button onClick={() => setPhase('intro')}
-            style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:'#252525', color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:10 }}>
-            Try Again
-          </button>
           <button onClick={saveAndContinue}
             style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:GOLD, color:'#000', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #8B6914' }}>
             Save & Continue →
