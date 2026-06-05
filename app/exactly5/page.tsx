@@ -17,7 +17,7 @@ export default function Exactly5Page() {
   const startRef = useRef(0)
   const rafRef = useRef(0)
 
-  const loadLastTimes = useCallback(async () => {
+  const loadLastTimes = async () => {
     const { data } = await supabase
       .from('precision_scores')
       .select('player_name, difference_ms')
@@ -25,7 +25,7 @@ export default function Exactly5Page() {
       .order('created_at', { ascending: false })
       .limit(30)
     if (data) setLastTimes(data.map((d: any) => ({ name: d.player_name || 'anon', diff: d.difference_ms })))
-  }, [])
+  }
 
   useEffect(() => {
     const stored = localStorage.getItem('exactly5_name')
@@ -33,7 +33,7 @@ export default function Exactly5Page() {
     loadLastTimes()
     const interval = setInterval(loadLastTimes, 5000)
     return () => clearInterval(interval)
-  }, [loadLastTimes])
+  }, [])
 
   const startTimer = () => {
     if (!name.trim()) return
