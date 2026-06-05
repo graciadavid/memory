@@ -3,7 +3,6 @@ import { Nunito } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import BottomNav from '@/components/BottomNav'
-import HeaderNavWrapper from '@/components/HeaderNavWrapper'
 import GAAnalytics from './analytics'
 import { Analytics as VercelAnalytics } from '@vercel/analytics/next'
 
@@ -21,7 +20,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div style={{ maxWidth: 430, margin: '0 auto', minHeight: '100dvh', position: 'relative' }}>
           <GAAnalytics />
           <VercelAnalytics />
-          <HeaderNavWrapper />
+          <Header />
+          <BottomNav />
           {children}
         </div>
       </body>
