@@ -1,65 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
- <!-- Home & Main -->
- <url><loc>https://memgenius.com</loc><priority>1.0</priority><changefreq>daily</changefreq></url>
- <url><loc>https://memgenius.com/training</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/championship</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
- <url><loc>https://memgenius.com/rankings</loc><priority>0.8</priority><changefreq>daily</changefreq></url>
- <url><loc>https://memgenius.com/brain-test</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+<!-- Home & Main -->
+<url><loc>https://memgenius.com</loc><priority>1.0</priority><changefreq>daily</changefreq></url>
+<url><loc>https://memgenius.com/training</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/championship</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
+<url><loc>https://memgenius.com/rankings</loc><priority>0.8</priority><changefreq>daily</changefreq></url>
 
- <!-- Categories -->
- <url><loc>https://memgenius.com/agility</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/memory-hub</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/knowledge</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/logic</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<!-- Brain Age Test -->
+<url><loc>https://memgenius.com/brain-age-test</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/brain-age-test/reaction-time-test</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/brain-age-test/memory-test</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/brain-age-test/logic-test</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/brain-age-test/flag-quiz</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
 
- <!-- Agility Games -->
- <url><loc>https://memgenius.com/stop</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/f1</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/pendulum</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/ace</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/letter-rain</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<!-- Exactly5 -->
+<url><loc>https://memgenius.com/exactly5</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
 
- <!-- Memory Games -->
- <url><loc>https://memgenius.com/memory</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/digits</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/simon</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/nback</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/blink</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/poke</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<!-- Discover -->
+<url><loc>https://memgenius.com/discover</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/discover/cold-water-brain-focus-memory</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
 
- <!-- Knowledge Games -->
- <url><loc>https://memgenius.com/flags</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/capitals</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/countries</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/higherorlower/population</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/higherorlower/area</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<!-- Categories -->
+<url><loc>https://memgenius.com/agility</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/memory-hub</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/knowledge</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/logic</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
 
- <!-- Logic Games -->
- <url><loc>https://memgenius.com/sudoku</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/mastermind</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/wordly</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/2048</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/blackjack</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/tetris</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<!-- Agility Games -->
+<url><loc>https://memgenius.com/stop</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/f1</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/pendulum</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/ace</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/letter-rain</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
 
- <!-- Blog -->
- <url><loc>https://memgenius.com/blog</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
- <url><loc>https://memgenius.com/blog/how-to-train-your-brain-daily</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
- <url><loc>https://memgenius.com/blog/reaction-time-test</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
- <url><loc>https://memgenius.com/blog/memory-training-science</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
- <url><loc>https://memgenius.com/blog/sudoku-tips-tricks</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
- <url><loc>https://memgenius.com/blog/mastermind-game-online</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
- <url><loc>https://memgenius.com/blog/brain-training-games-for-classrooms</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
- <url><loc>https://memgenius.com/blog/brain-age-test</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
- <url><loc>https://memgenius.com/blog/geography-quiz-flags</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+<!-- Memory Games -->
+<url><loc>https://memgenius.com/memory</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/digits</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/simon</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/nback</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/blink</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/poke</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
 
- <!-- Legal -->
- <url><loc>https://memgenius.com/about</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
- <url><loc>https://memgenius.com/privacy</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
- <url><loc>https://memgenius.com/terms</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
- <url><loc>https://memgenius.com/cookies</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
- <url><loc>https://memgenius.com/streak</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
+<!-- Knowledge Games -->
+<url><loc>https://memgenius.com/flags</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/capitals</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/countries</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/higherorlower/population</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/higherorlower/area</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+
+<!-- Logic Games -->
+<url><loc>https://memgenius.com/sudoku</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/mastermind</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/wordly</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/2048</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/blackjack</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/typedrop</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+
+<!-- Blog -->
+<url><loc>https://memgenius.com/blog</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/blog/how-to-train-your-brain-daily</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+<url><loc>https://memgenius.com/blog/reaction-time-test</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+<url><loc>https://memgenius.com/blog/memory-training-science</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+<url><loc>https://memgenius.com/blog/sudoku-tips-tricks</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+<url><loc>https://memgenius.com/blog/mastermind-game-online</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+<url><loc>https://memgenius.com/blog/brain-training-games-for-classrooms</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+<url><loc>https://memgenius.com/blog/brain-age-test</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+<url><loc>https://memgenius.com/blog/geography-quiz-flags</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+
+<!-- Legal -->
+<url><loc>https://memgenius.com/about</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
+<url><loc>https://memgenius.com/privacy</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
+<url><loc>https://memgenius.com/terms</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
+<url><loc>https://memgenius.com/cookies</loc><priority>0.4</priority><changefreq>yearly</changefreq></url>
+<url><loc>https://memgenius.com/streak</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
 
 </urlset>
