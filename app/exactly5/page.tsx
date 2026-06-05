@@ -148,7 +148,7 @@ export default function Exactly5Page() {
         </button>
       )}
 
-      {/* MemGenius CTA */}
+     <a href="https://memgenius.com/brain-age-test" style={{ textDecoration:"none", display:"block", marginBottom:12 }}>
        <div style={{ background:"linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)", borderRadius:14, padding:"16px", textAlign:"center", boxShadow:"0 4px 0 rgba(100,70,0,0.5)" }}>
          <div style={{ fontSize:15, fontWeight:900, color:"#000", letterSpacing:0.5 }}>🧠 What is your Brain Age?</div>
        </div>
