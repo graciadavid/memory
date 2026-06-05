@@ -14,7 +14,7 @@ export default function Page() {
 
        <div style={{ position:'relative', width:'100%', aspectRatio:'1/1', overflow:'hidden' }}>
          <img
-           src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/exercise.png"
+           src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/running.png"
            alt="MemGenius brain mascot exercising"
            style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }}
          />
