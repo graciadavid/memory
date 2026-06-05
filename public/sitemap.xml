@@ -22,7 +22,13 @@
 <url><loc>https://memgenius.com/discover/cold-water-brain-focus-memory</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
 
 <!-- Categories -->
-<url><loc>https://memgenius.com/agility</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+<url><loc>https://memgenius.com/discover/sleep-cycles-memory</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+ <url><loc>https://memgenius.com/discover/exercise-neurogenesis-brain</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+ <url><loc>https://memgenius.com/discover/sugar-cognitive-decline-brain</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+ <url><loc>https://memgenius.com/discover/vitamin-d-sunlight-brain</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+
+ <!-- Categories -->
+ <url><loc>https://memgenius.com/agility</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
 <url><loc>https://memgenius.com/memory-hub</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
 <url><loc>https://memgenius.com/knowledge</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
 <url><loc>https://memgenius.com/logic</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
