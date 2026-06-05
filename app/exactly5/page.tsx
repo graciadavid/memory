@@ -144,7 +144,7 @@ export default function Exactly5Page() {
       )}
 
       {/* MemGenius CTA */}
-     <a href="https://memgenius.com" style={{ textDecoration:'none', display:'block', marginBottom:12 }}>
+     <a href="https://memgenius.com/brain-age-test" style={{ textDecoration:'none', display:'block', marginBottom:12 }}>
        <div style={{ background:'#1a1a1a', borderRadius:14, padding:'14px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', border:'1px solid rgba(46,125,50,0.3)' }}>
          <div>
            <div style={{ fontSize:13, fontWeight:900, color:'#fff', marginBottom:2 }}>🧠 Want more brain games?</div>
