@@ -10,6 +10,7 @@ const POSTS = [
  { slug: 'sleep-cycles-memory', title: 'The 90-Minute Sleep Cycle That Doubles Your Memory', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sleep.png', locked: false },
  { slug: 'sugar-cognitive-decline-brain', title: 'What Sugar Does to Your Brain', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/sugar.png', locked: false },
  { slug: 'exercise-neurogenesis-brain', title: 'The Exercise That Creates New Neurons', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/exercise.png', locked: false },
+ { slug: 'vitamin-d-sunlight-brain', title: 'Sunlight and Vitamin D: The Brain Nutrient Most People Are Missing', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/beach.png', locked: false },
  { slug: 'forgetting-curve-memory-hack', title: 'Why You Forget 70% of Everything', image: null, locked: true },
 ]
 
