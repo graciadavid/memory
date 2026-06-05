@@ -14,6 +14,8 @@ export default function Exactly5Page() {
   const [diff, setDiff] = useState(0)
   const [myBests, setMyBests] = useState<number[]>([])
   const [lastTimes, setLastTimes] = useState<{name:string, diff:number}[]>([])
+  const [worldRank, setWorldRank] = useState<number|null>(null)
+  const [showPopup, setShowPopup] = useState(false)
   const startRef = useRef(0)
   const rafRef = useRef(0)
 
@@ -58,7 +60,10 @@ export default function Exactly5Page() {
     setMyBests(prev => [...prev, absDiff].sort((a,b) => a-b).slice(0,5))
     setPhase('result')
     supabase.from('precision_scores').insert({ player_name: name.trim(), difference_ms: absDiff, game_type: 'exactly5' }).then(({error}:any) => { if(error) console.error('insert error:', error) })
-    setTimeout(loadLastTimes, 500)
+   supabase.from('precision_scores').select('player_name', { count: 'exact', head: true }).eq('game_type', 'exactly5').lt('difference_ms', absDiff)
+     .then(({ count }: any) => setWorldRank((count || 0) + 1))
+   setTimeout(loadLastTimes, 500)
+   setTimeout(() => setShowPopup(true), 300)
   }
 
   const reset = () => { setPhase('intro'); setElapsed(0) }
@@ -184,7 +189,32 @@ export default function Exactly5Page() {
         </div>
       </div>
 
-      <div style={{ textAlign:'center', marginTop:20, fontSize:11, color:'rgba(255,255,255,0.15)', fontWeight:700 }}>
+      {/* Result Popup */}
+     {showPopup && (
+       <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:24, fontFamily:'var(--font-nunito), sans-serif' }}>
+         <div style={{ background:'#111', borderRadius:24, padding:'28px 24px', width:'100%', maxWidth:360, border:'1px solid rgba(255,255,255,0.1)', textAlign:'center' }}>
+           <div style={{ fontSize:48, fontWeight:900, color: diff < 100 ? '#2E7D32' : diff < 300 ? GOLD : '#D32F2F', marginBottom:4 }}>{diff}ms</div>
+           <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.5)', marginBottom:16 }}>off from 5 seconds</div>
+           {worldRank && (
+             <div style={{ background:'rgba(200,150,12,0.15)', borderRadius:14, padding:'12px', marginBottom:20, border:'1px solid rgba(200,150,12,0.2)' }}>
+               <div style={{ fontSize:28, fontWeight:900, color:GOLD }}>#{worldRank} in the world</div>
+               <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>on Exactly5</div>
+             </div>
+           )}
+           <a href="https://memgenius.com/brain-age-test" style={{ textDecoration:'none', display:'block', marginBottom:10 }}>
+             <div style={{ background:'#2E7D32', borderRadius:14, padding:'16px', color:'#fff', fontSize:15, fontWeight:900, boxShadow:'0 5px 0 #1B5E20' }}>
+               🧠 Discover your Brain Age
+             </div>
+           </a>
+           <button onClick={() => { setShowPopup(false); setPhase('intro') }}
+             style={{ width:'100%', padding:'14px', borderRadius:14, border:'1px solid rgba(255,255,255,0.15)', background:'transparent', color:'rgba(255,255,255,0.5)', fontSize:14, fontWeight:800, fontFamily:'inherit', cursor:'pointer' }}>
+             Keep playing Exactly5
+           </button>
+         </div>
+       </div>
+     )}
+
+     <div style={{ textAlign:'center', marginTop:20, fontSize:11, color:'rgba(255,255,255,0.15)', fontWeight:700 }}>
         a <a href="https://memgenius.com" style={{ color:'rgba(255,255,255,0.2)', textDecoration:'none' }}>MemGenius</a> game
       </div>
 
