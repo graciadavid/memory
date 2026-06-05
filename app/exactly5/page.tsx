@@ -143,7 +143,18 @@ export default function Exactly5Page() {
         </button>
       )}
 
-      {/* Your best */}
+      {/* MemGenius CTA */}
+     <a href="https://memgenius.com" style={{ textDecoration:'none', display:'block', marginBottom:12 }}>
+       <div style={{ background:'#1a1a1a', borderRadius:14, padding:'14px 16px', display:'flex', alignItems:'center', justifyContent:'space-between', border:'1px solid rgba(46,125,50,0.3)' }}>
+         <div>
+           <div style={{ fontSize:13, fontWeight:900, color:'#fff', marginBottom:2 }}>🧠 Want more brain games?</div>
+           <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)' }}>22 free games · World Rankings</div>
+         </div>
+         <div style={{ fontSize:14, fontWeight:900, color:'#2E7D32' }}>memgenius.com →</div>
+       </div>
+     </a>
+
+     {/* Your best */}
       {myBests.length > 0 && (
         <div style={{ background:'#1a1a1a', borderRadius:12, padding:'12px 16px', marginBottom:10, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
           <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase' }}>Your Best</div>
