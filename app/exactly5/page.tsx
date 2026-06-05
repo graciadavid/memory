@@ -157,8 +157,8 @@ export default function Exactly5Page() {
           <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Last Games</div>
           {lastTimes.slice(0,10).map((t, i) => (
             <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'4px 0', borderBottom: i < 9 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
-              <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.5)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:55 }}>{t.name}</div>
-              <div style={{ fontSize:11, fontWeight:900, color: t.diff < 100 ? GREEN : t.diff < 300 ? GOLD : 'rgba(255,255,255,0.3)' }}>{t.diff}ms</div>
+              <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.6)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:60 }}>{t.name}</div>
+              <div style={{ fontSize:13, fontWeight:900, color: t.diff < 100 ? GREEN : t.diff < 300 ? GOLD : 'rgba(255,255,255,0.3)' }}>{t.diff} <span style={{ fontSize:10, fontWeight:700 }}>ms</span></div>
             </div>
           ))}
         </div>
@@ -166,8 +166,8 @@ export default function Exactly5Page() {
           <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.3)', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Best Times</div>
           {[...lastTimes].sort((a,b) => a.diff - b.diff).slice(0,10).map((t, i) => (
             <div key={i} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'4px 0', borderBottom: i < 9 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
-              <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.5)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:55 }}>{t.name}</div>
-              <div style={{ fontSize:11, fontWeight:900, color: i===0 ? GOLD : t.diff < 100 ? GREEN : 'rgba(255,255,255,0.3)' }}>{t.diff}ms</div>
+              <div style={{ fontSize:13, fontWeight:800, color:'rgba(255,255,255,0.6)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:60 }}>{t.name}</div>
+              <div style={{ fontSize:13, fontWeight:900, color: i===0 ? GOLD : t.diff < 100 ? GREEN : 'rgba(255,255,255,0.3)' }}>{t.diff} <span style={{ fontSize:10, fontWeight:700 }}>ms</span></div>
             </div>
           ))}
         </div>
