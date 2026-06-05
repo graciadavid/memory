@@ -85,7 +85,7 @@ export default function Exactly5Page() {
             onKeyDown={e => e.key === 'Enter' && startTimer()}
             placeholder="Your name"
             maxLength={20}
-            style={{ width:'200px', padding:'12px', borderRadius:10, border: name.trim() ? `2px solid ${GREEN}` : '2px solid rgba(255,255,255,0.1)', background:'#1a1a1a', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', textAlign:'center', transition:'border 0.2s' }}
+            style={{ width:'200px', padding:'12px', borderRadius:10, margin:'0 auto', display:'block', border: name.trim() ? `2px solid ${GREEN}` : '2px solid rgba(255,255,255,0.1)', background:'#1a1a1a', color:'#fff', fontSize:15, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', textAlign:'center', transition:'border 0.2s' }}
           />
         </div>
       )}
