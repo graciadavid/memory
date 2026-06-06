@@ -12,6 +12,7 @@ const POSTS = [
  { slug: 'exercise-neurogenesis-brain', title: 'The Exercise That Creates New Neurons', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/running.png', locked: false },
  { slug: 'vitamin-d-sunlight-brain', title: 'Sunlight and Vitamin D: The Brain Nutrient Most People Are Missing', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/beach.png', locked: false },
  { slug: 'forgetting-curve-memory-hack', title: 'Why You Forget 70% of Everything', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/forget.png', locked: false },
+ { slug: 'best-time-train-brain-3pm', title: 'Your Brain Peaks at 3pm. Here Is How to Use It.', image: 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/3pm.png', locked: false },
 ]
 
 export default function DiscoverPage() {

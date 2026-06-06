@@ -52,18 +52,18 @@ export default function Page() {
 
            <div style={{ background:'#252525', borderRadius:14, padding:'16px', border:'1px solid rgba(99,102,241,0.2)' }}>
              <div style={{ fontSize:10, fontWeight:800, color:'#818cf8', letterSpacing:2, textTransform:'uppercase', marginBottom:8 }}>Peer-reviewed study</div>
-             <p style={{ fontSize:13, color:'rgba(255,255,255,0.6)', lineHeight:1.7, margin:0 }}>Modern replications of Ebbinghaus confirm his original findings. A 2015 study found that spaced repetition — reviewing material at increasing intervals — improves long-term retention by <strong style={{color:'#fff'}}>200-500%</strong> compared to a single study session of the same total duration.</p>
+             <p style={{ fontSize:13, color:'rgba(255,255,255,0.6)', lineHeight:1.7, margin:0 }}>Modern replications of Ebbinghaus confirm his original findings. A 2015 study found that spaced repetition improves long-term retention by <strong style={{color:'#fff'}}>200-500%</strong> compared to a single study session of the same total duration.</p>
              <div style={{ fontSize:11, color:'rgba(255,255,255,0.25)', fontWeight:700, marginTop:8, fontStyle:'italic' }}>Cepeda et al. — Psychological Science (2015)</div>
            </div>
 
-           <p>The key insight is that <strong style={{color:'#fff'}}>reviewing at the moment just before you forget</strong> is dramatically more effective than reviewing when the memory is still fresh. Each correctly timed review resets the forgetting curve at a shallower slope — meaning you forget more slowly each time.</p>
+           <p>The key insight is that <strong style={{color:'#fff'}}>reviewing at the moment just before you forget</strong> is dramatically more effective than reviewing when the memory is still fresh. Each correctly timed review resets the forgetting curve at a shallower slope.</p>
 
            <div style={{ borderLeft:'3px solid #818cf8', padding:'12px 14px', background:'rgba(99,102,241,0.05)', borderRadius:'0 10px 10px 0' }}>
              <p style={{ fontSize:15, fontWeight:900, color:'#fff', lineHeight:1.3, margin:0 }}>"The spacing effect is one of the most robust findings in cognitive psychology. It works for every type of material, every age group, and every level of intelligence."</p>
              <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700, marginTop:8 }}>— Dr. Robert Bjork, UCLA Memory Lab</div>
            </div>
 
-           <p>This is exactly why daily brain training works better than weekly sessions of the same total duration. Returning to MemGenius every day does not just add practice — it catches your memories at precisely the interval where reinforcement has the highest impact.</p>
+           <p>This is exactly why daily brain training works better than weekly sessions of the same total duration. Returning to MemGenius every day catches your memories at precisely the interval where reinforcement has the highest impact.</p>
 
            <div style={{ height:1, background:'rgba(255,255,255,0.07)' }} />
 
@@ -71,9 +71,9 @@ export default function Page() {
            <h2 style={{ fontSize:18, fontWeight:900, color:'#fff', lineHeight:1.2 }}>The Exact Protocol. 3 Steps.</h2>
 
            {[
-             ['1','Review within 24 hours','Whatever you learn today — a name, a fact, a skill — review it once before you sleep and once the following morning. These two reviews alone cut the forgetting curve by more than half and cost less than 2 minutes.','Review before sleep'],
+             ['1','Review within 24 hours','Whatever you learn today — a name, a fact, a skill — review it once before you sleep and once the following morning. These two reviews alone cut the forgetting curve by more than half.','Review before sleep'],
              ['2','Space your reviews out','After the first review, wait longer each time: 1 day, then 3 days, then 1 week, then 2 weeks. Each interval should feel slightly uncomfortable — like you almost forgot. That difficulty is the signal that the review is working.','Increasing intervals'],
-             ['3','Train daily, not in long sessions','A 5-minute daily MemGenius session beats a 35-minute weekly session every time. The daily return is the spacing mechanism. Your streak is not just a number — it is the engine of long-term memory consolidation.','Daily beats weekly'],
+             ['3','Train daily, not in long sessions','A 5-minute daily MemGenius session beats a 35-minute weekly session every time. Your streak is not just a number — it is the engine of long-term memory consolidation.','Daily beats weekly'],
            ].map(([num, title, desc, tip]) => (
              <div key={num} style={{ display:'flex', gap:12, alignItems:'flex-start', background:'#252525', borderRadius:14, padding:'14px' }}>
                <div style={{ width:32, height:32, minWidth:32, background:'#6366f1', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, fontWeight:900, color:'#fff' }}>{num}</div>
@@ -90,7 +90,7 @@ export default function Page() {
          <a href="/" style={{ textDecoration:'none', display:'block', marginTop:28 }}>
            <div style={{ background:'linear-gradient(135deg, #6366f1, #4338ca)', borderRadius:16, padding:'20px 16px', textAlign:'center' }}>
              <div style={{ fontSize:20, fontWeight:900, color:'#fff', marginBottom:6 }}>Come Back Tomorrow.</div>
-             <div style={{ fontSize:13, color:'rgba(255,255,255,0.65)', lineHeight:1.6, marginBottom:16 }}>You just learned about the forgetting curve. The best way to prove it works is to return tomorrow and train again. Your streak is your spaced repetition system.</div>
+             <div style={{ fontSize:13, color:'rgba(255,255,255,0.65)', lineHeight:1.6, marginBottom:16 }}>You just learned about the forgetting curve. The best way to prove it works is to return tomorrow and train again.</div>
              <div style={{ background:'#C8960C', borderRadius:30, padding:'12px 24px', fontSize:15, fontWeight:900, color:'#fff', display:'inline-block' }}>Train Now</div>
            </div>
          </a>
@@ -98,10 +98,10 @@ export default function Page() {
          <div style={{ background:'#252525', borderRadius:16, padding:'16px', marginTop:16, border:'1px solid rgba(255,255,255,0.06)' }}>
            <div style={{ fontSize:10, fontWeight:800, color:'rgba(255,255,255,0.25)', letterSpacing:2, textTransform:'uppercase', marginBottom:10 }}>Tomorrow's discovery</div>
            <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-             <div style={{ width:56, height:56, minWidth:56, borderRadius:10, background:'#333', opacity:0.35 }} />
+             <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/3pm.png" alt="3pm brain peak" style={{ width:56, height:56, borderRadius:10, objectFit:'cover', opacity:0.35 }} />
              <div>
-               <div style={{ fontSize:14, fontWeight:900, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>More discoveries coming soon</div>
-               <div style={{ fontSize:11, fontWeight:800, color:'#C8960C' }}>Keep your streak to unlock</div>
+               <div style={{ fontSize:14, fontWeight:900, color:'rgba(255,255,255,0.4)', marginBottom:4 }}>Your Brain Peaks at 3pm. Here Is How to Use It.</div>
+               <div style={{ fontSize:11, fontWeight:800, color:'#C8960C' }}>Come back tomorrow to unlock</div>
              </div>
            </div>
          </div>
