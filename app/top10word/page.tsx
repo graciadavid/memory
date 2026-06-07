@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 type Section = 'choose' | 'new' | 'ranking'
@@ -32,7 +31,6 @@ export default function Top10WordPage() {
   const [tab, setTab] = useState<Tab>('world')
   const [loading, setLoading] = useState(false)
   const [swipeDir, setSwipeDir] = useState<'left'|'right'|null>(null)
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     const u = localStorage.getItem('top10word_username') || ''
