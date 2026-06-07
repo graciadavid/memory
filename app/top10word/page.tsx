@@ -23,6 +23,7 @@ export default function Top10WordPage() {
   const [myWords, setMyWords] = useState<any[]>([])
   const [tab, setTab] = useState<Tab>('world')
   const [loading, setLoading] = useState(false)
+  const [swipeDir, setSwipeDir] = useState<'left'|'right'|null>(null)
 
   useEffect(() => {
     const u = localStorage.getItem('top10word_username') || ''
@@ -41,6 +42,7 @@ export default function Top10WordPage() {
     setCurrentWord(pool[Math.floor(Math.random() * pool.length)])
     setVoted(false)
     setVoteResult(null)
+    setSwipeDir(null)
   }
 
   const loadRanking = async () => {
@@ -63,6 +65,7 @@ export default function Top10WordPage() {
   const handleVote = async (yes: boolean) => {
     if (!currentWord || voted) return
     const deviceId = getDeviceId()
+    setSwipeDir(yes ? 'right' : 'left')
     setVoted(true)
     setVoteResult(yes)
     const field = yes ? 'total_yes' : 'total_no'
@@ -109,42 +112,42 @@ export default function Top10WordPage() {
       <div style={{ flex:1, padding:'0 20px 100px' }}>
 
         {section === 'choose' && (
-          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'65vh' }}>
-            {currentWord ? (
-              <>
-                <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.2)', letterSpacing:4, textTransform:'uppercase', marginBottom:24 }}>do you love this word?</div>
-                <div style={{ fontSize: currentWord.word.length > 8 ? 52 : 72, fontWeight:900, color:'#fff', textAlign:'center', letterSpacing:-2, lineHeight:1, marginBottom:16, textTransform:'uppercase' }}>
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'65vh', overflow:'hidden' }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.2)', letterSpacing:4, textTransform:'uppercase', marginBottom:20 }}>do you love this word?</div>
+            {currentWord && (
+              <div style={{
+                background:'#fff',
+                borderRadius:24,
+                padding:'48px 28px 36px',
+                width:'100%',
+                boxShadow:'0 24px 64px rgba(0,0,0,0.7)',
+                textAlign:'center',
+                marginBottom:28,
+                transform: swipeDir === 'right' ? 'translateX(150%) rotate(20deg)' : swipeDir === 'left' ? 'translateX(-150%) rotate(-20deg)' : 'translateX(0) rotate(0deg)',
+                opacity: swipeDir ? 0 : 1,
+                transition: swipeDir ? 'transform 0.35s ease, opacity 0.25s ease' : 'none',
+              }}>
+                <div style={{ fontSize:12, fontWeight:900, letterSpacing:1, marginBottom:28, color:'#555' }}>
+                  Top<span style={{ color:'#C8960C' }}>10</span>Word.com
+                </div>
+                <div style={{ fontSize: currentWord.word.length > 8 ? 52 : 70, fontWeight:900, color:'#111', letterSpacing:-2, lineHeight:1, marginBottom:20, textTransform:'uppercase' }}>
                   {currentWord.word}
                 </div>
-                <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.2)', marginBottom:40 }}>
-                  {(currentWord.total_yes || 0) + (currentWord.total_no || 0)} votes
+                <div style={{ fontSize:12, fontWeight:700, color:'rgba(0,0,0,0.25)' }}>
+                  {(currentWord.total_yes || 0) + (currentWord.total_no || 0)} votes worldwide
                 </div>
-                {!voted ? (
-                  <div style={{ display:'flex', gap:16, width:'100%' }}>
-                    <button onClick={() => handleVote(false)}
-                      style={{ flex:1, padding:'24px', borderRadius:16, border:'2px solid rgba(255,255,255,0.08)', background:'#111', color:'rgba(255,255,255,0.5)', fontSize:36, fontFamily:'inherit', cursor:'pointer' }}>
-                      ✗
-                    </button>
-                    <button onClick={() => handleVote(true)}
-                      style={{ flex:1, padding:'24px', borderRadius:16, border:'none', background:'#E53935', color:'#fff', fontSize:36, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 6px 0 #B71C1C' }}>
-                      ✓
-                    </button>
-                  </div>
-                ) : (
-                  <div style={{ textAlign:'center' }}>
-                    <div style={{ fontSize:56, marginBottom:12 }}>{voteResult ? '❤️' : '👎'}</div>
-                    <div style={{ fontSize:15, fontWeight:700, color:'rgba(255,255,255,0.5)' }}>
-                      {voteResult
-                        ? `${Math.round(((currentWord.total_yes+1)/Math.max((currentWord.total_yes+1)+(currentWord.total_no||0),1))*100)}% love this word`
-                        : `${Math.round(((currentWord.total_no+1)/Math.max((currentWord.total_yes||0)+(currentWord.total_no+1),1))*100)}% also said no`
-                      }
-                    </div>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div style={{ fontSize:14, color:'rgba(255,255,255,0.3)' }}>Loading...</div>
+              </div>
             )}
+            <div style={{ display:'flex', gap:16, width:'100%' }}>
+              <button onClick={() => handleVote(false)} disabled={voted}
+                style={{ flex:1, padding:'20px', borderRadius:16, border:'3px solid #E53935', background:'transparent', color:'#E53935', fontSize:32, fontFamily:'inherit', cursor: voted ? 'not-allowed' : 'pointer', fontWeight:900 }}>
+                ✗
+              </button>
+              <button onClick={() => handleVote(true)} disabled={voted}
+                style={{ flex:1, padding:'20px', borderRadius:16, border:'none', background:'#2E7D32', color:'#fff', fontSize:32, fontFamily:'inherit', cursor: voted ? 'not-allowed' : 'pointer', boxShadow:'0 5px 0 #1B5E20', fontWeight:900 }}>
+                ✓
+              </button>
+            </div>
           </div>
         )}
 
