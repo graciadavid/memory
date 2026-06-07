@@ -98,6 +98,7 @@ export default function Top10WordPage() {
    if (error && error.code === '23505') {
      alert('This word is already in the ranking!')
    } else if (!error) {
+     setSharedWord(newWord.trim().toUpperCase())
      setSubmitted(true)
      setNewWord('')
    }
