@@ -50,6 +50,7 @@ export default function Top10WordPage() {
         .map((w: any) => ({ ...w, pct: Math.round((w.total_yes / Math.max(w.total_yes + w.total_no, 1)) * 100) }))
         .filter((w: any) => w.total_yes + w.total_no > 0)
         .sort((a: any, b: any) => b.pct - a.pct)
+        .slice(0, 10)
       setRanking(ranked)
     }
     const uname = localStorage.getItem('top10word_username')
