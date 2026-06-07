@@ -30,6 +30,7 @@ export default function Top10WordPage() {
   const [myWords, setMyWords] = useState<any[]>([])
   const [tab, setTab] = useState<Tab>('world')
   const [loading, setLoading] = useState(false)
+  const [sharedWord, setSharedWord] = useState('')
   const [swipeDir, setSwipeDir] = useState<'left'|'right'|null>(null)
 
   useEffect(() => {
@@ -187,8 +188,8 @@ export default function Top10WordPage() {
                 <div style={{ fontSize:22, fontWeight:900, color:'#fff', marginBottom:8 }}>Your word is in the world.</div>
                 <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.4)', marginBottom:24 }}>People are voting on it right now.</div>
                 <button onClick={() => {
-                  const url = `https://top10word.com?word=${encodeURIComponent(newWord)}`
-                  const txt = `I proposed the word ${newWord.toUpperCase()}. Vote if you love it!`
+                  const url = `https://top10word.com?word=${encodeURIComponent(sharedWord)}`
+                  const txt = `I proposed the word ${sharedWord.toUpperCase()}. Vote if you love it!`
                   if (navigator.share) navigator.share({ text: txt, url })
                   else { navigator.clipboard.writeText(txt + '\n' + url) }
                 }}
