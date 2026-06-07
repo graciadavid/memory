@@ -85,7 +85,7 @@ export default function Top10WordPage() {
   const NAV = [
     { id: 'choose', label: 'VOTE' },
     { id: 'new', label: 'ADD' },
-    { id: 'ranking', label: 'TOP' },
+    { id: 'ranking', label: 'TOP 10' },
   ]
 
   return (
@@ -183,7 +183,7 @@ export default function Top10WordPage() {
               {(['world','mine'] as Tab[]).map(t => (
                 <button key={t} onClick={() => setTab(t)}
                   style={{ flex:1, padding:'10px', borderRadius:10, border:'none', background: tab === t ? '#E53935' : '#1a1a1a', color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer', letterSpacing:2, textTransform:'uppercase' }}>
-                  {t === 'world' ? '🌍 World' : '👤 Mine'}
+                  {t === 'world' ? '🌍 World' : '👤 My Words'}
                 </button>
               ))}
             </div>
