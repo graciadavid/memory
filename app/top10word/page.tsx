@@ -74,6 +74,7 @@ export default function Top10WordPage() {
 
   const handleSubmitWord = async () => {
     if (!newWord.trim() || newWord.trim().length < 2) return
+    if (!username.trim()) return
     setLoading(true)
     const uname = username.trim()
     if (uname) localStorage.setItem('top10word_username', uname)
@@ -156,10 +157,10 @@ export default function Top10WordPage() {
                 <input value={newWord} onChange={e => setNewWord(e.target.value.slice(0,24))} placeholder="YOUR WORD"
                   maxLength={24}
                   style={{ width:'100%', padding:'20px', borderRadius:14, border:'2px solid rgba(255,255,255,0.1)', background:'#111', color:'#fff', fontSize:28, fontWeight:900, fontFamily:'inherit', outline:'none', boxSizing:'border-box', textAlign:'center', textTransform:'uppercase', letterSpacing:2, marginBottom:12 }} />
-                <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Your name (optional)"
+                <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Your name (required)"
                   style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.08)', background:'#111', color:'rgba(255,255,255,0.6)', fontSize:14, fontWeight:700, fontFamily:'inherit', outline:'none', boxSizing:'border-box', textAlign:'center', marginBottom:16 }} />
-                <button onClick={handleSubmitWord} disabled={!newWord.trim() || loading}
-                  style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background: newWord.trim() ? '#E53935' : '#1a1a1a', color: newWord.trim() ? '#fff' : 'rgba(255,255,255,0.2)', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor: newWord.trim() ? 'pointer' : 'not-allowed', boxShadow: newWord.trim() ? '0 5px 0 #B71C1C' : 'none', letterSpacing:2 }}>
+                <button onClick={handleSubmitWord} disabled={!newWord.trim() || !username.trim() || loading}
+                  style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background: newWord.trim() && username.trim() ? '#E53935' : '#1a1a1a', color: newWord.trim() && username.trim() ? '#fff' : 'rgba(255,255,255,0.2)', fontSize:16, fontWeight:900, fontFamily:'inherit', cursor: newWord.trim() && username.trim() ? 'pointer' : 'not-allowed', boxShadow: newWord.trim() && username.trim() ? '0 5px 0 #B71C1C' : 'none', letterSpacing:2 }}>
                   {loading ? 'ADDING...' : 'RELEASE IT →'}
                 </button>
               </>
