@@ -82,8 +82,13 @@ export default function Top10WordPage() {
     const uname = username.trim()
     if (uname) localStorage.setItem('top10word_username', uname)
     const { error } = await supabase.from('words').insert({ word: newWord.trim(), proposed_by: uname || null })
-    setLoading(false)
-    if (!error) { setSubmitted(true); setNewWord('') }
+   setLoading(false)
+   if (error && error.code === '23505') {
+     alert('This word is already in the ranking!')
+   } else if (!error) {
+     setSubmitted(true)
+     setNewWord('')
+   }
   }
 
   const NAV = [
