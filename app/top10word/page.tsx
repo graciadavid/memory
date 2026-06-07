@@ -43,8 +43,12 @@ export default function Top10WordPage() {
     const { data: votedData } = await supabase.from('votes').select('word_id').eq('device_id', deviceId)
     const votedIds = votedData?.map((v: any) => v.word_id) || []
     const { data } = await supabase.from('words').select('*').order('created_at', { ascending: false }).limit(100)
+    const wordParam = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("word") : null
     if (!data || data.length === 0) return
-    const unvoted = data.filter((w: any) => !votedIds.includes(w.id))
+    if (wordParam) {
+      const forced = data.find((w: any) => w.word.toLowerCase() === wordParam.toLowerCase())
+      if (forced) { setCurrentWord(forced); setVoted(false); setVoteResult(null); setSwipeDir(null); window.history.replaceState({}, "", "/top10word"); return }
+    }
     const pool = unvoted.length > 0 ? unvoted : data
     setCurrentWord(pool[Math.floor(Math.random() * pool.length)])
     setVoted(false)
