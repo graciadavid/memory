@@ -144,11 +144,11 @@ export default function Top10WordPage() {
             )}
             <div style={{ display:'flex', gap:16, width:'100%' }}>
               <button onClick={() => handleVote(false)} disabled={voted}
-                style={{ flex:1, padding:'20px', borderRadius:16, border:'3px solid #E53935', background:'transparent', color:'#E53935', fontSize:32, fontFamily:'inherit', cursor: voted ? 'not-allowed' : 'pointer', fontWeight:900 }}>
+                style={{ flex:1, padding:'14px', borderRadius:16, border:'none', background:'#E53935', color:'#fff', fontSize:32, fontFamily:'inherit', cursor: voted ? 'not-allowed' : 'pointer', fontWeight:900, boxShadow:'0 5px 0 #B71C1C' }}>
                 ✗
               </button>
               <button onClick={() => handleVote(true)} disabled={voted}
-                style={{ flex:1, padding:'20px', borderRadius:16, border:'none', background:'#2E7D32', color:'#fff', fontSize:32, fontFamily:'inherit', cursor: voted ? 'not-allowed' : 'pointer', boxShadow:'0 5px 0 #1B5E20', fontWeight:900 }}>
+                style={{ flex:1, padding:'14px', borderRadius:16, border:'none', background:'#2E7D32', color:'#fff', fontSize:32, fontFamily:'inherit', cursor: voted ? 'not-allowed' : 'pointer', boxShadow:'0 5px 0 #1B5E20', fontWeight:900 }}>
                 ✓
               </button>
             </div>
