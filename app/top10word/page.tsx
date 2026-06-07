@@ -131,7 +131,7 @@ export default function Top10WordPage() {
                 opacity: swipeDir ? 0 : 1,
                 transition: swipeDir ? 'transform 0.35s ease, opacity 0.25s ease' : 'none',
               }}>
-                <div style={{ fontSize:12, fontWeight:900, letterSpacing:1, marginBottom:28, color:'#555' }}>
+                <div style={{ fontSize:36, fontWeight:900, letterSpacing:-1, marginBottom:28, color:'#111' }}>
                   Top<span style={{ color:'#C8960C' }}>10</span>Word.com
                 </div>
                 <div style={{ fontSize: currentWord.word.length > 11 ? 28 : currentWord.word.length > 8 ? 38 : currentWord.word.length > 6 ? 52 : 70, fontWeight:900, color:'#111', letterSpacing:-1, whiteSpace:'nowrap', lineHeight:1, marginBottom:20, textTransform:'uppercase' }}>
