@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 type Section = 'choose' | 'new' | 'ranking'
@@ -31,11 +32,13 @@ export default function Top10WordPage() {
   const [tab, setTab] = useState<Tab>('world')
   const [loading, setLoading] = useState(false)
   const [swipeDir, setSwipeDir] = useState<'left'|'right'|null>(null)
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     const u = localStorage.getItem('top10word_username') || ''
     setUsername(u)
-    loadWord()
+    const wordParam = new URLSearchParams(window.location.search).get('word')
+    loadWord(wordParam || undefined)
   }, [])
 
   const loadWord = async () => {
@@ -187,8 +190,9 @@ export default function Top10WordPage() {
                 <div style={{ fontSize:22, fontWeight:900, color:'#fff', marginBottom:8 }}>Your word is in the world.</div>
                 <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.4)', marginBottom:24 }}>People are voting on it right now.</div>
                 <button onClick={() => {
-                  const txt = "I just proposed a word to Top10Word.com — vote if you love it! top10word.com"
-                  if (navigator.share) navigator.share({ text: txt, url: "https://top10word.com" })
+                  const txt = `Vote "${newWord}" on Top10Word.com!`
+                  const url = `https://top10word.com?word=${encodeURIComponent(newWord)}`
+                  if (navigator.share) navigator.share({ text: txt, url })
                   else { navigator.clipboard.writeText(txt) }
                 }}
                   style={{ width:"100%", padding:"16px", borderRadius:14, border:"none", background:"#2E7D32", color:"#fff", fontSize:16, fontWeight:900, fontFamily:"inherit", cursor:"pointer", boxShadow:"0 5px 0 #1B5E20", marginBottom:12 }}>
