@@ -186,19 +186,18 @@ export default function Top10WordPage() {
                 <div style={{ fontSize:56, marginBottom:12 }}>🌍</div>
                 <div style={{ fontSize:22, fontWeight:900, color:'#fff', marginBottom:8 }}>Your word is in the world.</div>
                 <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.4)', marginBottom:24 }}>People are voting on it right now.</div>
-                <button onClick={() => { setSubmitted(false); setSection('choose') }}
-               <button onClick={() => {
-                 const txt = "I just proposed a word to Top10Word.com — vote if you love it! top10word.com"
-                 if (navigator.share) navigator.share({ text: txt, url: "https://top10word.com" })
-                 else { navigator.clipboard.writeText(txt) }
-               }}
-                 style={{ width:"100%", padding:"16px", borderRadius:14, border:"none", background:"#2E7D32", color:"#fff", fontSize:16, fontWeight:900, fontFamily:"inherit", cursor:"pointer", boxShadow:"0 5px 0 #1B5E20", marginBottom:12 }}>
-                 Share my word →
-               </button>
-               <button onClick={() => { setSubmitted(false); setSection("choose") }}
-                 style={{ width:"100%", padding:"14px", borderRadius:14, border:"1px solid rgba(255,255,255,0.15)", background:"transparent", color:"rgba(255,255,255,0.5)", fontSize:14, fontWeight:900, fontFamily:"inherit", cursor:"pointer" }}>
-                 Keep Voting →
-               </button>
+                <button onClick={() => {
+                  const txt = "I just proposed a word to Top10Word.com — vote if you love it! top10word.com"
+                  if (navigator.share) navigator.share({ text: txt, url: "https://top10word.com" })
+                  else { navigator.clipboard.writeText(txt) }
+                }}
+                  style={{ width:"100%", padding:"16px", borderRadius:14, border:"none", background:"#2E7D32", color:"#fff", fontSize:16, fontWeight:900, fontFamily:"inherit", cursor:"pointer", boxShadow:"0 5px 0 #1B5E20", marginBottom:12 }}>
+                  Share my word →
+                </button>
+                <button onClick={() => { setSubmitted(false); setSection("choose") }}
+                  style={{ width:"100%", padding:"14px", borderRadius:14, border:"1px solid rgba(255,255,255,0.15)", background:"transparent", color:"rgba(255,255,255,0.5)", fontSize:14, fontWeight:900, fontFamily:"inherit", cursor:"pointer" }}>
+                  Keep Voting →
+                </button>
 
 
 
