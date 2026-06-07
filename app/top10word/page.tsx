@@ -11,6 +11,13 @@ function getDeviceId() {
   return id
 }
 
+const BLACKLIST = [
+  'fuck','shit','ass','bitch','cunt','dick','cock','pussy','nigger','nigga',
+  'faggot','fag','whore','slut','bastard','retard','rape','nazi','porn',
+  'sex','penis','vagina','boobs','tits','naked','nude','kill','murder',
+  'suicide','terrorist','jihad','hitler','satan','devil','hell','damn',
+  'piss','crap','bastard','homo','dyke','tranny','spic','chink','kike'
+]
 export default function Top10WordPage() {
   const [section, setSection] = useState<Section>('choose')
   const [currentWord, setCurrentWord] = useState<any>(null)
@@ -78,6 +85,10 @@ export default function Top10WordPage() {
   const handleSubmitWord = async () => {
     if (!newWord.trim() || newWord.trim().length < 2) return
     if (!username.trim()) return
+    if (BLACKLIST.some(w => newWord.toLowerCase().includes(w))) {
+      alert("Really? We're better than that.")
+      return
+    }
     setLoading(true)
     const uname = username.trim()
     if (uname) localStorage.setItem('top10word_username', uname)
