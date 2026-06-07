@@ -6,6 +6,9 @@ export function middleware(request: NextRequest) {
   if (host.includes('exactly5.com')) {
     return NextResponse.redirect('https://memgenius.com/exactly5', 301)
   }
+  if (host.includes('top10word.com')) {
+    return NextResponse.redirect('https://memgenius.com/top10word', 301)
+  }
   return NextResponse.next()
 }
 
