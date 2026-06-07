@@ -93,7 +93,6 @@ export default function Top10WordPage() {
     <div style={{ minHeight:'100dvh', background:'#080808', fontFamily:'var(--font-nunito), sans-serif', color:'#fff', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column' }}>
 
       <div style={{ padding:'20px 20px 0', textAlign:'center' }}>
-        <div style={{ fontSize:11, fontWeight:800, color:'rgba(255,255,255,0.2)', letterSpacing:4, textTransform:'uppercase', marginBottom:4 }}>memgenius.com</div>
         <div style={{ fontSize:28, fontWeight:900, letterSpacing:-1 }}><span style={{ color:'#fff' }}>Top</span><span style={{ color:'#C8960C' }}>10</span><span style={{ color:'#fff' }}>Word.com</span></div>
         <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.3)', letterSpacing:2, marginTop:2 }}>which words does the world love?</div>
       </div>
