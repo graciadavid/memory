@@ -135,7 +135,7 @@ export default function Top10WordPage() {
                 <div style={{ fontSize:12, fontWeight:900, letterSpacing:1, marginBottom:28, color:'#555' }}>
                   Top<span style={{ color:'#C8960C' }}>10</span>Word.com
                 </div>
-                <div style={{ fontSize: currentWord.word.length > 8 ? 52 : 70, fontWeight:900, color:'#111', letterSpacing:-2, lineHeight:1, marginBottom:20, textTransform:'uppercase' }}>
+                <div style={{ fontSize: currentWord.word.length > 10 ? 32 : currentWord.word.length > 7 ? 44 : 70, fontWeight:900, color:'#111', letterSpacing:-1, wordBreak:"break-word", overflowWrap:"break-word", lineHeight:1, marginBottom:20, textTransform:'uppercase' }}>
                   {currentWord.word}
                 </div>
                 <div style={{ fontSize:12, fontWeight:700, color:'rgba(0,0,0,0.25)' }}>
