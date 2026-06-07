@@ -37,8 +37,7 @@ export default function Top10WordPage() {
   useEffect(() => {
     const u = localStorage.getItem('top10word_username') || ''
     setUsername(u)
-    const wordParam = new URLSearchParams(window.location.search).get('word')
-    setTimeout(() => loadWord(wordParam || undefined), 100)
+    loadWord()
   }, [])
 
   const loadWord = async () => {
