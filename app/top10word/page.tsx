@@ -118,7 +118,6 @@ export default function Top10WordPage() {
 
         {section === 'choose' && (
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'65vh', overflow:'hidden' }}>
-            <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.2)', letterSpacing:4, textTransform:'uppercase', marginBottom:20 }}>do you love this word?</div>
             {currentWord && (
               <div style={{
                 background:'#fff',
