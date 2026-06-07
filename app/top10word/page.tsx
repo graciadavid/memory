@@ -85,7 +85,7 @@ export default function Top10WordPage() {
 
   const NAV = [
     { id: 'choose', label: 'VOTE' },
-    { id: 'new', label: 'ADD' },
+    { id: 'new', label: 'PROPOSE' },
     { id: 'ranking', label: 'TOP 10' },
   ]
 
