@@ -198,9 +198,7 @@ export default function Top10WordPage() {
                   style={{ width:"100%", padding:"14px", borderRadius:14, border:"1px solid rgba(255,255,255,0.15)", background:"transparent", color:"rgba(255,255,255,0.5)", fontSize:14, fontWeight:900, fontFamily:"inherit", cursor:"pointer" }}>
                   Keep Voting →
                 </button>
-
-
-
+              </div>
             )}
           </div>
         )}
