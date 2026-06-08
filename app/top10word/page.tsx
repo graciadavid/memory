@@ -115,8 +115,9 @@ export default function Top10WordPage() {
      alert('This word is already in the ranking!')
    } else if (!error) {
      localStorage.setItem('top10word_lastword', newWord.trim().toUpperCase())
-     setSubmitted(true)
-     setNewWord('')
+    setSubmitted(true)
+    setNewWord('')
+    import('canvas-confetti').then(m => m.default({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#C8960C','#FFD700','#fff','#2E7D32'] }))
    }
   }
 
