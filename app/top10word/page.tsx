@@ -198,8 +198,8 @@ export default function Top10WordPage() {
       setRanking(world)
       const NAMES = ['alexander','sophia','emma','liam','noah','oliver','james','william','lucas','mason','ethan','aiden','logan','sebastian','jack','owen','leo','luca','henry','mateo','daniel','michael','jackson','samuel','david','ryan','emma','sophia','olivia','isabella','mia','luna','aria','chloe','layla','zoe','amelia','lily','ella','nora','aurora','violet','maya','sofia','stella','hazel','ellie','grace','scarlett','penelope','riley']
       const notNames = base.filter((w:any) => !NAMES.includes(w.word.toLowerCase()) && w.total_yes >= 5)
-      const women = notNames.filter((w:any) => (w.yes_woman||0) > 0).map((w: any) => ({ ...w, pct: Math.round(((w.yes_woman||0) / Math.max((w.yes_woman||0) + (w.yes_man||0), 1)) * 1000) / 10 })).sort((a: any, b: any) => b.yes_woman - a.yes_woman).slice(0, 50)
-      const men = notNames.filter((w:any) => (w.yes_man||0) > 0).map((w: any) => ({ ...w, pct: Math.round(((w.yes_man||0) / Math.max((w.yes_man||0) + (w.yes_woman||0), 1)) * 1000) / 10 })).sort((a: any, b: any) => b.yes_man - a.yes_man).slice(0, 50)
+      const women = notNames.filter((w:any) => (w.yes_woman||0) > 0).map((w: any) => ({ ...w, pct: Math.round(((w.yes_woman||0) / Math.max(w.total_yes + w.total_no, 1)) * 1000) / 10 })).sort((a: any, b: any) => b.pct - a.pct).slice(0, 50)
+      const men = notNames.filter((w:any) => (w.yes_man||0) > 0).map((w: any) => ({ ...w, pct: Math.round(((w.yes_man||0) / Math.max(w.total_yes + w.total_no, 1)) * 1000) / 10 })).sort((a: any, b: any) => b.pct - a.pct).slice(0, 50)
       setRankingWomen(women)
       setRankingMen(men)
     }
