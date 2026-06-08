@@ -222,7 +222,6 @@ export default function Top10WordPage() {
                </div>
              </div>
            )}
-         </div>
 
          {/* Buttons */}
          <div style={{ padding:'0 28px 140px', display:'flex', gap:14 }}>
