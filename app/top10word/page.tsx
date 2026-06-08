@@ -235,9 +235,7 @@ export default function Top10WordPage() {
       {section === 'vote' && (
         <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh' }}>
           <div style={{ padding:'32px 28px 0', textAlign:'center' }}>
-            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color: theme.text, fontFamily:"'Helvetica Neue', 'Arial', sans-serif", marginBottom:6 }}>
-              TOP<span style={{ color: theme.accent }}>10</span>WORD.COM
-            </div>
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/top10word.png" style={{ height:36, objectFit:"contain" }} />
             <div style={{ fontSize:12, fontWeight:500, color: theme.text, opacity:0.4, marginTop:4 }}>
               Which is the world's most beautiful word?
             </div>
@@ -292,9 +290,7 @@ export default function Top10WordPage() {
           {proposeStep === 'input' ? (
             <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 28px 120px' }}>
               <div style={{ textAlign:'center', marginBottom:32 }}>
-                <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>
-                  TOP<span style={{ color: GOLD }}>10</span>WORD.COM
-                </div>
+                <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/top10word.png" style={{ height:36, objectFit:"contain" }} />
                 <div style={{ fontSize:12, fontWeight:500, color:'rgba(28,20,16,0.4)', marginTop:4, fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>Leave your word in the world.</div>
               </div>
               <input value={newWord} onChange={e => setNewWord(e.target.value.slice(0,24))} placeholder="Your word"
@@ -338,9 +334,7 @@ export default function Top10WordPage() {
         <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', background:'#F5F0E8', padding:'36px 24px 120px', overflowY:'auto' }}>
 
           <div style={{ textAlign:'center', marginBottom:24 }}>
-            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>
-              TOP<span style={{ color: GOLD }}>10</span>WORD.COM
-            </div>
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/top10word.png" style={{ height:36, objectFit:"contain" }} />
             <div style={{ fontSize:12, fontWeight:500, color:'rgba(28,20,16,0.4)', marginTop:4 }}>World Ranking</div>
           </div>
 
@@ -487,9 +481,7 @@ export default function Top10WordPage() {
             <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/home.png" style={{ width:"100%", display:"block", borderRadius:20 }} />
             <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, rgba(245,240,232,0.3) 0%, rgba(245,240,232,0) 40%, rgba(245,240,232,0) 60%, rgba(245,240,232,0.6) 100%)" }} />
             <div style={{ position:"absolute", top:16, left:0, right:0, textAlign:"center" }}>
-              <div style={{ fontSize:20, fontWeight:900, letterSpacing:-0.5, color:"#1C1410", fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>
-                TOP<span style={{ color: GOLD }}>10</span>WORD.COM
-              </div>
+              <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/top10word.png" style={{ height:28, objectFit:"contain" }} />
             </div>
             <div style={{ position:"absolute", bottom:"12%", left:20 }}>
               <div style={{ fontSize:9, fontWeight:800, color: NAVY, letterSpacing:3, textTransform:"uppercase", opacity:0.7 }}>Men love</div>
