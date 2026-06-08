@@ -512,6 +512,7 @@ export default function Top10WordPage() {
               Prefer not to say
             </button>
           </div>
+          </div>
         </div>
       )}
 
