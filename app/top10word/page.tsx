@@ -155,7 +155,7 @@ export default function Top10WordPage() {
         if (country) localStorage.setItem('top10word_country', country)
       }
     } catch {}
-    supabase.from('votes').insert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country }).select()
+    supabase.from('votes').insert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country }).select().then(({data,error}:any) => { if(error) alert('Vote error: ' + JSON.stringify(error)); else console.log('voted ok', data) })
     setTotalVotes(v => v + 1)
     const nc = voteCount + 1
     setVoteCount(nc)
