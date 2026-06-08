@@ -302,10 +302,7 @@ export default function Top10WordPage() {
 
           <div style={{ marginBottom:16 }}>
             <div style={{ display:"flex", gap:8, marginBottom:8 }}>
-              <input value={searchWord} onChange={e => { setSearchWord(e.target.value); setSearchDone(false) }}
-                onKeyDown={e => e.key === "Enter" && searchWordFn()}
-                placeholder="Search a word..."
-                style={{ flex:1, padding:"11px 14px", borderRadius:11, border:"1.5px solid rgba(27,46,74,0.15)", background:"#fff", color:"#1C1410", fontSize:13, fontWeight:600, fontFamily:"inherit", outline:"none" }} />
+              <input value={searchWord} onChange={e => { setSearchWord(e.target.value); setSearchDone(false) }} onKeyDown={e => e.key === "Enter" && searchWordFn()} placeholder="Search a word..." style={{ flex:1, padding:"11px 14px", borderRadius:11, border:"1.5px solid rgba(27,46,74,0.15)", background:"#fff", color:"#1C1410", fontSize:13, fontWeight:600, fontFamily:"inherit", outline:"none" }} />
               <button onClick={searchWordFn} style={{ padding:"11px 16px", borderRadius:11, border:"none", background:"#1B2E4A", color:"#fff", fontSize:12, fontWeight:900, fontFamily:"inherit", cursor:"pointer" }}>Search</button>
             </div>
             {searchDone && (
