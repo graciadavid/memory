@@ -145,7 +145,7 @@ export default function Top10WordPage() {
         ))}
       </div>
 
-      <div style={{ flex:1, padding:'0 20px 80px' }}>
+      <div style={{ flex:1, padding:'0 20px 120px' }}>
 
         {section === 'choose' && (
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'55vh', overflow:'hidden' }}>
@@ -174,7 +174,7 @@ export default function Top10WordPage() {
                {showPct && (
                  <div style={{ position:'absolute', inset:0, background:'rgba(10,8,0,0.97)', borderRadius:28, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
                    <div style={{ fontSize:64, fontWeight:900, color: voteResult ? '#2E7D32' : '#E53935', lineHeight:1 }}>{lastPct}%</div>
-                   <div style={{ fontSize:14, fontWeight:700, color:'rgba(0,0,0,0.5)', marginTop:8 }}>{voteResult ? 'love this word' : 'passed on this word'}</div>
+                   <div style={{ fontSize:14, fontWeight:700, color:'rgba(255,255,255,0.4)', marginTop:8 }}>{voteResult ? 'love this word' : 'passed on this word'}</div>
                  </div>
                )}
              </div>
