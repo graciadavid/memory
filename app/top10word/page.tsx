@@ -483,15 +483,15 @@ export default function Top10WordPage() {
                 Top<span style={{ color: GOLD }}>10</span>Word.com
               </div>
             </div>
-            <div style={{ position:"absolute", bottom:60, left:16 }}>
+            <div style={{ position:"absolute", bottom:130, left:16 }}>
               <div style={{ fontSize:9, fontWeight:800, color: NAVY, letterSpacing:3, textTransform:"uppercase", opacity:0.7 }}>Men love</div>
-              <div style={{ fontSize:22, fontWeight:900, fontFamily:"Georgia, serif", color: NAVY, textTransform:"uppercase", letterSpacing:-1 }}>
+              <div style={{ fontSize:26, fontWeight:900, fontFamily:"Georgia, serif", color: NAVY, textTransform:"uppercase", letterSpacing:-1 }}>
                 {rankingMen[0]?.word || 'Freedom'}
               </div>
             </div>
-            <div style={{ position:"absolute", bottom:60, right:16, textAlign:"right" }}>
+            <div style={{ position:"absolute", bottom:130, right:16, textAlign:"right" }}>
               <div style={{ fontSize:9, fontWeight:800, color:"#7B3B6E", letterSpacing:3, textTransform:"uppercase", opacity:0.7 }}>Women love</div>
-              <div style={{ fontSize:22, fontWeight:900, fontFamily:"Georgia, serif", color:"#7B3B6E", textTransform:"uppercase", letterSpacing:-1 }}>
+              <div style={{ fontSize:26, fontWeight:900, fontFamily:"Georgia, serif", color:"#7B3B6E", textTransform:"uppercase", letterSpacing:-1 }}>
                 {rankingWomen[0]?.word || 'Love'}
               </div>
             </div>
