@@ -250,6 +250,7 @@ export default function Top10WordPage() {
                   <div style={{ fontSize:12, fontWeight:500, color:"rgba(28,20,16,0.4)", marginTop:4 }}>Leave your word in the world.</div>
                 </div>
 
+              </div>
              <input value={newWord} onChange={e => setNewWord(e.target.value.slice(0,24))} placeholder="Your word"
                maxLength={24}
                style={{ width:'100%', padding:'22px 20px', borderRadius:16, border: '1.5px solid #C8960C', background:'#fff', color:'#1C1410', fontSize:26, fontWeight:900, fontFamily:'Georgia, serif', outline:'none', boxSizing:'border-box', textAlign:'center', textTransform:'uppercase', letterSpacing:3, marginBottom:12, transition:'border 0.2s', boxShadow:'0 2px 20px rgba(28,20,16,0.06)' }} />
