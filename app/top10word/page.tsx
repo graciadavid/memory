@@ -196,8 +196,8 @@ export default function Top10WordPage() {
       const base = data.filter((w: any) => w.total_yes + w.total_no >= 5)
       const world = base.map((w: any) => ({ ...w, pct: Math.round((w.total_yes / Math.max(w.total_yes + w.total_no, 1)) * 1000) / 10 })).sort((a: any, b: any) => b.pct - a.pct).slice(0, 50)
       setRanking(world)
-      const women = base.map((w: any) => ({ ...w, pct: Math.round((w.yes_woman / Math.max(w.yes_woman + (w.total_no * (w.yes_woman / Math.max(w.total_yes,1))), 1)) * 1000) / 10 })).filter((w:any) => w.yes_woman > 0).sort((a: any, b: any) => b.yes_woman - a.yes_woman).slice(0, 50)
-      const men = base.map((w: any) => ({ ...w, pct: Math.round((w.yes_man / Math.max(w.yes_man + (w.total_no * (w.yes_man / Math.max(w.total_yes,1))), 1)) * 1000) / 10 })).filter((w:any) => w.yes_man > 0).sort((a: any, b: any) => b.yes_man - a.yes_man).slice(0, 50)
+      const women = base.filter((w:any) => w.yes_woman > 3).map((w: any) => ({ ...w, pct: Math.round((w.yes_woman / Math.max(w.yes_woman + w.yes_man, 1)) * 1000) / 10 })).sort((a: any, b: any) => b.pct - a.pct).slice(0, 50)
+      const men = base.filter((w:any) => w.yes_man > 3).map((w: any) => ({ ...w, pct: Math.round((w.yes_man / Math.max(w.yes_man + w.yes_woman, 1)) * 1000) / 10 })).sort((a: any, b: any) => b.pct - a.pct).slice(0, 50)
       setRankingWomen(women)
       setRankingMen(men)
     }
@@ -374,11 +374,12 @@ export default function Top10WordPage() {
 
           {/* Tabs */}
           <div style={{ display:'flex', gap:8, marginBottom:16 }}>
-            {(['world','mine'] as const).map(t => (
-              <button key={t} onClick={() => setTab(t)}
-                style={{ flex:1, padding:'10px', borderRadius:10, border: tab === t ? 'none' : '1.5px solid rgba(28,20,16,0.1)', background: tab === t ? 'rgba(27,46,74,0.1)' : 'transparent', color: tab === t ? NAVY : 'rgba(28,20,16,0.3)', fontSize:11, fontWeight:900, fontFamily:"'Helvetica Neue', sans-serif", cursor:'pointer', letterSpacing:2, textTransform:'uppercase' }}>
-                {t === 'world' ? 'World' : 'My Words'}
+            {([["world","World"],["women","Women"],["men","Men"],["mine","My Words"]] as const).map(([t,label]) => (
+              <button key={t} onClick={() => setTab(t as any)}
+                style={{ flex:1, padding:"8px 2px", borderRadius:10, border: tab === t ? "none" : "1.5px solid rgba(28,20,16,0.1)", background: tab === t ? "rgba(27,46,74,0.1)" : "transparent", color: tab === t ? NAVY : "rgba(28,20,16,0.3)", fontSize:9, fontWeight:900, fontFamily:"'Helvetica Neue', sans-serif", cursor:"pointer", letterSpacing:1, textTransform:"uppercase" }}>
+                {label}
               </button>
+            ))}
             ))}
           </div>
 
