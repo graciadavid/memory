@@ -96,7 +96,7 @@ export default function Top10WordPage() {
    await supabase.from('words').update({ [field]: newVal }).eq('id', currentWord.id)
    await supabase.from('votes').upsert({ word_id: currentWord.id, vote: yes, device_id: deviceId })
    setTotalVotes(v => v + 1)
-   setTimeout(() => { setShowPct(false); setTimeout(loadWord, 400) }, 1200)
+   setTimeout(() => { setShowPct(false); setTimeout(loadWord, 150) }, 600)
   }
 
   const handleSubmitWord = async () => {
@@ -159,7 +159,7 @@ export default function Top10WordPage() {
                 marginBottom:28,
                 transform: swipeDir === 'right' ? 'translateX(150%) rotate(20deg)' : swipeDir === 'left' ? 'translateX(-150%) rotate(-20deg)' : 'translateX(0) rotate(0deg)',
                 opacity: swipeDir ? 0 : 1,
-                transition: swipeDir ? 'transform 0.35s ease, opacity 0.25s ease' : 'none',
+                transition: swipeDir ? 'transform 0.25s ease, opacity 0.2s ease' : 'none',
               }}>
                 <div style={{ fontSize:36, fontWeight:900, letterSpacing:-1, marginBottom:28, color:'#111' }}>
                   Top<span style={{ color:'#C8960C' }}>10</span>Word.com
