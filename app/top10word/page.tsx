@@ -76,8 +76,13 @@ export default function Top10WordPage() {
    const votedIds = votedData?.map((v: any) => v.word_id) || []
    const { data } = await supabase.from('words').select('*').limit(500)
    if (!data || data.length === 0) return
-   const unvoted = data.filter((w: any) => !votedIds.includes(w.id))
-   const shuffled = (unvoted.length > 5 ? unvoted : data).sort(() => Math.random() - 0.5)
+    const now = Date.now()
+    const cutoff48h = new Date(now - 48 * 60 * 60 * 1000).toISOString()
+    const unvoted = data.filter((w: any) => !votedIds.includes(w.id))
+    const pool48 = unvoted.length > 5 ? unvoted : data
+    const recent = pool48.filter((w: any) => w.created_at > cutoff48h)
+    const older = pool48.filter((w: any) => w.created_at <= cutoff48h)
+    const shuffled = [...recent, ...recent, ...recent, ...older].sort(() => Math.random() - 0.5)
    if (wordParam) {
      const forced = data.find((w: any) => w.word.toLowerCase() === wordParam.toLowerCase())
      if (forced) {
