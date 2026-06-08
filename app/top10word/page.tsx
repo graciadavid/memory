@@ -291,100 +291,110 @@ export default function Top10WordPage() {
      )}
 
      {/* TOP 10 */}
-     {section === 'top' && (
-       <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', background:'#F5F0E8', padding:'48px 28px 120px' }}>
-          <div style={{ textAlign:"center", marginBottom:28 }}>
-            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:"#1C1410", fontFamily:"Georgia, serif" }}>
-              Top<span style={{ color:"#C8960C" }}>10</span>Word.com
-            </div>
-            <div style={{ fontSize:12, fontWeight:500, color:"rgba(28,20,16,0.4)", marginTop:4 }}>World Ranking</div>
-          </div>
+   {section === 'top' && (
+     <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', background:'#F5F0E8', padding:'36px 24px 120px', overflowY:'auto' }}>
 
-          <div style={{ marginBottom:16 }}>
-            <div style={{ display:"flex", gap:8, marginBottom:8 }}>
-              <input value={searchWord} onChange={e => { setSearchWord(e.target.value); setSearchDone(false) }} onKeyDown={e => e.key === "Enter" && searchWordFn()} placeholder="Search a word..." style={{ flex:1, padding:"11px 14px", borderRadius:11, border:"1.5px solid rgba(27,46,74,0.15)", background:"#fff", color:"#1C1410", fontSize:13, fontWeight:600, fontFamily:"inherit", outline:"none" }} />
-              <button onClick={searchWordFn} style={{ padding:"11px 16px", borderRadius:11, border:"none", background:"#1B2E4A", color:"#fff", fontSize:12, fontWeight:900, fontFamily:"inherit", cursor:"pointer" }}>Search</button>
-            </div>
-            {searchDone && (
-              <div style={{ padding:"14px", borderRadius:12, background:"#fff", border:"1px solid rgba(27,46,74,0.1)" }}>
-                {searchResult ? (
-                  <div>
-                    <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
-                      <div style={{ fontSize:17, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:"uppercase", letterSpacing:1, flex:1, color:"#1B2E4A" }}>{searchResult.word}</div>
-                      <div style={{ fontSize:15, fontWeight:900, color:"#1B2E4A" }}>{searchResult.pct.toFixed(1)}%</div>
-                    </div>
-                    <div style={{ background:"rgba(27,46,74,0.07)", borderRadius:4, height:3, overflow:"hidden" }}>
-                      <div style={{ height:"100%", borderRadius:4, background:"#3A6EA5", width:`${searchResult.pct}%`, transition:"width 1s ease" }} />
-                    </div>
-                    <div style={{ fontSize:11, color:"rgba(28,20,16,0.35)", marginTop:5 }}>{(searchResult.total_yes||0)+(searchResult.total_no||0)} votes</div>
-                  </div>
-                ) : (
-                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                    <div style={{ fontSize:13, color:"rgba(28,20,16,0.4)" }}>"{searchWord}" not in ranking yet.</div>
-                    <button onClick={() => { setNewWord(searchWord); setSection("propose") }}
-                      style={{ padding:"8px 12px", borderRadius:9, border:"none", background:"linear-gradient(135deg, #8B6914, #C8960C)", color:"#fff", fontSize:12, fontWeight:900, fontFamily:"inherit", cursor:"pointer" }}>Propose →</button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-         <div style={{ display:'flex', gap:8, marginBottom:16 }}>
-           {(['world','mine'] as const).map(t => (
-             <button key={t} onClick={() => setTab(t)}
-               style={{ flex:1, padding:'10px', borderRadius:10, border: tab === t ? 'none' : '1.5px solid rgba(28,20,16,0.1)', background: tab === t ? 'rgba(200,150,12,0.12)' : 'transparent', color: tab === t ? '#8B6914' : 'rgba(28,20,16,0.3)', fontSize:11, fontWeight:900, fontFamily:'inherit', cursor:'pointer', letterSpacing:2, textTransform:'uppercase' }}>
-               {t === 'world' ? 'World' : 'My Words'}
-             </button>
-           ))}
+       {/* Logo */}
+       <div style={{ textAlign:'center', marginBottom:24 }}>
+         <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:'Georgia, serif' }}>
+           Top<span style={{ color:'#C8960C' }}>10</span>Word.com
          </div>
-         {tab === 'world' && ranking.map((w, i) => {
-           const isTop3 = i < 3
-           const NAVY = "#1B2E4A"
-           const NAVY_BAR = "#3A6EA5"
-           return (
-             <div key={w.id} style={{ marginBottom: isTop3 ? 14 : 10, paddingBottom: isTop3 ? 14 : 10, borderBottom:"1px solid rgba(27,46,74,0.08)" }}>
-               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-                 <div style={{ fontSize:11, fontWeight:900, color: i===0 ? "#C8960C" : i===1 ? "#7A8FA6" : i===2 ? "#9AADBE" : "rgba(27,46,74,0.2)", width:22, flexShrink:0, fontFamily:"Georgia, serif" }}>{i+1}.</div>
-                 <div style={{ fontSize: isTop3 ? 16 : 13, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:"uppercase", letterSpacing:1, flex:1, color: NAVY, lineHeight:1 }}>{w.word}</div>
-                 <div style={{ display:"flex", alignItems:"center", gap:5 }}>
-                   <div style={{ fontSize: isTop3 ? 14 : 12, fontWeight:900, color: NAVY, minWidth:38, textAlign:"right" }}>{w.pct.toFixed(1)}%</div>
-                   <button onClick={() => voteWord(w, false)}
-                     style={{ width:26, height:26, borderRadius:6, border:"1px solid rgba(27,46,74,0.2)", background:"rgba(27,46,74,0.05)", color:"rgba(27,46,74,0.45)", fontSize:11, cursor:"pointer", fontFamily:"inherit", display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
-                   <button onClick={() => voteWord(w, true)}
-                     style={{ width:26, height:26, borderRadius:6, border:"1px solid rgba(27,46,74,0.3)", background:"rgba(27,46,74,0.08)", color: NAVY, fontSize:11, cursor:"pointer", fontFamily:"inherit", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center" }}>✓</button>
-                 </div>
-               </div>
-               <div style={{ background:"rgba(27,46,74,0.07)", borderRadius:4, height:2, overflow:"hidden", marginLeft:30 }}>
-                 <div style={{ height:"100%", borderRadius:4, background: NAVY_BAR, width:`${w.pct}%`, transition:"width 1.5s ease" }} />
-               </div>
-             </div>
-           )
-         })}
+         <div style={{ fontSize:12, fontWeight:500, color:'rgba(28,20,16,0.4)', marginTop:4 }}>World Ranking</div>
+       </div>
 
-         {tab === 'mine' && (
-           myWords.length > 0 ? myWords.map((w) => {
-             const { theme: t, font: f } = getTheme(w.word)
-             return (
-               <div key={w.id} style={{ marginBottom:14, paddingBottom:14, borderBottom:'1.5px solid rgba(28,20,16,0.06)' }}>
-                 <div style={{ display:'flex', alignItems:'baseline', gap:12, marginBottom:8 }}>
-                   <div style={{ fontSize:20, fontWeight:900, fontFamily: f, textTransform:'uppercase', flex:1, color:'#1C1410' }}>{w.word}</div>
-                   <div style={{ fontSize:17, fontWeight:900, color: t.accent }}>{w.pct.toFixed(1)}%</div>
+       {/* Search */}
+       <div style={{ marginBottom:16 }}>
+         <div style={{ display:'flex', gap:8 }}>
+           <input value={searchWord} onChange={e => { setSearchWord(e.target.value); setSearchDone(false) }}
+             onKeyDown={e => e.key === 'Enter' && searchWordFn()}
+             placeholder="Search a word..."
+             style={{ flex:1, padding:'11px 14px', borderRadius:11, border:'1.5px solid rgba(27,46,74,0.15)', background:'#fff', color:'#1C1410', fontSize:13, fontWeight:600, fontFamily:'inherit', outline:'none', boxShadow:'0 2px 8px rgba(28,20,16,0.06)' }} />
+           <button onClick={searchWordFn}
+             style={{ padding:'11px 16px', borderRadius:11, border:'none', background:'#1B2E4A', color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+             Search
+           </button>
+         </div>
+         {searchDone && (
+           <div style={{ marginTop:10, padding:'14px', borderRadius:12, background:'#fff', border:'1px solid rgba(27,46,74,0.1)', boxShadow:'0 2px 8px rgba(28,20,16,0.06)' }}>
+             {searchResult ? (
+               <div>
+                 <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6 }}>
+                   <div style={{ fontSize:17, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:'uppercase', letterSpacing:1, flex:1, color:'#1B2E4A' }}>{searchResult.word}</div>
+                   <div style={{ fontSize:15, fontWeight:900, color:'#1B2E4A' }}>{searchResult.pct.toFixed(1)}%</div>
                  </div>
-                 <div style={{ background:'rgba(28,20,16,0.06)', borderRadius:4, height:3, overflow:'hidden' }}>
-                   <div style={{ height:'100%', borderRadius:4, background: t.bar, width:`${w.pct}%`, transition:'width 1.2s ease' }} />
+                 <div style={{ background:'rgba(27,46,74,0.07)', borderRadius:4, height:3, overflow:'hidden' }}>
+                   <div style={{ height:'100%', borderRadius:4, background:'#3A6EA5', width:`${searchResult.pct}%`, transition:'width 1s ease' }} />
                  </div>
+                 <div style={{ fontSize:11, color:'rgba(28,20,16,0.35)', marginTop:5 }}>{(searchResult.total_yes||0)+(searchResult.total_no||0)} votes</div>
                </div>
-             )
-           }) : (
-             <div style={{ textAlign:'center', padding:'60px 0', color:'rgba(28,20,16,0.25)', fontSize:14, lineHeight:1.8 }}>
-               You haven't proposed a word yet.<br/>Be the first to leave yours.
-             </div>
-           )
+             ) : (
+               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                 <div style={{ fontSize:13, color:'rgba(28,20,16,0.4)' }}>"{searchWord}" not in ranking yet.</div>
+                 <button onClick={() => { setNewWord(searchWord); setSection('propose') }}
+                   style={{ padding:'8px 12px', borderRadius:9, border:'none', background:'linear-gradient(135deg, #8B6914, #C8960C)', color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+                   Propose →
+                 </button>
+               </div>
+             )}
+           </div>
          )}
        </div>
-     )}
 
-     {/* Propose prompt */}
+       {/* Tabs */}
+       <div style={{ display:'flex', gap:8, marginBottom:16 }}>
+         {(['world','mine'] as const).map(t => (
+           <button key={t} onClick={() => setTab(t)}
+             style={{ flex:1, padding:'10px', borderRadius:10, border: tab === t ? 'none' : '1.5px solid rgba(28,20,16,0.1)', background: tab === t ? 'rgba(27,46,74,0.1)' : 'transparent', color: tab === t ? '#1B2E4A' : 'rgba(28,20,16,0.3)', fontSize:11, fontWeight:900, fontFamily:"'Helvetica Neue', sans-serif", cursor:'pointer', letterSpacing:2, textTransform:'uppercase' }}>
+             {t === 'world' ? 'World' : 'My Words'}
+           </button>
+         ))}
+       </div>
+
+       {/* World ranking */}
+       {tab === 'world' && ranking.map((w, i) => {
+         const isTop10 = i < 10
+         return (
+           <div key={w.id} style={{ marginBottom:12, paddingBottom:12, borderBottom:'1px solid rgba(27,46,74,0.08)', background: i < 3 ? 'rgba(27,46,74,0.03)' : 'transparent', borderRadius: i < 3 ? 8 : 0, padding: i < 3 ? '10px 8px' : '0 0 12px' }}>
+             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+               <div style={{ fontSize:11, fontWeight:900, color: i===0 ? '#C8960C' : i===1 ? '#7A8FA6' : i===2 ? '#9AADBE' : 'rgba(27,46,74,0.25)', width:22, flexShrink:0, fontFamily:'Georgia, serif' }}>{i+1}.</div>
+               <div style={{ fontSize: i < 3 ? 17 : 14, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:'uppercase', letterSpacing:0.5, flex:1, color:'#1B2E4A', lineHeight:1 }}>{w.word}</div>
+               <div style={{ display:'flex', alignItems:'center', gap:5 }}>
+                 <div style={{ fontSize:13, fontWeight:900, color:'#1B2E4A', minWidth:38, textAlign:'right' }}>{w.pct.toFixed(1)}%</div>
+                 <button onClick={() => voteWord(w, false)}
+                   style={{ width:24, height:24, borderRadius:6, border:'1px solid rgba(27,46,74,0.18)', background:'rgba(27,46,74,0.04)', color:'rgba(27,46,74,0.4)', fontSize:11, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+                 <button onClick={() => voteWord(w, true)}
+                   style={{ width:24, height:24, borderRadius:6, border:'1px solid rgba(27,46,74,0.28)', background:'rgba(27,46,74,0.08)', color:'#1B2E4A', fontSize:11, cursor:'pointer', fontFamily:'inherit', fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center' }}>✓</button>
+               </div>
+             </div>
+             <div style={{ background:'rgba(27,46,74,0.07)', borderRadius:4, height:2, overflow:'hidden', marginLeft:30 }}>
+               <div style={{ height:'100%', borderRadius:4, background:'linear-gradient(90deg, #3A6EA5, #1B2E4A)', width:`${w.pct}%`, transition:'width 1.5s ease' }} />
+             </div>
+           </div>
+         )
+       })}
+
+       {/* My Words */}
+       {tab === 'mine' && (
+         myWords.length > 0 ? myWords.map((w) => (
+           <div key={w.id} style={{ marginBottom:12, paddingBottom:12, borderBottom:'1px solid rgba(45,106,79,0.1)' }}>
+             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+               <div style={{ fontSize:15, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:'uppercase', letterSpacing:0.5, flex:1, color:'#1C3A28' }}>{w.word}</div>
+               <div style={{ fontSize:14, fontWeight:900, color:'#2D6A4F' }}>{w.pct.toFixed(1)}%</div>
+             </div>
+             <div style={{ background:'rgba(45,106,79,0.08)', borderRadius:4, height:2, overflow:'hidden' }}>
+               <div style={{ height:'100%', borderRadius:4, background:'linear-gradient(90deg, #40916C, #74C69D)', width:`${w.pct}%`, transition:'width 1.2s ease' }} />
+             </div>
+           </div>
+         )) : (
+           <div style={{ textAlign:'center', padding:'48px 0', color:'rgba(28,20,16,0.25)', fontSize:14, lineHeight:1.8 }}>
+             You haven't proposed a word yet.<br/>Be the first to leave yours.
+           </div>
+         )
+       )}
+     </div>
+   )}
+
+       {/* Propose prompt */}
      {showProposePrompt && (
        <div style={{ position:'fixed', inset:0, background:'rgba(28,20,16,0.5)', zIndex:1000, display:'flex', alignItems:'flex-end', padding:20, backdropFilter:'blur(4px)' }}>
          <div style={{ background:'#F5F0E8', borderRadius:24, padding:'32px 24px 28px', width:'100%', boxShadow:'0 -4px 60px rgba(28,20,16,0.15)', border:'1px solid rgba(200,150,12,0.2)' }}>
