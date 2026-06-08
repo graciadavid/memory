@@ -310,19 +310,19 @@ export default function Top10WordPage() {
            const NAVY = "#1B2E4A"
            const NAVY_BAR = "#3A6EA5"
            return (
-             <div key={w.id} style={{ marginBottom: isTop3 ? 24 : 14, paddingBottom: isTop3 ? 24 : 14, borderBottom:"1px solid rgba(27,46,74,0.1)" }}>
+             <div key={w.id} style={{ marginBottom: isTop3 ? 14 : 10, paddingBottom: isTop3 ? 14 : 10, borderBottom:"1px solid rgba(27,46,74,0.08)" }}>
                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
                  <div style={{ fontSize:11, fontWeight:900, color: i===0 ? "#C8960C" : i===1 ? "#7A8FA6" : i===2 ? "#9AADBE" : "rgba(27,46,74,0.2)", width:22, flexShrink:0, fontFamily:"Georgia, serif" }}>{i+1}.</div>
-                 <div style={{ fontSize: isTop3 ? 19 : 15, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:"uppercase", letterSpacing:1, flex:1, color: NAVY, lineHeight:1 }}>{w.word}</div>
+                 <div style={{ fontSize: isTop3 ? 16 : 13, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:"uppercase", letterSpacing:1, flex:1, color: NAVY, lineHeight:1 }}>{w.word}</div>
                  <div style={{ display:"flex", alignItems:"center", gap:5 }}>
-                   <div style={{ fontSize: isTop3 ? 16 : 13, fontWeight:900, color: NAVY, minWidth:40, textAlign:"right" }}>{w.pct.toFixed(1)}%</div>
-                   <button onClick={async () => { const prev = currentWord; setCurrentWord(w); await new Promise(r => setTimeout(r,10)); handleVote(false); setTimeout(()=>setCurrentWord(prev),400) }}
+                   <div style={{ fontSize: isTop3 ? 14 : 12, fontWeight:900, color: NAVY, minWidth:38, textAlign:"right" }}>{w.pct.toFixed(1)}%</div>
+                   <button onClick={() => voteWord(w, false)}
                      style={{ width:26, height:26, borderRadius:6, border:"1px solid rgba(27,46,74,0.2)", background:"rgba(27,46,74,0.05)", color:"rgba(27,46,74,0.45)", fontSize:11, cursor:"pointer", fontFamily:"inherit", display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
-                   <button onClick={async () => { const prev = currentWord; setCurrentWord(w); await new Promise(r => setTimeout(r,10)); handleVote(true); setTimeout(()=>setCurrentWord(prev),400) }}
+                   <button onClick={() => voteWord(w, true)}
                      style={{ width:26, height:26, borderRadius:6, border:"1px solid rgba(27,46,74,0.3)", background:"rgba(27,46,74,0.08)", color: NAVY, fontSize:11, cursor:"pointer", fontFamily:"inherit", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center" }}>✓</button>
                  </div>
                </div>
-               <div style={{ background:"rgba(27,46,74,0.07)", borderRadius:4, height: isTop3 ? 4 : 2, overflow:"hidden", marginLeft:30 }}>
+               <div style={{ background:"rgba(27,46,74,0.07)", borderRadius:4, height:2, overflow:"hidden", marginLeft:30 }}>
                  <div style={{ height:"100%", borderRadius:4, background: NAVY_BAR, width:`${w.pct}%`, transition:"width 1.5s ease" }} />
                </div>
              </div>
