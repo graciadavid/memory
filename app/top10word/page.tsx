@@ -58,17 +58,23 @@ export default function Top10WordPage() {
   const [sharedWord, setSharedWord] = useState('')
   const [loading, setLoading] = useState(false)
   const [ranking, setRanking] = useState<any[]>([])
+  const [rankingWomen, setRankingWomen] = useState<any[]>([])
+  const [rankingMen, setRankingMen] = useState<any[]>([])
   const [myWords, setMyWords] = useState<any[]>([])
-  const [tab, setTab] = useState<'world'|'mine'>('world')
+  const [tab, setTab] = useState<'world'|'women'|'men'|'mine'>('world')
   const [voteCount, setVoteCount] = useState(0)
   const [showProposePrompt, setShowProposePrompt] = useState(false)
   const [totalVotes, setTotalVotes] = useState(0)
+  const [gender, setGender] = useState<'man'|'woman'|'other'|null>(null)
+  const [showGenderPrompt, setShowGenderPrompt] = useState(false)
   const [searchWord, setSearchWord] = useState('')
   const [searchResult, setSearchResult] = useState<any>(null)
   const [searchDone, setSearchDone] = useState(false)
 
   useEffect(() => {
     setUsername(localStorage.getItem('top10word_username') || '')
+    const savedGender = localStorage.getItem('top10word_gender') as 'man'|'woman'|'other'|null
+    if (savedGender) { setGender(savedGender) } else { setShowGenderPrompt(true) }
     initPool()
     supabase.from('words').select('total_yes, total_no').then(({ data }: any) => {
       if (data) setTotalVotes(data.reduce((a: number, w: any) => a + w.total_yes + w.total_no, 0))
@@ -125,8 +131,11 @@ export default function Top10WordPage() {
     setVoted(true)
     setSwipeDir(yes ? 'right' : 'left')
     const country = localStorage.getItem('top10word_country') || ''
-    supabase.from('words').update({ [yes ? 'total_yes' : 'total_no']: (currentWord[yes ? 'total_yes' : 'total_no'] || 0) + 1 }).eq('id', currentWord.id)
-    await supabase.from('votes').upsert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country })
+    const updateData: any = { [yes ? 'total_yes' : 'total_no']: (currentWord[yes ? 'total_yes' : 'total_no'] || 0) + 1 }
+    if (yes && gender === 'man') updateData.yes_man = (currentWord.yes_man || 0) + 1
+    if (yes && gender === 'woman') updateData.yes_woman = (currentWord.yes_woman || 0) + 1
+    supabase.from('words').update(updateData).eq('id', currentWord.id)
+    await supabase.from('votes').upsert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country, gender: gender || 'other' })
     if (!country) {
       try {
         const d = await (await fetch('https://ipapi.co/json/')).json()
@@ -184,12 +193,13 @@ export default function Top10WordPage() {
   const loadRanking = async () => {
     const { data } = await supabase.from('words').select('*').gt('total_yes', 0).limit(200)
     if (data) {
-      const ranked = data
-        .map((w: any) => ({ ...w, pct: Math.round((w.total_yes / Math.max(w.total_yes + w.total_no, 1)) * 1000) / 10 }))
-        .filter((w: any) => w.total_yes + w.total_no >= 5)
-        .sort((a: any, b: any) => b.pct - a.pct)
-        .slice(0, 50)
-      setRanking(ranked)
+      const base = data.filter((w: any) => w.total_yes + w.total_no >= 5)
+      const world = base.map((w: any) => ({ ...w, pct: Math.round((w.total_yes / Math.max(w.total_yes + w.total_no, 1)) * 1000) / 10 })).sort((a: any, b: any) => b.pct - a.pct).slice(0, 50)
+      setRanking(world)
+      const women = base.map((w: any) => ({ ...w, pct: Math.round((w.yes_woman / Math.max(w.yes_woman + (w.total_no * (w.yes_woman / Math.max(w.total_yes,1))), 1)) * 1000) / 10 })).filter((w:any) => w.yes_woman > 0).sort((a: any, b: any) => b.yes_woman - a.yes_woman).slice(0, 50)
+      const men = base.map((w: any) => ({ ...w, pct: Math.round((w.yes_man / Math.max(w.yes_man + (w.total_no * (w.yes_man / Math.max(w.total_yes,1))), 1)) * 1000) / 10 })).filter((w:any) => w.yes_man > 0).sort((a: any, b: any) => b.yes_man - a.yes_man).slice(0, 50)
+      setRankingWomen(women)
+      setRankingMen(men)
     }
     const uname = localStorage.getItem('top10word_username')
     if (uname) {
@@ -392,6 +402,34 @@ export default function Top10WordPage() {
             </div>
           ))}
 
+          {/* Women */}
+          {tab === 'women' && rankingWomen.map((w, i) => (
+            <div key={w.id} style={{ marginBottom:10, paddingBottom:10, borderBottom:'1px solid rgba(212,100,160,0.12)', background: i < 3 ? 'rgba(212,100,160,0.04)' : 'transparent', borderRadius: i < 3 ? 8 : 0, padding: i < 3 ? '10px 8px' : '0 0 10px' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:5 }}>
+                <div style={{ fontSize:11, fontWeight:900, color: i===0 ? '#C8960C' : i===1 ? '#7A8FA6' : i===2 ? '#9AADBE' : 'rgba(212,100,160,0.4)', width:22, flexShrink:0 }}>{i+1}.</div>
+                <div style={{ fontSize: i < 3 ? 16 : 13, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:'uppercase', letterSpacing:0.5, flex:1, color:'#4A1A35' }}>{w.word}</div>
+                <div style={{ fontSize:12, fontWeight:900, color:'#A855A0', minWidth:36, textAlign:'right' }}>{w.yes_woman} loves</div>
+              </div>
+              <div style={{ background:'rgba(212,100,160,0.1)', borderRadius:4, height:2, overflow:'hidden', marginLeft:30 }}>
+                <div style={{ height:'100%', borderRadius:4, background:'linear-gradient(90deg, #A855A0, #D4A0C8)', width:`${Math.min((w.yes_woman/Math.max(...rankingWomen.map((x:any)=>x.yes_woman)))*100,100)}%`, transition:'width 1.5s ease' }} />
+              </div>
+            </div>
+          ))}
+
+          {/* Men */}
+          {tab === 'men' && rankingMen.map((w, i) => (
+            <div key={w.id} style={{ marginBottom:10, paddingBottom:10, borderBottom:'1px solid rgba(27,46,74,0.1)', background: i < 3 ? 'rgba(27,46,74,0.04)' : 'transparent', borderRadius: i < 3 ? 8 : 0, padding: i < 3 ? '10px 8px' : '0 0 10px' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:5 }}>
+                <div style={{ fontSize:11, fontWeight:900, color: i===0 ? '#C8960C' : i===1 ? '#7A8FA6' : i===2 ? '#9AADBE' : 'rgba(27,46,74,0.25)', width:22, flexShrink:0 }}>{i+1}.</div>
+                <div style={{ fontSize: i < 3 ? 16 : 13, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:'uppercase', letterSpacing:0.5, flex:1, color: NAVY }}>{w.word}</div>
+                <div style={{ fontSize:12, fontWeight:900, color: NAVY, minWidth:36, textAlign:'right' }}>{w.yes_man} loves</div>
+              </div>
+              <div style={{ background:'rgba(27,46,74,0.07)', borderRadius:4, height:2, overflow:'hidden', marginLeft:30 }}>
+                <div style={{ height:'100%', borderRadius:4, background:`linear-gradient(90deg, ${NAVY_BAR}, ${NAVY})`, width:`${Math.min((w.yes_man/Math.max(...rankingMen.map((x:any)=>x.yes_man)))*100,100)}%`, transition:'width 1.5s ease' }} />
+              </div>
+            </div>
+          ))}
+
           {/* Mine */}
           {tab === 'mine' && (
             myWords.length > 0 ? myWords.map((w) => (
@@ -426,6 +464,32 @@ export default function Top10WordPage() {
             <button onClick={() => setShowProposePrompt(false)}
               style={{ width:'100%', padding:'14px', borderRadius:12, border:'1.5px solid rgba(28,20,16,0.1)', background:'transparent', color:'rgba(28,20,16,0.3)', fontSize:13, fontWeight:600, fontFamily:'inherit', cursor:'pointer' }}>
               Keep voting
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Gender prompt */}
+      {showGenderPrompt && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(28,20,16,0.6)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:24, backdropFilter:'blur(6px)' }}>
+          <div style={{ background:'#F5F0E8', borderRadius:24, padding:'36px 28px', width:'100%', maxWidth:360, textAlign:'center', boxShadow:'0 -4px 60px rgba(28,20,16,0.2)' }}>
+            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:'Georgia, serif', marginBottom:8 }}>
+              Top<span style={{ color: GOLD }}>10</span>Word.com
+            </div>
+            <div style={{ fontSize:15, fontWeight:700, color:'rgba(28,20,16,0.6)', marginBottom:28, lineHeight:1.6 }}>Do men and women love<br/>different words?</div>
+            <div style={{ display:'flex', gap:10, marginBottom:10 }}>
+              <button onClick={() => { setGender('woman'); localStorage.setItem('top10word_gender','woman'); setShowGenderPrompt(false) }}
+                style={{ flex:1, padding:'16px', borderRadius:14, border:'1.5px solid rgba(168,85,160,0.3)', background:'rgba(168,85,160,0.08)', color:'#7B3B6E', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+                Woman
+              </button>
+              <button onClick={() => { setGender('man'); localStorage.setItem('top10word_gender','man'); setShowGenderPrompt(false) }}
+                style={{ flex:1, padding:'16px', borderRadius:14, border:'1.5px solid rgba(27,46,74,0.3)', background:'rgba(27,46,74,0.08)', color: NAVY, fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+                Man
+              </button>
+            </div>
+            <button onClick={() => { setGender('other'); localStorage.setItem('top10word_gender','other'); setShowGenderPrompt(false) }}
+              style={{ width:'100%', padding:'12px', borderRadius:12, border:'1.5px solid rgba(28,20,16,0.1)', background:'transparent', color:'rgba(28,20,16,0.35)', fontSize:13, fontWeight:600, fontFamily:'inherit', cursor:'pointer' }}>
+              Prefer not to say
             </button>
           </div>
         </div>
