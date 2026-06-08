@@ -161,7 +161,7 @@ export default function Top10WordPage() {
    const { data } = await supabase.from('words').select('*').gt('total_yes', 0).limit(100)
    if (data) {
      const ranked = data
-       .map((w: any) => ({ ...w, pct: Math.round((w.total_yes / Math.max(w.total_yes + w.total_no, 1)) * 100) }))
+       .map((w: any) => ({ ...w, pct: Math.round((w.total_yes / Math.max(w.total_yes + w.total_no, 1)) * 1000) / 10 }))
        .filter((w: any) => w.total_yes + w.total_no >= 5)
        .sort((a: any, b: any) => b.pct - a.pct)
        .slice(0, 10)
@@ -170,7 +170,7 @@ export default function Top10WordPage() {
    const uname = localStorage.getItem('top10word_username')
    if (uname) {
      const { data: mine } = await supabase.from('words').select('*').eq('proposed_by', uname)
-     if (mine) setMyWords(mine.map((w: any) => ({ ...w, pct: Math.round((w.total_yes / Math.max(w.total_yes + w.total_no, 1)) * 100) })))
+     if (mine) setMyWords(mine.map((w: any) => ({ ...w, pct: Math.round((w.total_yes / Math.max(w.total_yes + w.total_no, 1)) * 1000) / 10 })))
    }
  }
 
@@ -320,7 +320,7 @@ export default function Top10WordPage() {
                      <div style={{ height:'100%', borderRadius:4, background:`linear-gradient(90deg, ${s.accent}, ${s.accent}88)`, width:`${w.pct}%`, transition:'width 1s ease' }} />
                    </div>
                  </div>
-                 <div style={{ fontSize:20, fontWeight:900, color: s.accent, minWidth:48, textAlign:'right' }}>{w.pct}%</div>
+                 <div style={{ fontSize:20, fontWeight:900, color: s.accent, minWidth:52, textAlign:'right' }}>{w.pct.toFixed(1)}%</div>
                </div>
              )
            })}
