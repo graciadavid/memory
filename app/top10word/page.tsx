@@ -473,27 +473,25 @@ export default function Top10WordPage() {
       {showGenderPrompt && (
         <div style={{ position:'fixed', inset:0, background:'#F5F0E8', zIndex:2000, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 28px' }}>
           <div style={{ textAlign:'center', marginBottom:32 }}>
-            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:'Georgia, serif', marginBottom:20 }}>
-              Top<span style={{ color: GOLD }}>10</span>Word.com
+          <div style={{ position:"relative", width:"100%", marginBottom:28, borderRadius:20, overflow:"hidden" }}>
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/HOME.PNG" style={{ width:"100%", display:"block", borderRadius:20 }} />
+            <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, rgba(245,240,232,0.3) 0%, rgba(245,240,232,0) 40%, rgba(245,240,232,0) 60%, rgba(245,240,232,0.6) 100%)" }} />
+            <div style={{ position:"absolute", top:16, left:0, right:0, textAlign:"center" }}>
+              <div style={{ fontSize:20, fontWeight:900, letterSpacing:-0.5, color:"#1C1410", fontFamily:"Georgia, serif" }}>
+                Top<span style={{ color: GOLD }}>10</span>Word.com
+              </div>
             </div>
-            <div style={{ fontSize:13, fontWeight:600, color:'rgba(28,20,16,0.4)', letterSpacing:0.5, marginBottom:28 }}>
-              Do men and women love different words?
+            <div style={{ position:"absolute", bottom:60, left:16 }}>
+              <div style={{ fontSize:9, fontWeight:800, color: NAVY, letterSpacing:3, textTransform:"uppercase", opacity:0.7 }}>Men love</div>
+              <div style={{ fontSize:22, fontWeight:900, fontFamily:"Georgia, serif", color: NAVY, textTransform:"uppercase", letterSpacing:-1 }}>
+                {rankingMen[0]?.word || 'Freedom'}
+              </div>
             </div>
-          </div>
-
-          {/* Men word preview */}
-          <div style={{ width:'100%', background:'rgba(27,46,74,0.06)', borderRadius:16, padding:'16px 20px', marginBottom:12, border:'1px solid rgba(27,46,74,0.1)' }}>
-            <div style={{ fontSize:10, fontWeight:700, color:'rgba(27,46,74,0.5)', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Men love</div>
-            <div style={{ fontSize:28, fontWeight:900, fontFamily:'Georgia, serif', color: NAVY, textTransform:'uppercase', letterSpacing:-1 }}>
-              {rankingMen[0]?.word || 'Freedom'}
-            </div>
-          </div>
-
-          {/* Women word preview */}
-          <div style={{ width:'100%', background:'rgba(168,85,160,0.06)', borderRadius:16, padding:'16px 20px', marginBottom:28, border:'1px solid rgba(168,85,160,0.15)' }}>
-            <div style={{ fontSize:10, fontWeight:700, color:'rgba(168,85,160,0.6)', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Women love</div>
-            <div style={{ fontSize:28, fontWeight:900, fontFamily:'Georgia, serif', color:'#7B3B6E', textTransform:'uppercase', letterSpacing:-1 }}>
-              {rankingWomen[0]?.word || 'Love'}
+            <div style={{ position:"absolute", bottom:60, right:16, textAlign:"right" }}>
+              <div style={{ fontSize:9, fontWeight:800, color:"#7B3B6E", letterSpacing:3, textTransform:"uppercase", opacity:0.7 }}>Women love</div>
+              <div style={{ fontSize:22, fontWeight:900, fontFamily:"Georgia, serif", color:"#7B3B6E", textTransform:"uppercase", letterSpacing:-1 }}>
+                {rankingWomen[0]?.word || 'Love'}
+              </div>
             </div>
           </div>
 
