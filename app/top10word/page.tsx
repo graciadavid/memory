@@ -81,8 +81,11 @@ export default function Top10WordPage() {
     const unvoted = data.filter((w: any) => !votedIds.includes(w.id))
     const pool48 = unvoted.length > 5 ? unvoted : data
     const recent = pool48.filter((w: any) => w.created_at > cutoff48h)
-    const older = pool48.filter((w: any) => w.created_at <= cutoff48h)
-    const shuffled = [...recent, ...recent, ...recent, ...older].sort(() => Math.random() - 0.5)
+   const older = pool48.filter((w: any) => w.created_at <= cutoff48h)
+   const sortedByVotes = [...pool48].sort((a: any, b: any) => (b.total_yes + b.total_no) - (a.total_yes + a.total_no))
+   const top20 = sortedByVotes.slice(0, 20)
+   const rest20 = sortedByVotes.slice(20)
+   const shuffled = [...recent, ...recent, ...recent, ...top20, ...top20, ...rest20].sort(() => Math.random() - 0.5)
    if (wordParam) {
      const forced = data.find((w: any) => w.word.toLowerCase() === wordParam.toLowerCase())
      if (forced) {
