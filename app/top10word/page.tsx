@@ -474,7 +474,7 @@ export default function Top10WordPage() {
         <div style={{ position:'fixed', inset:0, background:'#F5F0E8', zIndex:2000, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 28px' }}>
           <div style={{ textAlign:'center', marginBottom:32 }}>
           <div style={{ position:"relative", width:"100%", marginBottom:28, borderRadius:20, overflow:"hidden" }}>
-            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/HOME.PNG" style={{ width:"100%", display:"block", borderRadius:20 }} />
+            <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/home.png" style={{ width:"100%", display:"block", borderRadius:20 }} />
             <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, rgba(245,240,232,0.3) 0%, rgba(245,240,232,0) 40%, rgba(245,240,232,0) 60%, rgba(245,240,232,0.6) 100%)" }} />
             <div style={{ position:"absolute", top:16, left:0, right:0, textAlign:"center" }}>
               <div style={{ fontSize:20, fontWeight:900, letterSpacing:-0.5, color:"#1C1410", fontFamily:"Georgia, serif" }}>
