@@ -169,6 +169,13 @@ export default function Top10WordPage() {
       return updated.sort((a: any, b: any) => b.pct - a.pct)
     })
     setTimeout(loadRanking, 800)
+    // Update searchResult if it's the same word
+    setSearchResult((prev: any) => {
+      if (!prev || prev.id !== word.id) return prev
+      const updated = { ...prev, [field]: (prev[field]||0)+1 }
+      updated.pct = Math.round((updated.total_yes / Math.max(updated.total_yes + updated.total_no, 1)) * 1000) / 10
+      return updated
+    })
   }
 
   const handleSubmit = async () => {
