@@ -295,15 +295,15 @@ export default function Top10WordPage() {
                 <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>
                   TOP<span style={{ color: GOLD }}>10</span>WORD.COM
                 </div>
-                <div style={{ fontSize:12, fontWeight:500, color:'rgba(28,20,16,0.4)', marginTop:4 }}>Leave your word in the world.</div>
+                <div style={{ fontSize:12, fontWeight:500, color:'rgba(28,20,16,0.4)', marginTop:4, fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>Leave your word in the world.</div>
               </div>
               <input value={newWord} onChange={e => setNewWord(e.target.value.slice(0,24))} placeholder="Your word"
                 maxLength={24}
                 style={{ width:'100%', padding:'22px 20px', borderRadius:16, border:'1.5px solid #C8960C', background:'#fff', color:'#1C1410', fontSize:26, fontWeight:900, fontFamily:"'Helvetica Neue', 'Arial', sans-serif", outline:'none', boxSizing:'border-box', textAlign:'center', textTransform:'uppercase', letterSpacing:3, marginBottom:12, boxShadow:'0 2px 20px rgba(28,20,16,0.06)' }} />
               <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Your name"
-                style={{ width:'100%', padding:'16px 20px', borderRadius:14, border:'1.5px solid rgba(28,20,16,0.18)', background:'#fff', color:'rgba(28,20,16,0.7)', fontSize:15, fontWeight:600, fontFamily:'inherit', outline:'none', boxSizing:'border-box', textAlign:'center', marginBottom:20, boxShadow:'0 2px 20px rgba(28,20,16,0.04)' }} />
+                style={{ width:'100%', padding:'16px 20px', borderRadius:14, border:'1.5px solid rgba(28,20,16,0.18)', background:'#fff', color:'rgba(28,20,16,0.7)', fontSize:16, fontWeight:600, fontFamily:"'Helvetica Neue', 'Arial', sans-serif", outline:'none', boxSizing:'border-box', textAlign:'center', marginBottom:20, boxShadow:'0 2px 20px rgba(28,20,16,0.04)' }} />
               <button onClick={handleSubmit} disabled={!newWord.trim() || !username.trim() || loading}
-                style={{ width:'100%', padding:'20px', borderRadius:16, border:'none', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', color:'#1C1410', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor: newWord.trim() && username.trim() ? 'pointer' : 'not-allowed', letterSpacing:2, boxShadow:'0 6px 28px rgba(200,150,12,0.25)', opacity: newWord.trim() && username.trim() ? 1 : 0.5, transition:'opacity 0.3s' }}>
+                style={{ width:'100%', padding:'20px', borderRadius:16, border:'none', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', color:'#1C1410', fontSize:14, fontWeight:900, fontFamily:"'Helvetica Neue', 'Arial', sans-serif", cursor: newWord.trim() && username.trim() ? 'pointer' : 'not-allowed', letterSpacing:2, boxShadow:'0 6px 28px rgba(200,150,12,0.25)', opacity: newWord.trim() && username.trim() ? 1 : 0.5, transition:'opacity 0.3s' }}>
                 {loading ? 'RELEASING...' : 'RELEASE IT TO THE WORLD →'}
               </button>
             </div>
