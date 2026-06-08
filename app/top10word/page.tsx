@@ -11,14 +11,14 @@ function getDeviceId() {
 }
 
 const WORD_THEMES = [
- { bg: 'linear-gradient(160deg, #1a1008 0%, #241808 100%)', accent: '#E8A83A', text: '#FFF8E7' },
- { bg: 'linear-gradient(160deg, #08101a 0%, #081824 100%)', accent: '#4A9EE8', text: '#E8F4FF' },
- { bg: 'linear-gradient(160deg, #0a1008 0%, #0e1a0a 100%)', accent: '#5DBE7A', text: '#EDFFF2' },
- { bg: 'linear-gradient(160deg, #14080e 0%, #1e0c14 100%)', accent: '#D47AB0', text: '#FFF0F8' },
- { bg: 'linear-gradient(160deg, #0e0e14 0%, #121220 100%)', accent: '#8B7ED8', text: '#F0EEFF' },
- { bg: 'linear-gradient(160deg, #100e08 0%, #181408 100%)', accent: '#C8960C', text: '#FFFAE8' },
- { bg: 'linear-gradient(160deg, #08140e 0%, #0c1e14 100%)', accent: '#3DC4B4', text: '#E8FFFC' },
- { bg: 'linear-gradient(160deg, #140808 0%, #200c0c 100%)', accent: '#E87A5D', text: '#FFF2EE' },
+ { bg: '#F5F0E8', accent: '#8B6914', text: '#1C1410', bar: '#C8960C' },
+ { bg: '#EEF2F7', accent: '#2C5F8A', text: '#1A2A3A', bar: '#4A8EC4' },
+ { bg: '#EDF5EE', accent: '#2D6A4F', text: '#1A2E22', bar: '#40916C' },
+ { bg: '#F5EEF2', accent: '#7B3B6E', text: '#2E1A2A', bar: '#A855A0' },
+ { bg: '#F0EDF8', accent: '#4A3B8A', text: '#1E1A2E', bar: '#7B6ED8' },
+ { bg: '#F7F2EC', accent: '#7A4F2A', text: '#2E1E10', bar: '#B07840' },
+ { bg: '#ECF5F4', accent: '#2A6B64', text: '#1A2E2C', bar: '#3DC4B4' },
+ { bg: '#F5EDEC', accent: '#8A3028', text: '#2E1A18', bar: '#C85048' },
 ]
 
 const FONTS = [
@@ -143,7 +143,7 @@ export default function Top10WordPage() {
      setSharedWord(newWord.trim())
      setProposeStep('share')
      setNewWord('')
-     import('canvas-confetti').then(m => m.default({ particleCount: 150, spread: 90, origin: { y: 0.5 }, colors: ['#C8960C','#FFD700','#fff','#E8A83A'] }))
+     import('canvas-confetti').then(m => m.default({ particleCount: 150, spread: 90, origin: { y: 0.5 }, colors: ['#C8960C','#8B6914','#2D6A4F','#2C5F8A'] }))
    }
  }
 
@@ -167,113 +167,111 @@ export default function Top10WordPage() {
  const lovePct = currentWord ? Math.round((currentWord.total_yes / Math.max(currentWord.total_yes + currentWord.total_no, 1)) * 100) : 0
 
  return (
-   <div style={{ minHeight:'100dvh', background: section === 'vote' && currentWord ? theme.bg : '#1C1714', fontFamily:'var(--font-nunito), sans-serif', color:'#fff', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', transition:'background 0.6s ease', position:'relative', overflow:'hidden' }}>
+   <div style={{ minHeight:'100dvh', background: section === 'vote' && currentWord ? theme.bg : '#F5F0E8', fontFamily:'var(--font-nunito), sans-serif', transition:'background 0.7s ease', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', position:'relative' }}>
 
-     {/* VOTE SECTION */}
+     {/* VOTE */}
      {section === 'vote' && (
        <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh' }}>
 
          {/* Header */}
-         <div style={{ padding:'32px 24px 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-           <div style={{ fontSize:13, fontWeight:900, letterSpacing:1, color: theme.accent, opacity:0.8 }}>
-             Top<span style={{ opacity:1 }}>10</span>Word
+         <div style={{ padding:'36px 28px 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+           <div style={{ fontSize:16, fontWeight:900, letterSpacing:-0.5, color: theme.text }}>
+             Top<span style={{ color: theme.accent }}>10</span>Word.com
            </div>
-           <div style={{ fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.2)', letterSpacing:2 }}>
+           <div style={{ fontSize:10, fontWeight:700, color: theme.accent, letterSpacing:2, opacity:0.6 }}>
              {totalVotes.toLocaleString()} VOTES
            </div>
          </div>
 
          {/* Claim */}
-         <div style={{ padding:'24px 24px 0', textAlign:'center' }}>
-           <div style={{ fontSize:15, fontWeight:700, color:'rgba(255,255,255,0.35)', letterSpacing:1, lineHeight:1.5 }}>
-             Which is the world's most<br/>beautiful word?
+         <div style={{ padding:'20px 28px 0', textAlign:'center' }}>
+           <div style={{ fontSize:13, fontWeight:600, color: theme.text, opacity:0.4, letterSpacing:0.5, lineHeight:1.6 }}>
+             Which is the world's most beautiful word?
            </div>
          </div>
 
-         {/* Word - center of screen */}
-         <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 32px' }}>
+         {/* Word */}
+         <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 28px' }}>
            {currentWord && (
              <div style={{
                textAlign:'center',
-               transform: swipeDir === 'right' ? 'translateX(150%) rotate(15deg)' : swipeDir === 'left' ? 'translateX(-150%) rotate(-15deg)' : 'translateX(0)',
+               width:'100%',
+               transform: swipeDir === 'right' ? 'translateX(150%) rotate(12deg)' : swipeDir === 'left' ? 'translateX(-150%) rotate(-12deg)' : 'translateX(0)',
                opacity: swipeDir ? 0 : 1,
                transition: swipeDir ? 'transform 0.3s ease, opacity 0.25s ease' : 'none',
              }}>
                <div style={{
-                 fontSize: currentWord.word.length > 12 ? 36 : currentWord.word.length > 8 ? 52 : currentWord.word.length > 5 ? 72 : 88,
+                 fontSize: currentWord.word.length > 12 ? 40 : currentWord.word.length > 8 ? 58 : currentWord.word.length > 5 ? 76 : 92,
                  fontWeight: 900,
                  fontFamily: font,
                  color: theme.text,
                  letterSpacing: -2,
                  lineHeight: 1,
-                 marginBottom: 24,
+                 marginBottom: 32,
                  textTransform: 'uppercase',
-                 textShadow: `0 0 60px ${theme.accent}33`,
                }}>
                  {currentWord.word}
                </div>
 
                {/* Love bar */}
-               <div style={{ width: 200, margin: '0 auto 8px' }}>
-                 <div style={{ background:'rgba(255,255,255,0.08)', borderRadius:4, height:3, overflow:'hidden' }}>
-                   <div style={{ height:'100%', borderRadius:4, background: theme.accent, width:`${lovePct}%`, transition:'width 0.8s ease' }} />
+               <div style={{ width:'100%', maxWidth:240, margin:'0 auto 10px' }}>
+                 <div style={{ background: `${theme.accent}18`, borderRadius:6, height:4, overflow:'hidden' }}>
+                   <div style={{ height:'100%', borderRadius:6, background: theme.bar, width:`${lovePct}%`, transition:'width 0.8s ease' }} />
                  </div>
                </div>
-               <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.25)', letterSpacing:2 }}>
+               <div style={{ fontSize:11, fontWeight:700, color: theme.accent, letterSpacing:3, opacity:0.7 }}>
                  {lovePct}% LOVE THIS
                </div>
              </div>
            )}
          </div>
 
-         {/* Vote buttons */}
-         <div style={{ padding:'0 24px 120px', display:'flex', gap:16 }}>
+         {/* Buttons */}
+         <div style={{ padding:'0 28px 120px', display:'flex', gap:14 }}>
            <button onClick={() => handleVote(false)} disabled={voted}
-             style={{ flex:1, padding:'20px', borderRadius:20, border:'1px solid rgba(255,80,80,0.2)', background:'rgba(255,80,80,0.06)', color:'rgba(255,100,100,0.7)', fontSize:24, fontFamily:'inherit', cursor:'pointer', transition:'all 0.15s', backdropFilter:'blur(10px)' }}>
+             style={{ flex:1, padding:'18px', borderRadius:18, border:`1px solid ${theme.accent}30`, background:`${theme.accent}08`, color:`${theme.text}60`, fontSize:22, fontFamily:'inherit', cursor:'pointer', transition:'all 0.15s' }}>
              ✕
            </button>
            <button onClick={() => handleVote(true)} disabled={voted}
-             style={{ flex:2, padding:'20px', borderRadius:20, border:`1px solid ${theme.accent}44`, background:`${theme.accent}12`, color: theme.accent, fontSize:22, fontFamily:'inherit', cursor:'pointer', fontWeight:900, letterSpacing:1, transition:'all 0.15s', backdropFilter:'blur(10px)' }}>
-             LOVE IT ✓
+             style={{ flex:2, padding:'18px', borderRadius:18, border:`1px solid ${theme.bar}60`, background:`${theme.bar}15`, color: theme.accent, fontSize:15, fontFamily:'inherit', cursor:'pointer', fontWeight:900, letterSpacing:2, transition:'all 0.15s' }}>
+             LOVE IT
            </button>
          </div>
        </div>
      )}
 
-     {/* PROPOSE SECTION */}
+     {/* PROPOSE */}
      {section === 'propose' && (
-       <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', padding:'48px 28px 120px' }}>
+       <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', background:'#F5F0E8' }}>
          {proposeStep === 'input' ? (
-           <>
-             <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center' }}>
-               <div style={{ marginBottom:48, textAlign:'center' }}>
-                 <div style={{ fontSize:32, fontWeight:900, letterSpacing:-1, color:'#fff', marginBottom:8 }}>
-                   Leave your word<br/>in the world.
-                 </div>
-                 <div style={{ fontSize:14, fontWeight:600, color:'rgba(255,255,255,0.3)', lineHeight:1.6 }}>
-                   One word. Millions of votes.<br/>Does the world love it?
-                 </div>
+           <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 28px 120px' }}>
+             <div style={{ marginBottom:40 }}>
+               <div style={{ fontSize:11, fontWeight:700, color:'#8B6914', letterSpacing:3, textTransform:'uppercase', marginBottom:12, opacity:0.7 }}>Propose a word</div>
+               <div style={{ fontSize:34, fontWeight:900, letterSpacing:-1.5, color:'#1C1410', lineHeight:1.15, marginBottom:12 }}>
+                 Leave your word<br/>in the world.
                </div>
-
-               <input value={newWord} onChange={e => setNewWord(e.target.value.slice(0,24))} placeholder="YOUR WORD"
-                 maxLength={24} autoFocus
-                 style={{ width:'100%', padding:'24px', borderRadius:18, border: newWord.trim() ? '1px solid rgba(200,150,12,0.5)' : '1px solid rgba(255,255,255,0.08)', background:'rgba(255,255,255,0.04)', color:'#fff', fontSize:28, fontWeight:900, fontFamily:'Georgia, serif', outline:'none', boxSizing:'border-box', textAlign:'center', textTransform:'uppercase', letterSpacing:3, marginBottom:14, transition:'all 0.2s' }} />
-
-               <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Your name"
-                 style={{ width:'100%', padding:'18px', borderRadius:14, border: username.trim() ? '1px solid rgba(255,255,255,0.15)' : '1px solid rgba(255,255,255,0.06)', background:'rgba(255,255,255,0.03)', color:'rgba(255,255,255,0.8)', fontSize:15, fontWeight:700, fontFamily:'inherit', outline:'none', boxSizing:'border-box', textAlign:'center', marginBottom:24, transition:'all 0.2s' }} />
-
-               <button onClick={handleSubmit} disabled={!newWord.trim() || !username.trim() || loading}
-                 style={{ width:'100%', padding:'20px', borderRadius:16, border:'none', background: newWord.trim() && username.trim() ? 'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)' : 'rgba(255,255,255,0.05)', color: newWord.trim() && username.trim() ? '#000' : 'rgba(255,255,255,0.15)', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor: newWord.trim() && username.trim() ? 'pointer' : 'not-allowed', letterSpacing:2, boxShadow: newWord.trim() && username.trim() ? '0 8px 32px rgba(200,150,12,0.3)' : 'none', transition:'all 0.3s' }}>
-                 {loading ? 'RELEASING...' : 'RELEASE IT TO THE WORLD →'}
-               </button>
+               <div style={{ fontSize:14, color:'rgba(28,20,16,0.4)', lineHeight:1.7, fontWeight:500 }}>
+                 One word. Shared with the world.<br/>Does everyone love it?
+               </div>
              </div>
-           </>
+
+             <input value={newWord} onChange={e => setNewWord(e.target.value.slice(0,24))} placeholder="Your word"
+               maxLength={24}
+               style={{ width:'100%', padding:'22px 20px', borderRadius:16, border: newWord.trim() ? '1.5px solid #C8960C' : '1.5px solid rgba(28,20,16,0.12)', background:'#fff', color:'#1C1410', fontSize:26, fontWeight:900, fontFamily:'Georgia, serif', outline:'none', boxSizing:'border-box', textAlign:'center', textTransform:'uppercase', letterSpacing:3, marginBottom:12, transition:'border 0.2s', boxShadow:'0 2px 20px rgba(28,20,16,0.06)' }} />
+
+             <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Your name"
+               style={{ width:'100%', padding:'16px 20px', borderRadius:14, border: username.trim() ? '1.5px solid rgba(28,20,16,0.2)' : '1.5px solid rgba(28,20,16,0.08)', background:'#fff', color:'rgba(28,20,16,0.7)', fontSize:15, fontWeight:600, fontFamily:'inherit', outline:'none', boxSizing:'border-box', textAlign:'center', marginBottom:20, transition:'border 0.2s', boxShadow:'0 2px 20px rgba(28,20,16,0.04)' }} />
+
+             <button onClick={handleSubmit} disabled={!newWord.trim() || !username.trim() || loading}
+               style={{ width:'100%', padding:'20px', borderRadius:16, border:'none', background: newWord.trim() && username.trim() ? 'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)' : 'rgba(28,20,16,0.06)', color: newWord.trim() && username.trim() ? '#1C1410' : 'rgba(28,20,16,0.25)', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor: newWord.trim() && username.trim() ? 'pointer' : 'not-allowed', letterSpacing:2, boxShadow: newWord.trim() && username.trim() ? '0 6px 28px rgba(200,150,12,0.25)' : 'none', transition:'all 0.3s' }}>
+               {loading ? 'RELEASING...' : 'RELEASE IT TO THE WORLD →'}
+             </button>
+           </div>
          ) : (
-           <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', textAlign:'center' }}>
-             <div style={{ fontSize:64, marginBottom:24 }}>🌍</div>
-             <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase', marginBottom:12 }}>Your word is live</div>
-             <div style={{ fontSize:52, fontWeight:900, fontFamily:'Georgia, serif', letterSpacing:-2, color:'#69F0AE', marginBottom:8, textTransform:'uppercase' }}>{sharedWord}</div>
-             <div style={{ fontSize:13, fontWeight:600, color:'rgba(255,255,255,0.3)', marginBottom:40 }}>People are voting right now.</div>
+           <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'48px 28px 120px', textAlign:'center' }}>
+             <div style={{ fontSize:11, fontWeight:700, color:'#8B6914', letterSpacing:3, textTransform:'uppercase', marginBottom:16, opacity:0.7 }}>Your word is live</div>
+             <div style={{ fontSize:52, fontWeight:900, fontFamily:'Georgia, serif', letterSpacing:-2, color:'#2D6A4F', marginBottom:8, textTransform:'uppercase', lineHeight:1 }}>{sharedWord}</div>
+             <div style={{ fontSize:13, color:'rgba(28,20,16,0.35)', marginBottom:44, fontWeight:500 }}>People are voting right now.</div>
 
              <button onClick={() => {
                const url = `https://top10word.com?word=${encodeURIComponent(sharedWord)}`
@@ -281,12 +279,11 @@ export default function Top10WordPage() {
                if (navigator.share) navigator.share({ text: txt, url })
                else navigator.clipboard.writeText(txt + '\n' + url)
              }}
-               style={{ width:'100%', padding:'18px', borderRadius:16, border:'none', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700)', color:'#000', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:12, boxShadow:'0 8px 32px rgba(200,150,12,0.3)', letterSpacing:1 }}>
+               style={{ width:'100%', padding:'18px', borderRadius:16, border:'none', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', color:'#1C1410', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:12, boxShadow:'0 6px 28px rgba(200,150,12,0.2)', letterSpacing:1 }}>
                Share & get votes →
              </button>
-
              <button onClick={() => { setProposeStep('input'); setSection('vote') }}
-               style={{ width:'100%', padding:'16px', borderRadius:14, border:'1px solid rgba(255,255,255,0.08)', background:'transparent', color:'rgba(255,255,255,0.35)', fontSize:14, fontWeight:700, fontFamily:'inherit', cursor:'pointer' }}>
+               style={{ width:'100%', padding:'16px', borderRadius:14, border:'1.5px solid rgba(28,20,16,0.1)', background:'transparent', color:'rgba(28,20,16,0.35)', fontSize:14, fontWeight:600, fontFamily:'inherit', cursor:'pointer' }}>
                Keep voting
              </button>
            </div>
@@ -294,34 +291,37 @@ export default function Top10WordPage() {
        </div>
      )}
 
-     {/* TOP 10 SECTION */}
+     {/* TOP 10 */}
      {section === 'top' && (
-       <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', padding:'48px 24px 120px' }}>
-         <div style={{ fontSize:28, fontWeight:900, letterSpacing:-1, marginBottom:4 }}>
-           Top<span style={{ color:'#C8960C' }}>10</span>Word
+       <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', background:'#F5F0E8', padding:'48px 28px 120px' }}>
+         <div style={{ marginBottom:32 }}>
+           <div style={{ fontSize:11, fontWeight:700, color:'#8B6914', letterSpacing:3, textTransform:'uppercase', marginBottom:8, opacity:0.7 }}>Ranking</div>
+           <div style={{ fontSize:32, fontWeight:900, letterSpacing:-1.5, color:'#1C1410' }}>
+             Top<span style={{ color:'#C8960C' }}>10</span>Word.com
+           </div>
          </div>
-         <div style={{ fontSize:12, fontWeight:700, color:'rgba(255,255,255,0.3)', letterSpacing:2, marginBottom:28 }}>WORLD RANKING</div>
 
-         <div style={{ display:'flex', gap:8, marginBottom:24 }}>
+         <div style={{ display:'flex', gap:8, marginBottom:28 }}>
            {(['world','mine'] as const).map(t => (
              <button key={t} onClick={() => setTab(t)}
-               style={{ flex:1, padding:'10px', borderRadius:10, border: tab === t ? 'none' : '1px solid rgba(255,255,255,0.06)', background: tab === t ? 'rgba(200,150,12,0.12)' : 'transparent', color: tab === t ? '#C8960C' : 'rgba(255,255,255,0.25)', fontSize:11, fontWeight:900, fontFamily:'inherit', cursor:'pointer', letterSpacing:2, textTransform:'uppercase' }}>
-               {t === 'world' ? '🌍 World' : '👤 My Words'}
+               style={{ flex:1, padding:'10px', borderRadius:10, border: tab === t ? 'none' : '1.5px solid rgba(28,20,16,0.1)', background: tab === t ? 'rgba(200,150,12,0.12)' : 'transparent', color: tab === t ? '#8B6914' : 'rgba(28,20,16,0.3)', fontSize:11, fontWeight:900, fontFamily:'inherit', cursor:'pointer', letterSpacing:2, textTransform:'uppercase' }}>
+               {t === 'world' ? 'World' : 'My Words'}
              </button>
            ))}
          </div>
 
          {tab === 'world' && ranking.map((w, i) => {
            const { theme: t, font: f } = getTheme(w.word)
+           const isTop3 = i < 3
            return (
-             <div key={w.id} style={{ marginBottom:16 }}>
-               <div style={{ display:'flex', alignItems:'baseline', gap:10, marginBottom:6 }}>
-                 <div style={{ fontSize:11, fontWeight:900, color: i===0 ? '#FFD700' : i===1 ? '#C0C0C0' : i===2 ? '#CD7F32' : 'rgba(255,255,255,0.2)', width:20 }}>#{i+1}</div>
-                 <div style={{ fontSize:20, fontWeight:900, fontFamily: f, textTransform:'uppercase', letterSpacing:0.5, flex:1 }}>{w.word}</div>
-                 <div style={{ fontSize:18, fontWeight:900, color: t.accent }}>{w.pct.toFixed(1)}%</div>
+             <div key={w.id} style={{ marginBottom: isTop3 ? 20 : 14, paddingBottom: isTop3 ? 20 : 14, borderBottom:'1.5px solid rgba(28,20,16,0.06)' }}>
+               <div style={{ display:'flex', alignItems:'baseline', gap:12, marginBottom:8 }}>
+                 <div style={{ fontSize: isTop3 ? 13 : 11, fontWeight:900, color: i===0 ? '#C8960C' : i===1 ? '#888' : i===2 ? '#A07040' : 'rgba(28,20,16,0.2)', width:24, flexShrink:0 }}>#{i+1}</div>
+                 <div style={{ fontSize: isTop3 ? 24 : 18, fontWeight:900, fontFamily: f, textTransform:'uppercase', letterSpacing: isTop3 ? 1 : 0.5, flex:1, color:'#1C1410', lineHeight:1 }}>{w.word}</div>
+                 <div style={{ fontSize: isTop3 ? 20 : 16, fontWeight:900, color: t.accent }}>{w.pct.toFixed(1)}%</div>
                </div>
-               <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:4, height:3, overflow:'hidden', marginLeft:30 }}>
-                 <div style={{ height:'100%', borderRadius:4, background:`linear-gradient(90deg, ${t.accent}, ${t.accent}66)`, width:`${w.pct}%`, transition:'width 1.2s ease' }} />
+               <div style={{ background:'rgba(28,20,16,0.06)', borderRadius:4, height: isTop3 ? 4 : 3, overflow:'hidden', marginLeft:36 }}>
+                 <div style={{ height:'100%', borderRadius:4, background: t.bar, width:`${w.pct}%`, transition:'width 1.2s ease' }} />
                </div>
              </div>
            )
@@ -331,18 +331,18 @@ export default function Top10WordPage() {
            myWords.length > 0 ? myWords.map((w) => {
              const { theme: t, font: f } = getTheme(w.word)
              return (
-               <div key={w.id} style={{ marginBottom:16 }}>
-                 <div style={{ display:'flex', alignItems:'baseline', gap:10, marginBottom:6 }}>
-                   <div style={{ fontSize:20, fontWeight:900, fontFamily: f, textTransform:'uppercase', letterSpacing:0.5, flex:1 }}>{w.word}</div>
-                   <div style={{ fontSize:18, fontWeight:900, color: t.accent }}>{w.pct.toFixed(1)}%</div>
+               <div key={w.id} style={{ marginBottom:14, paddingBottom:14, borderBottom:'1.5px solid rgba(28,20,16,0.06)' }}>
+                 <div style={{ display:'flex', alignItems:'baseline', gap:12, marginBottom:8 }}>
+                   <div style={{ fontSize:20, fontWeight:900, fontFamily: f, textTransform:'uppercase', flex:1, color:'#1C1410' }}>{w.word}</div>
+                   <div style={{ fontSize:17, fontWeight:900, color: t.accent }}>{w.pct.toFixed(1)}%</div>
                  </div>
-                 <div style={{ background:'rgba(255,255,255,0.05)', borderRadius:4, height:3, overflow:'hidden' }}>
-                   <div style={{ height:'100%', borderRadius:4, background:`linear-gradient(90deg, ${t.accent}, ${t.accent}66)`, width:`${w.pct}%`, transition:'width 1.2s ease' }} />
+                 <div style={{ background:'rgba(28,20,16,0.06)', borderRadius:4, height:3, overflow:'hidden' }}>
+                   <div style={{ height:'100%', borderRadius:4, background: t.bar, width:`${w.pct}%`, transition:'width 1.2s ease' }} />
                  </div>
                </div>
              )
            }) : (
-             <div style={{ textAlign:'center', padding:'60px 0', color:'rgba(255,255,255,0.2)', fontSize:14, lineHeight:1.8 }}>
+             <div style={{ textAlign:'center', padding:'60px 0', color:'rgba(28,20,16,0.25)', fontSize:14, lineHeight:1.8 }}>
                You haven't proposed a word yet.<br/>Be the first to leave yours.
              </div>
            )
@@ -352,17 +352,17 @@ export default function Top10WordPage() {
 
      {/* Propose prompt */}
      {showProposePrompt && (
-       <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.8)', zIndex:1000, display:'flex', alignItems:'flex-end', justifyContent:'center', padding:24, backdropFilter:'blur(8px)' }}>
-         <div style={{ background:'linear-gradient(160deg, #1e1a10, #14100a)', borderRadius:24, padding:'32px 24px 28px', width:'100%', maxWidth:400, border:'1px solid rgba(200,150,12,0.25)', boxShadow:'0 0 80px rgba(200,150,12,0.1)' }}>
-           <div style={{ fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.3)', letterSpacing:3, textTransform:'uppercase', marginBottom:12 }}>Your turn</div>
-           <div style={{ fontSize:24, fontWeight:900, color:'#fff', marginBottom:8, lineHeight:1.2 }}>Propose a word<br/>to the world.</div>
-           <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', marginBottom:28, lineHeight:1.6 }}>Leave one word in the global ranking. Share it and discover if people love it.</div>
+       <div style={{ position:'fixed', inset:0, background:'rgba(28,20,16,0.5)', zIndex:1000, display:'flex', alignItems:'flex-end', padding:20, backdropFilter:'blur(4px)' }}>
+         <div style={{ background:'#F5F0E8', borderRadius:24, padding:'32px 24px 28px', width:'100%', boxShadow:'0 -4px 60px rgba(28,20,16,0.15)', border:'1px solid rgba(200,150,12,0.2)' }}>
+           <div style={{ fontSize:11, fontWeight:700, color:'#8B6914', letterSpacing:3, textTransform:'uppercase', marginBottom:10, opacity:0.7 }}>Your turn</div>
+           <div style={{ fontSize:24, fontWeight:900, color:'#1C1410', marginBottom:8, lineHeight:1.2, letterSpacing:-0.5 }}>Propose a word<br/>to the world.</div>
+           <div style={{ fontSize:13, color:'rgba(28,20,16,0.4)', marginBottom:28, lineHeight:1.6 }}>Leave one word in the global ranking. Share it. See if people love it.</div>
            <button onClick={() => { setShowProposePrompt(false); setSection('propose') }}
-             style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700)', color:'#000', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:10, boxShadow:'0 6px 24px rgba(200,150,12,0.25)', letterSpacing:1 }}>
+             style={{ width:'100%', padding:'18px', borderRadius:14, border:'none', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', color:'#1C1410', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor:'pointer', marginBottom:10, boxShadow:'0 4px 20px rgba(200,150,12,0.2)', letterSpacing:1 }}>
              Leave my word →
            </button>
            <button onClick={() => setShowProposePrompt(false)}
-             style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.07)', background:'transparent', color:'rgba(255,255,255,0.25)', fontSize:13, fontWeight:700, fontFamily:'inherit', cursor:'pointer' }}>
+             style={{ width:'100%', padding:'14px', borderRadius:12, border:'1.5px solid rgba(28,20,16,0.1)', background:'transparent', color:'rgba(28,20,16,0.3)', fontSize:13, fontWeight:600, fontFamily:'inherit', cursor:'pointer' }}>
              Keep voting
            </button>
          </div>
@@ -370,14 +370,14 @@ export default function Top10WordPage() {
      )}
 
      {/* Floating nav */}
-     <div style={{ position:'fixed', bottom:28, left:'50%', transform:'translateX(-50%)', display:'flex', background:'rgba(15,12,8,0.92)', backdropFilter:'blur(24px)', borderRadius:22, padding:'6px', border:'1px solid rgba(255,255,255,0.07)', zIndex:100, gap:4, boxShadow:'0 8px 40px rgba(0,0,0,0.6)' }}>
+     <div style={{ position:'fixed', bottom:24, left:'50%', transform:'translateX(-50%)', display:'flex', background:'rgba(28,20,16,0.9)', backdropFilter:'blur(20px)', borderRadius:20, padding:'6px 8px', zIndex:100, gap:2, boxShadow:'0 8px 40px rgba(28,20,16,0.25)', whiteSpace:'nowrap' }}>
        {[
-         { id:'vote', label:'Vote', color:'#6BAED6' },
-         { id:'propose', label:'Propose', color:'#C8960C' },
-         { id:'top', label:'Top 10', color:'#C0C0C0' },
+         { id:'vote', label:'Vote', activeColor:'#E8C876' },
+         { id:'propose', label:'Propose', activeColor:'#A8C898' },
+         { id:'top', label:'Top 10', activeColor:'#98B8D8' },
        ].map(n => (
          <button key={n.id} onClick={() => { setSection(n.id as Section); if (n.id === 'top') loadRanking() }}
-           style={{ padding:'10px 18px', borderRadius:16, border:'none', background: section === n.id ? `${n.color}18` : 'transparent', color: section === n.id ? n.color : 'rgba(255,255,255,0.2)', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer', letterSpacing:1, transition:'all 0.2s', whiteSpace:'nowrap' }}>
+           style={{ padding:'10px 18px', borderRadius:14, border:'none', background: section === n.id ? 'rgba(255,255,255,0.1)' : 'transparent', color: section === n.id ? n.activeColor : 'rgba(255,255,255,0.3)', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer', letterSpacing:0.5, transition:'all 0.2s' }}>
            {n.label}
          </button>
        ))}
