@@ -49,6 +49,7 @@ export default function Top10WordPage() {
       const forced = data.find((w: any) => w.word.toLowerCase() === wordParam.toLowerCase())
       if (forced) { setCurrentWord(forced); setVoted(false); setVoteResult(null); setSwipeDir(null); window.history.replaceState({}, "", "/top10word"); return }
     }
+    const unvoted = data.filter((w: any) => !votedIds.includes(w.id))
     const pool = unvoted.length > 0 ? unvoted : data
     setCurrentWord(pool[Math.floor(Math.random() * pool.length)])
     setVoted(false)
