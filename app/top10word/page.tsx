@@ -172,7 +172,7 @@ export default function Top10WordPage() {
                   {(currentWord.total_yes || 0) + (currentWord.total_no || 0)} votes worldwide
                 </div>
                {showPct && (
-                 <div style={{ position:'absolute', inset:0, background:'rgba(255,255,255,0.95)', borderRadius:28, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
+                 <div style={{ position:'absolute', inset:0, background:'rgba(10,8,0,0.97)', borderRadius:28, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
                    <div style={{ fontSize:64, fontWeight:900, color: voteResult ? '#2E7D32' : '#E53935', lineHeight:1 }}>{lastPct}%</div>
                    <div style={{ fontSize:14, fontWeight:700, color:'rgba(0,0,0,0.5)', marginTop:8 }}>{voteResult ? 'love this word' : 'passed on this word'}</div>
                  </div>
