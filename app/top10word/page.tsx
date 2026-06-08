@@ -76,16 +76,8 @@ export default function Top10WordPage() {
    const votedIds = votedData?.map((v: any) => v.word_id) || []
    const { data } = await supabase.from('words').select('*').limit(500)
    if (!data || data.length === 0) return
-    const now = Date.now()
-    const cutoff48h = new Date(now - 48 * 60 * 60 * 1000).toISOString()
-    const unvoted = data.filter((w: any) => !votedIds.includes(w.id))
-    const pool48 = unvoted.length > 5 ? unvoted : data
-    const recent = pool48.filter((w: any) => w.created_at > cutoff48h)
-   const older = pool48.filter((w: any) => w.created_at <= cutoff48h)
-   const sortedByVotes = [...pool48].sort((a: any, b: any) => (b.total_yes + b.total_no) - (a.total_yes + a.total_no))
-   const top20 = sortedByVotes.slice(0, 20)
-   const rest20 = sortedByVotes.slice(20)
-   const shuffled = [...recent, ...recent, ...recent, ...top20, ...top20, ...rest20].sort(() => Math.random() - 0.5)
+   const unvoted = data.filter((w: any) => !votedIds.includes(w.id))
+   const shuffled = (unvoted.length > 5 ? unvoted : data).sort(() => Math.random() - 0.5)
    if (wordParam) {
      const forced = data.find((w: any) => w.word.toLowerCase() === wordParam.toLowerCase())
      if (forced) {
@@ -182,15 +174,19 @@ export default function Top10WordPage() {
        <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh' }}>
 
          {/* Header */}
-         <div style={{ padding:'36px 28px 0', textAlign:'center' }}>
-           <div style={{ fontSize:28, fontWeight:900, letterSpacing:-1, color: theme.text, fontFamily:'Georgia, serif', marginBottom:8 }}>
+         <div style={{ padding:'36px 28px 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+           <div style={{ fontSize:16, fontWeight:900, letterSpacing:-0.5, color: theme.text }}>
              Top<span style={{ color: theme.accent }}>10</span>Word.com
            </div>
-           <div style={{ fontSize:12, fontWeight:600, color: theme.text, opacity:0.4, letterSpacing:0.5, lineHeight:1.6, marginBottom:6 }}>
-             Which is the world's most beautiful word?
-           </div>
            <div style={{ fontSize:10, fontWeight:700, color: theme.accent, letterSpacing:2, opacity:0.6 }}>
-             {totalVotes.toLocaleString()} VOTES WORLDWIDE
+             {totalVotes.toLocaleString()} VOTES
+           </div>
+         </div>
+
+         {/* Claim */}
+         <div style={{ padding:'20px 28px 0', textAlign:'center' }}>
+           <div style={{ fontSize:13, fontWeight:600, color: theme.text, opacity:0.4, letterSpacing:0.5, lineHeight:1.6 }}>
+             Which is the world's most beautiful word?
            </div>
          </div>
 
@@ -205,20 +201,19 @@ export default function Top10WordPage() {
                transition: swipeDir ? 'transform 0.3s ease, opacity 0.25s ease' : 'none',
              }}>
                <div style={{
-                 fontSize: currentWord.word.length > 16 ? 22 : currentWord.word.length > 13 ? 28 : currentWord.word.length > 10 ? 36 : currentWord.word.length > 7 ? 52 : currentWord.word.length > 5 ? 66 : 80,
+                 fontSize: currentWord.word.length > 14 ? 28 : currentWord.word.length > 11 ? 36 : currentWord.word.length > 8 ? 48 : currentWord.word.length > 5 ? 64 : 80,
                  fontWeight: 900,
                  fontFamily: font,
                  color: theme.text,
-                 letterSpacing: -1,
+                 letterSpacing: -2,
                  lineHeight: 1,
                  marginBottom: 32,
                  textTransform: 'uppercase',
-                 maxWidth: '100%',
-                 overflow: 'hidden',
-                 whiteSpace: 'nowrap',
                }}>
                  {currentWord.word}
                </div>
+
+               {/* Love bar */}
                <div style={{ width:'100%', maxWidth:240, margin:'0 auto 10px' }}>
                  <div style={{ background: `${theme.accent}18`, borderRadius:6, height:4, overflow:'hidden' }}>
                    <div style={{ height:'100%', borderRadius:6, background: theme.bar, width:`${lovePct}%`, transition:'width 0.8s ease' }} />
@@ -250,10 +245,11 @@ export default function Top10WordPage() {
        <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', background:'#F5F0E8' }}>
          {proposeStep === 'input' ? (
            <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 28px 120px' }}>
-                <div style={{ fontSize:28, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:'Georgia, serif', marginBottom:6 }}>
-                  Top<span style={{ color:'#C8960C' }}>10</span>Word.com
-                </div>
-                <div style={{ fontSize:13, fontWeight:600, color:'rgba(28,20,16,0.4)', marginBottom:32, lineHeight:1.6 }}>Leave your word in the world.</div>
+             <div style={{ marginBottom:40 }}>
+               <div style={{ fontSize:11, fontWeight:700, color:'#8B6914', letterSpacing:3, textTransform:'uppercase', marginBottom:12, opacity:0.7 }}>Propose a word</div>
+               <div style={{ fontSize:34, fontWeight:900, letterSpacing:-1.5, color:'#1C1410', lineHeight:1.15, marginBottom:12 }}>
+                 Leave your word<br/>in the world.
+               </div>
                <div style={{ fontSize:14, color:'rgba(28,20,16,0.4)', lineHeight:1.7, fontWeight:500 }}>
                  One word. Shared with the world.<br/>Does everyone love it?
                </div>
