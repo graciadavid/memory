@@ -491,13 +491,13 @@ export default function Top10WordPage() {
                 Top<span style={{ color: GOLD }}>10</span>Word.com
               </div>
             </div>
-            <div style={{ position:"absolute", bottom:"38%", left:20 }}>
+            <div style={{ position:"absolute", bottom:"12%", left:20 }}>
               <div style={{ fontSize:9, fontWeight:800, color: NAVY, letterSpacing:3, textTransform:"uppercase", opacity:0.7 }}>Men love</div>
               <div style={{ fontSize:26, fontWeight:900, fontFamily:"Georgia, serif", color: NAVY, textTransform:"uppercase", letterSpacing:-1 }}>
                 {rankingMen[0]?.word || 'Freedom'}
               </div>
             </div>
-            <div style={{ position:"absolute", bottom:"38%", right:20, textAlign:"right" }}>
+            <div style={{ position:"absolute", bottom:"12%", right:20, textAlign:"right" }}>
               <div style={{ fontSize:9, fontWeight:800, color:"#7B3B6E", letterSpacing:3, textTransform:"uppercase", opacity:0.7 }}>Women love</div>
               <div style={{ fontSize:26, fontWeight:900, fontFamily:"Georgia, serif", color:"#7B3B6E", textTransform:"uppercase", letterSpacing:-1 }}>
                 {rankingWomen[0]?.word || 'Love'}
