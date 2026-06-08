@@ -471,24 +471,46 @@ export default function Top10WordPage() {
 
       {/* Gender prompt */}
       {showGenderPrompt && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(28,20,16,0.6)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:24, backdropFilter:'blur(6px)' }}>
-          <div style={{ background:'#F5F0E8', borderRadius:24, padding:'36px 28px', width:'100%', maxWidth:360, textAlign:'center', boxShadow:'0 -4px 60px rgba(28,20,16,0.2)' }}>
-            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:'Georgia, serif', marginBottom:8 }}>
+        <div style={{ position:'fixed', inset:0, background:'#F5F0E8', zIndex:2000, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 28px' }}>
+          <div style={{ textAlign:'center', marginBottom:32 }}>
+            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:'Georgia, serif', marginBottom:20 }}>
               Top<span style={{ color: GOLD }}>10</span>Word.com
             </div>
-            <div style={{ fontSize:15, fontWeight:700, color:'rgba(28,20,16,0.6)', marginBottom:28, lineHeight:1.6 }}>Do men and women love<br/>different words?</div>
+            <div style={{ fontSize:13, fontWeight:600, color:'rgba(28,20,16,0.4)', letterSpacing:0.5, marginBottom:28 }}>
+              Do men and women love different words?
+            </div>
+          </div>
+
+          {/* Men word preview */}
+          <div style={{ width:'100%', background:'rgba(27,46,74,0.06)', borderRadius:16, padding:'16px 20px', marginBottom:12, border:'1px solid rgba(27,46,74,0.1)' }}>
+            <div style={{ fontSize:10, fontWeight:700, color:'rgba(27,46,74,0.5)', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Men love</div>
+            <div style={{ fontSize:28, fontWeight:900, fontFamily:'Georgia, serif', color: NAVY, textTransform:'uppercase', letterSpacing:-1 }}>
+              {rankingMen[0]?.word || 'Freedom'}
+            </div>
+          </div>
+
+          {/* Women word preview */}
+          <div style={{ width:'100%', background:'rgba(168,85,160,0.06)', borderRadius:16, padding:'16px 20px', marginBottom:28, border:'1px solid rgba(168,85,160,0.15)' }}>
+            <div style={{ fontSize:10, fontWeight:700, color:'rgba(168,85,160,0.6)', letterSpacing:3, textTransform:'uppercase', marginBottom:4 }}>Women love</div>
+            <div style={{ fontSize:28, fontWeight:900, fontFamily:'Georgia, serif', color:'#7B3B6E', textTransform:'uppercase', letterSpacing:-1 }}>
+              {rankingWomen[0]?.word || 'Love'}
+            </div>
+          </div>
+
+          <div style={{ width:'100%', marginBottom:10 }}>
+            <div style={{ fontSize:13, fontWeight:700, color:'rgba(28,20,16,0.5)', textAlign:'center', marginBottom:14 }}>What are you?</div>
             <div style={{ display:'flex', gap:10, marginBottom:10 }}>
               <button onClick={() => { setGender('woman'); localStorage.setItem('top10word_gender','woman'); setShowGenderPrompt(false) }}
-                style={{ flex:1, padding:'16px', borderRadius:14, border:'1.5px solid rgba(168,85,160,0.3)', background:'rgba(168,85,160,0.08)', color:'#7B3B6E', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+                style={{ flex:1, padding:'18px', borderRadius:14, border:'1.5px solid rgba(168,85,160,0.3)', background:'rgba(168,85,160,0.08)', color:'#7B3B6E', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
                 Woman
               </button>
               <button onClick={() => { setGender('man'); localStorage.setItem('top10word_gender','man'); setShowGenderPrompt(false) }}
-                style={{ flex:1, padding:'16px', borderRadius:14, border:'1.5px solid rgba(27,46,74,0.3)', background:'rgba(27,46,74,0.08)', color: NAVY, fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
+                style={{ flex:1, padding:'18px', borderRadius:14, border:'1.5px solid rgba(27,46,74,0.3)', background:'rgba(27,46,74,0.08)', color: NAVY, fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
                 Man
               </button>
             </div>
             <button onClick={() => { setGender('other'); localStorage.setItem('top10word_gender','other'); setShowGenderPrompt(false) }}
-              style={{ width:'100%', padding:'12px', borderRadius:12, border:'1.5px solid rgba(28,20,16,0.1)', background:'transparent', color:'rgba(28,20,16,0.35)', fontSize:13, fontWeight:600, fontFamily:'inherit', cursor:'pointer' }}>
+              style={{ width:'100%', padding:'14px', borderRadius:12, border:'1.5px solid rgba(28,20,16,0.1)', background:'transparent', color:'rgba(28,20,16,0.35)', fontSize:13, fontWeight:600, fontFamily:'inherit', cursor:'pointer' }}>
               Prefer not to say
             </button>
           </div>
