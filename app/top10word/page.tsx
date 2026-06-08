@@ -201,7 +201,7 @@ export default function Top10WordPage() {
                transition: swipeDir ? 'transform 0.3s ease, opacity 0.25s ease' : 'none',
              }}>
                <div style={{
-                 fontSize: currentWord.word.length > 12 ? 40 : currentWord.word.length > 8 ? 58 : currentWord.word.length > 5 ? 76 : 92,
+                 fontSize: currentWord.word.length > 14 ? 28 : currentWord.word.length > 11 ? 36 : currentWord.word.length > 8 ? 48 : currentWord.word.length > 5 ? 64 : 80,
                  fontWeight: 900,
                  fontFamily: font,
                  color: theme.text,

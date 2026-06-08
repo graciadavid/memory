@@ -6,7 +6,8 @@ import BottomNav from './BottomNav'
 export default function HeaderNavWrapper() {
  const pathname = usePathname()
  const isExactly5 = pathname?.startsWith('/exactly5')
- if (isExactly5) return null
+ const isTop10Word = pathname?.startsWith('/top10word')
+ if (isExactly5 || isTop10Word) return null
  return (
    <>
      <Header />
