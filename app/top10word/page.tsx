@@ -473,7 +473,7 @@ export default function Top10WordPage() {
 
       {/* Gender prompt */}
       {showGenderPrompt && (
-        <div style={{ position:'fixed', inset:0, background:'#F5F0E8', zIndex:2000, display:'flex', flexDirection:'column', justifyContent:'flex-end' }}>
+        <div style={{ position:'fixed', inset:0, background:'#000', zIndex:2000, display:'flex', flexDirection:'column' }}>
           <div style={{ textAlign:'center', marginBottom:32 }}>
           <div style={{ position:"relative", width:"100%", marginBottom:28, borderRadius:20, overflow:"hidden" }}>
             <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/home.png" style={{ width:"100%", display:"block", borderRadius:20 }} />
