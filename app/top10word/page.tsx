@@ -60,6 +60,9 @@ export default function Top10WordPage() {
  const [voteCount, setVoteCount] = useState(0)
  const [showProposePrompt, setShowProposePrompt] = useState(false)
  const [totalVotes, setTotalVotes] = useState(0)
+  const [searchWord, setSearchWord] = useState('')
+  const [searchResult, setSearchResult] = useState<any>(null)
+  const [searchDone, setSearchDone] = useState(false)
 
  useEffect(() => {
    setUsername(localStorage.getItem('top10word_username') || '')
@@ -297,7 +300,39 @@ export default function Top10WordPage() {
             <div style={{ fontSize:12, fontWeight:500, color:"rgba(28,20,16,0.4)", marginTop:4 }}>World Ranking</div>
           </div>
 
-         <div style={{ display:'flex', gap:8, marginBottom:28 }}>
+          <div style={{ marginBottom:16 }}>
+            <div style={{ display:"flex", gap:8, marginBottom:8 }}>
+              <input value={searchWord} onChange={e => { setSearchWord(e.target.value); setSearchDone(false) }}
+                onKeyDown={e => e.key === "Enter" && searchWordFn()}
+                placeholder="Search a word..."
+                style={{ flex:1, padding:"11px 14px", borderRadius:11, border:"1.5px solid rgba(27,46,74,0.15)", background:"#fff", color:"#1C1410", fontSize:13, fontWeight:600, fontFamily:"inherit", outline:"none" }} />
+              <button onClick={searchWordFn} style={{ padding:"11px 16px", borderRadius:11, border:"none", background:"#1B2E4A", color:"#fff", fontSize:12, fontWeight:900, fontFamily:"inherit", cursor:"pointer" }}>Search</button>
+            </div>
+            {searchDone && (
+              <div style={{ padding:"14px", borderRadius:12, background:"#fff", border:"1px solid rgba(27,46,74,0.1)" }}>
+                {searchResult ? (
+                  <div>
+                    <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
+                      <div style={{ fontSize:17, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:"uppercase", letterSpacing:1, flex:1, color:"#1B2E4A" }}>{searchResult.word}</div>
+                      <div style={{ fontSize:15, fontWeight:900, color:"#1B2E4A" }}>{searchResult.pct.toFixed(1)}%</div>
+                    </div>
+                    <div style={{ background:"rgba(27,46,74,0.07)", borderRadius:4, height:3, overflow:"hidden" }}>
+                      <div style={{ height:"100%", borderRadius:4, background:"#3A6EA5", width:`${searchResult.pct}%`, transition:"width 1s ease" }} />
+                    </div>
+                    <div style={{ fontSize:11, color:"rgba(28,20,16,0.35)", marginTop:5 }}>{(searchResult.total_yes||0)+(searchResult.total_no||0)} votes</div>
+                  </div>
+                ) : (
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                    <div style={{ fontSize:13, color:"rgba(28,20,16,0.4)" }}>"{searchWord}" not in ranking yet.</div>
+                    <button onClick={() => { setNewWord(searchWord); setSection("propose") }}
+                      style={{ padding:"8px 12px", borderRadius:9, border:"none", background:"linear-gradient(135deg, #8B6914, #C8960C)", color:"#fff", fontSize:12, fontWeight:900, fontFamily:"inherit", cursor:"pointer" }}>Propose →</button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+         <div style={{ display:'flex', gap:8, marginBottom:16 }}>
            {(['world','mine'] as const).map(t => (
              <button key={t} onClick={() => setTab(t)}
                style={{ flex:1, padding:'10px', borderRadius:10, border: tab === t ? 'none' : '1.5px solid rgba(28,20,16,0.1)', background: tab === t ? 'rgba(200,150,12,0.12)' : 'transparent', color: tab === t ? '#8B6914' : 'rgba(28,20,16,0.3)', fontSize:11, fontWeight:900, fontFamily:'inherit', cursor:'pointer', letterSpacing:2, textTransform:'uppercase' }}>
