@@ -222,7 +222,7 @@ export default function Top10WordPage() {
 
   const Logo = ({ textColor = '#1C1410' }: { textColor?: string }) => (
     <div style={{ textAlign:'center', marginBottom:20 }}>
-      <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color: textColor, fontFamily:'var(--font-cormorant), Georgia, serif' }}>
+      <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color: textColor, fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>
         TOP<span style={{ color: GOLD }}>10</span>WORD.COM
       </div>
     </div>
@@ -235,7 +235,7 @@ export default function Top10WordPage() {
       {section === 'vote' && (
         <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh' }}>
           <div style={{ padding:'32px 28px 0', textAlign:'center' }}>
-            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color: theme.text, fontFamily:'var(--font-cormorant), Georgia, serif', marginBottom:6 }}>
+            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color: theme.text, fontFamily:"'Helvetica Neue', 'Arial', sans-serif", marginBottom:6 }}>
               TOP<span style={{ color: theme.accent }}>10</span>WORD.COM
             </div>
             <div style={{ fontSize:12, fontWeight:500, color: theme.text, opacity:0.4, marginTop:4 }}>
@@ -292,14 +292,14 @@ export default function Top10WordPage() {
           {proposeStep === 'input' ? (
             <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 28px 120px' }}>
               <div style={{ textAlign:'center', marginBottom:32 }}>
-                <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:'var(--font-cormorant), Georgia, serif' }}>
+                <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>
                   TOP<span style={{ color: GOLD }}>10</span>WORD.COM
                 </div>
                 <div style={{ fontSize:12, fontWeight:500, color:'rgba(28,20,16,0.4)', marginTop:4 }}>Leave your word in the world.</div>
               </div>
               <input value={newWord} onChange={e => setNewWord(e.target.value.slice(0,24))} placeholder="Your word"
                 maxLength={24}
-                style={{ width:'100%', padding:'22px 20px', borderRadius:16, border:'1.5px solid #C8960C', background:'#fff', color:'#1C1410', fontSize:26, fontWeight:900, fontFamily:'var(--font-cormorant), Georgia, serif', outline:'none', boxSizing:'border-box', textAlign:'center', textTransform:'uppercase', letterSpacing:3, marginBottom:12, boxShadow:'0 2px 20px rgba(28,20,16,0.06)' }} />
+                style={{ width:'100%', padding:'22px 20px', borderRadius:16, border:'1.5px solid #C8960C', background:'#fff', color:'#1C1410', fontSize:26, fontWeight:900, fontFamily:"'Helvetica Neue', 'Arial', sans-serif", outline:'none', boxSizing:'border-box', textAlign:'center', textTransform:'uppercase', letterSpacing:3, marginBottom:12, boxShadow:'0 2px 20px rgba(28,20,16,0.06)' }} />
               <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Your name"
                 style={{ width:'100%', padding:'16px 20px', borderRadius:14, border:'1.5px solid rgba(28,20,16,0.18)', background:'#fff', color:'rgba(28,20,16,0.7)', fontSize:15, fontWeight:600, fontFamily:'inherit', outline:'none', boxSizing:'border-box', textAlign:'center', marginBottom:20, boxShadow:'0 2px 20px rgba(28,20,16,0.04)' }} />
               <button onClick={handleSubmit} disabled={!newWord.trim() || !username.trim() || loading}
@@ -309,11 +309,11 @@ export default function Top10WordPage() {
             </div>
           ) : (
             <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'48px 28px 120px', textAlign:'center' }}>
-              <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:'var(--font-cormorant), Georgia, serif', marginBottom:16 }}>
+              <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:"'Helvetica Neue', 'Arial', sans-serif", marginBottom:16 }}>
                 TOP<span style={{ color: GOLD }}>10</span>WORD.COM
               </div>
               <div style={{ fontSize:11, fontWeight:700, color:'#8B6914', letterSpacing:3, textTransform:'uppercase', marginBottom:12, opacity:0.7 }}>Your word is live</div>
-              <div style={{ fontSize:48, fontWeight:900, fontFamily:'var(--font-cormorant), Georgia, serif', letterSpacing:-2, color:'#2D6A4F', marginBottom:8, textTransform:'uppercase', lineHeight:1 }}>{sharedWord}</div>
+              <div style={{ fontSize:48, fontWeight:900, fontFamily:"'Helvetica Neue', 'Arial', sans-serif", letterSpacing:-2, color:'#2D6A4F', marginBottom:8, textTransform:'uppercase', lineHeight:1 }}>{sharedWord}</div>
               <div style={{ fontSize:13, color:'rgba(28,20,16,0.35)', marginBottom:40 }}>People are voting right now.</div>
               <button onClick={() => {
                 const url = `https://top10word.com?word=${encodeURIComponent(sharedWord)}`
@@ -338,7 +338,7 @@ export default function Top10WordPage() {
         <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', background:'#F5F0E8', padding:'36px 24px 120px', overflowY:'auto' }}>
 
           <div style={{ textAlign:'center', marginBottom:24 }}>
-            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:'var(--font-cormorant), Georgia, serif' }}>
+            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>
               TOP<span style={{ color: GOLD }}>10</span>WORD.COM
             </div>
             <div style={{ fontSize:12, fontWeight:500, color:'rgba(28,20,16,0.4)', marginTop:4 }}>World Ranking</div>
@@ -396,7 +396,7 @@ export default function Top10WordPage() {
           {tab === 'world' && ranking.map((w, i) => (
             <div key={w.id} style={{ marginBottom:10, paddingBottom:10, borderBottom:'1px solid rgba(27,46,74,0.08)', background: i < 3 ? 'rgba(27,46,74,0.03)' : 'transparent', borderRadius: i < 3 ? 8 : 0, padding: i < 3 ? '10px 8px' : '0 0 10px' }}>
               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:5 }}>
-                <div style={{ fontSize:11, fontWeight:900, color: i===0 ? GOLD : i===1 ? '#7A8FA6' : i===2 ? '#9AADBE' : 'rgba(27,46,74,0.25)', width:22, flexShrink:0, fontFamily:'var(--font-cormorant), Georgia, serif' }}>{i+1}.</div>
+                <div style={{ fontSize:11, fontWeight:900, color: i===0 ? GOLD : i===1 ? '#7A8FA6' : i===2 ? '#9AADBE' : 'rgba(27,46,74,0.25)', width:22, flexShrink:0, fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>{i+1}.</div>
                 <div style={{ fontSize: i < 3 ? 16 : 13, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:'uppercase', letterSpacing:0.5, flex:1, color: NAVY, lineHeight:1 }}>{w.word}</div>
                 <div style={{ display:'flex', alignItems:'center', gap:5 }}>
                   <div style={{ fontSize:12, fontWeight:900, color: NAVY, minWidth:36, textAlign:'right' }}>{w.pct.toFixed(1)}%</div>
@@ -487,7 +487,7 @@ export default function Top10WordPage() {
             <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/home.png" style={{ width:"100%", display:"block", borderRadius:20 }} />
             <div style={{ position:"absolute", inset:0, background:"linear-gradient(to bottom, rgba(245,240,232,0.3) 0%, rgba(245,240,232,0) 40%, rgba(245,240,232,0) 60%, rgba(245,240,232,0.6) 100%)" }} />
             <div style={{ position:"absolute", top:16, left:0, right:0, textAlign:"center" }}>
-              <div style={{ fontSize:20, fontWeight:900, letterSpacing:-0.5, color:"#1C1410", fontFamily:'var(--font-cormorant), Georgia, serif' }}>
+              <div style={{ fontSize:20, fontWeight:900, letterSpacing:-0.5, color:"#1C1410", fontFamily:"'Helvetica Neue', 'Arial', sans-serif" }}>
                 TOP<span style={{ color: GOLD }}>10</span>WORD.COM
               </div>
             </div>
