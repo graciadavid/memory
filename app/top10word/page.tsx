@@ -227,7 +227,7 @@ export default function Top10WordPage() {
          </div>
 
          {/* Buttons */}
-         <div style={{ padding:'0 28px 120px', display:'flex', gap:14 }}>
+         <div style={{ padding:'0 28px 140px', display:'flex', gap:14 }}>
            <button onClick={() => handleVote(false)} disabled={voted}
              style={{ flex:1, padding:'18px', borderRadius:18, border:`1px solid ${theme.accent}30`, background:`${theme.accent}08`, color:`${theme.text}60`, fontSize:22, fontFamily:'inherit', cursor:'pointer', transition:'all 0.15s' }}>
              ✕
