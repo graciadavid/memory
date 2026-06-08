@@ -186,10 +186,6 @@ export default function Top10WordPage() {
             </div>
           </div>
 
-         {/* Word */}
-         <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 28px' }}>
-           {currentWord && (
-             <div style={{
                textAlign:'center',
                width:'100%',
                transform: swipeDir === 'right' ? 'translateX(150%) rotate(12deg)' : swipeDir === 'left' ? 'translateX(-150%) rotate(-12deg)' : 'translateX(0)',
