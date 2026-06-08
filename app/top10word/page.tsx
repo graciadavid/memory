@@ -377,7 +377,7 @@ export default function Top10WordPage() {
          { id:'top', label:'Top 10', activeColor:'#98B8D8' },
        ].map(n => (
          <button key={n.id} onClick={() => { setSection(n.id as Section); if (n.id === 'top') loadRanking() }}
-           style={{ padding:'10px 18px', borderRadius:14, border:'none', background: section === n.id ? 'rgba(255,255,255,0.1)' : 'transparent', color: section === n.id ? n.activeColor : 'rgba(255,255,255,0.3)', fontSize:11, fontWeight:900, fontFamily:'Georgia, serif', cursor:'pointer', letterSpacing:1.5, transition:'all 0.2s', textTransform:'uppercase' }}>
+           style={{ padding:'10px 18px', borderRadius:14, border:'none', background: section === n.id ? 'rgba(255,255,255,0.1)' : 'transparent', color: section === n.id ? n.activeColor : 'rgba(255,255,255,0.3)', fontSize:11, fontWeight:900, fontFamily:"'Helvetica Neue', sans-serif", cursor:'pointer', letterSpacing:1.5, transition:'all 0.2s', textTransform:'uppercase' }}>
            {n.label}
          </button>
        ))}
