@@ -111,8 +111,16 @@ export default function Top10WordPage() {
         return
       }
     }
-    setPool(shuffled.slice(1))
-    applyCard(shuffled[0])
+    // First word always Love for new users
+   const loveWord = data.find((w: any) => w.word.toLowerCase() === 'love')
+   if (loveWord && !votedIds.includes(loveWord.id)) {
+     const rest = shuffled.filter((w: any) => w.id !== loveWord.id)
+     setPool(rest)
+     applyCard(loveWord)
+   } else {
+     setPool(shuffled.slice(1))
+     applyCard(shuffled[0])
+   }
   }
 
   const applyCard = (word: any) => {
