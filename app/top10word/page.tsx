@@ -63,6 +63,7 @@ export default function Top10WordPage() {
   const [voteCount, setVoteCount] = useState(0)
   const [showProposePrompt, setShowProposePrompt] = useState(false)
   const [totalVotes, setTotalVotes] = useState(0)
+  const [votedInRanking, setVotedInRanking] = useState<Set<string>>(new Set())
   const [searchWord, setSearchWord] = useState('')
   const [searchResult, setSearchResult] = useState<any>(null)
   const [searchDone, setSearchDone] = useState(false)
@@ -143,17 +144,22 @@ export default function Top10WordPage() {
   }
 
   const voteWord = async (word: any, yes: boolean) => {
-    const deviceId = getDeviceId()
-    const field = yes ? 'total_yes' : 'total_no'
-    supabase.from('words').update({ [field]: (word[field] || 0) + 1 }).eq('id', word.id)
-    supabase.from('votes').upsert({ word_id: word.id, vote: yes, device_id: deviceId })
-    setTotalVotes(v => v + 1)
-    setRanking(prev => prev.map((w: any) => w.id === word.id ? {
-      ...w,
-      [field]: (w[field]||0)+1,
-      pct: Math.round(((yes ? w.total_yes+1 : w.total_yes) / Math.max(w.total_yes + w.total_no + 1, 1)) * 1000) / 10
-    } : w))
-  }
+   if (votedInRanking.has(word.id)) return
+   const deviceId = getDeviceId()
+   const field = yes ? 'total_yes' : 'total_no'
+   supabase.from('words').update({ [field]: (word[field] || 0) + 1 }).eq('id', word.id)
+   supabase.from('votes').upsert({ word_id: word.id, vote: yes, device_id: deviceId })
+   setTotalVotes(v => v + 1)
+   setVotedInRanking(prev => new Set([...prev, word.id]))
+   setRanking(prev => {
+     const updated = prev.map((w: any) => w.id === word.id ? {
+       ...w,
+       [field]: (w[field]||0)+1,
+       pct: Math.round(((yes ? w.total_yes+1 : w.total_yes) / Math.max(w.total_yes + w.total_no + 1, 1)) * 1000) / 10
+     } : w)
+     return updated.sort((a: any, b: any) => b.pct - a.pct)
+   })
+ }
 
   const handleSubmit = async () => {
     if (!newWord.trim() || !username.trim()) return
@@ -380,10 +386,10 @@ export default function Top10WordPage() {
                 <div style={{ fontSize: i < 3 ? 16 : 13, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:'uppercase', letterSpacing:0.5, flex:1, color: NAVY, lineHeight:1 }}>{w.word}</div>
                 <div style={{ display:'flex', alignItems:'center', gap:5 }}>
                   <div style={{ fontSize:12, fontWeight:900, color: NAVY, minWidth:36, textAlign:'right' }}>{w.pct.toFixed(1)}%</div>
-                  <button onClick={() => voteWord(w, false)}
-                    style={{ width:24, height:24, borderRadius:6, border:'1px solid rgba(27,46,74,0.18)', background:'rgba(27,46,74,0.04)', color:'rgba(27,46,74,0.4)', fontSize:11, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
-                  <button onClick={() => voteWord(w, true)}
-                    style={{ width:24, height:24, borderRadius:6, border:'1px solid rgba(27,46,74,0.28)', background:'rgba(27,46,74,0.08)', color: NAVY, fontSize:11, cursor:'pointer', fontFamily:'inherit', fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center' }}>✓</button>
+                  <button onClick={() => voteWord(w, false)} disabled={votedInRanking.has(w.id)}
+                   style={{ width:24, height:24, borderRadius:6, border:'1px solid rgba(27,46,74,0.18)', background:'rgba(27,46,74,0.04)', color: votedInRanking.has(w.id) ? 'rgba(27,46,74,0.15)' : 'rgba(27,46,74,0.4)', fontSize:11, cursor: votedInRanking.has(w.id) ? 'not-allowed' : 'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+                 <button onClick={() => voteWord(w, true)} disabled={votedInRanking.has(w.id)}
+                   style={{ width:24, height:24, borderRadius:6, border:'1px solid rgba(27,46,74,0.28)', background:'rgba(27,46,74,0.08)', color: votedInRanking.has(w.id) ? 'rgba(27,46,74,0.2)' : NAVY, fontSize:11, cursor: votedInRanking.has(w.id) ? 'not-allowed' : 'pointer', fontFamily:'inherit', fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center' }}>✓</button>
                 </div>
               </div>
               <div style={{ background:'rgba(27,46,74,0.07)', borderRadius:4, height:2, overflow:'hidden', marginLeft:30 }}>
