@@ -81,6 +81,8 @@ export default function Top10WordPage() {
   useEffect(() => {
     setUsername(localStorage.getItem('top10word_username') || '')
     initPool()
+    const interval = setInterval(() => { if (section === 'top') loadRanking() }, 10000)
+    return () => clearInterval(interval)
     supabase.from('words').select('total_yes, total_no').then(({ data }: any) => {
       if (data) setTotalVotes(data.reduce((a: number, w: any) => a + w.total_yes + w.total_no, 0))
     })
