@@ -151,8 +151,8 @@ export default function Top10WordPage() {
       ...w,
       [field]: (w[field]||0)+1,
       pct: Math.round(((yes ? w.total_yes+1 : w.total_yes) / Math.max(w.total_yes + w.total_no + 1, 1)) * 1000) / 10
-    setTimeout(loadRanking, 800)
     } : w))
+    setTimeout(loadRanking, 800)
   }
 
   const handleSubmit = async () => {
