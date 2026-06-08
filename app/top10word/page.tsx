@@ -380,7 +380,6 @@ export default function Top10WordPage() {
                 {label}
               </button>
             ))}
-            ))}
           </div>
 
           {/* World */}
