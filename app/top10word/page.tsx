@@ -173,22 +173,18 @@ export default function Top10WordPage() {
      {section === 'vote' && (
        <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh' }}>
 
-         {/* Header */}
-         <div style={{ padding:'36px 28px 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-           <div style={{ fontSize:16, fontWeight:900, letterSpacing:-0.5, color: theme.text }}>
-             Top<span style={{ color: theme.accent }}>10</span>Word.com
-           </div>
-           <div style={{ fontSize:10, fontWeight:700, color: theme.accent, letterSpacing:2, opacity:0.6 }}>
-             {totalVotes.toLocaleString()} VOTES
-           </div>
-         </div>
-
-         {/* Claim */}
-         <div style={{ padding:'20px 28px 0', textAlign:'center' }}>
-           <div style={{ fontSize:13, fontWeight:600, color: theme.text, opacity:0.4, letterSpacing:0.5, lineHeight:1.6 }}>
-             Which is the world's most beautiful word?
-           </div>
-         </div>
+          {/* Header */}
+          <div style={{ padding:"36px 28px 0", textAlign:"center" }}>
+            <div style={{ fontSize:28, fontWeight:900, letterSpacing:-1, color: theme.text, fontFamily:"Georgia, serif", marginBottom:8 }}>
+              Top<span style={{ color: theme.accent }}>10</span>Word.com
+            </div>
+            <div style={{ fontSize:12, fontWeight:600, color: theme.text, opacity:0.4, letterSpacing:0.5, lineHeight:1.6, marginBottom:6 }}>
+              Which is the world's most beautiful word?
+            </div>
+            <div style={{ fontSize:10, fontWeight:700, color: theme.accent, letterSpacing:2, opacity:0.6 }}>
+              {totalVotes.toLocaleString()} VOTES WORLDWIDE
+            </div>
+          </div>
 
          {/* Word */}
          <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 28px' }}>
