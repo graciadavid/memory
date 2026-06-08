@@ -249,8 +249,6 @@ export default function Top10WordPage() {
                   </div>
                   <div style={{ fontSize:12, fontWeight:500, color:"rgba(28,20,16,0.4)", marginTop:4 }}>Leave your word in the world.</div>
                 </div>
-               </div>
-             </div>
 
              <input value={newWord} onChange={e => setNewWord(e.target.value.slice(0,24))} placeholder="Your word"
                maxLength={24}
