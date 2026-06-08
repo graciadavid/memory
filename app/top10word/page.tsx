@@ -221,7 +221,7 @@ export default function Top10WordPage() {
                <div style={{ fontSize:11, fontWeight:800, letterSpacing:3, color:'rgba(255,255,255,0.2)', marginBottom:20, textTransform:'uppercase' }}>
                  Top<span style={{ color: ws.accent }}>10</span>Word
                </div>
-               <div style={{ fontSize: currentWord.word.length > 11 ? 32 : currentWord.word.length > 7 ? 44 : 64, fontWeight:900, color:'#fff', letterSpacing:-1, lineHeight:1, marginBottom:20, textTransform:'uppercase', fontFamily: wordFont, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+               <div style={{ fontSize: currentWord.word.length > 11 ? 32 : currentWord.word.length > 7 ? 44 : 64, fontWeight:900, color:'#ffffff', letterSpacing:-1, lineHeight:1, marginBottom:20, textTransform:'uppercase', fontFamily: wordFont, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', textShadow:'0 2px 20px rgba(255,255,255,0.1)' }}>
                  {currentWord.word}
                </div>
                <div style={{ display:'flex', justifyContent:'center', gap:20, paddingTop:16, borderTop:`1px solid ${ws.border}` }}>
@@ -375,7 +375,7 @@ export default function Top10WordPage() {
          { id:'top', icon:'▲', label:'TOP 10' },
        ].map(n => (
          <button key={n.id} onClick={() => { setSection(n.id as Section); if (n.id === 'top') loadRanking() }}
-           style={{ padding:'10px 20px', borderRadius:14, border:'none', background: section === n.id ? 'rgba(200,150,12,0.2)' : 'transparent', color: section === n.id ? '#C8960C' : 'rgba(255,255,255,0.3)', fontSize:11, fontWeight:900, fontFamily:'inherit', cursor:'pointer', letterSpacing:2, transition:'all 0.2s', display:'flex', flexDirection:'column', alignItems:'center', gap:3 }}>
+           style={{ padding:'10px 20px', borderRadius:14, border:'none', background: section === n.id ? (n as any).activeBg : 'transparent', color: section === n.id ? (n as any).activeColor : 'rgba(255,255,255,0.25)', fontSize:11, fontWeight:900, fontFamily:'inherit', cursor:'pointer', letterSpacing:2, transition:'all 0.2s', display:'flex', flexDirection:'column', alignItems:'center', gap:3 }}>
            <span style={{ fontSize:16 }}>{n.icon}</span>
            <span>{n.label}</span>
          </button>
