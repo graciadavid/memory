@@ -242,11 +242,10 @@ export default function Top10WordPage() {
        <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', background:'#F5F0E8' }}>
          {proposeStep === 'input' ? (
            <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 28px 120px' }}>
-             <div style={{ marginBottom:40 }}>
-               <div style={{ fontSize:11, fontWeight:700, color:'#8B6914', letterSpacing:3, textTransform:'uppercase', marginBottom:12, opacity:0.7 }}>Propose a word</div>
-               <div style={{ fontSize:34, fontWeight:900, letterSpacing:-1.5, color:'#1C1410', lineHeight:1.15, marginBottom:12 }}>
-                 Leave your word<br/>in the world.
-               </div>
+                <div style={{ fontSize:28, fontWeight:900, letterSpacing:-1, color:'#1C1410', fontFamily:'Georgia, serif', marginBottom:6 }}>
+                  Top<span style={{ color:'#C8960C' }}>10</span>Word.com
+                </div>
+                <div style={{ fontSize:13, fontWeight:600, color:'rgba(28,20,16,0.4)', marginBottom:32, lineHeight:1.6 }}>Leave your word in the world.</div>
                <div style={{ fontSize:14, color:'rgba(28,20,16,0.4)', lineHeight:1.7, fontWeight:500 }}>
                  One word. Shared with the world.<br/>Does everyone love it?
                </div>
