@@ -491,13 +491,13 @@ export default function Top10WordPage() {
                 Top<span style={{ color: GOLD }}>10</span>Word.com
               </div>
             </div>
-            <div style={{ position:"absolute", bottom:80, left:16 }}>
+            <div style={{ position:"absolute", bottom:140, left:20 }}>
               <div style={{ fontSize:9, fontWeight:800, color: NAVY, letterSpacing:3, textTransform:"uppercase", opacity:0.7 }}>Men love</div>
               <div style={{ fontSize:26, fontWeight:900, fontFamily:"Georgia, serif", color: NAVY, textTransform:"uppercase", letterSpacing:-1 }}>
                 {rankingMen[0]?.word || 'Freedom'}
               </div>
             </div>
-            <div style={{ position:"absolute", bottom:80, right:16, textAlign:"right" }}>
+            <div style={{ position:"absolute", bottom:140, right:20, textAlign:"right" }}>
               <div style={{ fontSize:9, fontWeight:800, color:"#7B3B6E", letterSpacing:3, textTransform:"uppercase", opacity:0.7 }}>Women love</div>
               <div style={{ fontSize:26, fontWeight:900, fontFamily:"Georgia, serif", color:"#7B3B6E", textTransform:"uppercase", letterSpacing:-1 }}>
                 {rankingWomen[0]?.word || 'Love'}
@@ -505,7 +505,7 @@ export default function Top10WordPage() {
             </div>
           </div>
 
-          <div style={{ position:'absolute', bottom:0, left:0, right:0, padding:'20px 24px 36px', background:'linear-gradient(to top, #F5F0E8 70%, rgba(245,240,232,0) 100%)' }}>
+          <div style={{ position:'absolute', bottom:0, left:0, right:0, padding:'0 24px 28px', background:'linear-gradient(to top, #F5F0E8 55%, rgba(245,240,232,0.8) 75%, rgba(245,240,232,0) 100%)' }}>
             <div style={{ fontSize:13, fontWeight:700, color:'rgba(28,20,16,0.5)', textAlign:'center', marginBottom:14 }}>What are you?</div>
             <div style={{ display:'flex', gap:10, marginBottom:10 }}>
               <button onClick={() => { setGender('woman'); localStorage.setItem('top10word_gender','woman'); setShowGenderPrompt(false) }}
