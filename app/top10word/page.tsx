@@ -263,7 +263,7 @@ export default function Top10WordPage() {
                style={{ width:'100%', padding:'16px 20px', borderRadius:14, border: '1.5px solid rgba(28,20,16,0.18)', background:'#fff', color:'rgba(28,20,16,0.7)', fontSize:15, fontWeight:600, fontFamily:'inherit', outline:'none', boxSizing:'border-box', textAlign:'center', marginBottom:20, transition:'border 0.2s', boxShadow:'0 2px 20px rgba(28,20,16,0.04)' }} />
 
              <button onClick={handleSubmit} disabled={!newWord.trim() || !username.trim() || loading}
-               style={{ width:'100%', padding:'20px', borderRadius:16, border:'none', background: newWord.trim() && username.trim() ? 'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)' : 'rgba(28,20,16,0.06)', color: newWord.trim() && username.trim() ? '#1C1410' : 'rgba(28,20,16,0.25)', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor: newWord.trim() && username.trim() ? 'pointer' : 'not-allowed', letterSpacing:2, boxShadow: newWord.trim() && username.trim() ? '0 6px 28px rgba(200,150,12,0.25)' : 'none', transition:'all 0.3s' }}>
+               style={{ width:'100%', padding:'20px', borderRadius:16, border:'none', background:'linear-gradient(135deg, #8B6914, #C8960C, #FFD700, #C8960C, #8B6914)', color:'#1C1410', fontSize:14, fontWeight:900, fontFamily:'inherit', cursor: newWord.trim() && username.trim() ? 'pointer' : 'not-allowed', letterSpacing:2, boxShadow:'0 6px 28px rgba(200,150,12,0.25)', opacity: newWord.trim() && username.trim() ? 1 : 0.4, transition:'opacity 0.3s' }}>
                {loading ? 'RELEASING...' : 'RELEASE IT TO THE WORLD →'}
              </button>
            </div>
