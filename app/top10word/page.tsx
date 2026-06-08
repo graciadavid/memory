@@ -126,7 +126,7 @@ export default function Top10WordPage() {
     setSwipeDir(yes ? 'right' : 'left')
     const country = localStorage.getItem('top10word_country') || ''
     supabase.from('words').update({ [yes ? 'total_yes' : 'total_no']: (currentWord[yes ? 'total_yes' : 'total_no'] || 0) + 1 }).eq('id', currentWord.id)
-    supabase.from('votes').upsert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country })
+    await supabase.from('votes').upsert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country })
     if (!country) {
       try {
         const d = await (await fetch('https://ipapi.co/json/')).json()
@@ -145,7 +145,7 @@ export default function Top10WordPage() {
     const deviceId = getDeviceId()
     const field = yes ? 'total_yes' : 'total_no'
     supabase.from('words').update({ [field]: (word[field] || 0) + 1 }).eq('id', word.id)
-    supabase.from('votes').insert({ word_id: word.id, vote: yes, device_id: deviceId }).select()
+    await supabase.from('votes').upsert({ word_id: word.id, vote: yes, device_id: deviceId })
     setTotalVotes(v => v + 1)
     setRanking(prev => prev.map((w: any) => w.id === word.id ? {
       ...w,
