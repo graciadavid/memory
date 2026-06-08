@@ -346,7 +346,7 @@ export default function Top10WordPage() {
               <input value={searchWord} onChange={e => { setSearchWord(e.target.value); setSearchDone(false) }}
                 onKeyDown={e => e.key === 'Enter' && searchWordFn()}
                 placeholder="Search a word..."
-                style={{ flex:1, padding:'11px 14px', borderRadius:11, border:'1.5px solid rgba(27,46,74,0.15)', background:'#fff', color:'#1C1410', fontSize:13, fontWeight:600, fontFamily:'inherit', outline:'none', boxShadow:'0 2px 8px rgba(28,20,16,0.06)' }} />
+                style={{ flex:1, padding:'11px 14px', borderRadius:11, border:'1.5px solid rgba(27,46,74,0.15)', background:'#fff', color:'#1C1410', fontSize:16, fontWeight:600, fontFamily:'inherit', outline:'none', boxShadow:'0 2px 8px rgba(28,20,16,0.06)' }} />
               <button onClick={searchWordFn}
                 style={{ padding:'11px 16px', borderRadius:11, border:'none', background: NAVY, color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
                 Search
@@ -364,7 +364,13 @@ export default function Top10WordPage() {
                       <div style={{ height:'100%', borderRadius:4, background: NAVY_BAR, width:`${searchResult.pct}%`, transition:'width 1s ease' }} />
                     </div>
                     <div style={{ fontSize:11, color:'rgba(28,20,16,0.35)', marginTop:5 }}>{(searchResult.total_yes||0)+(searchResult.total_no||0)} votes</div>
-                  </div>
+                   <div style={{ display:'flex', gap:8, marginTop:10 }}>
+                     <button onClick={() => voteWord(searchResult, false)} disabled={votedInRanking.has(searchResult.id)}
+                       style={{ flex:1, padding:'8px', borderRadius:8, border:'1px solid rgba(27,46,74,0.18)', background:'rgba(27,46,74,0.04)', color: votedInRanking.has(searchResult.id) ? 'rgba(27,46,74,0.15)' : 'rgba(27,46,74,0.4)', fontSize:13, cursor: votedInRanking.has(searchResult.id) ? 'not-allowed' : 'pointer', fontFamily:'inherit' }}>✕</button>
+                     <button onClick={() => voteWord(searchResult, true)} disabled={votedInRanking.has(searchResult.id)}
+                       style={{ flex:1, padding:'8px', borderRadius:8, border:'1px solid rgba(27,46,74,0.28)', background:'rgba(27,46,74,0.08)', color: votedInRanking.has(searchResult.id) ? 'rgba(27,46,74,0.2)' : NAVY, fontSize:13, cursor: votedInRanking.has(searchResult.id) ? 'not-allowed' : 'pointer', fontFamily:'inherit', fontWeight:900 }}>✓</button>
+                   </div>
+                 </div>
                 ) : (
                   <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                     <div style={{ fontSize:13, color:'rgba(28,20,16,0.4)' }}>"{searchWord}" not in ranking yet.</div>
