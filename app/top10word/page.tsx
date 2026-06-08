@@ -174,20 +174,18 @@ export default function Top10WordPage() {
        <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh' }}>
 
          {/* Header */}
-         <div style={{ padding:'36px 28px 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-           <div style={{ fontSize:16, fontWeight:900, letterSpacing:-0.5, color: theme.text }}>
+         <div style={{ padding:"36px 28px 0", textAlign:"center" }}>
+           <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color: theme.text, fontFamily:"Georgia, serif", marginBottom:6 }}>
              Top<span style={{ color: theme.accent }}>10</span>Word.com
            </div>
-           <div style={{ fontSize:10, fontWeight:700, color: theme.accent, letterSpacing:2, opacity:0.6 }}>
-             {totalVotes.toLocaleString()} VOTES
+           <div style={{ fontSize:12, fontWeight:500, color: theme.text, opacity:0.4, marginTop:4 }}>
+             Which is the world's most beautiful word?
+           </div>
+           <div style={{ fontSize:10, fontWeight:700, color: theme.accent, letterSpacing:2, marginTop:6, opacity:0.7 }}>
+             {totalVotes.toLocaleString()} VOTES WORLDWIDE
            </div>
          </div>
 
-         {/* Claim */}
-         <div style={{ padding:'20px 28px 0', textAlign:'center' }}>
-           <div style={{ fontSize:13, fontWeight:600, color: theme.text, opacity:0.4, letterSpacing:0.5, lineHeight:1.6 }}>
-             Which is the world's most beautiful word?
-           </div>
          </div>
 
          {/* Word */}
@@ -246,12 +244,12 @@ export default function Top10WordPage() {
          {proposeStep === 'input' ? (
            <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 28px 120px' }}>
              <div style={{ marginBottom:40 }}>
-               <div style={{ fontSize:11, fontWeight:700, color:'#8B6914', letterSpacing:3, textTransform:'uppercase', marginBottom:12, opacity:0.7 }}>Propose a word</div>
-               <div style={{ fontSize:34, fontWeight:900, letterSpacing:-1.5, color:'#1C1410', lineHeight:1.15, marginBottom:12 }}>
-                 Leave your word<br/>in the world.
-               </div>
-               <div style={{ fontSize:14, color:'rgba(28,20,16,0.4)', lineHeight:1.7, fontWeight:500 }}>
-                 One word. Shared with the world.<br/>Does everyone love it?
+                <div style={{ textAlign:"center", marginBottom:28 }}>
+                  <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:"#1C1410", fontFamily:"Georgia, serif" }}>
+                    Top<span style={{ color:"#C8960C" }}>10</span>Word.com
+                  </div>
+                  <div style={{ fontSize:12, fontWeight:500, color:"rgba(28,20,16,0.4)", marginTop:4 }}>Leave your word in the world.</div>
+                </div>
                </div>
              </div>
 
@@ -294,12 +292,12 @@ export default function Top10WordPage() {
      {/* TOP 10 */}
      {section === 'top' && (
        <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:'100dvh', background:'#F5F0E8', padding:'48px 28px 120px' }}>
-         <div style={{ marginBottom:32 }}>
-           <div style={{ fontSize:11, fontWeight:700, color:'#8B6914', letterSpacing:3, textTransform:'uppercase', marginBottom:8, opacity:0.7 }}>Ranking</div>
-           <div style={{ fontSize:32, fontWeight:900, letterSpacing:-1.5, color:'#1C1410' }}>
-             Top<span style={{ color:'#C8960C' }}>10</span>Word.com
-           </div>
-         </div>
+          <div style={{ textAlign:"center", marginBottom:28 }}>
+            <div style={{ fontSize:26, fontWeight:900, letterSpacing:-1, color:"#1C1410", fontFamily:"Georgia, serif" }}>
+              Top<span style={{ color:"#C8960C" }}>10</span>Word.com
+            </div>
+            <div style={{ fontSize:12, fontWeight:500, color:"rgba(28,20,16,0.4)", marginTop:4 }}>World Ranking</div>
+          </div>
 
          <div style={{ display:'flex', gap:8, marginBottom:28 }}>
            {(['world','mine'] as const).map(t => (
