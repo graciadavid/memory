@@ -155,7 +155,7 @@ export default function Top10WordPage() {
         if (country) localStorage.setItem('top10word_country', country)
       }
     } catch {}
-    supabase.from('votes').upsert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country })
+    supabase.from('votes').insert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country }).select()
     setTotalVotes(v => v + 1)
     const nc = voteCount + 1
     setVoteCount(nc)
@@ -168,7 +168,7 @@ export default function Top10WordPage() {
     const deviceId = getDeviceId()
     const field = yes ? 'total_yes' : 'total_no'
     await supabase.from('words').update({ [field]: (word[field] || 0) + 1 }).eq('id', word.id)
-    await supabase.from('votes').upsert({ word_id: word.id, vote: yes, device_id: deviceId })
+    await supabase.from('votes').insert({ word_id: word.id, vote: yes, device_id: deviceId }).select()
     setTotalVotes(v => v + 1)
     setVotedInRanking(prev => new Set([...prev, word.id]))
     setRanking(prev => {
