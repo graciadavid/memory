@@ -74,7 +74,7 @@ export default function Top10WordPage() {
   useEffect(() => {
     setUsername(localStorage.getItem('top10word_username') || '')
     const savedGender = localStorage.getItem('top10word_gender') as 'man'|'woman'|'other'|null
-    if (savedGender) { setGender(savedGender) } else { setShowGenderPrompt(true) }
+    if (savedGender) { setGender(savedGender) } else { loadRanking().then(() => setShowGenderPrompt(true)) }
     initPool()
     supabase.from('words').select('total_yes, total_no').then(({ data }: any) => {
       if (data) setTotalVotes(data.reduce((a: number, w: any) => a + w.total_yes + w.total_no, 0))
