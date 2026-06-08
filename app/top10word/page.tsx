@@ -305,19 +305,24 @@ export default function Top10WordPage() {
              </button>
            ))}
          </div>
-
-         {tab === 'world' && ranking.map((w, i) => {
-           const { theme: t, font: f } = getTheme(w.word)
            const isTop3 = i < 3
+           const NAVY = "#1B2E4A"
+           const NAVY_BAR = "#3A6EA5"
            return (
-             <div key={w.id} style={{ marginBottom: isTop3 ? 20 : 14, paddingBottom: isTop3 ? 20 : 14, borderBottom:'1.5px solid rgba(28,20,16,0.06)' }}>
-               <div style={{ display:'flex', alignItems:'baseline', gap:12, marginBottom:8 }}>
-                 <div style={{ fontSize: isTop3 ? 13 : 11, fontWeight:900, color: i===0 ? '#C8960C' : i===1 ? '#888' : i===2 ? '#A07040' : 'rgba(28,20,16,0.2)', width:24, flexShrink:0 }}>#{i+1}</div>
-                 <div style={{ fontSize: isTop3 ? 24 : 18, fontWeight:900, fontFamily: f, textTransform:'uppercase', letterSpacing: isTop3 ? 1 : 0.5, flex:1, color:'#1C1410', lineHeight:1 }}>{w.word}</div>
-                 <div style={{ fontSize: isTop3 ? 20 : 16, fontWeight:900, color: t.accent }}>{w.pct.toFixed(1)}%</div>
+             <div key={w.id} style={{ marginBottom: isTop3 ? 24 : 14, paddingBottom: isTop3 ? 24 : 14, borderBottom:"1px solid rgba(27,46,74,0.1)" }}>
+               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+                 <div style={{ fontSize:11, fontWeight:900, color: i===0 ? "#C8960C" : i===1 ? "#7A8FA6" : i===2 ? "#9AADBE" : "rgba(27,46,74,0.2)", width:22, flexShrink:0, fontFamily:"Georgia, serif" }}>{i+1}.</div>
+                 <div style={{ fontSize: isTop3 ? 19 : 15, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:"uppercase", letterSpacing:1, flex:1, color: NAVY, lineHeight:1 }}>{w.word}</div>
+                 <div style={{ display:"flex", alignItems:"center", gap:5 }}>
+                   <div style={{ fontSize: isTop3 ? 16 : 13, fontWeight:900, color: NAVY, minWidth:40, textAlign:"right" }}>{w.pct.toFixed(1)}%</div>
+                   <button onClick={async () => { const prev = currentWord; setCurrentWord(w); await new Promise(r => setTimeout(r,10)); handleVote(false); setTimeout(()=>setCurrentWord(prev),400) }}
+                     style={{ width:26, height:26, borderRadius:6, border:"1px solid rgba(27,46,74,0.2)", background:"rgba(27,46,74,0.05)", color:"rgba(27,46,74,0.45)", fontSize:11, cursor:"pointer", fontFamily:"inherit", display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+                   <button onClick={async () => { const prev = currentWord; setCurrentWord(w); await new Promise(r => setTimeout(r,10)); handleVote(true); setTimeout(()=>setCurrentWord(prev),400) }}
+                     style={{ width:26, height:26, borderRadius:6, border:"1px solid rgba(27,46,74,0.3)", background:"rgba(27,46,74,0.08)", color: NAVY, fontSize:11, cursor:"pointer", fontFamily:"inherit", fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center" }}>✓</button>
+                 </div>
                </div>
-               <div style={{ background:'rgba(28,20,16,0.06)', borderRadius:4, height: isTop3 ? 4 : 3, overflow:'hidden', marginLeft:36 }}>
-                 <div style={{ height:'100%', borderRadius:4, background: t.bar, width:`${w.pct}%`, transition:'width 1.2s ease' }} />
+               <div style={{ background:"rgba(27,46,74,0.07)", borderRadius:4, height: isTop3 ? 4 : 2, overflow:"hidden", marginLeft:30 }}>
+                 <div style={{ height:"100%", borderRadius:4, background: NAVY_BAR, width:`${w.pct}%`, transition:"width 1.5s ease" }} />
                </div>
              </div>
            )
