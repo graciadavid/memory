@@ -191,6 +191,7 @@ export default function Top10WordPage() {
             </div>
           </div>
 
+              <div style={{
                textAlign:'center',
                width:'100%',
                transform: swipeDir === 'right' ? 'translateX(150%) rotate(12deg)' : swipeDir === 'left' ? 'translateX(-150%) rotate(-12deg)' : 'translateX(0)',
