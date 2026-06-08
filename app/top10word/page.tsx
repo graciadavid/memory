@@ -154,22 +154,22 @@ export default function Top10WordPage() {
   }
 
   const voteWord = async (word: any, yes: boolean) => {
-   if (votedInRanking.has(word.id)) return
-   const deviceId = getDeviceId()
-   const field = yes ? 'total_yes' : 'total_no'
-   supabase.from('words').update({ [field]: (word[field] || 0) + 1 }).eq('id', word.id)
-   supabase.from('votes').upsert({ word_id: word.id, vote: yes, device_id: deviceId })
-   setTotalVotes(v => v + 1)
-   setVotedInRanking(prev => new Set([...prev, word.id]))
-   setRanking(prev => {
-     const updated = prev.map((w: any) => w.id === word.id ? {
-       ...w,
-       [field]: (w[field]||0)+1,
-       pct: Math.round(((yes ? w.total_yes+1 : w.total_yes) / Math.max(w.total_yes + w.total_no + 1, 1)) * 1000) / 10
-     } : w)
-     return updated.sort((a: any, b: any) => b.pct - a.pct)
-   })
- }
+    if (votedInRanking.has(word.id)) return
+    const deviceId = getDeviceId()
+    const field = yes ? 'total_yes' : 'total_no'
+    await supabase.from('words').update({ [field]: (word[field] || 0) + 1 }).eq('id', word.id)
+    await supabase.from('votes').upsert({ word_id: word.id, vote: yes, device_id: deviceId })
+    setTotalVotes(v => v + 1)
+    setVotedInRanking(prev => new Set([...prev, word.id]))
+    setRanking(prev => {
+      const updated = prev.map((w: any) => w.id === word.id ? {
+        ...w, [field]: (w[field]||0)+1,
+        pct: Math.round(((yes ? w.total_yes+1 : w.total_yes) / Math.max(w.total_yes + w.total_no + 1, 1)) * 1000) / 10
+      } : w)
+      return updated.sort((a: any, b: any) => b.pct - a.pct)
+    })
+    setTimeout(loadRanking, 800)
+  }
 
   const handleSubmit = async () => {
     if (!newWord.trim() || !username.trim()) return
