@@ -144,13 +144,14 @@ export default function Top10WordPage() {
   const voteWord = async (word: any, yes: boolean) => {
     const deviceId = getDeviceId()
     const field = yes ? 'total_yes' : 'total_no'
-    supabase.from('words').update({ [field]: (word[field] || 0) + 1 }).eq('id', word.id)
+    await supabase.from('words').update({ [field]: (word[field] || 0) + 1 }).eq('id', word.id)
     await supabase.from('votes').upsert({ word_id: word.id, vote: yes, device_id: deviceId })
     setTotalVotes(v => v + 1)
     setRanking(prev => prev.map((w: any) => w.id === word.id ? {
       ...w,
       [field]: (w[field]||0)+1,
       pct: Math.round(((yes ? w.total_yes+1 : w.total_yes) / Math.max(w.total_yes + w.total_no + 1, 1)) * 1000) / 10
+    setTimeout(loadRanking, 800)
     } : w))
   }
 
