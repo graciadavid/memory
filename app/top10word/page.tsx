@@ -471,7 +471,7 @@ export default function Top10WordPage() {
 
       {/* Gender prompt */}
       {showGenderPrompt && (
-        <div style={{ position:'fixed', inset:0, background:'#F5F0E8', zIndex:2000, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 28px' }}>
+        <div style={{ position:'fixed', inset:0, background:'#F5F0E8', zIndex:2000, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0' }}>
           <div style={{ textAlign:'center', marginBottom:32 }}>
           <div style={{ position:"relative", width:"100%", marginBottom:28, borderRadius:20, overflow:"hidden" }}>
             <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/home.png" style={{ width:"100%", display:"block", borderRadius:20 }} />
@@ -495,7 +495,7 @@ export default function Top10WordPage() {
             </div>
           </div>
 
-          <div style={{ width:'100%', marginBottom:10 }}>
+          <div style={{ position:'absolute', bottom:0, left:0, right:0, padding:'24px 24px 40px', background:'linear-gradient(to top, rgba(245,240,232,0.97) 60%, rgba(245,240,232,0) 100%)' }}>
             <div style={{ fontSize:13, fontWeight:700, color:'rgba(28,20,16,0.5)', textAlign:'center', marginBottom:14 }}>What are you?</div>
             <div style={{ display:'flex', gap:10, marginBottom:10 }}>
               <button onClick={() => { setGender('woman'); localStorage.setItem('top10word_gender','woman'); setShowGenderPrompt(false) }}
