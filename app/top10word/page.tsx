@@ -196,8 +196,8 @@ export default function Top10WordPage() {
       const base = data.filter((w: any) => w.total_yes + w.total_no >= 5)
       const world = base.map((w: any) => ({ ...w, pct: Math.round((w.total_yes / Math.max(w.total_yes + w.total_no, 1)) * 1000) / 10 })).sort((a: any, b: any) => b.pct - a.pct).slice(0, 50)
       setRanking(world)
-      const women = base.filter((w:any) => w.yes_woman > 3).map((w: any) => ({ ...w, pct: Math.round((w.yes_woman / Math.max(w.yes_woman + w.yes_man, 1)) * 1000) / 10 })).sort((a: any, b: any) => b.pct - a.pct).slice(0, 50)
-      const men = base.filter((w:any) => w.yes_man > 3).map((w: any) => ({ ...w, pct: Math.round((w.yes_man / Math.max(w.yes_man + w.yes_woman, 1)) * 1000) / 10 })).sort((a: any, b: any) => b.pct - a.pct).slice(0, 50)
+      const women = base.filter((w:any) => (w.yes_woman||0) > 0).map((w: any) => ({ ...w, pct: Math.round(((w.yes_woman||0) / Math.max((w.yes_woman||0) + (w.yes_man||0), 1)) * 1000) / 10 })).sort((a: any, b: any) => b.yes_woman - a.yes_woman).slice(0, 50)
+      const men = base.filter((w:any) => (w.yes_man||0) > 0).map((w: any) => ({ ...w, pct: Math.round(((w.yes_man||0) / Math.max((w.yes_man||0) + (w.yes_woman||0), 1)) * 1000) / 10 })).sort((a: any, b: any) => b.yes_man - a.yes_man).slice(0, 50)
       setRankingWomen(women)
       setRankingMen(men)
     }
@@ -471,7 +471,7 @@ export default function Top10WordPage() {
 
       {/* Gender prompt */}
       {showGenderPrompt && (
-        <div style={{ position:'fixed', inset:0, background:'#F5F0E8', zIndex:2000, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0' }}>
+        <div style={{ position:'fixed', inset:0, background:'#F5F0E8', zIndex:2000, display:'flex', flexDirection:'column' }}>
           <div style={{ textAlign:'center', marginBottom:32 }}>
           <div style={{ position:"relative", width:"100%", marginBottom:28, borderRadius:20, overflow:"hidden" }}>
             <img src="https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage/home.png" style={{ width:"100%", display:"block", borderRadius:20 }} />
