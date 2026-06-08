@@ -410,10 +410,10 @@ export default function Top10WordPage() {
               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:5 }}>
                 <div style={{ fontSize:11, fontWeight:900, color: i===0 ? '#C8960C' : i===1 ? '#7A8FA6' : i===2 ? '#9AADBE' : 'rgba(212,100,160,0.4)', width:22, flexShrink:0 }}>{i+1}.</div>
                 <div style={{ fontSize: i < 3 ? 16 : 13, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:'uppercase', letterSpacing:0.5, flex:1, color:'#4A1A35' }}>{w.word}</div>
-                <div style={{ fontSize:12, fontWeight:900, color:'#A855A0', minWidth:36, textAlign:'right' }}>{w.yes_woman} loves</div>
+                <div style={{ fontSize:12, fontWeight:900, color:'#A855A0', minWidth:36, textAlign:'right' }}>{w.pct.toFixed(1)}%</div>
               </div>
               <div style={{ background:'rgba(212,100,160,0.1)', borderRadius:4, height:2, overflow:'hidden', marginLeft:30 }}>
-                <div style={{ height:'100%', borderRadius:4, background:'linear-gradient(90deg, #A855A0, #D4A0C8)', width:`${Math.min((w.yes_woman/Math.max(...rankingWomen.map((x:any)=>x.yes_woman)))*100,100)}%`, transition:'width 1.5s ease' }} />
+                <div style={{ height:'100%', borderRadius:4, background:'linear-gradient(90deg, #A855A0, #D4A0C8)', width:`${w.pct}%`, transition:'width 1.5s ease' }} />
               </div>
             </div>
           ))}
@@ -424,10 +424,10 @@ export default function Top10WordPage() {
               <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:5 }}>
                 <div style={{ fontSize:11, fontWeight:900, color: i===0 ? '#C8960C' : i===1 ? '#7A8FA6' : i===2 ? '#9AADBE' : 'rgba(27,46,74,0.25)', width:22, flexShrink:0 }}>{i+1}.</div>
                 <div style={{ fontSize: i < 3 ? 16 : 13, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:'uppercase', letterSpacing:0.5, flex:1, color: NAVY }}>{w.word}</div>
-                <div style={{ fontSize:12, fontWeight:900, color: NAVY, minWidth:36, textAlign:'right' }}>{w.yes_man} loves</div>
+                <div style={{ fontSize:12, fontWeight:900, color: NAVY, minWidth:36, textAlign:'right' }}>{w.pct.toFixed(1)}%</div>
               </div>
               <div style={{ background:'rgba(27,46,74,0.07)', borderRadius:4, height:2, overflow:'hidden', marginLeft:30 }}>
-                <div style={{ height:'100%', borderRadius:4, background:`linear-gradient(90deg, ${NAVY_BAR}, ${NAVY})`, width:`${Math.min((w.yes_man/Math.max(...rankingMen.map((x:any)=>x.yes_man)))*100,100)}%`, transition:'width 1.5s ease' }} />
+                <div style={{ height:'100%', borderRadius:4, background:`linear-gradient(90deg, ${NAVY_BAR}, ${NAVY})`, width:`${w.pct}%`, transition:'width 1.5s ease' }} />
               </div>
             </div>
           ))}
