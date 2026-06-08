@@ -38,17 +38,7 @@ function getTheme(word: string) {
   }
 }
 
-const BLACKLIST = [
-  'fuck','shit','bitch','cunt','dick','cock','pussy','ass','arse',
-  'porn','sex','rape','kill','murder','dead','death','blood','gore',
-  'nigger','nigga','faggot','retard','spic','chink','kike','dyke',
-  'hitler','nazi','fascist','kkk','jihad','isis','hamas','terror',
-  'suicide','selfharm','cocaine','heroin','meth','crack','fentanyl',
-  'pedophile','incest','trafficking','prostitute',
-  'trump','biden','obama','putin','politics','idiot','stupid','moron',
-  'hate','racist','sexist','violence','violation','abuse','assault',
-  'weapon','bomb','gun','knife','stab','shoot','explode'
-]
+const BLACKLIST = ['fuck','shit','bitch','cunt','dick','cock','pussy','porn','rape','kill','murder','nigger','nigga','faggot','retard','hitler','nazi','jihad','isis','suicide','cocaine','heroin','pedophile']
 
 const NAVY = '#1B2E4A'
 const NAVY_BAR = '#3A6EA5'
@@ -73,7 +63,6 @@ export default function Top10WordPage() {
   const [voteCount, setVoteCount] = useState(0)
   const [showProposePrompt, setShowProposePrompt] = useState(false)
   const [totalVotes, setTotalVotes] = useState(0)
-  const [votedInRanking, setVotedInRanking] = useState<Set<string>>(new Set())
   const [searchWord, setSearchWord] = useState('')
   const [searchResult, setSearchResult] = useState<any>(null)
   const [searchDone, setSearchDone] = useState(false)
@@ -81,8 +70,6 @@ export default function Top10WordPage() {
   useEffect(() => {
     setUsername(localStorage.getItem('top10word_username') || '')
     initPool()
-    const interval = setInterval(() => { if (section === 'top') loadRanking() }, 10000)
-    return () => clearInterval(interval)
     supabase.from('words').select('total_yes, total_no').then(({ data }: any) => {
       if (data) setTotalVotes(data.reduce((a: number, w: any) => a + w.total_yes + w.total_no, 0))
     })
@@ -113,16 +100,8 @@ export default function Top10WordPage() {
         return
       }
     }
-    // First word always Love for new users
-   const loveWord = data.find((w: any) => w.word.toLowerCase() === 'love')
-   if (loveWord && !votedIds.includes(loveWord.id)) {
-     const rest = shuffled.filter((w: any) => w.id !== loveWord.id)
-     setPool(rest)
-     applyCard(loveWord)
-   } else {
-     setPool(shuffled.slice(1))
-     applyCard(shuffled[0])
-   }
+    setPool(shuffled.slice(1))
+    applyCard(shuffled[0])
   }
 
   const applyCard = (word: any) => {
@@ -155,7 +134,7 @@ export default function Top10WordPage() {
         if (country) localStorage.setItem('top10word_country', country)
       }
     } catch {}
-    supabase.from('votes').insert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country }).select().then(({data,error}:any) => { if(error) alert('Vote error: ' + JSON.stringify(error)); else console.log('voted ok', data) })
+    supabase.from('votes').upsert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country })
     setTotalVotes(v => v + 1)
     const nc = voteCount + 1
     setVoteCount(nc)
@@ -164,28 +143,16 @@ export default function Top10WordPage() {
   }
 
   const voteWord = async (word: any, yes: boolean) => {
-    if (votedInRanking.has(word.id)) return
     const deviceId = getDeviceId()
     const field = yes ? 'total_yes' : 'total_no'
-    await supabase.from('words').update({ [field]: (word[field] || 0) + 1 }).eq('id', word.id)
-    await supabase.from('votes').insert({ word_id: word.id, vote: yes, device_id: deviceId }).select()
+    supabase.from('words').update({ [field]: (word[field] || 0) + 1 }).eq('id', word.id)
+    supabase.from('votes').upsert({ word_id: word.id, vote: yes, device_id: deviceId })
     setTotalVotes(v => v + 1)
-    setVotedInRanking(prev => new Set([...prev, word.id]))
-    setRanking(prev => {
-      const updated = prev.map((w: any) => w.id === word.id ? {
-        ...w, [field]: (w[field]||0)+1,
-        pct: Math.round(((yes ? w.total_yes+1 : w.total_yes) / Math.max(w.total_yes + w.total_no + 1, 1)) * 1000) / 10
-      } : w)
-      return updated.sort((a: any, b: any) => b.pct - a.pct)
-    })
-    setTimeout(loadRanking, 800)
-    // Update searchResult if it's the same word
-    setSearchResult((prev: any) => {
-      if (!prev || prev.id !== word.id) return prev
-      const updated = { ...prev, [field]: (prev[field]||0)+1 }
-      updated.pct = Math.round((updated.total_yes / Math.max(updated.total_yes + updated.total_no, 1)) * 1000) / 10
-      return updated
-    })
+    setRanking(prev => prev.map((w: any) => w.id === word.id ? {
+      ...w,
+      [field]: (w[field]||0)+1,
+      pct: Math.round(((yes ? w.total_yes+1 : w.total_yes) / Math.max(w.total_yes + w.total_no + 1, 1)) * 1000) / 10
+    } : w))
   }
 
   const handleSubmit = async () => {
@@ -363,7 +330,7 @@ export default function Top10WordPage() {
               <input value={searchWord} onChange={e => { setSearchWord(e.target.value); setSearchDone(false) }}
                 onKeyDown={e => e.key === 'Enter' && searchWordFn()}
                 placeholder="Search a word..."
-                style={{ flex:1, padding:'11px 14px', borderRadius:11, border:'1.5px solid rgba(27,46,74,0.15)', background:'#fff', color:'#1C1410', fontSize:16, fontWeight:600, fontFamily:'inherit', outline:'none', boxShadow:'0 2px 8px rgba(28,20,16,0.06)' }} />
+                style={{ flex:1, padding:'11px 14px', borderRadius:11, border:'1.5px solid rgba(27,46,74,0.15)', background:'#fff', color:'#1C1410', fontSize:13, fontWeight:600, fontFamily:'inherit', outline:'none', boxShadow:'0 2px 8px rgba(28,20,16,0.06)' }} />
               <button onClick={searchWordFn}
                 style={{ padding:'11px 16px', borderRadius:11, border:'none', background: NAVY, color:'#fff', fontSize:12, fontWeight:900, fontFamily:'inherit', cursor:'pointer' }}>
                 Search
@@ -381,13 +348,7 @@ export default function Top10WordPage() {
                       <div style={{ height:'100%', borderRadius:4, background: NAVY_BAR, width:`${searchResult.pct}%`, transition:'width 1s ease' }} />
                     </div>
                     <div style={{ fontSize:11, color:'rgba(28,20,16,0.35)', marginTop:5 }}>{(searchResult.total_yes||0)+(searchResult.total_no||0)} votes</div>
-                   <div style={{ display:'flex', gap:8, marginTop:10 }}>
-                     <button onClick={() => voteWord(searchResult, false)} disabled={votedInRanking.has(searchResult.id)}
-                       style={{ flex:1, padding:'8px', borderRadius:8, border:'1px solid rgba(27,46,74,0.18)', background:'rgba(27,46,74,0.04)', color: votedInRanking.has(searchResult.id) ? 'rgba(27,46,74,0.15)' : 'rgba(27,46,74,0.4)', fontSize:13, cursor: votedInRanking.has(searchResult.id) ? 'not-allowed' : 'pointer', fontFamily:'inherit' }}>✕</button>
-                     <button onClick={() => voteWord(searchResult, true)} disabled={votedInRanking.has(searchResult.id)}
-                       style={{ flex:1, padding:'8px', borderRadius:8, border:'1px solid rgba(27,46,74,0.28)', background:'rgba(27,46,74,0.08)', color: votedInRanking.has(searchResult.id) ? 'rgba(27,46,74,0.2)' : NAVY, fontSize:13, cursor: votedInRanking.has(searchResult.id) ? 'not-allowed' : 'pointer', fontFamily:'inherit', fontWeight:900 }}>✓</button>
-                   </div>
-                 </div>
+                  </div>
                 ) : (
                   <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                     <div style={{ fontSize:13, color:'rgba(28,20,16,0.4)' }}>"{searchWord}" not in ranking yet.</div>
@@ -419,10 +380,10 @@ export default function Top10WordPage() {
                 <div style={{ fontSize: i < 3 ? 16 : 13, fontWeight:800, fontFamily:"'Helvetica Neue', sans-serif", textTransform:'uppercase', letterSpacing:0.5, flex:1, color: NAVY, lineHeight:1 }}>{w.word}</div>
                 <div style={{ display:'flex', alignItems:'center', gap:5 }}>
                   <div style={{ fontSize:12, fontWeight:900, color: NAVY, minWidth:36, textAlign:'right' }}>{w.pct.toFixed(1)}%</div>
-                  <button onClick={() => voteWord(w, false)} disabled={votedInRanking.has(w.id)}
-                   style={{ width:24, height:24, borderRadius:6, border:'1px solid rgba(27,46,74,0.18)', background:'rgba(27,46,74,0.04)', color: votedInRanking.has(w.id) ? 'rgba(27,46,74,0.15)' : 'rgba(27,46,74,0.4)', fontSize:11, cursor: votedInRanking.has(w.id) ? 'not-allowed' : 'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
-                 <button onClick={() => voteWord(w, true)} disabled={votedInRanking.has(w.id)}
-                   style={{ width:24, height:24, borderRadius:6, border:'1px solid rgba(27,46,74,0.28)', background:'rgba(27,46,74,0.08)', color: votedInRanking.has(w.id) ? 'rgba(27,46,74,0.2)' : NAVY, fontSize:11, cursor: votedInRanking.has(w.id) ? 'not-allowed' : 'pointer', fontFamily:'inherit', fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center' }}>✓</button>
+                  <button onClick={() => voteWord(w, false)}
+                    style={{ width:24, height:24, borderRadius:6, border:'1px solid rgba(27,46,74,0.18)', background:'rgba(27,46,74,0.04)', color:'rgba(27,46,74,0.4)', fontSize:11, cursor:'pointer', fontFamily:'inherit', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
+                  <button onClick={() => voteWord(w, true)}
+                    style={{ width:24, height:24, borderRadius:6, border:'1px solid rgba(27,46,74,0.28)', background:'rgba(27,46,74,0.08)', color: NAVY, fontSize:11, cursor:'pointer', fontFamily:'inherit', fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center' }}>✓</button>
                 </div>
               </div>
               <div style={{ background:'rgba(27,46,74,0.07)', borderRadius:4, height:2, overflow:'hidden', marginLeft:30 }}>
