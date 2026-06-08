@@ -124,17 +124,16 @@ export default function Top10WordPage() {
     const deviceId = getDeviceId()
     setVoted(true)
     setSwipeDir(yes ? 'right' : 'left')
+    const country = localStorage.getItem('top10word_country') || ''
     supabase.from('words').update({ [yes ? 'total_yes' : 'total_no']: (currentWord[yes ? 'total_yes' : 'total_no'] || 0) + 1 }).eq('id', currentWord.id)
-    let country = ''
-    try {
-      country = localStorage.getItem('top10word_country') || ''
-      if (!country) {
+    supabase.from('votes').insert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country })
+    if (!country) {
+      try {
         const d = await (await fetch('https://ipapi.co/json/')).json()
-        country = d.country_code || ''
-        if (country) localStorage.setItem('top10word_country', country)
-      }
-    } catch {}
-    supabase.from('votes').insert({ word_id: currentWord.id, vote: yes, device_id: deviceId, country }).select()
+        const c = d.country_code || ''
+        if (c) localStorage.setItem('top10word_country', c)
+      } catch {}
+    }
     setTotalVotes(v => v + 1)
     const nc = voteCount + 1
     setVoteCount(nc)
