@@ -38,7 +38,17 @@ function getTheme(word: string) {
   }
 }
 
-const BLACKLIST = ['fuck','shit','bitch','cunt','dick','cock','pussy','porn','rape','kill','murder','nigger','nigga','faggot','retard','hitler','nazi','jihad','isis','suicide','cocaine','heroin','pedophile']
+const BLACKLIST = [
+  'fuck','shit','bitch','cunt','dick','cock','pussy','ass','arse',
+  'porn','sex','rape','kill','murder','dead','death','blood','gore',
+  'nigger','nigga','faggot','retard','spic','chink','kike','dyke',
+  'hitler','nazi','fascist','kkk','jihad','isis','hamas','terror',
+  'suicide','selfharm','cocaine','heroin','meth','crack','fentanyl',
+  'pedophile','incest','trafficking','prostitute',
+  'trump','biden','obama','putin','politics','idiot','stupid','moron',
+  'hate','racist','sexist','violence','violation','abuse','assault',
+  'weapon','bomb','gun','knife','stab','shoot','explode'
+]
 
 const NAVY = '#1B2E4A'
 const NAVY_BAR = '#3A6EA5'
