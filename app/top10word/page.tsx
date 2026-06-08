@@ -305,6 +305,7 @@ export default function Top10WordPage() {
              </button>
            ))}
          </div>
+         {tab === 'world' && ranking.map((w, i) => {
            const isTop3 = i < 3
            const NAVY = "#1B2E4A"
            const NAVY_BAR = "#3A6EA5"
