@@ -186,7 +186,6 @@ export default function Top10WordPage() {
            </div>
          </div>
 
-         </div>
 
          {/* Word */}
          <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 28px' }}>
