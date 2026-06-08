@@ -226,6 +226,7 @@ export default function Top10WordPage() {
              </div>
            )}
 
+          </div>
          {/* Buttons */}
          <div style={{ padding:'0 28px 140px', display:'flex', gap:14 }}>
            <button onClick={() => handleVote(false)} disabled={voted}
