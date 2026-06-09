@@ -7,7 +7,6 @@ const ITEMS = [
   { href: '/discover', label: 'Discover', icon: `${BASE}/seed.png` },
   { href: '/brain-age-test', label: 'Brain Test', icon: `${BASE}/target.png` },
   { href: '/training', label: 'Training', icon: `${BASE}/brain-logo.webp` },
-  { href: '/championship', label: 'Championship', icon: `${BASE}/winner.png` },
   
   { href: '/more', label: 'More', icon: null },
 ]
