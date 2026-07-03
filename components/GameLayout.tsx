@@ -1,8 +1,44 @@
 'use client'
+import { useEffect, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { GAMES_CATALOG, ONBOARDING_TOUR } from '@/lib/gamesCatalog'
 
 const GREEN = '#2E7D32'
 const GOLD = '#C8960C'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
+
+function useOnboardingTour(currentPath: string) {
+  const router = useRouter()
+  const [suggestion, setSuggestion] = useState<{ title: string; href: string } | null>(null)
+
+  useEffect(() => {
+    if (!currentPath) return
+    if (!localStorage.getItem('memgenius_ever_played')) {
+      localStorage.setItem('memgenius_ever_played', 'true')
+      localStorage.setItem('memgenius_tour_active', 'true')
+    }
+    if (localStorage.getItem('memgenius_tour_active') !== 'true') return
+
+    const visited = JSON.parse(localStorage.getItem('memgenius_tour_visited') || '[]') as string[]
+    if (!visited.includes(currentPath)) visited.push(currentPath)
+    localStorage.setItem('memgenius_tour_visited', JSON.stringify(visited))
+
+    const nextHref = ONBOARDING_TOUR.find(href => !visited.includes(href))
+    if (!nextHref) {
+      localStorage.setItem('memgenius_tour_active', 'false')
+      setSuggestion(null)
+      return
+    }
+    const game = GAMES_CATALOG.find(g => g.href === nextHref)
+    setSuggestion(game ? { title: game.title, href: game.href } : null)
+  }, [currentPath])
+
+  return {
+    suggestion,
+    dismiss: () => { localStorage.setItem('memgenius_tour_active', 'false'); setSuggestion(null) },
+    accept: () => { if (suggestion) router.push(suggestion.href) },
+  }
+}
 
 interface TopPlayer {
   name: string
@@ -84,9 +120,30 @@ export function GameRulesScreen({ icon, title, subtitle, worldRecord, myBest, to
 }
 
 export function GameResultScreen({ result, resultColor, background, worldRank, hasProfile, onBack, onPlayAgain, children }: GameLayoutResultProps) {
+  const pathname = usePathname() || ''
+  const currentGame = GAMES_CATALOG.find(g => g.href === pathname)
+  const { suggestion, dismiss, accept } = useOnboardingTour(pathname)
+
   return (
     <main style={{ minHeight:'100dvh', background, fontFamily:'var(--font-nunito),sans-serif', maxWidth:430, margin:'0 auto', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'32px 24px 100px', gap:20 }}>
-      
+
+      {suggestion && currentGame && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
+          <div style={{ background:'#1A1A1A', borderRadius:24, padding:'28px 24px', width:'100%', maxWidth:360, border:'1px solid rgba(255,255,255,0.1)', textAlign:'center' }}>
+            <img src={`${BASE}/brain-logo.webp`} style={{ width:56, height:56, objectFit:'contain', marginBottom:14 }} />
+            <div style={{ fontSize:16, fontWeight:800, color:'#fff', marginBottom:22, lineHeight:1.5 }}>
+              You played <span style={{ color:GOLD }}>{currentGame.title}</span>. Try <span style={{ color:GOLD }}>{suggestion.title}</span> now →
+            </div>
+            <button onClick={accept} style={{ width:'100%', padding:'16px', borderRadius:14, border:'none', background:GREEN, color:'#fff', fontSize:15, fontWeight:900, fontFamily:'inherit', cursor:'pointer', boxShadow:'0 5px 0 #1B5E20', marginBottom:10 }}>
+              Try {suggestion.title} →
+            </button>
+            <button onClick={dismiss} style={{ width:'100%', padding:'12px', borderRadius:14, border:'none', background:'transparent', color:'rgba(255,255,255,0.4)', fontSize:13, fontWeight:800, fontFamily:'inherit', cursor:'pointer' }}>
+              Maybe later
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Result */}
       <div style={{ textAlign:'center' }}>
         <div style={{ fontSize:80, fontWeight:900, color:resultColor, letterSpacing:-2, lineHeight:1 }}>{result}</div>
