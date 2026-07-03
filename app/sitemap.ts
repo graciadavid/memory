@@ -7,7 +7,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
  const pages = [
    { url: '/', priority: 1.0, changeFreq: 'daily' },
    { url: '/training', priority: 0.9, changeFreq: 'weekly' },
-   { url: '/championship', priority: 0.9, changeFreq: 'daily' },
    { url: '/profile', priority: 0.8, changeFreq: 'weekly' },
    { url: '/rankings', priority: 0.8, changeFreq: 'daily' },
    { url: '/more', priority: 0.6, changeFreq: 'monthly' },
