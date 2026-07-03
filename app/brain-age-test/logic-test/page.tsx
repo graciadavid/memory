@@ -15,6 +15,16 @@ function getPercentile(attempts: number): number {
   return map[attempts] || 8
 }
 
+// Failing to crack the code in 6 tries always scores below any successful solve (worst solve = 30),
+// with partial credit based on how close the best guess got.
+function getFailPercentile(attempts: { guess: number[], result: { exact: number, color: number } }[]): number {
+  const bestExact = Math.max(0, ...attempts.map(a => a.result.exact))
+  if (bestExact >= 3) return 22
+  if (bestExact >= 2) return 15
+  if (bestExact >= 1) return 8
+  return 3
+}
+
 function generateCode(): number[] {
  return Array.from({ length: CODE_LENGTH }, () => Math.floor(Math.random() * COLORS.length))
 }
@@ -89,7 +99,7 @@ export default function LogicTestPage() {
      }
    } else if (newAttempts.length >= MAX_ATTEMPTS) {
      setWon(false)
-     setPercentile(50)
+     setPercentile(getFailPercentile(newAttempts))
      setPhase('result')
    }
  }

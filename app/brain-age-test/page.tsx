@@ -252,7 +252,7 @@ export default function BrainAgeTestPage() {
 
   const handleStart = () => {
     if (!name.trim()) { setError('Enter your name'); return }
-    if (!isLoggedIn && !birthYear) { setError('Select your birth year'); return }
+    if (!birthYear) { setError('Select your birth year'); return }
     localStorage.setItem('braintest_session', JSON.stringify({ name: name.trim(), birthYear, results: {}, step: 'tests' }))
     setStep('tests')
   }
@@ -263,13 +263,17 @@ export default function BrainAgeTestPage() {
     const avg = (results.agility || 0) * 0.35 + (results.memory || 0) * 0.35 + (results.logic || 0) * 0.15 + (results.knowledge || 0) * 0.15
     const yearInt = parseInt(birthYear) || 1985
     const age = new Date().getFullYear() - yearInt
-    if (avg >= 90) return Math.max(5, age - 12)
-    if (avg >= 75) return Math.max(5, age - 7)
-    if (avg >= 60) return Math.max(5, age - 3)
-    if (avg >= 40) return age
-    if (avg >= 25) return age + 4
-    if (avg >= 10) return age + 8
-    return age + 13
+    // Offsets scale with age (calibrated to match the original fixed-year scale at age 40) so
+    // results stay biologically plausible for teenagers and seniors instead of just +/- flat years.
+    let factor = 1
+    if (avg >= 90) factor = 0.70
+    else if (avg >= 75) factor = 0.825
+    else if (avg >= 60) factor = 0.925
+    else if (avg >= 40) factor = 1
+    else if (avg >= 25) factor = 1.10
+    else if (avg >= 10) factor = 1.20
+    else factor = 1.325
+    return Math.max(5, Math.round(age * factor))
   }
 
   const fireConfetti = () => {
@@ -443,16 +447,14 @@ export default function BrainAgeTestPage() {
       <input value={name} onChange={e => { setName(e.target.value); setError('') }} placeholder="Your name" maxLength={20}
         style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color:'#fff', fontSize:16, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', marginBottom:10 }} />
 
-      {!isLoggedIn && (
-        <>
-          <select value={birthYear} onChange={e => { setBirthYear(e.target.value); setError('') }}
-            style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color: birthYear ? '#fff' : 'rgba(255,255,255,0.4)', fontSize:16, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', marginBottom:4, appearance:'none', cursor:'pointer' }}>
-            <option value="">Select your birth year</option>
-            {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-          </select>
-          <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700, marginBottom:20 }}>Your birth year becomes your secret login code</div>
-        </>
-      )}
+      <select value={birthYear} onChange={e => { setBirthYear(e.target.value); setError('') }}
+        style={{ width:'100%', padding:'14px', borderRadius:12, border:'1px solid rgba(255,255,255,0.12)', background:'#252525', color: birthYear ? '#fff' : 'rgba(255,255,255,0.4)', fontSize:16, fontWeight:800, fontFamily:'inherit', outline:'none', boxSizing:'border-box', marginBottom:4, appearance:'none', cursor:'pointer' }}>
+        <option value="">Select your birth year</option>
+        {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+      </select>
+      <div style={{ fontSize:11, color:'rgba(255,255,255,0.3)', fontWeight:700, marginBottom:20 }}>
+        {isLoggedIn ? 'Needed to calculate your brain age accurately' : 'Your birth year becomes your secret login code'}
+      </div>
 
       {error && <div style={{ fontSize:13, color:'#FF5252', fontWeight:800, marginBottom:12 }}>{error}</div>}
 
