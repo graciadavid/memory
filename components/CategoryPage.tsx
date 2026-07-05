@@ -3,6 +3,10 @@ import { useState, useEffect } from 'react'
 
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
+// Icons are usually a hosted image filename (e.g. "sudoku.png"); games without a
+// hosted asset can pass an emoji directly instead.
+const isImageIcon = (icon: string) => /\.(png|webp|jpe?g|svg)$/i.test(icon)
+
 interface Game {
   label: string
   icon: string
@@ -35,7 +39,10 @@ export default function CategoryPage({ title, games }: Props) {
           <a key={g.label} href={g.href} style={{ textDecoration: 'none' }}>
             <div style={{ background: '#252525', borderRadius: 16, overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
               <div style={{ width: 80, height: 80, flexShrink: 0, background: '#2a2a2a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img src={`${BASE}/${g.icon}`} style={{ width: 44, height: 44, objectFit: 'contain' }} />
+                {isImageIcon(g.icon)
+                  ? <img src={`${BASE}/${g.icon}`} style={{ width: 44, height: 44, objectFit: 'contain' }} />
+                  : <span style={{ fontSize: 36, lineHeight: 1 }}>{g.icon}</span>
+                }
               </div>
               <div style={{ padding: '14px 16px', flex: 1 }}>
                 <div style={{ fontSize: 16, fontWeight: 900, color: '#fff', marginBottom: 3 }}>{g.label}</div>

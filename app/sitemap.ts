@@ -40,6 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
    { url: '/wordly', priority: 0.7, changeFreq: 'weekly' },
    { url: '/2048', priority: 0.7, changeFreq: 'weekly' },
    { url: '/blackjack', priority: 0.7, changeFreq: 'weekly' },
+   { url: '/peek', priority: 0.7, changeFreq: 'weekly' },
    // SEO
    { url: '/reaction-time-test', priority: 0.8, changeFreq: 'monthly' },
    { url: '/memory-test', priority: 0.8, changeFreq: 'monthly' },

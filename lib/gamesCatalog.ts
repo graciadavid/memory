@@ -26,6 +26,7 @@ export const GAMES_CATALOG: CatalogGame[] = [
   { title: 'Wordly', href: '/wordly' },
   { title: '2048', href: '/2048' },
   { title: 'Blackjack', href: '/blackjack' },
+  { title: 'Peek', href: '/peek' },
 ]
 
 // One flagship game per category, used to route first-time players through a variety tour.

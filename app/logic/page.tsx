@@ -12,6 +12,7 @@ const GAMES = [
  { label: 'Wordly', icon: 'wordly.png', href: '/wordly', desc: 'Guess the word' },
  { label: '2048', icon: '2048.png', href: '/2048', desc: 'Merge tiles to 2048' },
  { label: 'Blackjack', icon: 'blackjack.png', href: '/blackjack', desc: 'Beat the dealer' },
+ { label: 'Peek', icon: 'peek.png', href: '/peek', desc: 'Guess the word before the picture unveils' },
 ]
 
 export default function LogicPage() {

@@ -94,6 +94,7 @@ export default function AdminPage() {
      { table: 'typedrop_scores', game: 'typedrop' },
      { table: 'precision_scores', game: 'stop' },
      { table: 'higher_lower_scores', game: 'hl' },
+     { table: 'peek_scores', game: 'peek' },
    ]
 
    const from = getPeriodFrom()
@@ -143,6 +144,7 @@ export default function AdminPage() {
      { table: 'poke_scores', game: 'Poke', field: 'level' },
      { table: 'letter_rain_scores', game: 'Letter Rain', field: 'level' },
      { table: 'typedrop_scores', game: 'TypeDrop', field: 'score' },
+     { table: 'peek_scores', game: 'Peek', field: 'time_ms' },
    ]
    const results: any[] = []
    await Promise.all(tables.map(async ({ table, game, field }) => {
@@ -177,6 +179,7 @@ export default function AdminPage() {
      { name: 'Blackjack', table: 'blackjack_scores' },
      { name: 'HL Pop', table: 'higher_lower_scores', filter: { category: 'population' } },
      { name: 'HL Area', table: 'higher_lower_scores', filter: { category: 'area' } },
+     { name: 'Peek', table: 'peek_scores' },
    ]
    const from = getPeriodFrom()
    const to = getPeriodTo()

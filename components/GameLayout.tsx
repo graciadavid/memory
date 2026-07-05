@@ -7,6 +7,16 @@ const GREEN = '#2E7D32'
 const GOLD = '#C8960C'
 const BASE = 'https://bgmhfsccchktnknmqkuw.supabase.co/storage/v1/object/public/storage'
 
+// Icons are usually a hosted image filename (e.g. "sudoku.png"); games without a
+// hosted asset can pass an emoji directly instead.
+const isImageIcon = (icon: string) => /\.(png|webp|jpe?g|svg)$/i.test(icon)
+
+function GameIcon({ icon, size }: { icon: string; size: number }) {
+  return isImageIcon(icon)
+    ? <img src={`${BASE}/${icon}`} style={{ width: size, height: size, objectFit: 'contain' }} />
+    : <span style={{ fontSize: size * 0.8, lineHeight: 1 }}>{icon}</span>
+}
+
 function useOnboardingTour(currentPath: string) {
   const router = useRouter()
   const [suggestion, setSuggestion] = useState<{ title: string; href: string } | null>(null)
@@ -73,7 +83,7 @@ export function GameRulesScreen({ icon, title, subtitle, worldRecord, myBest, to
       
       {/* Header */}
       <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:24 }}>
-        <img src={`${BASE}/${icon}`} style={{ width:52, height:52, objectFit:'contain' }} />
+        <GameIcon icon={icon} size={52} />
         <div>
           <div style={{ fontSize:26, fontWeight:900, color:'#fff' }}>{title}</div>
           <div style={{ fontSize:13, color:'rgba(255,255,255,0.4)', fontWeight:700 }}>{subtitle}</div>
