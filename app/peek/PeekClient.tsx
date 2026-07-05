@@ -7,7 +7,6 @@ import { GameRulesScreen, GameResultScreen } from '@/components/GameLayout'
 const GOLD = '#C8960C'
 const GREEN = '#2E7D32'
 const REVEAL_DURATION_MS = 20000
-const HINT_INTERVAL_MS = 3000
 
 const ITEMS = [
   { emoji: '🍎', word: 'APPLE' }, { emoji: '🍌', word: 'BANANA' }, { emoji: '🥕', word: 'CARROT' },
@@ -41,7 +40,6 @@ export default function PeekClient() {
   const [phase, setPhase] = useState<Phase>('rules')
   const [item, setItem] = useState(ITEMS[0])
   const [guessLetters, setGuessLetters] = useState<string[]>([])
-  const [hinted, setHinted] = useState<Set<number>>(new Set())
   const [elapsedMs, setElapsedMs] = useState(0)
   const [won, setWon] = useState(false)
   const [shake, setShake] = useState(false)
@@ -51,7 +49,6 @@ export default function PeekClient() {
 
   const startTimeRef = useRef(0)
   const animRef = useRef(0)
-  const hintTimerRef = useRef<any>(null)
   const phaseRef = useRef<Phase>('rules')
   const wonRef = useRef(false)
 
@@ -68,13 +65,12 @@ export default function PeekClient() {
   }, [profile?.name])
 
   useEffect(() => { loadData() }, [loadData])
-  useEffect(() => { return () => { cancelAnimationFrame(animRef.current); clearInterval(hintTimerRef.current) } }, [])
+  useEffect(() => { return () => cancelAnimationFrame(animRef.current) }, [])
 
   const finish = useCallback(async (didWin: boolean, finalMs: number) => {
     wonRef.current = didWin
     phaseRef.current = 'result'
     cancelAnimationFrame(animRef.current)
-    clearInterval(hintTimerRef.current)
     setWon(didWin)
     setElapsedMs(finalMs)
     setPhase('result')
@@ -91,7 +87,6 @@ export default function PeekClient() {
     const next = ITEMS[Math.floor(Math.random() * ITEMS.length)]
     setItem(next)
     setGuessLetters(Array(next.word.length).fill(''))
-    setHinted(new Set())
     setWon(false)
     setShake(false)
     setWorldRank(null)
@@ -112,20 +107,6 @@ export default function PeekClient() {
       animRef.current = requestAnimationFrame(tick)
     }
     animRef.current = requestAnimationFrame(tick)
-
-    // setHinted's updater must stay a pure function of prevState (React Strict Mode
-    // double-invokes it in dev) — writing into guessLetters here caused two different
-    // random picks per tick, showing a letter that wasn't actually marked as hinted.
-    hintTimerRef.current = setInterval(() => {
-      setHinted(prev => {
-        if (prev.size >= next.word.length - 1) return prev
-        const hidden = Array.from({ length: next.word.length }, (_, i) => i).filter(i => !prev.has(i))
-        const pick = hidden[Math.floor(Math.random() * hidden.length)]
-        const nextSet = new Set(prev)
-        nextSet.add(pick)
-        return nextSet
-      })
-    }, HINT_INTERVAL_MS)
   }
 
   const handleKey = useCallback((key: string) => {
@@ -134,7 +115,7 @@ export default function PeekClient() {
       setGuessLetters(g => {
         const copy = [...g]
         for (let i = copy.length - 1; i >= 0; i--) {
-          if (!hinted.has(i) && copy[i] !== '') { copy[i] = ''; break }
+          if (copy[i] !== '') { copy[i] = ''; break }
         }
         return copy
       })
@@ -142,14 +123,13 @@ export default function PeekClient() {
     }
     if (key === 'ENTER') {
       setGuessLetters(g => {
-        if (g.some((l, i) => !hinted.has(i) && l === '')) return g
-        const guess = item.word.split('').map((ch, i) => hinted.has(i) ? ch : g[i]).join('')
-        if (guess === item.word) {
+        if (g.some(l => l === '')) return g
+        if (g.join('') === item.word) {
           finish(true, Date.now() - startTimeRef.current)
         } else {
           setShake(true)
           setTimeout(() => setShake(false), 400)
-          setTimeout(() => setGuessLetters(prev => prev.map((l, i) => hinted.has(i) ? l : '')), 400)
+          setTimeout(() => setGuessLetters(Array(item.word.length).fill('')), 400)
         }
         return g
       })
@@ -157,14 +137,14 @@ export default function PeekClient() {
     }
     if (/^[A-Z]$/.test(key)) {
       setGuessLetters(g => {
-        const idx = g.findIndex((l, i) => l === '' && !hinted.has(i))
+        const idx = g.findIndex(l => l === '')
         if (idx === -1) return g
         const copy = [...g]
         copy[idx] = key
         return copy
       })
     }
-  }, [hinted, item, finish])
+  }, [item, finish])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => handleKey(e.key.toUpperCase())
@@ -220,12 +200,12 @@ export default function PeekClient() {
           {guessLetters.map((l, i) => (
             <div key={i} style={{
               width:36, height:44, borderRadius:8,
-              background: hinted.has(i) ? GREEN : '#252525',
-              border: hinted.has(i) ? 'none' : '2px solid rgba(255,255,255,0.15)',
+              background: '#252525',
+              border: '2px solid rgba(255,255,255,0.15)',
               display:'flex', alignItems:'center', justifyContent:'center',
               fontSize:18, fontWeight:900, color:'#fff',
             }}>
-              {hinted.has(i) ? item.word[i] : l}
+              {l}
             </div>
           ))}
         </div>
