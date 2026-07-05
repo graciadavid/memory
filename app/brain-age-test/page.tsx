@@ -194,7 +194,7 @@ The brain follows a "use it or lose it" principle: neural circuits that are regu
 
 The most effective cognitive training programs combine multiple domains (not just one type of task), involve progressive difficulty (tasks that become harder as you improve), and are practiced regularly over weeks to months. A single session of brain training produces minimal lasting benefit; consistent daily practice over 4–8 weeks produces the most robust improvements.
 
-MemGenius is designed with these principles in mind. With 22 games across agility, memory, knowledge, and logic, daily training on the platform provides varied cognitive stimulation that targets all four domains assessed in this brain age test.
+MemGenius is designed with these principles in mind. With 23 games across agility, memory, knowledge, and logic, daily training on the platform provides varied cognitive stimulation that targets all four domains assessed in this brain age test.
 
 4. Social engagement and emotional wellbeing
 

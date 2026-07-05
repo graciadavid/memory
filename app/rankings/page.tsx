@@ -46,6 +46,7 @@ const CATEGORIES = [
      { label: 'Wordly', icon: 'wordly.png', table: 'wordle_scores', field: 'attempts', filter: null, lower: true, unit: ' tries' },
      { label: '2048', icon: '2048.png', table: 'game2048_scores', field: 'best_tile', filter: null, lower: false, unit: '' },
      { label: 'Blackjack', icon: 'blackjack.png', table: 'blackjack_scores', field: 'chips', filter: null, lower: false, unit: ' chips' },
+     { label: 'Peek', icon: 'peek.png', table: 'peek_scores', field: 'time_ms', filter: null, lower: true, unit: 'mm:ss' },
       ]
  },
 ]

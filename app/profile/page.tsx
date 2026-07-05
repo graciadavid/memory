@@ -30,6 +30,7 @@ const GAMES = [
   { label: 'Wordly', table: 'wordle_scores', field: 'attempts', filter: null, lower: true },
   { label: '2048', table: 'game2048_scores', field: 'best_tile', filter: null, lower: false },
   { label: 'Blackjack', table: 'blackjack_scores', field: 'chips', filter: null, lower: false },
+  { label: 'Peek', table: 'peek_scores', field: 'time_ms', filter: null, lower: true },
 ]
 
 async function getGameRank(name: string, g: typeof GAMES[0]): Promise<{rank:number, score:number, total:number} | null> {
